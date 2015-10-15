@@ -34,7 +34,7 @@ func (c LocalContent) GetCatalogPath(languageId int) string {
 	return path.Join(c.BasePath, string(languageId), "catalog.json")
 }
 func (c LocalContent) GetBookPath(languageId int, glUri string) string {
-	os.MkdirAll(path.Join(c.BasePath, string(languageId), glUri))
+	os.MkdirAll(path.Join(c.BasePath, string(languageId), glUri), os.ModeDir)
 	return path.Join(c.BasePath, string(languageId), glUri, "contents.zbook")
 }
 
