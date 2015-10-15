@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"os"
+	"strconv"
 	"github.com/wsxiaoys/terminal/color"
 )
 
@@ -35,7 +36,12 @@ func main() {
 			case "languages", "lang":
 				DownloadLanguages()
 			default:
-				panic("Unknown download");
+				i, err := strconv.Atoi(args[1]);
+				if err == nil {
+					DownloadCatalog(i)
+				} else {
+					panic("Unknown download \"" + args[1] + "\"")
+				}
 			}
 		default:
 			fmt.Printf("Unknown command \"%s\"\n", args[0])

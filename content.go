@@ -27,14 +27,15 @@ func NewLocalContent() LocalContent {
 	return LocalContent{path.Join(u.HomeDir, ".ldss")}
 }
 func (c LocalContent) GetLanguagesPath() string {
+	os.MkdirAll(c.BasePath, os.ModeDir | os.ModePerm)
 	return path.Join(c.BasePath, "languages.json")
 }
 func (c LocalContent) GetCatalogPath(languageId int) string {
-	os.MkdirAll(path.Join(c.BasePath, string(languageId)), os.ModeDir)
+	os.MkdirAll(path.Join(c.BasePath, string(languageId)), os.ModeDir | os.ModePerm)
 	return path.Join(c.BasePath, string(languageId), "catalog.json")
 }
 func (c LocalContent) GetBookPath(languageId int, glUri string) string {
-	os.MkdirAll(path.Join(c.BasePath, string(languageId), glUri), os.ModeDir)
+	os.MkdirAll(path.Join(c.BasePath, string(languageId), glUri), os.ModeDir | os.ModePerm)
 	return path.Join(c.BasePath, string(languageId), glUri, "contents.zbook")
 }
 

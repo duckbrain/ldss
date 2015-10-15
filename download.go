@@ -37,7 +37,6 @@ func DownloadLanguages() {
 	ldsContent := NewLDSContent()
 	localContent := NewLocalContent()
 	
-	os.MkdirAll(localContent.BasePath, os.ModeDir);
 	downloadFile(ldsContent.GetLanguagesPath(), localContent.GetLanguagesPath())
 }
 
