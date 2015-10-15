@@ -4,11 +4,11 @@ import (
 	"fmt"
 	"os"
 	"strconv"
-	"github.com/wsxiaoys/terminal/color"
+	//"github.com/wsxiaoys/terminal/color"
 )
 
 func main() {
-	defer func() {
+	/*defer func() {
 		if r := recover(); r != nil {
 			err, ok := r.(error)
 			if !ok {
@@ -16,9 +16,11 @@ func main() {
 			}
 			color.Println("@rerror@{|}: " + err.Error())
 		}
-	}()
+	}()*/
 	
 	args := os.Args[1:]
+	config := LoadConfiguration()
+	
 	if len(args) == 0 {
 		PrintInstructions()
 	} else {
@@ -31,14 +33,22 @@ func main() {
 			}
 		case "lookup":
 			LookupPath(args[1])
+		case "languages", "lang", "langs":
+			if (len(args) == 1) {
+				for _, l := range (config.Languages.GetAll()) {
+					fmt.Println(l.String())
+				}
+			} else {
+				fmt.Println(config.Languages.GetByUnknown(args[1]).String())
+			}
 		case "download", "dl":
 			switch (args[1]) {
 			case "languages", "lang":
-				DownloadLanguages()
+				config.Download.DownloadLanguages()
 			default:
 				i, err := strconv.Atoi(args[1]);
 				if err == nil {
-					DownloadCatalog(i)
+					config.Download.DownloadCatalog(i)
 				} else {
 					panic("Unknown download \"" + args[1] + "\"")
 				}

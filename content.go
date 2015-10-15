@@ -3,14 +3,17 @@ package main
 
 import (
 	"os"
+	"io"
 	"os/user"
 	"path"
+	"net/http"
 )
 
 type Content interface {
 	GetLanguagesPath() string
 	GetCatalogPath(languageId int) string
 	GetBookPath(languageId int, glUri string) string
+	OpenRead(path string) io.Reader
 }
 
 type LocalContent struct {
@@ -38,6 +41,13 @@ func (c LocalContent) GetBookPath(languageId int, glUri string) string {
 	os.MkdirAll(path.Join(c.BasePath, string(languageId), glUri), os.ModeDir | os.ModePerm)
 	return path.Join(c.BasePath, string(languageId), glUri, "contents.zbook")
 }
+func (c LocalContent) OpenRead(path string) io.Reader {
+	reader, err := os.Open(path)
+	if err != nil {
+		panic(err)
+	}
+	return reader
+}
 
 type LDSContent struct {
 	BasePath string
@@ -56,4 +66,11 @@ func (c LDSContent) GetCatalogPath(languageId int) string {
 }
 func (c LDSContent) GetBookPath(languageId int, glUri string) string {
 	return ""
+}
+func (c LDSContent) OpenRead(path string) io.Reader {
+	resp, err := http.Get(path)
+	if err != nil {
+		panic(err)
+	}
+	return resp.Body
 }

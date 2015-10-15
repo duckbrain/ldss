@@ -12,7 +12,7 @@ func PrintInstructions() {
 	fmt.Println("   index <ref>            List the child nodes of the speficied reference")
 	fmt.Println("   print <ref>            Print out the contents of the scripture reference given without the default reader or HTML parsing")
 	fmt.Println("   lookup <ref>           Perform a lookup on the scripture reference to determine if it is valid")
-	fmt.Println("   <ref>                  Shorthand for read <ref>")
+	fmt.Println("   <ref>                  Shorthand for \"ldss read <ref>\"")
 	fmt.Println()
 	fmt.Println("Other topics to get help on:")
 	fmt.Println("   config                 Information on the configuration file and its settings")

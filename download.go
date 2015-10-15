@@ -7,19 +7,24 @@ import (
 	"net/http"
 )
 
-func DownloadStatus() {
+type Downloader struct {
+	online *LDSContent
+	offline *LocalContent
+}
+
+func (d Downloader) DownloadStatus() {
 
 }
 
-func IsLanguagesDownloaded() bool {
+func (d Downloader) IsLanguagesDownloaded() bool {
 	_, err := os.Stat("~/.ldss/languages.json");
 	return os.IsNotExist(err);
 }
 
-func DownloadMissing() {
+func (d Downloader) DownloadMissing() {
 }
 
-func downloadFile(get string, save string) {
+func (d Downloader) downloadFile(get string, save string) {
 	resp, err := http.Get(get)
 	if err != nil {
 		panic(err)
@@ -33,22 +38,17 @@ func downloadFile(get string, save string) {
 	io.Copy(file, resp.Body)
 }
 
-func DownloadLanguages() {
-	ldsContent := NewLDSContent()
-	localContent := NewLocalContent()
+func (d Downloader) DownloadLanguages() {
+	d.downloadFile(d.online.GetLanguagesPath(), d.offline.GetLanguagesPath())
+}
+
+func (d Downloader) DownloadCatalog(languageId int) {
+	d.downloadFile(d.online.GetCatalogPath(languageId), d.offline.GetCatalogPath(languageId))
+}
+
+func (d Downloader) DownloadBook(languageId int, bookId int) {
 	
-	downloadFile(ldsContent.GetLanguagesPath(), localContent.GetLanguagesPath())
 }
 
-func DownloadCatalog(languageId int) {
-	ldsContent := NewLDSContent()
-	localContent := NewLocalContent()
-	
-	downloadFile(ldsContent.GetCatalogPath(languageId), localContent.GetCatalogPath(languageId))
-}
-
-func DownloadBook(languageId int, bookId int) {
-}
-
-func DownloadAllBooks(languageId int) {
+func (d Downloader) DownloadAllBooks(languageId int) {
 }
