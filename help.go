@@ -21,11 +21,11 @@ func PrintInstructions() {
 }
 
 func PrintCommandInstructions(command string) {
-	switch (command) {
+	switch command {
 	case "config":
 		PrintConfigInstructions()
 	default:
-		fmt.Printf("Command \"%s\" is not recognized.\n", command);
+		fmt.Printf("Command \"%s\" is not recognized.\n", command)
 	}
 }
 

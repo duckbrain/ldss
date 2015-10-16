@@ -1,13 +1,12 @@
-
 package main
 
 import (
-	"os"
-	"io"
 	"fmt"
-	"path"
-	"os/user"
+	"io"
 	"net/http"
+	"os"
+	"os/user"
+	"path"
 )
 
 type Content interface {
@@ -20,26 +19,27 @@ type Content interface {
 type LocalContent struct {
 	BasePath string
 }
+
 func NewLocalContent() LocalContent {
 	//TODO: Load path from config
 	u, err := user.Current()
-	
+
 	if err != nil {
 		panic(err)
 	}
-	
+
 	return LocalContent{path.Join(u.HomeDir, ".ldss")}
 }
 func (c *LocalContent) GetLanguagesPath() string {
-	os.MkdirAll(c.BasePath, os.ModeDir | os.ModePerm)
+	os.MkdirAll(c.BasePath, os.ModeDir|os.ModePerm)
 	return path.Join(c.BasePath, "languages.json")
 }
 func (c *LocalContent) GetCatalogPath(language *Language) string {
-	os.MkdirAll(path.Join(c.BasePath, language.GlCode), os.ModeDir | os.ModePerm)
+	os.MkdirAll(path.Join(c.BasePath, language.GlCode), os.ModeDir|os.ModePerm)
 	return path.Join(c.BasePath, language.GlCode, "catalog.json")
 }
 func (c *LocalContent) GetBookPath(language *Language, glUri string) string {
-	os.MkdirAll(path.Join(c.BasePath, language.GlCode, glUri), os.ModeDir | os.ModePerm)
+	os.MkdirAll(path.Join(c.BasePath, language.GlCode, glUri), os.ModeDir|os.ModePerm)
 	return path.Join(c.BasePath, language.GlCode, glUri, "contents.zbook")
 }
 func (c *LocalContent) OpenRead(path string) io.Reader {
@@ -53,6 +53,7 @@ func (c *LocalContent) OpenRead(path string) io.Reader {
 type LDSContent struct {
 	BasePath string
 }
+
 func NewLDSContent() LDSContent {
 	return LDSContent{"https://tech.lds.org/glweb"}
 }

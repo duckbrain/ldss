@@ -1,18 +1,17 @@
-
 package main
 
 import (
-	"fmt"
 	"errors"
+	"fmt"
 	"github.com/wsxiaoys/terminal/color"
 )
 
 type Reference struct {
-	bookName string
-	glPath string
-	node int
-	chapter int
-	verseSelected int
+	bookName          string
+	glPath            string
+	node              int
+	chapter           int
+	verseSelected     int
 	versesHighlighted []int
 }
 

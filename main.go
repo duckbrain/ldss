@@ -15,12 +15,12 @@ func main() {
 			color.Println("@rerror@{|}: " + err.Error())
 		}
 	}()*/
-	
+
 	op := loadDefaultOptions()
 	loadFileOptions(op)
 	args := loadParameterOptions(op)
 	config := LoadConfiguration(op)
-	
+
 	if len(args) == 0 {
 		PrintInstructions()
 	} else {
@@ -34,8 +34,8 @@ func main() {
 		case "lookup":
 			LookupPath(args[1])
 		case "languages", "lang", "langs":
-			if (len(args) == 1) {
-				for _, l := range (config.Languages.GetAll()) {
+			if len(args) == 1 {
+				for _, l := range config.Languages.GetAll() {
 					fmt.Println(l.String())
 				}
 			} else {
@@ -43,16 +43,16 @@ func main() {
 			}
 		case "catalog", "cat":
 			catalog := NewCatalogLoader(config.SelectedLanguage, config.OfflineContent)
-			
-			if (len(args) == 1) {
-				for _, l := range (config.Languages.GetAll()) {
+
+			if len(args) == 1 {
+				for _, l := range config.Languages.GetAll() {
 					fmt.Println(l.String())
 				}
 			} else {
 				fmt.Println(catalog.GetCatalog().String())
 			}
 		case "download", "dl":
-			switch (args[1]) {
+			switch args[1] {
 			case "languages", "lang":
 				config.Download.DownloadLanguages()
 			default:

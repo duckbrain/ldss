@@ -1,14 +1,13 @@
-
 package main
 
 import (
 	"io"
-	"os"
 	"net/http"
+	"os"
 )
 
 type Downloader struct {
-	online *LDSContent
+	online  *LDSContent
 	offline *LocalContent
 }
 
@@ -17,8 +16,8 @@ func (d *Downloader) DownloadStatus() {
 }
 
 func (d *Downloader) IsLanguagesDownloaded() bool {
-	_, err := os.Stat("~/.ldss/languages.json");
-	return os.IsNotExist(err);
+	_, err := os.Stat("~/.ldss/languages.json")
+	return os.IsNotExist(err)
 }
 
 func (d *Downloader) DownloadMissing() {
@@ -30,7 +29,7 @@ func (d *Downloader) downloadFile(get string, save string) {
 		panic(err)
 	}
 	defer resp.Body.Close()
-	file, err := os.Create(save);
+	file, err := os.Create(save)
 	if err != nil {
 		panic(err)
 	}
@@ -47,7 +46,7 @@ func (d *Downloader) DownloadCatalog(language *Language) {
 }
 
 func (d *Downloader) DownloadBook(language *Language, bookId int) {
-	
+
 }
 
 func (d *Downloader) DownloadAllBooks(languageId int) {
