@@ -2,8 +2,6 @@ package main
 
 import (
 	"fmt"
-	"os"
-	"strconv"
 	//"github.com/wsxiaoys/terminal/color"
 )
 
@@ -18,8 +16,10 @@ func main() {
 		}
 	}()*/
 	
-	args := os.Args[1:]
-	config := LoadConfiguration()
+	op := loadDefaultOptions()
+	loadFileOptions(op)
+	args := loadParameterOptions(op)
+	config := LoadConfiguration(op)
 	
 	if len(args) == 0 {
 		PrintInstructions()
@@ -41,14 +41,23 @@ func main() {
 			} else {
 				fmt.Println(config.Languages.GetByUnknown(args[1]).String())
 			}
+		case "catalog", "cat":
+			catalog := NewCatalogLoader(config.SelectedLanguage, config.OfflineContent)
+			
+			if (len(args) == 1) {
+				for _, l := range (config.Languages.GetAll()) {
+					fmt.Println(l.String())
+				}
+			} else {
+				fmt.Println(catalog.GetCatalog().String())
+			}
 		case "download", "dl":
 			switch (args[1]) {
 			case "languages", "lang":
 				config.Download.DownloadLanguages()
 			default:
-				i, err := strconv.Atoi(args[1]);
-				if err == nil {
-					config.Download.DownloadCatalog(i)
+				if language := config.Languages.GetByUnknown(args[1]); language != nil {
+					config.Download.DownloadCatalog(language)
 				} else {
 					panic("Unknown download \"" + args[1] + "\"")
 				}

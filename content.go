@@ -4,15 +4,16 @@ package main
 import (
 	"os"
 	"io"
-	"os/user"
+	"fmt"
 	"path"
+	"os/user"
 	"net/http"
 )
 
 type Content interface {
 	GetLanguagesPath() string
-	GetCatalogPath(languageId int) string
-	GetBookPath(languageId int, glUri string) string
+	GetCatalogPath(language *Language) string
+	GetBookPath(language *Language, glUri string) string
 	OpenRead(path string) io.Reader
 }
 
@@ -29,19 +30,19 @@ func NewLocalContent() LocalContent {
 	
 	return LocalContent{path.Join(u.HomeDir, ".ldss")}
 }
-func (c LocalContent) GetLanguagesPath() string {
+func (c *LocalContent) GetLanguagesPath() string {
 	os.MkdirAll(c.BasePath, os.ModeDir | os.ModePerm)
 	return path.Join(c.BasePath, "languages.json")
 }
-func (c LocalContent) GetCatalogPath(languageId int) string {
-	os.MkdirAll(path.Join(c.BasePath, string(languageId)), os.ModeDir | os.ModePerm)
-	return path.Join(c.BasePath, string(languageId), "catalog.json")
+func (c *LocalContent) GetCatalogPath(language *Language) string {
+	os.MkdirAll(path.Join(c.BasePath, language.GlCode), os.ModeDir | os.ModePerm)
+	return path.Join(c.BasePath, language.GlCode, "catalog.json")
 }
-func (c LocalContent) GetBookPath(languageId int, glUri string) string {
-	os.MkdirAll(path.Join(c.BasePath, string(languageId), glUri), os.ModeDir | os.ModePerm)
-	return path.Join(c.BasePath, string(languageId), glUri, "contents.zbook")
+func (c *LocalContent) GetBookPath(language *Language, glUri string) string {
+	os.MkdirAll(path.Join(c.BasePath, language.GlCode, glUri), os.ModeDir | os.ModePerm)
+	return path.Join(c.BasePath, language.GlCode, glUri, "contents.zbook")
 }
-func (c LocalContent) OpenRead(path string) io.Reader {
+func (c *LocalContent) OpenRead(path string) io.Reader {
 	reader, err := os.Open(path)
 	if err != nil {
 		panic(err)
@@ -55,19 +56,19 @@ type LDSContent struct {
 func NewLDSContent() LDSContent {
 	return LDSContent{"https://tech.lds.org/glweb"}
 }
-func (c LDSContent) getAction(action string) string {
+func (c *LDSContent) getAction(action string) string {
 	return c.BasePath + "?action=" + action
 }
-func (c LDSContent) GetLanguagesPath() string {
+func (c *LDSContent) GetLanguagesPath() string {
 	return c.getAction("languages.query")
 }
-func (c LDSContent) GetCatalogPath(languageId int) string {
-	return c.getAction("catalog.query&platformid=17&languageid=" + string(languageId));
+func (c *LDSContent) GetCatalogPath(language *Language) string {
+	return c.getAction(fmt.Sprintf("catalog.query&platformid=17&languageid=%v", language.ID))
 }
-func (c LDSContent) GetBookPath(languageId int, glUri string) string {
+func (c *LDSContent) GetBookPath(language *Language, glUri string) string {
 	return ""
 }
-func (c LDSContent) OpenRead(path string) io.Reader {
+func (c *LDSContent) OpenRead(path string) io.Reader {
 	resp, err := http.Get(path)
 	if err != nil {
 		panic(err)

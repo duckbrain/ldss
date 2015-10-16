@@ -7,7 +7,7 @@ import (
 )
 
 type LanguageLoader struct {
-	c Content
+	content Content
 	languages []Language
 }
 
@@ -48,7 +48,7 @@ func (l *LanguageLoader) populateIfNeeded() {
 	}
 	
 	var description glLanguageDescription
-	file := l.c.OpenRead(l.c.GetLanguagesPath())
+	file := l.content.OpenRead(l.content.GetLanguagesPath())
 	dec := json.NewDecoder(file)
 	err := dec.Decode(&description)
 	if err != nil {
