@@ -1,6 +1,7 @@
 package main
 
 import (
+	"encoding/json"
 	"os"
 	"os/user"
 	"path"
@@ -41,19 +42,25 @@ func loadParameterOptions(op *ConfigurationOptions) []string {
 }
 
 func loadFileOptions(op *ConfigurationOptions) {
-
+	file, err := os.Open(path.Join(op.DataDirectory, "config.json"))
+	if err != nil {
+		// File does not exits, continue
+		return
+	}
+	dec := json.NewDecoder(file)
+	err = dec.Decode(op)
+	if err != nil {
+		panic(err)
+	}
 }
 
 func LoadConfiguration(op *ConfigurationOptions) Config {
 	c := Config{}
 
-	c.OnlineContent = new(LDSContent)
-	c.OnlineContent.BasePath = op.ServerURL
-	c.OfflineContent = new(LocalContent)
-	c.OfflineContent.BasePath = op.DataDirectory
+	c.OnlineContent = NewLDSContent(op.ServerURL, 17)
+	c.OfflineContent = NewLocalContent(op.DataDirectory)
 
-	c.Languages = new(LanguageLoader)
-	c.Languages.content = c.OfflineContent
+	c.Languages = NewLanguageLoader(c.OfflineContent)
 
 	c.Download = new(Downloader)
 	c.Download.online = c.OnlineContent

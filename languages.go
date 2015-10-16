@@ -10,6 +10,12 @@ type LanguageLoader struct {
 	languages []Language
 }
 
+func NewLanguageLoader(c Content) *LanguageLoader {
+	l := new(LanguageLoader)
+	l.content = c
+	return l
+}
+
 type glLanguageDescription struct {
 	Languages []Language `json:"languages"`
 	Success   bool       `json:"success"`

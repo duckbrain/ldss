@@ -19,6 +19,7 @@ func main() {
 	op := loadDefaultOptions()
 	loadFileOptions(op)
 	args := loadParameterOptions(op)
+	alen := len(args)
 	config := LoadConfiguration(op)
 
 	if len(args) == 0 {
@@ -26,15 +27,17 @@ func main() {
 	} else {
 		switch args[0] {
 		case "help":
-			if len(args) == 1 {
+			if alen == 1 {
 				PrintInstructions()
 			} else {
-				PrintCommandInstructions(args[1])
+				for _, instr := range args[1:] {
+					PrintCommandInstructions(instr)
+				}
 			}
 		case "lookup":
 			LookupPath(args[1])
-		case "languages", "lang", "langs":
-			if len(args) == 1 {
+		case "languages":
+			if alen == 1 {
 				for _, l := range config.Languages.GetAll() {
 					fmt.Println(l.String())
 				}
@@ -55,11 +58,21 @@ func main() {
 			switch args[1] {
 			case "languages", "lang":
 				config.Download.DownloadLanguages()
+			case "all":
+				panic("Not implemented")
 			default:
-				if language := config.Languages.GetByUnknown(args[1]); language != nil {
+				language := config.Languages.GetByUnknown(args[1])
+
+				if language != nil {
 					config.Download.DownloadCatalog(language)
 				} else {
-					panic("Unknown download \"" + args[1] + "\"")
+					catalog := NewCatalogLoader(config.SelectedLanguage, config.OfflineContent)
+					book := catalog.GetBookByUnknown(args[1])
+					if book != nil {
+						config.Download.DownloadBook(book)
+					} else {
+						panic("Unknown download \"" + args[1] + "\"")
+					}
 				}
 			}
 		default:

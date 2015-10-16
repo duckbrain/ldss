@@ -1,9 +1,8 @@
 package main
 
 import (
-	"errors"
 	"fmt"
-	"github.com/wsxiaoys/terminal/color"
+	"strings"
 )
 
 type Reference struct {
@@ -19,16 +18,29 @@ func (ref Reference) String() string {
 	return string(ref.bookName) + " " + string(ref.chapter) + ":" + string(ref.verseSelected)
 }
 
-func ParsePath(path string) (ref *Reference, err error) {
-	return nil, errors.New("Not Implemented")
+func ParsePath(path string) *Reference {
+	panic("Not Implemented")
 }
 
 func LookupPath(path string) {
-	ref, err := ParsePath(path)
+	ref := ParsePath(path)
+	fmt.Println(ref.String())
+}
 
-	if err != nil {
-		color.Println("@rerror@{|}: " + err.Error())
-	} else {
-		fmt.Println(ref.String())
+func ParseForBook(id string) string {
+	id = strings.ToLower(id)
+	switch id {
+	case "ot":
+		return "/scriptures/ot"
+	case "nt":
+		return "/scriptures/nt"
+	case "bom", "bofm":
+		return "/scriptures/bofm"
+	case "dc", "d&c":
+		return "/scriptures/dc-testament"
+	case "pgp":
+		return "/scriptures/pgp"
+	default:
+		return ""
 	}
 }
