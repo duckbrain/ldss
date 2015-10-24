@@ -8,9 +8,10 @@ type LookupLoader struct {
 	books    map[string]*Book
 }
 
-func NewLookupLoader(lang *Language, content *Content) {
+func NewLookupLoader(lang *Language, content Content) *LookupLoader {
 	l := new(LookupLoader)
 	l.language = lang
-	l.catalog = NewCatalogLoader(l, content)
+	l.catalog = NewCatalogLoader(lang, content)
 	l.books = make(map[string]*Book)
+	return l
 }

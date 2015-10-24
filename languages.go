@@ -10,6 +10,11 @@ type LanguageLoader struct {
 	languages []Language
 }
 
+/*type LanguageLoaderGeneric {
+	GetByUnknown(id string) *Language
+	GetAll() []Language
+}*/
+
 func NewLanguageLoader(c Content) *LanguageLoader {
 	l := new(LanguageLoader)
 	l.content = c

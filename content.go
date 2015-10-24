@@ -26,19 +26,28 @@ func NewLocalContent(path string) *LocalContent {
 	c.MkdirMode = os.ModeDir | os.ModePerm
 	return c
 }
-func (c *LocalContent) GetLanguagesPath() string {
-	os.MkdirAll(c.BasePath, c.MkdirMode)
-	return path.Join(c.BasePath, "languages.json")
+
+func mkdirAndGetFile(paths ...string) string {
+	os.MkdirAll(path.Join(paths[:len(paths)-1]...), os.ModeDir|os.ModePerm)
+	return path.Join(paths...)
 }
-func (c *LocalContent) GetCatalogPath(language *Language) string {
-	os.MkdirAll(path.Join(c.BasePath, language.GlCode), c.MkdirMode)
-	return path.Join(c.BasePath, language.GlCode, "catalog.json")
+
+func (c LocalContent) GetCachePath() string {
+	return mkdirAndGetFile(c.BasePath, "cache.sqlite")
 }
-func (c *LocalContent) GetBookPath(book *Book) string {
-	os.MkdirAll(path.Join(c.BasePath, book.Language.GlCode, book.GlURI), c.MkdirMode)
-	return path.Join(c.BasePath, book.Language.GlCode, book.GlURI, "contents.zbook")
+func (c LocalContent) GetConfigPath() string {
+	return mkdirAndGetFile(c.BasePath, "config.json")
 }
-func (c *LocalContent) OpenRead(path string) io.Reader {
+func (c LocalContent) GetLanguagesPath() string {
+	return mkdirAndGetFile(c.BasePath, "languages.json")
+}
+func (c LocalContent) GetCatalogPath(language *Language) string {
+	return mkdirAndGetFile(c.BasePath, language.GlCode, "catalog.json")
+}
+func (c LocalContent) GetBookPath(book *Book) string {
+	return mkdirAndGetFile(c.BasePath, book.Language.GlCode, book.GlURI, "contents.sqlite")
+}
+func (c LocalContent) OpenRead(path string) io.Reader {
 	reader, err := os.Open(path)
 	if err != nil {
 		panic(err)

@@ -44,3 +44,9 @@ func ParseForBook(id string) string {
 		return ""
 	}
 }
+
+func ParseForNode(id string) string {
+	id = strings.ToLower(id)
+	//parts := strings.Split(id, " ")
+	return id
+}

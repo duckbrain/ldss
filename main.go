@@ -35,6 +35,7 @@ func main() {
 				}
 			}
 		case "lookup":
+			//l := NewLookupLoader(config.SelectedLanguage, config.OfflineContent)
 			LookupPath(args[1])
 		case "languages":
 			if alen == 1 {

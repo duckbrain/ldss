@@ -2,7 +2,6 @@ package main
 
 import (
 	"encoding/json"
-	"fmt"
 )
 
 type CatalogLoader struct {
@@ -21,63 +20,10 @@ func NewCatalogLoader(lang *Language, content Content) *CatalogLoader {
 	return c
 }
 
-type CatalogItem interface {
-	GetName() string
-}
-
 type glCatalogDescrpition struct {
 	Catalog         *Catalog `json:"catalog"`
 	Success         bool     `json:"success"`
 	CoverArtBaseUrl string   `json:"cover_art_base_url"`
-}
-
-type Catalog struct {
-	Name    string    `json:"name"`
-	Folders []*Folder `json:"folders"`
-	Books   []*Book   `json:"books"`
-}
-
-func (c *Catalog) String() string {
-	if c == nil {
-		return "Catalog: nil"
-	} else {
-		return fmt.Sprintf("Catalog: %v {folders[%v] books[%v]}", c.Name, len(c.Folders), len(c.Books))
-	}
-}
-
-type Folder struct {
-	ID      int       `json:"id"`
-	Name    string    `json:"name"`
-	Folders []*Folder `json:"folders"`
-	Books   []*Book   `json:"books"`
-}
-
-func (f *Folder) String() string {
-	return fmt.Sprintf("Folder: %v {folders[%v] books[%v]}", f.Name, len(f.Folders), len(f.Books))
-}
-
-func (f *Folder) GetName() string {
-	return f.Name
-}
-
-type Book struct {
-	ID       int    `json:"id"`
-	Name     string `json:"name"`
-	URL      string `json:"url"`
-	GlURI    string `json:"gl_uri"`
-	Language *Language
-}
-
-func (b *Book) String() string {
-	return fmt.Sprintf("Book: %v {%v}", b.Name, b.GlURI)
-}
-
-func (b *Book) GetName() string {
-	return b.Name
-}
-
-type Node struct {
-	Name string
 }
 
 func (l *CatalogLoader) populateIfNeeded() {

@@ -1,7 +1,7 @@
 all: ldss
 
 ldss: *.go
-	go build
+	go build --tags "libsqlite3 linux"
 
 run: ldss
 	./ldss
