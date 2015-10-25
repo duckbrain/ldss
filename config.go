@@ -10,7 +10,7 @@ import (
 type Config struct {
 	OnlineContent    *LDSContent
 	OfflineContent   *LocalContent
-	Languages        *LanguageLoader
+	Languages        LanguageLoader
 	Download         *Downloader
 	SelectedLanguage *Language
 }
@@ -59,8 +59,11 @@ func LoadConfiguration(op *ConfigurationOptions) Config {
 
 	c.OnlineContent = NewLDSContent(op.ServerURL, 17)
 	c.OfflineContent = NewLocalContent(op.DataDirectory)
+	
+	cache := NewCacheConnection()
+	cache.Open(c.OfflineContent.GetCachePath())
 
-	c.Languages = NewLanguageLoader(c.OfflineContent)
+	c.Languages = cache
 
 	c.Download = new(Downloader)
 	c.Download.online = c.OnlineContent

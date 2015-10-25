@@ -5,18 +5,18 @@ import (
 	"fmt"
 )
 
-type LanguageLoader struct {
+type JSONLanguageLoader struct {
 	content   Content
 	languages []Language
 }
 
-/*type LanguageLoaderGeneric {
+type LanguageLoader interface {
 	GetByUnknown(id string) *Language
 	GetAll() []Language
-}*/
+}
 
-func NewLanguageLoader(c Content) *LanguageLoader {
-	l := new(LanguageLoader)
+func NewJSONLanguageLoader(c Content) *JSONLanguageLoader {
+	l := new(JSONLanguageLoader)
 	l.content = c
 	return l
 }
@@ -52,7 +52,7 @@ func (l *Language) String() string {
 	return id + name + code
 }
 
-func (l *LanguageLoader) populateIfNeeded() {
+func (l *JSONLanguageLoader) populateIfNeeded() {
 	if l.languages != nil {
 		return
 	}
@@ -68,7 +68,7 @@ func (l *LanguageLoader) populateIfNeeded() {
 	l.languages = description.Languages
 }
 
-func (l *LanguageLoader) GetByUnknown(id string) *Language {
+func (l *JSONLanguageLoader) GetByUnknown(id string) *Language {
 	l.populateIfNeeded()
 	for _, lang := range l.languages {
 		if lang.Name == id || fmt.Sprintf("%v", lang.ID) == id || lang.EnglishName == id || lang.Code == id || lang.GlCode == id {
@@ -78,7 +78,7 @@ func (l *LanguageLoader) GetByUnknown(id string) *Language {
 	return nil
 }
 
-func (l *LanguageLoader) GetAll() []Language {
+func (l *JSONLanguageLoader) GetAll() []Language {
 	l.populateIfNeeded()
 	return l.languages
 }

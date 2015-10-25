@@ -61,7 +61,7 @@ func (d *Downloader) downloadFile(get string, save string, zlibDecompress bool) 
 func (d *Downloader) DownloadLanguages() {
 	fmt.Println("Downloading language list")
 	//d.downloadFile(d.online.GetLanguagesPath(), d.offline.GetLanguagesPath(), false)
-	loader := NewLanguageLoader(d.online)
+	loader := NewJSONLanguageLoader(d.online)
 	languages := loader.GetAll()
 	cache := NewCacheConnection()
 	cache.Open(d.offline.GetCachePath())
