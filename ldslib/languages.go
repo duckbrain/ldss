@@ -1,4 +1,4 @@
-package main
+package ldslib
 
 import (
 	"encoding/json"

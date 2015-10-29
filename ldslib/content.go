@@ -1,4 +1,4 @@
-package main
+package ldslib
 
 import (
 	"fmt"
@@ -55,30 +55,27 @@ func (c LocalContent) OpenRead(path string) io.Reader {
 	return reader
 }
 
-type LDSContent struct {
+type ldsContent struct {
 	BasePath   string
 	PlatformID int
 }
 
-func NewLDSContent(path string, platformId int) *LDSContent {
-	c := new(LDSContent)
-	c.BasePath = path
-	c.PlatformID = platformId
-	return c
+func NewLDSContent(path string) Content {
+	return &ldsContent{path, 17}
 }
-func (c *LDSContent) getAction(action string) string {
+func (c *ldsContent) getAction(action string) string {
 	return c.BasePath + "?action=" + action
 }
-func (c *LDSContent) GetLanguagesPath() string {
+func (c *ldsContent) GetLanguagesPath() string {
 	return c.getAction("languages.query")
 }
-func (c *LDSContent) GetCatalogPath(language *Language) string {
+func (c *ldsContent) GetCatalogPath(language *Language) string {
 	return c.getAction(fmt.Sprintf("catalog.query&languageid=%v&platformid=%v", language.ID, c.PlatformID))
 }
-func (c *LDSContent) GetBookPath(book *Book) string {
+func (c *ldsContent) GetBookPath(book *Book) string {
 	return book.URL
 }
-func (c *LDSContent) OpenRead(path string) io.Reader {
+func (c *ldsContent) OpenRead(path string) io.Reader {
 	resp, err := http.Get(path)
 	if err != nil {
 		panic(err)

@@ -1,12 +1,10 @@
-package main
+package ldslib
 
-import (
-	"fmt"
-)
+import "fmt"
 
 type CatalogItem interface {
-	GetName() string
-	GetChildren() []CatalogItem
+	Name() string
+	Children() []CatalogItem
 	String() string
 }
 
@@ -14,7 +12,7 @@ type CatalogItem interface {
  * Catalog
  */
 
-type Catalog struct {
+type catalog struct {
 	Name    string    `json:"name"`
 	Folders []*Folder `json:"folders"`
 	Books   []*Book   `json:"books"`
@@ -32,7 +30,7 @@ func (c *Catalog) String() string {
  * Folder
  */
 
-type Folder struct {
+type folder struct {
 	ID      int       `json:"id"`
 	Name    string    `json:"name"`
 	Folders []*Folder `json:"folders"`
@@ -51,7 +49,7 @@ func (f *Folder) GetName() string {
  * Book
  */
 
-type Book struct {
+type book struct {
 	ID       int    `json:"id"`
 	Name     string `json:"name"`
 	URL      string `json:"url"`
@@ -71,7 +69,7 @@ func (b *Book) GetName() string {
  * Node
  */
 
-type Node struct {
+type node struct {
 	ID       int
 	Name     string
 	GlURI    string

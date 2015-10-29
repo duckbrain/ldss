@@ -5,12 +5,13 @@ import (
 	"os"
 	"os/user"
 	"path"
+	"connection"
 )
 
 type Config struct {
 	OnlineContent    *LDSContent
 	OfflineContent   *LocalContent
-	Languages        LanguageLoader
+	Connection       Connection
 	Download         *Downloader
 	SelectedLanguage *Language
 }
@@ -28,12 +29,11 @@ func loadDefaultOptions() *ConfigurationOptions {
 		panic(err)
 	}
 
-	op := new(ConfigurationOptions)
-	op.Language = "eng"
-	op.DataDirectory = path.Join(currentUser.HomeDir, ".ldss")
-	op.ServerURL = "https://tech.lds.org/glweb"
-
-	return op
+	return &ConfigurationOptions{
+		"eng", 
+		path.Join(currentUser.HomeDir, ".ldss"), 
+		"https://tech.lds.org/glweb"
+	}
 }
 
 func loadParameterOptions(op *ConfigurationOptions) []string {
@@ -57,8 +57,8 @@ func loadFileOptions(op *ConfigurationOptions) {
 func LoadConfiguration(op *ConfigurationOptions) Config {
 	c := Config{}
 
-	c.OnlineContent = NewLDSContent(op.ServerURL, 17)
-	c.OfflineContent = NewLocalContent(op.DataDirectory)
+	c.OnlineContent = connection.NewLDSContent(op.ServerURL)
+	c.OfflineContent = connection.NewLocalContent(op.DataDirectory)
 	
 	cache := NewCacheConnection()
 	cache.Open(c.OfflineContent.GetCachePath())

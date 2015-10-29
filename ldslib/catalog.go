@@ -1,10 +1,8 @@
-package main
+package ldslib
 
-import (
-	"encoding/json"
-)
+import "encoding/json"
 
-type CatalogLoader struct {
+type CatalogParser struct {
 	content      Content
 	foldersById  map[int]*Folder
 	booksById    map[int]*Book
