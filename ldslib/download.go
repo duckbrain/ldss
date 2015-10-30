@@ -4,53 +4,46 @@ import (
 	"compress/zlib"
 	"fmt"
 	"io"
-	"net/http"
-	"os"
 )
 
 type Downloader struct {
-	online  *LDSContent
-	offline *LocalContent
+	online  Source
+	offline Source
 }
 
-func NewDownloader(online *LDSContent, offline *LocalContent) *Downloader {
+func NewDownloader(online Source, offline Source) *Downloader {
 	d := new(Downloader)
 	d.online = online
 	d.offline = offline
 	return d
 }
 
-func (d *Downloader) DownloadStatus() {
+func (d *Downloader) Status() {
 
 }
 
-func (d *Downloader) IsLanguagesDownloaded() bool {
-	_, err := os.Stat("~/.ldss/languages.json")
-	return os.IsNotExist(err)
-}
-
-func (d *Downloader) DownloadMissing() {
+func (d *Downloader) Missing() {
 }
 
 func (d *Downloader) downloadFile(get string, save string, zlibDecompress bool) {
 	var input io.Reader
 
-	resp, err := http.Get(get)
+	body, err := d.online.Open(get)
 	if err != nil {
 		panic(err)
 	}
-	defer resp.Body.Close()
+	defer body.Close()
 
 	if zlibDecompress {
-		input, err = zlib.NewReader(resp.Body)
+		input, err = zlib.NewReader(body)
 		if err != nil {
 			panic(err)
 		}
 	} else {
-		input = resp.Body
+		input = body
 	}
 
-	file, err := os.Create(save)
+	file, err := d.offline.Create(save)
 	if err != nil {
 		panic(err)
 	}
@@ -58,25 +51,21 @@ func (d *Downloader) downloadFile(get string, save string, zlibDecompress bool) 
 	io.Copy(file, input)
 }
 
-func (d *Downloader) DownloadLanguages() {
+func (d *Downloader) Languages() {
 	fmt.Println("Downloading language list")
-	//d.downloadFile(d.online.GetLanguagesPath(), d.offline.GetLanguagesPath(), false)
-	loader := NewJSONLanguageLoader(d.online)
-	languages := loader.GetAll()
-	cache := NewCacheConnection()
-	cache.Open(d.offline.GetCachePath())
-	cache.SaveLanguages(languages)
+	d.downloadFile(d.online.LanguagesPath(), d.offline.LanguagesPath(), false)
 }
 
-func (d *Downloader) DownloadCatalog(language *Language) {
+func (d *Downloader) Catalog(language *Language) {
 	fmt.Println("Downloading \"" + language.Name + "\" catalog")
-	d.downloadFile(d.online.GetCatalogPath(language), d.offline.GetCatalogPath(language), false)
+	d.downloadFile(d.online.CatalogPath(language), d.offline.CatalogPath(language), false)
 }
 
-func (d *Downloader) DownloadBook(book *Book) {
+func (d *Downloader) Book(book *Book) {
 	fmt.Println("Downloading \"" + book.Name + "\"")
-	d.downloadFile(d.online.GetBookPath(book), d.offline.GetBookPath(book), true)
+	d.downloadFile(d.online.BookPath(book), d.offline.BookPath(book), true)
 }
 
-func (d *Downloader) DownloadAllBooks(languageId int) {
+func (d *Downloader) Books(languageId int) {
+	fmt.Println("Not implemented")
 }

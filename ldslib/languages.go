@@ -1,25 +1,6 @@
 package ldslib
 
-import (
-	"encoding/json"
-	"fmt"
-)
-
-type JSONLanguageLoader struct {
-	content   Content
-	languages []Language
-}
-
-type LanguageLoader interface {
-	GetByUnknown(id string) *Language
-	GetAll() []Language
-}
-
-func NewJSONLanguageLoader(c Content) *JSONLanguageLoader {
-	l := new(JSONLanguageLoader)
-	l.content = c
-	return l
-}
+import "fmt"
 
 type glLanguageDescription struct {
 	Languages []Language `json:"languages"`
@@ -50,35 +31,4 @@ func (l *Language) String() string {
 	}
 
 	return id + name + code
-}
-
-func (l *JSONLanguageLoader) populateIfNeeded() {
-	if l.languages != nil {
-		return
-	}
-
-	var description glLanguageDescription
-	file := l.content.OpenRead(l.content.GetLanguagesPath())
-	dec := json.NewDecoder(file)
-	err := dec.Decode(&description)
-	if err != nil {
-		panic(err)
-	}
-
-	l.languages = description.Languages
-}
-
-func (l *JSONLanguageLoader) GetByUnknown(id string) *Language {
-	l.populateIfNeeded()
-	for _, lang := range l.languages {
-		if lang.Name == id || fmt.Sprintf("%v", lang.ID) == id || lang.EnglishName == id || lang.Code == id || lang.GlCode == id {
-			return &lang
-		}
-	}
-	return nil
-}
-
-func (l *JSONLanguageLoader) GetAll() []Language {
-	l.populateIfNeeded()
-	return l.languages
 }

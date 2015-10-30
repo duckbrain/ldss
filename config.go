@@ -1,75 +1,115 @@
 package main
 
 import (
+	"fmt"
+	"strconv"
 	"encoding/json"
+	"ldslib"
 	"os"
 	"os/user"
 	"path"
-	"connection"
 )
 
 type Config struct {
-	OnlineContent    *LDSContent
-	OfflineContent   *LocalContent
-	Connection       Connection
-	Download         *Downloader
-	SelectedLanguage *Language
+	op               ConfigurationOptions
+	OnlineContent    ldslib.Source
+	OfflineContent   ldslib.Source
+	Library          *ldslib.Library
+	Reference        ldslib.RefParser
+	Download         *ldslib.Downloader
 }
 
 type ConfigurationOptions struct {
 	Language      string
 	DataDirectory string
 	ServerURL     string
+	WebPort       int
 }
 
-func loadDefaultOptions() *ConfigurationOptions {
+func loadDefaultOptions() ConfigurationOptions {
 	currentUser, err := user.Current()
 
 	if err != nil {
 		panic(err)
 	}
 
-	return &ConfigurationOptions{
-		"eng", 
-		path.Join(currentUser.HomeDir, ".ldss"), 
-		"https://tech.lds.org/glweb"
-	}
+	op := ConfigurationOptions{}
+	op.Language = "eng"
+	op.DataDirectory = path.Join(currentUser.HomeDir, ".ldss")
+	op.ServerURL = "https://tech.lds.org/glweb"
+	op.WebPort = 1830
+	
+	return op
 }
 
-func loadParameterOptions(op *ConfigurationOptions) []string {
+func loadParameterOptions(op ConfigurationOptions) (ConfigurationOptions, []string) {
 	args := os.Args[1:]
-	return args
+	var err error
+	for i := 0; i < len(args); {
+		switch args[i] {
+		case "-p":
+			op.WebPort, err = strconv.Atoi(args[i+1])
+			if err != nil {
+				panic(fmt.Errorf("Could not convert port \"%v\" to an integer", args[i+1]))
+			}
+			args = args[:i+copy(args[i:], args[i+2:])]
+		case "-l":
+			op.Language = args[i+1]
+			args = args[:i+copy(args[i:], args[i+2:])]
+		default:
+			i++
+		}
+	}
+	return op, args
 }
 
-func loadFileOptions(op *ConfigurationOptions) {
+func loadFileOptions(op ConfigurationOptions) ConfigurationOptions {
 	file, err := os.Open(path.Join(op.DataDirectory, "config.json"))
 	if err != nil {
 		// File does not exits, continue
-		return
+		return op
 	}
 	dec := json.NewDecoder(file)
 	err = dec.Decode(op)
 	if err != nil {
 		panic(err)
 	}
+	return op
 }
 
-func LoadConfiguration(op *ConfigurationOptions) Config {
-	c := Config{}
-
-	c.OnlineContent = connection.NewLDSContent(op.ServerURL)
-	c.OfflineContent = connection.NewLocalContent(op.DataDirectory)
-	
-	cache := NewCacheConnection()
-	cache.Open(c.OfflineContent.GetCachePath())
-
-	c.Languages = cache
-
-	c.Download = new(Downloader)
-	c.Download.online = c.OnlineContent
-	c.Download.offline = c.OfflineContent
-
-	c.SelectedLanguage = c.Languages.GetByUnknown(op.Language)
-
+func LoadConfiguration(op ConfigurationOptions) Config {
+	c := Config{op:op}
+	c.OnlineContent = ldslib.NewOnlineSource(op.ServerURL)
+	c.OfflineContent = ldslib.NewOfflineSource(op.DataDirectory)
+	c.Library = ldslib.NewLibrary(c.OfflineContent)
+	c.Download = ldslib.NewDownloader(c.OnlineContent, c.OfflineContent)
 	return c
+}
+
+func (c *Config) Languages() []ldslib.Language {
+	langs, err := c.Library.Languages()
+	if err != nil {
+		c.Download.Languages()
+		langs, err = c.Library.Languages()
+		if err != nil {
+			panic(err)
+		}
+	}
+	return langs
+}
+
+func (c *Config) Language(s string) *ldslib.Language {
+	lang, err := c.Library.Language(s)
+	if err != nil {
+		c.Download.Languages()
+		lang, err = c.Library.Language(s)
+		if err != nil {
+			panic(err)
+		}
+	}
+	return lang
+}
+
+func (c *Config) SelectedLanguage() *ldslib.Language {
+	return c.Language(c.op.Language)
 }

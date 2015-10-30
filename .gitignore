@@ -4,6 +4,7 @@
 *.so
 
 ldss
+bindata.go
 
 # Folders
 _obj

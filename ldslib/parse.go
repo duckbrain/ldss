@@ -5,8 +5,8 @@ import (
 	"strings"
 )
 
-type Parser struct {
-	r ReaderConnection
+type RefParser struct {
+	//r ReaderConnection
 }
 
 type Reference struct {
@@ -22,12 +22,12 @@ func (ref Reference) String() string {
 	return string(ref.bookName) + " " + string(ref.chapter) + ":" + string(ref.verseSelected)
 }
 
-func (p Parser) ParsePath(path string) *Reference {
+func (p RefParser) ParsePath(path string) *Reference {
 	panic("Not Implemented")
 }
 
-func LookupPath(path string) {
-	ref := ParsePath(path)
+func (p RefParser) LookupPath(path string) {
+	ref := p.ParsePath(path)
 	fmt.Println(ref.String())
 }
 
@@ -52,12 +52,12 @@ func ParseForBook(id string) string {
 	}
 }
 
-func ParseForNode(id string, c Connection)  {
+func ParseForNode(id string, c Library) string {
 	if strings.HasPrefix(id, "/") {
 		return id
 	}
 	id = strings.ToLower(id)
-	
+
 	//parts := strings.Split(id, " ")
 	return id
 }

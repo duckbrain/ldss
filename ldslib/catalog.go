@@ -2,8 +2,8 @@ package ldslib
 
 import "encoding/json"
 
-type CatalogParser struct {
-	content      Content
+type catalogParser struct {
+	source       Source
 	foldersById  map[int]*Folder
 	booksById    map[int]*Book
 	booksByGlURI map[string]*Book
@@ -11,10 +11,10 @@ type CatalogParser struct {
 	language     *Language
 }
 
-func NewCatalogLoader(lang *Language, content Content) *CatalogLoader {
-	c := new(CatalogLoader)
+func newCatalogLoader(lang *Language, content Source) *catalogParser {
+	c := new(catalogParser)
 	c.language = lang
-	c.content = content
+	c.source = content
 	return c
 }
 
@@ -24,15 +24,18 @@ type glCatalogDescrpition struct {
 	CoverArtBaseUrl string   `json:"cover_art_base_url"`
 }
 
-func (l *CatalogLoader) populateIfNeeded() {
+func (l *catalogParser) populateIfNeeded() {
 	if l.catalog != nil {
 		return
 	}
 
 	var description glCatalogDescrpition
-	file := l.content.OpenRead(l.content.GetCatalogPath(l.language))
+	file, err := l.source.Open(l.source.CatalogPath(l.language))
+	if err != nil {
+		panic(err)
+	}
 	dec := json.NewDecoder(file)
-	err := dec.Decode(&description)
+	err = dec.Decode(&description)
 	if err != nil {
 		panic(err)
 	}
@@ -46,7 +49,7 @@ func (l *CatalogLoader) populateIfNeeded() {
 	l.addBooks(description.Catalog.Books)
 }
 
-func (l *CatalogLoader) addFolders(folders []*Folder) {
+func (l *catalogParser) addFolders(folders []*Folder) {
 	for _, f := range folders {
 		l.foldersById[f.ID] = f
 		l.addFolders(f.Folders)
@@ -54,7 +57,7 @@ func (l *CatalogLoader) addFolders(folders []*Folder) {
 	}
 }
 
-func (l *CatalogLoader) addBooks(books []*Book) {
+func (l *catalogParser) addBooks(books []*Book) {
 	for _, b := range books {
 		l.booksById[b.ID] = b
 		l.booksByGlURI[b.GlURI] = b
@@ -62,27 +65,27 @@ func (l *CatalogLoader) addBooks(books []*Book) {
 	}
 }
 
-func (l *CatalogLoader) GetCatalog() *Catalog {
+func (l *catalogParser) GetCatalog() *Catalog {
 	l.populateIfNeeded()
 	return l.catalog
 }
 
-func (l *CatalogLoader) GetFolderById(id int) *Folder {
+func (l *catalogParser) GetFolderById(id int) *Folder {
 	l.populateIfNeeded()
 	return l.foldersById[id]
 }
 
-func (l *CatalogLoader) GetBookById(id int) *Book {
+func (l *catalogParser) GetBookById(id int) *Book {
 	l.populateIfNeeded()
 	return l.booksById[id]
 }
 
-func (l *CatalogLoader) GetBookByGlURI(glUri string) *Book {
+func (l *catalogParser) GetBookByGlURI(glUri string) *Book {
 	l.populateIfNeeded()
 	return l.booksByGlURI[glUri]
 }
 
-func (l *CatalogLoader) GetBookByUnknown(id string) *Book {
+func (l *catalogParser) GetBookByUnknown(id string) *Book {
 	gl := ParseForBook(id)
 
 	if gl != "" {
