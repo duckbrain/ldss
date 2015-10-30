@@ -3,8 +3,11 @@ package main
 import (
 	"fmt"
 	"os"
-	//"github.com/wsxiaoys/terminal/color"
+	"log"
+	"github.com/fatih/color"
 )
+
+var _ color.Color
 
 func main() {
 	/*defer func() {
@@ -21,6 +24,7 @@ func main() {
 	op = loadFileOptions(op)
 	op, args := loadParameterOptions(op)
 	config := LoadConfiguration(op)
+	efmt := log.New(os.Stderr, "", 0)
 
 	if len(args) == 0 {
 		PrintInstructions()
@@ -48,12 +52,7 @@ func main() {
 					fmt.Println(l.String())
 				}
 			} else {
-				lang, err := config.Library.Language(args[1])
-				if err == os.ErrNotExist {
-					fmt.Printf("Languages have not been downloaded. Please run ldss dl lang to download.")
-					return
-				}
-				fmt.Println(lang.String())
+				fmt.Println(config.Language(args[1]).String())
 			}
 		case "catalog", "cat":
 			catalog := config.Library.Catalog(config.SelectedLanguage())
@@ -70,6 +69,11 @@ func main() {
 				fmt.Println(catalog.String())
 			}
 		case "download", "dl":
+			if len(args) == 1 {
+				efmt.Println("Must provide argment of what to download")
+				efmt.Println("usage: ldss download|dl lang|<lang>|<book>")
+				return
+			}
 			switch args[1] {
 			case "languages", "lang":
 				config.Download.Languages()
