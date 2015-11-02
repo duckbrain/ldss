@@ -101,6 +101,7 @@ func (c *Config) Languages() []ldslib.Language {
 func (c *Config) Language(s string) *ldslib.Language {
 	lang, err := c.Library.Language(s)
 	if err != nil {
+		//TODO: Output stderr
 		c.Download.Languages()
 		lang, err = c.Library.Language(s)
 		if err != nil {
@@ -112,4 +113,20 @@ func (c *Config) Language(s string) *ldslib.Language {
 
 func (c *Config) SelectedLanguage() *ldslib.Language {
 	return c.Language(c.op.Language)
+}
+
+func (c *Config) Catalog(lang *ldslib.Language) *ldslib.Catalog {
+	catalog, err := c.Library.Catalog(lang)
+	if err != nil {
+		c.Download.Catalog(lang)
+		catalog, err = c.Library.Catalog(lang)
+		if err != nil {
+			panic(err)
+		}
+	}
+	return catalog
+}
+
+func (c *Config) SelectedCatalog() *ldslib.Catalog {
+	return c.Catalog(c.SelectedLanguage())
 }

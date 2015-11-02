@@ -2,7 +2,7 @@ package ldslib
 
 import (
 	"compress/zlib"
-	"fmt"
+	"errors"
 	"io"
 )
 
@@ -25,19 +25,19 @@ func (d *Downloader) Status() {
 func (d *Downloader) Missing() {
 }
 
-func (d *Downloader) downloadFile(get string, save string, zlibDecompress bool) {
+func (d *Downloader) downloadFile(get string, save string, zlibDecompress bool) (err error) {
 	var input io.Reader
 
 	body, err := d.online.Open(get)
 	if err != nil {
-		panic(err)
+		return
 	}
 	defer body.Close()
 
 	if zlibDecompress {
 		input, err = zlib.NewReader(body)
 		if err != nil {
-			panic(err)
+			return
 		}
 	} else {
 		input = body
@@ -45,27 +45,25 @@ func (d *Downloader) downloadFile(get string, save string, zlibDecompress bool) 
 
 	file, err := d.offline.Create(save)
 	if err != nil {
-		panic(err)
+		return
 	}
 	defer file.Close()
-	io.Copy(file, input)
+	_, err = io.Copy(file, input)
+	return
 }
 
-func (d *Downloader) Languages() {
-	fmt.Println("Downloading language list")
-	d.downloadFile(d.online.LanguagesPath(), d.offline.LanguagesPath(), false)
+func (d *Downloader) Languages() error {
+	return d.downloadFile(d.online.LanguagesPath(), d.offline.LanguagesPath(), false)
 }
 
-func (d *Downloader) Catalog(language *Language) {
-	fmt.Println("Downloading \"" + language.Name + "\" catalog")
-	d.downloadFile(d.online.CatalogPath(language), d.offline.CatalogPath(language), false)
+func (d *Downloader) Catalog(language *Language) error {
+	return d.downloadFile(d.online.CatalogPath(language), d.offline.CatalogPath(language), false)
 }
 
-func (d *Downloader) Book(book *Book) {
-	fmt.Println("Downloading \"" + book.Name + "\"")
-	d.downloadFile(d.online.BookPath(book), d.offline.BookPath(book), true)
+func (d *Downloader) Book(book *Book) error {
+	return d.downloadFile(d.online.BookPath(book), d.offline.BookPath(book), true)
 }
 
-func (d *Downloader) Books(languageId int) {
-	fmt.Println("Not implemented")
+func (d *Downloader) Books(languageId int) error {
+	return errors.New("Not Implemented")
 }

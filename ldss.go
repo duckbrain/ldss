@@ -55,7 +55,7 @@ func main() {
 				fmt.Println(config.Language(args[1]).String())
 			}
 		case "catalog", "cat":
-			catalog := config.Library.Catalog(config.SelectedLanguage())
+			catalog := config.SelectedCatalog()
 
 			if len(args) == 1 {
 				langs, err := config.Library.Languages()
@@ -76,23 +76,24 @@ func main() {
 			}
 			switch args[1] {
 			case "languages", "lang":
+				efmt.Println("Downloading language list")
 				config.Download.Languages()
 			case "all":
-				panic("Not implemented")
+				lang := config.SelectedLanguage()
+				efmt.Println("Downloading all content for \"" + lang.Name + "\" catalog")
+				config.Download.Missing()
+			case "cat", "catalog":
+				lang := config.SelectedLanguage()
+				efmt.Println("Downloading \"" + lang.Name + "\" language catalog")
+				config.Download.Catalog(lang)
 			default:
-				language := config.Language(args[1])
-
-				if language != nil {
-					config.Download.Catalog(language)
-				} else {
-					catalog := config.Library.Catalog(language)
-					book := config.Library.Book(args[1], catalog)
-					if book != nil {
-						config.Download.Book(book)
-					} else {
-						panic("Unknown download \"" + args[1] + "\"")
-					}
+				catalog := config.SelectedCatalog()
+				book, err := config.Library.Book(args[1], catalog)
+				if err != nil {
+					panic("Unknown download \"" + args[1] + "\"")
 				}
+				efmt.Printf("Downloading book \"%v\" for the \"%v\" catalog\n", book.Name, catalog.Name)
+				config.Download.Book(book)
 			}
 		default:
 			fmt.Printf("Unknown command \"%s\"\n", args[0])

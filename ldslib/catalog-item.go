@@ -13,9 +13,10 @@ type CatalogItem interface {
  */
 
 type Catalog struct {
-	Name    string    `json:"name"`
-	Folders []*Folder `json:"folders"`
-	Books   []*Book   `json:"books"`
+	Name     string    `json:"name"`
+	Folders  []*Folder `json:"folders"`
+	Books    []*Book   `json:"books"`
+	Language *Language
 }
 
 func (c *Catalog) String() string {
@@ -31,10 +32,12 @@ func (c *Catalog) String() string {
  */
 
 type Folder struct {
-	ID      int       `json:"id"`
-	Name    string    `json:"name"`
-	Folders []*Folder `json:"folders"`
-	Books   []*Book   `json:"books"`
+	ID       int       `json:"id"`
+	Name     string    `json:"name"`
+	Folders  []*Folder `json:"folders"`
+	Books    []*Book   `json:"books"`
+	Language *Language
+	Catalog  *Catalog
 }
 
 func (f *Folder) String() string {
@@ -55,6 +58,7 @@ type Book struct {
 	URL      string `json:"url"`
 	GlURI    string `json:"gl_uri"`
 	Language *Language
+	Catalog  *Catalog
 }
 
 func (b *Book) String() string {
@@ -74,6 +78,7 @@ type Node struct {
 	Name     string
 	GlURI    string
 	Language *Language
+	Book     *Book
 }
 
 func (n *Node) GetName() string {
