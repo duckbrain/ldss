@@ -1,16 +1,22 @@
 package ldslib
 
 import (
-	"strings"
 	"encoding/json"
 	"errors"
 	"fmt"
+	"strings"
 )
 
 type Library struct {
 	source               Source
 	languages            []Language
 	catalogsByLanguageId map[int]*catalogParser
+	booksByLangBookId    map[langBookID]*bookParser
+}
+
+type langBookID struct {
+	langID int
+	bookID int
 }
 
 func NewLibrary(source Source) *Library {
@@ -40,6 +46,25 @@ func (l *Library) populateLanguages() error {
 	return nil
 }
 
+func (l *Library) populateCatalog(lang *Language) *catalogParser {
+	c, ok := l.catalogsByLanguageId[lang.ID]
+	if !ok {
+		c = newCatalogLoader(lang, l.source)
+		l.catalogsByLanguageId[lang.ID] = c
+	}
+	return c
+}
+
+func (l *Library) populateBook(book *Book) *bookParser {
+	id := langBookID{book.Language.ID, book.ID}
+	b, ok := l.booksByLangBookId[id]
+	if !ok {
+		b = newBookParser(book, l.source)
+		l.booksByLangBookId[id] = b
+	}
+	return b
+}
+
 func (l *Library) Language(id string) (*Language, error) {
 	if err := l.populateLanguages(); err != nil {
 		return nil, err
@@ -53,42 +78,27 @@ func (l *Library) Language(id string) (*Language, error) {
 }
 
 func (l *Library) Languages() ([]Language, error) {
-	if err := l.populateLanguages(); err != nil {
-		return nil, err
-	}
-	return l.languages, nil
+	return l.languages, l.populateLanguages()
 }
 
 func (l *Library) Catalog(lang *Language) (*Catalog, error) {
-	c, ok := l.catalogsByLanguageId[lang.ID]
-	if !ok {
-		c = newCatalogLoader(lang, l.source)
-		l.catalogsByLanguageId[lang.ID] = c
-	}
-	return c.Catalog()
+	return l.populateCatalog(lang).Catalog()
 }
 func (l *Library) Book(path string, catalog *Catalog) (*Book, error) {
-	c, ok := l.catalogsByLanguageId[catalog.Language.ID]
-	if !ok {
-		return nil, errors.New("Catalog not found in cache")
-	}
-	return c.BookByUnknown(path)
+	return l.populateCatalog(catalog.Language).BookByUnknown(path)
 }
 
-func (l *Library) Lookup(path string, catalog *Catalog) (CatalogItem, error) {
-	c, ok := l.catalogsByLanguageId[catalog.Language.ID]
-	if !ok {
-		return nil, errors.New("Catalog not found in cache")
-	}
+func (l *Library) lookupGlURI(path string, catalog *Catalog) (CatalogItem, error) {
+	c := l.populateCatalog(catalog.Language)
 	if path == "/" {
-		return c.Catalog();
+		return c.Catalog()
 	}
 	sections := strings.Split(path, "/")
 	if sections[0] != "" {
 		return nil, fmt.Errorf("Invalid path \"%v\", must start with '/'", path)
 	}
 	for i := 1; i < len(sections); i++ {
-		temppath := strings.Join(sections[0:i])
+		temppath := strings.Join(sections[0:i], "/")
 		book, err := c.BookByGlURI(temppath)
 		if err == nil {
 			if path == book.GlURI {
@@ -100,6 +110,61 @@ func (l *Library) Lookup(path string, catalog *Catalog) (CatalogItem, error) {
 	return nil, fmt.Errorf("Path \"%v\" not found", path)
 }
 
+func (l *Library) Lookup(id string, catalog *Catalog) (CatalogItem, error) {
+	if id[0] == '/' {
+		return l.lookupGlURI(id, catalog)
+	}
+	//c := l.populateCatalog(catalog.Language)
+	return nil, errors.New("Not implemented!")
+}
+
+func (l *Library) Children(item CatalogItem) ([]CatalogItem, error) {
+	switch item.(type) {
+	case *Catalog:
+		c := item.(*Catalog)
+		items := make([]CatalogItem, 0)
+		for _, f := range c.Folders {
+			items = append(items, f)
+		}
+		for _, f := range c.Books {
+			items = append(items, f)
+		}
+		return items, nil
+	case *Folder:
+		f := item.(*Folder)
+		items := make([]CatalogItem, 0)
+		for _, f := range f.Folders {
+			items = append(items, f)
+		}
+		for _, f := range f.Books {
+			items = append(items, f)
+		}
+		return items, nil
+	case *Book:
+		items := make([]CatalogItem, 0)
+		nodes, err := l.populateBook(item.(*Book)).Index()
+		if err != nil {
+			return nil, err
+		}
+		for _, n := range nodes {
+			items = append(items, n)
+		}
+		return items, nil
+	case *Node:
+		n := item.(Node)
+		items := make([]CatalogItem, 0)
+		nodes, err := l.populateBook(n.Book).Children(n)
+		if err != nil {
+			return nil, err
+		}
+		for _, n := range nodes {
+			items = append(items, n)
+		}
+		return items, nil
+	default:
+		return nil, errors.New("Unknown type")
+	}
+}
+
 //	Index(lang *Language) []CatalogItem
 //	Children(item CatalogItem) []CatalogItem
-//	Lookup(path string) CatalogItem

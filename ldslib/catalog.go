@@ -1,9 +1,9 @@
 package ldslib
 
 import (
-	"fmt"
 	"encoding/json"
 	"errors"
+	"fmt"
 )
 
 var ErrNotFound error
@@ -21,10 +21,10 @@ type catalogParser struct {
 	language     *Language
 }
 
-func newCatalogLoader(lang *Language, content Source) *catalogParser {
+func newCatalogLoader(lang *Language, source Source) *catalogParser {
 	c := new(catalogParser)
 	c.language = lang
-	c.source = content
+	c.source = source
 	return c
 }
 

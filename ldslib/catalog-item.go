@@ -3,8 +3,8 @@ package ldslib
 import "fmt"
 
 type CatalogItem interface {
-	Name() string
-	Children() []CatalogItem
+	DisplayName() string
+	//Children() []CatalogItem
 	String() string
 }
 
@@ -19,12 +19,12 @@ type Catalog struct {
 	Language *Language
 }
 
-func (c *Catalog) String() string {
-	if c == nil {
-		return "Catalog: nil"
-	} else {
-		return fmt.Sprintf("Catalog: %v {folders[%v] books[%v]}", c.Name, len(c.Folders), len(c.Books))
-	}
+func (c Catalog) DisplayName() string {
+	return c.Name
+}
+
+func (c Catalog) String() string {
+	return fmt.Sprintf("Catalog: %v {folders[%v] books[%v]}", c.Name, len(c.Folders), len(c.Books))
 }
 
 /*
@@ -40,11 +40,11 @@ type Folder struct {
 	Catalog  *Catalog
 }
 
-func (f *Folder) String() string {
+func (f Folder) String() string {
 	return fmt.Sprintf("Folder: %v {folders[%v] books[%v]}", f.Name, len(f.Folders), len(f.Books))
 }
 
-func (f *Folder) GetName() string {
+func (f Folder) DisplayName() string {
 	return f.Name
 }
 
@@ -61,11 +61,11 @@ type Book struct {
 	Catalog  *Catalog
 }
 
-func (b *Book) String() string {
+func (b Book) String() string {
 	return fmt.Sprintf("Book: %v {%v}", b.Name, b.GlURI)
 }
 
-func (b *Book) GetName() string {
+func (b Book) DisplayName() string {
 	return b.Name
 }
 
@@ -81,10 +81,10 @@ type Node struct {
 	Book     *Book
 }
 
-func (n *Node) GetName() string {
+func (n Node) DisplayName() string {
 	return n.Name
 }
 
-func (n *Node) String() string {
+func (n Node) String() string {
 	return n.Name
 }
