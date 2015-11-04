@@ -2,9 +2,10 @@ package main
 
 import (
 	"fmt"
-	"os"
-	"log"
 	"github.com/fatih/color"
+	"log"
+	"os"
+	"strings"
 )
 
 var _ color.Color
@@ -44,8 +45,11 @@ func main() {
 			fmt.Printf("DataDirectory: %v\n", op.DataDirectory)
 			fmt.Printf("WebPort:       %v\n", op.WebPort)
 		case "lookup":
-			//l := NewLookupLoader(config.SelectedLanguage(), config.OfflineContent)
-			//LookupPath(args[1])
+			item, err := config.Library.Lookup(strings.Join(args[1:], " "), config.SelectedCatalog())
+			if err != nil {
+				panic(err)
+			}
+			fmt.Println(item)
 		case "languages":
 			if len(args) == 1 {
 				for _, l := range config.Languages() {

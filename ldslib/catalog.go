@@ -73,11 +73,9 @@ func (l *catalogParser) addFolders(folders []*Folder) {
 
 func (l *catalogParser) addBooks(books []*Book) {
 	for _, b := range books {
-		b.Language = l.language
 		b.Catalog = l.catalog
 		l.booksById[b.ID] = b
 		l.booksByGlURI[b.GlURI] = b
-		b.Language = l.language
 	}
 }
 

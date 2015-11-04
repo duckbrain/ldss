@@ -23,6 +23,7 @@ func NewLibrary(source Source) *Library {
 	p := &Library{}
 	p.source = source
 	p.catalogsByLanguageId = make(map[int]*catalogParser)
+	p.booksByLangBookId = make(map[langBookID]*bookParser)
 	return p
 }
 
@@ -56,7 +57,7 @@ func (l *Library) populateCatalog(lang *Language) *catalogParser {
 }
 
 func (l *Library) populateBook(book *Book) *bookParser {
-	id := langBookID{book.Language.ID, book.ID}
+	id := langBookID{book.Catalog.Language.ID, book.ID}
 	b, ok := l.booksByLangBookId[id]
 	if !ok {
 		b = newBookParser(book, l.source)
@@ -97,14 +98,17 @@ func (l *Library) lookupGlURI(path string, catalog *Catalog) (CatalogItem, error
 	if sections[0] != "" {
 		return nil, fmt.Errorf("Invalid path \"%v\", must start with '/'", path)
 	}
-	for i := 1; i < len(sections); i++ {
+	for i := 1; i <= len(sections); i++ {
 		temppath := strings.Join(sections[0:i], "/")
+		fmt.Printf("Looking for temppath: %v\n", temppath)
 		book, err := c.BookByGlURI(temppath)
 		if err == nil {
 			if path == book.GlURI {
 				return book, nil
 			}
-			//TODO: Lookup Node
+			// Look for a node
+			b := l.populateBook(book)
+			return b.GlUri(path)
 		}
 	}
 	return nil, fmt.Errorf("Path \"%v\" not found", path)
@@ -114,8 +118,9 @@ func (l *Library) Lookup(id string, catalog *Catalog) (CatalogItem, error) {
 	if id[0] == '/' {
 		return l.lookupGlURI(id, catalog)
 	}
-	//c := l.populateCatalog(catalog.Language)
-	return nil, errors.New("Not implemented!")
+	p := NewRefParser(l, catalog)
+	p.Load(id)
+	return p.Item()
 }
 
 func (l *Library) Children(item CatalogItem) ([]CatalogItem, error) {

@@ -1,22 +1,22 @@
 package main
 
 import (
-	"fmt"
-	"strconv"
 	"encoding/json"
+	"fmt"
 	"ldslib"
 	"os"
 	"os/user"
 	"path"
+	"strconv"
 )
 
 type Config struct {
-	op               ConfigurationOptions
-	OnlineContent    ldslib.Source
-	OfflineContent   ldslib.Source
-	Library          *ldslib.Library
-	Reference        ldslib.RefParser
-	Download         *ldslib.Downloader
+	op             ConfigurationOptions
+	OnlineContent  ldslib.Source
+	OfflineContent ldslib.Source
+	Library        *ldslib.Library
+	Reference      ldslib.RefParser
+	Download       *ldslib.Downloader
 }
 
 type ConfigurationOptions struct {
@@ -38,7 +38,7 @@ func loadDefaultOptions() ConfigurationOptions {
 	op.DataDirectory = path.Join(currentUser.HomeDir, ".ldss")
 	op.ServerURL = "https://tech.lds.org/glweb"
 	op.WebPort = 1830
-	
+
 	return op
 }
 
@@ -78,7 +78,7 @@ func loadFileOptions(op ConfigurationOptions) ConfigurationOptions {
 }
 
 func LoadConfiguration(op ConfigurationOptions) Config {
-	c := Config{op:op}
+	c := Config{op: op}
 	c.OnlineContent = ldslib.NewOnlineSource(op.ServerURL)
 	c.OfflineContent = ldslib.NewOfflineSource(op.DataDirectory)
 	c.Library = ldslib.NewLibrary(c.OfflineContent)

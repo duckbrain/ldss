@@ -57,7 +57,6 @@ type Book struct {
 	Name     string `json:"name"`
 	URL      string `json:"url"`
 	GlURI    string `json:"gl_uri"`
-	Language *Language
 	Catalog  *Catalog
 }
 
@@ -77,7 +76,6 @@ type Node struct {
 	ID       int
 	Name     string
 	GlURI    string
-	Language *Language
 	Book     *Book
 }
 
