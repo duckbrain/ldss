@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"ldslib"
 	"github.com/fatih/color"
 	"log"
 	"os"
@@ -49,7 +50,12 @@ func main() {
 			if err != nil {
 				panic(err)
 			}
-			fmt.Println(item)
+			switch item.(type) {
+				case ldslib.Node:
+					fmt.Println(config.Library.Content(item.(ldslib.Node)))
+				default:
+					fmt.Println(item)
+			}
 		case "languages":
 			if len(args) == 1 {
 				for _, l := range config.Languages() {

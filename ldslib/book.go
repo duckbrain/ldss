@@ -9,7 +9,7 @@ type bookParser struct {
 	source Source
 	book   *Book
 	db     *sql.DB
-	stmtChildren, stmtUri *sql.Stmt
+	stmtChildren, stmtUri, stmtContent *sql.Stmt
 }
 
 type nodeInfo struct {
@@ -21,13 +21,10 @@ type nodeInfo struct {
 	content string
 }
 
-const sqlQueryNode = "SELECT id, doc_version, parent_id, title, uri, content FROM node "
+//const sqlQueryNode = "SELECT id, doc_version, parent_id, title, uri, content FROM node "
 
 func newBookParser(book *Book, source Source) *bookParser {
-	l := bookParser{}
-	l.source = source
-	l.book = book
-	return &l
+	return &bookParser{ source: source, book: book }
 }
 
 func (l *bookParser) populate() error {
@@ -39,6 +36,7 @@ func (l *bookParser) populate() error {
 		l.db = db
 		l.stmtChildren, err = db.Prepare("SELECT id, title, uri FROM node WHERE parent_id = ?")
 		l.stmtUri, err = db.Prepare("SELECT id, title, uri FROM node WHERE uri = ?")
+		l.stmtContent, err = db.Prepare("SELECT content FROM node WHERE id = ?")
 		if err != nil {
 			return err
 		}
@@ -64,29 +62,29 @@ func (l *bookParser) Children(node Node) ([]Node, error) {
 	}
 	nodes := make([]Node, 0)
 	for rows.Next() {
-		node := Node{}
+		node := Node{ Book: l.book }
 		if err := rows.Scan(&node.ID, &node.Name, &node.GlURI); err != nil {
 			return nil, err
 		}
-		node.Book = l.book
 		nodes = append(nodes, node)
 	}
 	return nodes, nil
 }
 
 func (l *bookParser) GlUri(uri string) (Node, error) {
+	node := Node{ Book: l.book }
 	if err := l.populate(); err != nil {
-		return Node{}, err
+		return node, err
 	}
-	node := Node{}
 	err := l.stmtUri.QueryRow(uri).Scan(&node.ID, &node.Name, &node.GlURI)
-	node.Book = l.book
-	if err != nil {
-		return Node{}, err
-	}
-	return node, nil
+	return node, err
 }
 
 func (l *bookParser) Content(node Node) (string, error) {
-	return "", nil
+	if err := l.populate(); err != nil {
+		return "", err
+	}
+	var content string
+	err := l.stmtContent.QueryRow(node.ID).Scan(&content)
+	return content, err
 }

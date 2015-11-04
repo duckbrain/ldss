@@ -100,7 +100,6 @@ func (l *Library) lookupGlURI(path string, catalog *Catalog) (CatalogItem, error
 	}
 	for i := 1; i <= len(sections); i++ {
 		temppath := strings.Join(sections[0:i], "/")
-		fmt.Printf("Looking for temppath: %v\n", temppath)
 		book, err := c.BookByGlURI(temppath)
 		if err == nil {
 			if path == book.GlURI {
@@ -169,6 +168,10 @@ func (l *Library) Children(item CatalogItem) ([]CatalogItem, error) {
 	default:
 		return nil, errors.New("Unknown type")
 	}
+}
+
+func (l *Library) Content(node Node) (string, error) {
+	return l.populateBook(node.Book).Content(node)
 }
 
 //	Index(lang *Language) []CatalogItem
