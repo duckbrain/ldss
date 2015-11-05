@@ -86,10 +86,11 @@ func (b Book) Path() string {
  */
 
 type Node struct {
-	ID       int
-	Name     string
-	GlURI    string
-	Book     *Book
+	ID         int
+	Name       string
+	GlURI      string
+	Book      *Book
+	HasContent bool
 }
 
 func (n Node) DisplayName() string {

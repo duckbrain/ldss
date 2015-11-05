@@ -34,8 +34,8 @@ func (l *bookParser) populate() error {
 			return err
 		}
 		l.db = db
-		l.stmtChildren, err = db.Prepare("SELECT id, title, uri FROM node WHERE parent_id = ?")
-		l.stmtUri, err = db.Prepare("SELECT id, title, uri FROM node WHERE uri = ?")
+		l.stmtChildren, err = db.Prepare("SELECT id, title, uri, CASE WHEN content IS NULL THEN 0 ELSE 1 END FROM node WHERE parent_id = ?")
+		l.stmtUri, err = db.Prepare("SELECT id, title, uri, CASE WHEN content IS NULL THEN 0 ELSE 1 END FROM node WHERE uri = ?")
 		l.stmtContent, err = db.Prepare("SELECT content FROM node WHERE id = ?")
 		if err != nil {
 			return err
@@ -63,7 +63,8 @@ func (l *bookParser) Children(node Node) ([]Node, error) {
 	nodes := make([]Node, 0)
 	for rows.Next() {
 		node := Node{ Book: l.book }
-		if err := rows.Scan(&node.ID, &node.Name, &node.GlURI); err != nil {
+		err := rows.Scan(&node.ID, &node.Name, &node.GlURI, &node.HasContent)
+		if err != nil {
 			return nil, err
 		}
 		nodes = append(nodes, node)
@@ -76,7 +77,7 @@ func (l *bookParser) GlUri(uri string) (Node, error) {
 	if err := l.populate(); err != nil {
 		return node, err
 	}
-	err := l.stmtUri.QueryRow(uri).Scan(&node.ID, &node.Name, &node.GlURI)
+	err := l.stmtUri.QueryRow(uri).Scan(&node.ID, &node.Name, &node.GlURI, &node.HasContent)
 	return node, err
 }
 
