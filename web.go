@@ -38,7 +38,7 @@ func (app *web) handler(w http.ResponseWriter, r *http.Request) {
 				fmt.Fprintf(w, "Download content here")
 		}
 		case "/":
-			app.print(w, catalog)
+			app.print(w, r, catalog)
 		case "/favicon.ico":
 			w.Header().Set("Content-type", "image/x-icon")
 			data, err := Asset("data/favicon.ico")
@@ -51,12 +51,12 @@ func (app *web) handler(w http.ResponseWriter, r *http.Request) {
 			if err != nil {
 				panic(err)
 			}
-			app.print(w, item)
+			app.print(w, r, item)
 	}
 	
 }
 
-func (app *web) print(w http.ResponseWriter, item ldslib.CatalogItem) {
+func (app *web) print(w http.ResponseWriter, r *http.Request, item ldslib.CatalogItem) {
 	
 	fmt.Fprintf(w, `
 		<html>
@@ -67,12 +67,25 @@ func (app *web) print(w http.ResponseWriter, item ldslib.CatalogItem) {
 		<body>`, item)
 	fmt.Fprintf(w, "<h1>%v</h1>", item)
 	
+	linkQuery := fmt.Sprintf("?lang=%v", item.Language().GlCode)
+	
 	switch item.(type) {
 		case ldslib.Node:
 			node := item.(ldslib.Node)
-			
-			content, _ := app.config.Library.Content(node)
-			fmt.Fprintf(w, content)
+			if node.HasContent {
+				content, _ := app.config.Library.Content(node)
+				fmt.Fprintf(w, content)
+			} else {
+				children, err := app.config.Library.Children(item)
+				if err != nil {
+					panic(err)
+				}
+				fmt.Fprint(w, "<ul>")
+				for _, child := range children {
+					fmt.Fprintf(w, `<li><a href="%v%v">%v</a></li>`, child.Path(), linkQuery, child.DisplayName())
+				}
+				fmt.Fprint(w, "</ul>")
+			}
 		default:
 			children, err := app.config.Library.Children(item)
 			if err != nil {
@@ -80,7 +93,7 @@ func (app *web) print(w http.ResponseWriter, item ldslib.CatalogItem) {
 			}
 			fmt.Fprint(w, "<ul>")
 			for _, child := range children {
-				fmt.Fprintf(w, `<li><a href="%v">%v</a></li>`, child.Path(), child)
+				fmt.Fprintf(w, `<li><a href="%v%v">%v</a></li>`, child.Path(), linkQuery, child.DisplayName())
 			}
 			fmt.Fprint(w, "</ul>")
 	}

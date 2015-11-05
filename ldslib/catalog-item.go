@@ -7,6 +7,7 @@ type CatalogItem interface {
 	//Children() []CatalogItem
 	String() string
 	Path() string
+	Language() *Language
 }
 
 /*
@@ -17,7 +18,7 @@ type Catalog struct {
 	Name     string    `json:"name"`
 	Folders  []*Folder `json:"folders"`
 	Books    []*Book   `json:"books"`
-	Language *Language
+	language *Language
 }
 
 func (c Catalog) DisplayName() string {
@@ -32,6 +33,10 @@ func (c Catalog) Path() string {
 	return "/"
 }
 
+func (c Catalog) Language() *Language {
+	return c.language
+}
+
 /*
  * Folder
  */
@@ -41,7 +46,6 @@ type Folder struct {
 	Name     string    `json:"name"`
 	Folders  []*Folder `json:"folders"`
 	Books    []*Book   `json:"books"`
-	Language *Language
 	Catalog  *Catalog
 }
 
@@ -55,6 +59,10 @@ func (f Folder) DisplayName() string {
 
 func (f Folder) Path() string {
 	return fmt.Sprintf("/%v", f.ID)
+}
+
+func (f Folder) Language() *Language {
+	return f.Catalog.language
 }
 
 /*
@@ -81,6 +89,10 @@ func (b Book) Path() string {
 	return b.GlURI
 }
 
+func (b Book) Language() *Language {
+	return b.Catalog.language
+}
+
 /*
  * Node
  */
@@ -103,4 +115,8 @@ func (n Node) String() string {
 
 func (n Node) Path() string {
 	return n.GlURI
+}
+
+func (n Node) Language() *Language {
+	return n.Book.Language()
 }
