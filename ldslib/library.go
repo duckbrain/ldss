@@ -5,6 +5,7 @@ import (
 	"errors"
 	"fmt"
 	"strings"
+	"strconv"
 )
 
 type Library struct {
@@ -57,7 +58,7 @@ func (l *Library) populateCatalog(lang *Language) *catalogParser {
 }
 
 func (l *Library) populateBook(book *Book) *bookParser {
-	id := langBookID{book.Catalog.Language.ID, book.ID}
+	id := langBookID{book.Catalog.language.ID, book.ID}
 	b, ok := l.booksByLangBookId[id]
 	if !ok {
 		b = newBookParser(book, l.source)
@@ -86,13 +87,16 @@ func (l *Library) Catalog(lang *Language) (*Catalog, error) {
 	return l.populateCatalog(lang).Catalog()
 }
 func (l *Library) Book(path string, catalog *Catalog) (*Book, error) {
-	return l.populateCatalog(catalog.Language).BookByUnknown(path)
+	return l.populateCatalog(catalog.Language()).BookByUnknown(path)
 }
 
 func (l *Library) lookupGlURI(path string, catalog *Catalog) (CatalogItem, error) {
-	c := l.populateCatalog(catalog.Language)
+	c := l.populateCatalog(catalog.Language())
 	if path == "/" {
 		return c.Catalog()
+	}
+	if folderId, err := strconv.Atoi(path[1:]); err == nil {
+		return c.Folder(folderId)
 	}
 	sections := strings.Split(path, "/")
 	if sections[0] != "" {
@@ -136,33 +140,34 @@ func (l *Library) Children(item CatalogItem) ([]CatalogItem, error) {
 		return items, nil
 	case *Folder:
 		f := item.(*Folder)
-		items := make([]CatalogItem, 0)
-		for _, f := range f.Folders {
-			items = append(items, f)
+		folderLen := len(f.Folders)
+		items := make([]CatalogItem, folderLen + len(f.Books))
+		for i, f := range f.Folders {
+			items[i] = f
 		}
-		for _, f := range f.Books {
-			items = append(items, f)
+		for i, f := range f.Books {
+			items[folderLen + i] = f
 		}
 		return items, nil
 	case *Book:
-		items := make([]CatalogItem, 0)
 		nodes, err := l.populateBook(item.(*Book)).Index()
 		if err != nil {
 			return nil, err
 		}
-		for _, n := range nodes {
-			items = append(items, n)
+		items := make([]CatalogItem, len(nodes))
+		for i, n := range nodes {
+			items[i] = n
 		}
 		return items, nil
-	case *Node:
+	case Node:
 		n := item.(Node)
-		items := make([]CatalogItem, 0)
 		nodes, err := l.populateBook(n.Book).Children(n)
 		if err != nil {
 			return nil, err
 		}
-		for _, n := range nodes {
-			items = append(items, n)
+		items := make([]CatalogItem, len(nodes))
+		for i, n := range nodes {
+			items[i] = n
 		}
 		return items, nil
 	default:

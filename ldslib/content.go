@@ -1,6 +1,12 @@
 package ldslib
 
 type ContentParser struct {
-	node    *Node
-	content *string
+	node    Node
+	contentHtml *string
 }
+
+func (p *ContentParser) OriginalHTML() *string {
+	return p.contentHtml
+}
+
+
