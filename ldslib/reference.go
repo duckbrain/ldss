@@ -138,7 +138,7 @@ func (p *RefParser) parse() {
 Done:
 	p.ref = ref
 	p.s = s
-	fmt.Println(ref.glPath, " ", ref)
+	//fmt.Println(ref.glPath, " ", ref)
 }
 
 func (p *RefParser) Book() (*Book, error) {

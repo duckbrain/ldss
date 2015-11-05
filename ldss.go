@@ -52,7 +52,13 @@ func main() {
 			}
 			switch item.(type) {
 				case ldslib.Node:
-					fmt.Println(config.Library.Content(item.(ldslib.Node)))
+					node := item.(ldslib.Node)
+					if node.HasContent {
+						fmt.Println(config.Library.Content(node))
+					} else {
+						fmt.Println(node)
+					}
+					
 				default:
 					fmt.Println(item)
 			}
