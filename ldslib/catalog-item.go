@@ -6,6 +6,7 @@ type CatalogItem interface {
 	DisplayName() string
 	//Children() []CatalogItem
 	String() string
+	Path() string
 }
 
 /*
@@ -25,6 +26,10 @@ func (c Catalog) DisplayName() string {
 
 func (c Catalog) String() string {
 	return fmt.Sprintf("Catalog: %v {folders[%v] books[%v]}", c.Name, len(c.Folders), len(c.Books))
+}
+
+func (c Catalog) Path() string {
+	return "/"
 }
 
 /*
@@ -48,6 +53,10 @@ func (f Folder) DisplayName() string {
 	return f.Name
 }
 
+func (f Folder) Path() string {
+	return fmt.Sprintf("/%v", f.ID)
+}
+
 /*
  * Book
  */
@@ -68,6 +77,10 @@ func (b Book) DisplayName() string {
 	return b.Name
 }
 
+func (b Book) Path() string {
+	return b.GlURI
+}
+
 /*
  * Node
  */
@@ -85,4 +98,8 @@ func (n Node) DisplayName() string {
 
 func (n Node) String() string {
 	return n.Name
+}
+
+func (n Node) Path() string {
+	return n.GlURI
 }

@@ -5,6 +5,7 @@ import (
 	"errors"
 	"fmt"
 	"strings"
+	"strconv"
 )
 
 type Library struct {
@@ -94,6 +95,9 @@ func (l *Library) lookupGlURI(path string, catalog *Catalog) (CatalogItem, error
 	if path == "/" {
 		return c.Catalog()
 	}
+	if folderId, err := strconv.Atoi(path[1:]); err == nil {
+		return c.Folder(folderId)
+	}
 	sections := strings.Split(path, "/")
 	if sections[0] != "" {
 		return nil, fmt.Errorf("Invalid path \"%v\", must start with '/'", path)
@@ -136,12 +140,13 @@ func (l *Library) Children(item CatalogItem) ([]CatalogItem, error) {
 		return items, nil
 	case *Folder:
 		f := item.(*Folder)
-		items := make([]CatalogItem, 0)
-		for _, f := range f.Folders {
-			items = append(items, f)
+		folderLen := len(f.Folders)
+		items := make([]CatalogItem, folderLen + len(f.Books))
+		for i, f := range f.Folders {
+			items[i] = f
 		}
-		for _, f := range f.Books {
-			items = append(items, f)
+		for i, f := range f.Books {
+			items[folderLen + i] = f
 		}
 		return items, nil
 	case *Book:
@@ -156,13 +161,13 @@ func (l *Library) Children(item CatalogItem) ([]CatalogItem, error) {
 		return items, nil
 	case *Node:
 		n := item.(Node)
-		items := make([]CatalogItem, 0)
 		nodes, err := l.populateBook(n.Book).Children(n)
+		items := make([]CatalogItem, len(nodes))
 		if err != nil {
 			return nil, err
 		}
-		for _, n := range nodes {
-			items = append(items, n)
+		for i, n := range nodes {
+			items[i] = n
 		}
 		return items, nil
 	default:

@@ -26,6 +26,13 @@ type ConfigurationOptions struct {
 	WebPort       int
 }
 
+func (op *ConfigurationOptions) String() string {
+	return fmt.Sprintf("Language:      %v\n", op.Language) +
+	fmt.Sprintf("ServerURL:     %v\n", op.ServerURL) +
+	fmt.Sprintf("DataDirectory: %v\n", op.DataDirectory) +
+	fmt.Sprintf("WebPort:       %v\n", op.WebPort)
+}
+
 func loadDefaultOptions() ConfigurationOptions {
 	currentUser, err := user.Current()
 
