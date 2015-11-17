@@ -1,0 +1,10 @@
+<html>
+<body>
+<h1>{{ .DisplayName }}</h1>
+<ul>
+{{ range $key, $child := $.Children }}
+   <li><a href="{{ $child.Path }}">{{ $child.DisplayName }}</a></li> 
+{{ end }}
+</ul>
+</body>
+</html>

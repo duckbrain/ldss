@@ -7,11 +7,11 @@ import (
 )
 
 type curses struct {
-	args []string
-	config Config
+	appinfo
+	catalog *ldslib.Catalog
 }
 
-func (app curses) run() {
+func (app *curses) run() {
 	stdscr, err := goncurses.Init()
 	if err != nil {
 		log.Fatal("init:", err)
@@ -24,6 +24,7 @@ func (app curses) run() {
 	stdscr.Clear()
 	stdscr.Keypad(true)
 	
+	app.catalog = app.config.SelectedCatalog()
 }
 
 func (app *curses) cursesDisplay(item ldslib.CatalogItem) {

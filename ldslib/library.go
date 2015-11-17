@@ -63,6 +63,7 @@ func (l *Library) populateBook(book *Book) *bookParser {
 	if !ok {
 		b = newBookParser(book, l.source)
 		l.booksByLangBookId[id] = b
+		book.parser = b
 	}
 	return b
 }
@@ -128,50 +129,11 @@ func (l *Library) Lookup(id string, catalog *Catalog) (CatalogItem, error) {
 
 func (l *Library) Children(item CatalogItem) ([]CatalogItem, error) {
 	switch item.(type) {
-	case *Catalog:
-		c := item.(*Catalog)
-		items := make([]CatalogItem, 0)
-		for _, f := range c.Folders {
-			items = append(items, f)
-		}
-		for _, f := range c.Books {
-			items = append(items, f)
-		}
-		return items, nil
-	case *Folder:
-		f := item.(*Folder)
-		folderLen := len(f.Folders)
-		items := make([]CatalogItem, folderLen + len(f.Books))
-		for i, f := range f.Folders {
-			items[i] = f
-		}
-		for i, f := range f.Books {
-			items[folderLen + i] = f
-		}
-		return items, nil
 	case *Book:
-		nodes, err := l.populateBook(item.(*Book)).Index()
-		if err != nil {
-			return nil, err
-		}
-		items := make([]CatalogItem, len(nodes))
-		for i, n := range nodes {
-			items[i] = n
-		}
-		return items, nil
-	case Node:
-		n := item.(Node)
-		nodes, err := l.populateBook(n.Book).Children(n)
-		if err != nil {
-			return nil, err
-		}
-		items := make([]CatalogItem, len(nodes))
-		for i, n := range nodes {
-			items[i] = n
-		}
-		return items, nil
+		l.populateBook(item.(*Book))
+		return item.Children()
 	default:
-		return nil, errors.New("Unknown type")
+		return item.Children()
 	}
 }
 

@@ -1,28 +1,76 @@
 package main
 
 import (
+	"html/template"
 	"strings"
 	"fmt"
 	"net/http"
-	"log"
-	"os"
 	"ldslib"
 )
 
 type web struct {
-	args []string
-	config Config
+	appinfo
+	templates *webtemplates
+}
+
+type webtemplates struct {
+	nodeChildren, nodeContent, layout, err *template.Template
+}
+
+type webtemplateData struct {
+	data interface{}
+	
 }
 
 func (app web) run() {
-	efmt := log.New(os.Stderr, "", 0)
-	efmt.Printf("Starting web server on port: %v\n", app.config.op.WebPort)
-	
 	http.HandleFunc("/", app.handler)
+	
+	app.initTemplates()
+	
+	app.efmt.Printf("Listening on port: %v\n", app.config.op.WebPort)
 	http.ListenAndServe(fmt.Sprintf(":%v", app.config.op.WebPort), nil)
 }
 
+func (app *web) initTemplates() {
+	app.templates = &webtemplates{}
+	app.templates.layout = app.loadTemplate("layout.html")
+	app.templates.nodeContent = app.loadTemplate("node-content.html")
+	app.templates.nodeChildren = app.loadTemplate("node-children.html")
+	app.templates.err = app.loadTemplate("403.html")
+}
+
+func (app *web) loadTemplate(path string) *template.Template {
+	data, err := Asset("data/web/templates/" + path)
+	if err != nil {
+		panic(err)
+	}
+	temp := template.New(path)
+	temp, err = temp.Parse(string(data))
+	if err != nil {
+		panic(err)
+	}
+	return temp
+}
+
+func (app *web) loadLayoutTemplate(path string, layout *template.Template) {
+	//temp := app.loadTemplate(path)
+}
+
 func (app *web) handler(w http.ResponseWriter, r *http.Request) {
+	//TODO Remove for production
+	app.initTemplates()
+	
+	defer func() {
+		if r := recover(); r != nil {
+			err, ok := r.(error)
+			if !ok {
+				err = fmt.Errorf("%v", r)
+			}
+			app.templates.err.Execute(w, err)
+			//panic(err)
+		}
+	}()
+	
 	lang, err := app.config.Library.Language(r.URL.Query().Get("lang"))
 	if err != nil {
 		lang = app.config.SelectedLanguage()
@@ -41,7 +89,7 @@ func (app *web) handler(w http.ResponseWriter, r *http.Request) {
 			app.print(w, r, catalog)
 		case "/favicon.ico":
 			w.Header().Set("Content-type", "image/x-icon")
-			data, err := Asset("data/favicon.ico")
+			data, err := Asset("data/web/favicon.ico")
 			if err != nil {
 				panic (err)
 			}
@@ -57,45 +105,29 @@ func (app *web) handler(w http.ResponseWriter, r *http.Request) {
 }
 
 func (app *web) print(w http.ResponseWriter, r *http.Request, item ldslib.CatalogItem) {
-	
-	fmt.Fprintf(w, `
-		<html>
-		<head>
-			<link rel="icon" href="/favicon.ico" sizes="16x16 32x32 128x128" type="image/vnd.microsoft.icon">
-			<title>%v</title>
-		</head>
-		<body>`, item)
-	fmt.Fprintf(w, "<h1>%v</h1>", item)
-	
-	linkQuery := fmt.Sprintf("?lang=%v", item.Language().GlCode)
-	
+	var err error
 	switch item.(type) {
 		case ldslib.Node:
 			node := item.(ldslib.Node)
 			if node.HasContent {
-				content, _ := app.config.Library.Content(node)
-				fmt.Fprintf(w, content)
-			} else {
-				children, err := app.config.Library.Children(item)
+				data := struct{
+					item ldslib.CatalogItem
+					children []ldslib.CatalogItem
+				}{}
+				data.item = item
+				data.children, err = item.Children()
 				if err != nil {
-					panic(err)
+					panic (err)
 				}
-				fmt.Fprint(w, "<ul>")
-				for _, child := range children {
-					fmt.Fprintf(w, `<li><a href="%v%v">%v</a></li>`, child.Path(), linkQuery, child.DisplayName())
-				}
-				fmt.Fprint(w, "</ul>")
+				err = app.templates.nodeContent.Execute(w, item)
+			} else {
+				err = app.templates.nodeChildren.Execute(w, item)
 			}
 		default:
-			children, err := app.config.Library.Children(item)
-			if err != nil {
-				panic(err)
-			}
-			fmt.Fprint(w, "<ul>")
-			for _, child := range children {
-				fmt.Fprintf(w, `<li><a href="%v%v">%v</a></li>`, child.Path(), linkQuery, child.DisplayName())
-			}
-			fmt.Fprint(w, "</ul>")
+			err = app.templates.nodeChildren.Execute(w, item)
 	}
-	fmt.Fprint(w, "</body>")
+	if err != nil {
+		//TODO: Write 403 error
+		panic(err)
+	}
 }

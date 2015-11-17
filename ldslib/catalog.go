@@ -55,24 +55,27 @@ func (l *catalogParser) populateIfNeeded() error {
 	l.booksByGlURI = make(map[string]*Book)
 	l.catalog = description.Catalog
 	l.catalog.language = l.language
-	l.addFolders(description.Catalog.Folders)
-	l.addBooks(description.Catalog.Books)
+	l.addFolders(description.Catalog.Folders, l.catalog)
+	l.addBooks(description.Catalog.Books, l.catalog)
+	l.catalog.parser = l
 
 	return nil
 }
 
-func (l *catalogParser) addFolders(folders []*Folder) {
+func (l *catalogParser) addFolders(folders []*Folder, parent CatalogItem) {
 	for _, f := range folders {
 		f.Catalog = l.catalog
+		f.parent = parent
 		l.foldersById[f.ID] = f
-		l.addFolders(f.Folders)
-		l.addBooks(f.Books)
+		l.addFolders(f.Folders, f)
+		l.addBooks(f.Books, f)
 	}
 }
 
-func (l *catalogParser) addBooks(books []*Book) {
+func (l *catalogParser) addBooks(books []*Book, parent CatalogItem) {
 	for _, b := range books {
 		b.Catalog = l.catalog
+		b.parent = parent
 		l.booksById[b.ID] = b
 		l.booksByGlURI[b.GlURI] = b
 	}

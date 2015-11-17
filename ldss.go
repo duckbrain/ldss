@@ -22,6 +22,7 @@ func main() {
 	op = loadFileOptions(op)
 	op, args := loadParameterOptions(op)
 	config := LoadConfiguration(op)
+	var app app
 
 	if len(args) == 0 {
 		PrintInstructions()
@@ -38,13 +39,17 @@ func main() {
 		case "config":
 			fmt.Print(op)
 		case "web":
-			web{args, config}.run()
+			app = &web{}
 		case "gui":
 			gui(args, config)
 		case "curses":
-			curses{args, config}.run()
+			app = &curses{}
 		default:
 			cmd(args, config)
+		}
+		if app != nil {
+			app.setInfo(args, config)
+			app.run()
 		}
 	}
 }

@@ -12,16 +12,15 @@ type bookParser struct {
 	stmtChildren, stmtUri, stmtContent *sql.Stmt
 }
 
-type nodeInfo struct {
-	id int
-	docVersion *string
-	parentId int
-	title string
-	uri string
-	content string
-}
-
-//const sqlQueryNode = "SELECT id, doc_version, parent_id, title, uri, content FROM node "
+const sqlQueryNode = `
+	SELECT
+		node.id,
+		node.title,
+		node.uri,
+		CASE WHEN node.content IS NULL THEN 0 ELSE 1 END,
+		(SELECT COUNT(*) FROM node subnode WHERE subnode.id = node.id) node_count
+	FROM node
+`
 
 func newBookParser(book *Book, source Source) *bookParser {
 	return &bookParser{ source: source, book: book }
@@ -34,8 +33,14 @@ func (l *bookParser) populate() error {
 			return err
 		}
 		l.db = db
-		l.stmtChildren, err = db.Prepare("SELECT id, title, uri, CASE WHEN content IS NULL THEN 0 ELSE 1 END FROM node WHERE parent_id = ?")
-		l.stmtUri, err = db.Prepare("SELECT id, title, uri, CASE WHEN content IS NULL THEN 0 ELSE 1 END FROM node WHERE uri = ?")
+		l.stmtChildren, err = db.Prepare(sqlQueryNode + " WHERE parent_id = ?")
+		if err != nil {
+			return err
+		}
+		l.stmtUri, err = db.Prepare(sqlQueryNode + " WHERE uri = ?")
+		if err != nil {
+			return err
+		}
 		l.stmtContent, err = db.Prepare("SELECT content FROM node WHERE id = ?")
 		if err != nil {
 			return err
@@ -52,18 +57,24 @@ func (l *bookParser) Index() ([]Node, error) {
 	return l.Children(Node{})
 }
 
-func (l *bookParser) Children(node Node) ([]Node, error) {
+func (l *bookParser) Children(parent Node) ([]Node, error) {
+	if l == nil {
+		panic("Null bookParser in Children call")
+	}
 	if err := l.populate(); err != nil {
 		return nil, err
 	}
-	rows, err := l.stmtChildren.Query(node.ID)
+	rows, err := l.stmtChildren.Query(parent.ID)
 	if err != nil {
 		return nil, err
 	}
 	nodes := make([]Node, 0)
 	for rows.Next() {
 		node := Node{ Book: l.book }
-		err := rows.Scan(&node.ID, &node.Name, &node.GlURI, &node.HasContent)
+		if node.ID > 0 {
+			node.parent = node
+		}
+		err := rows.Scan(&node.ID, &node.Name, &node.GlURI, &node.HasContent, &node.ChildCount)
 		if err != nil {
 			return nil, err
 		}
@@ -77,7 +88,10 @@ func (l *bookParser) GlUri(uri string) (Node, error) {
 	if err := l.populate(); err != nil {
 		return node, err
 	}
-	err := l.stmtUri.QueryRow(uri).Scan(&node.ID, &node.Name, &node.GlURI, &node.HasContent)
+	if (l.stmtUri == nil) {
+		panic ("how did that happen?");
+	}
+	err := l.stmtUri.QueryRow(uri).Scan(&node.ID, &node.Name, &node.GlURI, &node.HasContent, &node.ChildCount)
 	return node, err
 }
 
