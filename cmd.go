@@ -16,11 +16,39 @@ func cmd(args []string, config Config) {
 			if err != nil {
 				panic(err)
 			}
-			switch item.(type) {
-				case ldslib.Node:
-					fmt.Println(config.Library.Content(item.(ldslib.Node)))
-				default:
-					fmt.Println(item)
+			
+			var children []ldslib.Item
+			
+			if node, ok := item.(ldslib.Node); ok {
+				if node.HasContent {
+					content, err := config.Library.Content(node)
+					if err != nil {
+						panic(err)
+					}
+					//TODO: Format
+					fmt.Println(content.Title)
+					if len(content.Subtitle) > 0 {
+						fmt.Println(content.Subtitle)
+					}
+					if len(content.Summary) > 0 {
+						fmt.Println(content.Summary)
+					}
+					for _, verse := range content.Verses {
+						fmt.Printf("%v %v\n", verse.Number, verse.Text)
+					}
+					break
+				} else {
+					children, err = item.Children()
+				}
+			} else {
+				children, err = item.Children()
+			}
+			if err != nil {
+				panic(err)
+			}
+			fmt.Println(item)
+			for _, child := range children {
+				fmt.Printf("- %v\n", child)
 			}
 		case "languages":
 			if len(args) == 1 {

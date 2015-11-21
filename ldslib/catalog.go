@@ -42,7 +42,7 @@ func (l *catalogParser) populateIfNeeded() error {
 	var description glCatalogDescrpition
 	file, err := l.source.Open(l.source.CatalogPath(l.language))
 	if err != nil {
-		return err
+		return &NotDownloadedBookErr{err, l.language}
 	}
 	dec := json.NewDecoder(file)
 	err = dec.Decode(&description)
@@ -62,7 +62,7 @@ func (l *catalogParser) populateIfNeeded() error {
 	return nil
 }
 
-func (l *catalogParser) addFolders(folders []*Folder, parent CatalogItem) {
+func (l *catalogParser) addFolders(folders []*Folder, parent Item) {
 	for _, f := range folders {
 		f.Catalog = l.catalog
 		f.parent = parent
@@ -72,7 +72,7 @@ func (l *catalogParser) addFolders(folders []*Folder, parent CatalogItem) {
 	}
 }
 
-func (l *catalogParser) addBooks(books []*Book, parent CatalogItem) {
+func (l *catalogParser) addBooks(books []*Book, parent Item) {
 	for _, b := range books {
 		b.Catalog = l.catalog
 		b.parent = parent

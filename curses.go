@@ -27,7 +27,7 @@ func (app *curses) run() {
 	app.catalog = app.config.SelectedCatalog()
 }
 
-func (app *curses) cursesDisplay(item ldslib.CatalogItem) {
+func (app *curses) cursesDisplay(item ldslib.Item) {
 	switch item.(type) {
 		case ldslib.Node:
 			//fmt.Println(config.Library.Content(item.(ldslib.Node)))

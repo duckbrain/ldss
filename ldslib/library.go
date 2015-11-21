@@ -36,7 +36,7 @@ func (l *Library) populateLanguages() error {
 	var description glLanguageDescription
 	file, err := l.source.Open(l.source.LanguagesPath())
 	if err != nil {
-		return err
+		return &NotDownloadedLanguageErr{err, nil}
 	}
 	dec := json.NewDecoder(file)
 	err = dec.Decode(&description)
@@ -91,7 +91,7 @@ func (l *Library) Book(path string, catalog *Catalog) (*Book, error) {
 	return l.populateCatalog(catalog.Language()).BookByUnknown(path)
 }
 
-func (l *Library) lookupGlURI(path string, catalog *Catalog) (CatalogItem, error) {
+func (l *Library) lookupGlURI(path string, catalog *Catalog) (Item, error) {
 	c := l.populateCatalog(catalog.Language())
 	if path == "/" {
 		return c.Catalog()
@@ -118,7 +118,7 @@ func (l *Library) lookupGlURI(path string, catalog *Catalog) (CatalogItem, error
 	return nil, fmt.Errorf("Path \"%v\" not found", path)
 }
 
-func (l *Library) Lookup(id string, catalog *Catalog) (CatalogItem, error) {
+func (l *Library) Lookup(id string, catalog *Catalog) (Item, error) {
 	if id[0] == '/' {
 		return l.lookupGlURI(id, catalog)
 	}
@@ -127,7 +127,7 @@ func (l *Library) Lookup(id string, catalog *Catalog) (CatalogItem, error) {
 	return p.Item()
 }
 
-func (l *Library) Children(item CatalogItem) ([]CatalogItem, error) {
+func (l *Library) Children(item Item) ([]Item, error) {
 	switch item.(type) {
 	case *Book:
 		l.populateBook(item.(*Book))
@@ -137,8 +137,13 @@ func (l *Library) Children(item CatalogItem) ([]CatalogItem, error) {
 	}
 }
 
-func (l *Library) Content(node Node) (string, error) {
-	return l.populateBook(node.Book).Content(node)
+func (l *Library) Content(node Node) (*Content, error) {
+	rawContent, err := l.populateBook(node.Book).Content(node)
+	if err != nil {
+		return nil, err
+	}
+	parser := ContentParser{contentHtml: rawContent}
+	return parser.Content()
 }
 
 //	Index(lang *Language) []CatalogItem

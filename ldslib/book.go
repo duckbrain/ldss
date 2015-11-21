@@ -1,6 +1,8 @@
 package ldslib
 
 import (
+	"fmt"
+	"os"
 	"database/sql"
 	_ "github.com/mattn/go-sqlite3"
 )
@@ -28,7 +30,12 @@ func newBookParser(book *Book, source Source) *bookParser {
 
 func (l *bookParser) populate() error {
 	if l.db == nil {
-		db, err := sql.Open("sqlite3", l.source.BookPath(l.book))
+		path := l.source.BookPath(l.book)
+		if _, err := os.Stat(path); os.IsNotExist(err) {
+			fmt.Println("File not found")
+			return &NotDownloadedBookErr{err, l.book}
+		}
+		db, err := sql.Open("sqlite3", path)
 		if err != nil {
 			return err
 		}
@@ -45,6 +52,11 @@ func (l *bookParser) populate() error {
 		if err != nil {
 			return err
 		}
+		var count int
+		err = db.QueryRow("SELECT COUNT(*) FROM node;").Scan(&count)
+		if err != nil {
+			return &NotDownloadedBookErr{err, l.book}
+		}
 	}
 	return nil
 }
@@ -58,9 +70,6 @@ func (l *bookParser) Index() ([]Node, error) {
 }
 
 func (l *bookParser) Children(parent Node) ([]Node, error) {
-	if l == nil {
-		panic("Null bookParser in Children call")
-	}
 	if err := l.populate(); err != nil {
 		return nil, err
 	}
@@ -87,9 +96,6 @@ func (l *bookParser) GlUri(uri string) (Node, error) {
 	node := Node{ Book: l.book }
 	if err := l.populate(); err != nil {
 		return node, err
-	}
-	if (l.stmtUri == nil) {
-		panic ("how did that happen?");
 	}
 	err := l.stmtUri.QueryRow(uri).Scan(&node.ID, &node.Name, &node.GlURI, &node.HasContent, &node.ChildCount)
 	return node, err

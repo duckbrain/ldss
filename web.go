@@ -61,13 +61,21 @@ func (app *web) handler(w http.ResponseWriter, r *http.Request) {
 	app.initTemplates()
 	
 	defer func() {
-		if r := recover(); r != nil {
-			err, ok := r.(error)
-			if !ok {
-				err = fmt.Errorf("%v", r)
+		if rec := recover(); rec != nil {
+			switch rec.(type) {
+				case ldslib.NotDownloadedBookErr:
+					http.Redirect(w, r, "/download", http.StatusFound)
+				case ldslib.NotDownloadedCatalogErr:
+					http.Redirect(w, r, "/download", http.StatusFound)
+				case ldslib.NotDownloadedLanguageErr:
+					http.Redirect(w, r, "/download", http.StatusFound)
+				case error:
+					err := rec.(error)
+					app.templates.err.Execute(w, err)
+				default:
+					err := fmt.Errorf("%v", rec)
+					app.templates.err.Execute(w, err)
 			}
-			app.templates.err.Execute(w, err)
-			//panic(err)
 		}
 	}()
 	
@@ -104,30 +112,34 @@ func (app *web) handler(w http.ResponseWriter, r *http.Request) {
 	
 }
 
-func (app *web) print(w http.ResponseWriter, r *http.Request, item ldslib.CatalogItem) {
+func (app *web) print(w http.ResponseWriter, r *http.Request, item ldslib.Item) {
 	var err error
+	data := struct{
+		Item ldslib.Item
+		Content template.HTML
+		Children []ldslib.Item
+	}{}
+	data.Item = item
+	data.Children, err = app.config.Library.Children(item)
+	if err != nil {
+		panic (err)
+	}
+	
 	switch item.(type) {
 		case ldslib.Node:
 			node := item.(ldslib.Node)
 			if node.HasContent {
-				data := struct{
-					item ldslib.CatalogItem
-					children []ldslib.CatalogItem
-				}{}
-				data.item = item
-				data.children, err = item.Children()
-				if err != nil {
-					panic (err)
+				if data.Content, err = node.Content(); err != nil {
+					panic(err)
 				}
-				err = app.templates.nodeContent.Execute(w, item)
+				err = app.templates.nodeContent.Execute(w, data)
 			} else {
-				err = app.templates.nodeChildren.Execute(w, item)
+				err = app.templates.nodeChildren.Execute(w, data)
 			}
 		default:
-			err = app.templates.nodeChildren.Execute(w, item)
+			err = app.templates.nodeChildren.Execute(w, data)
 	}
 	if err != nil {
-		//TODO: Write 403 error
 		panic(err)
 	}
 }

@@ -5,13 +5,13 @@ import (
 	"html/template"
 )
 
-type CatalogItem interface {
+type Item interface {
 	DisplayName() string
-	Children() ([]CatalogItem, error)
+	Children() ([]Item, error)
 	String() string
 	Path() string
 	Language() *Language
-	Parent() CatalogItem
+	Parent() Item
 }
 
 /*
@@ -24,9 +24,9 @@ type folder struct {
 	Books    []*Book   `json:"books"`
 }
 
-func (f *folder) Children() ([]CatalogItem, error) {
+func (f *folder) Children() ([]Item, error) {
 	folderLen := len(f.Folders)
-	items := make([]CatalogItem, folderLen + len(f.Books))
+	items := make([]Item, folderLen + len(f.Books))
 	for i, f := range f.Folders {
 		items[i] = f
 	}
@@ -54,7 +54,7 @@ func (c Catalog) Path() string {
 	return "/"
 }
 
-func (c Catalog) Parent() CatalogItem {
+func (c Catalog) Parent() Item {
 	return nil
 }
 
@@ -69,7 +69,7 @@ func (c Catalog) Language() *Language {
 type Folder struct {
 	ID       int       `json:"id"`
 	folder
-	parent   CatalogItem
+	parent   Item
 	Catalog  *Catalog
 }
 
@@ -89,7 +89,7 @@ func (f Folder) Language() *Language {
 	return f.Catalog.language
 }
 
-func (f Folder) Parent() CatalogItem {
+func (f Folder) Parent() Item {
 	return f.parent
 }
 
@@ -104,7 +104,7 @@ type Book struct {
 	GlURI    string `json:"gl_uri"`
 	Catalog  *Catalog
 	parser   *bookParser
-	parent   CatalogItem
+	parent   Item
 }
 
 func (b *Book) String() string {
@@ -123,7 +123,7 @@ func (b *Book) Language() *Language {
 	return b.Catalog.language
 }
 
-func (b *Book) Children() ([]CatalogItem, error) {
+func (b *Book) Children() ([]Item, error) {
 	if b.parser == nil {
 		b.parser = newBookParser(b, b.Catalog.parser.source)
 	}
@@ -131,14 +131,14 @@ func (b *Book) Children() ([]CatalogItem, error) {
 	if err != nil {
 		return nil, err
 	}
-	items := make([]CatalogItem, len(nodes))
+	items := make([]Item, len(nodes))
 	for i, n := range nodes {
 		items[i] = n
 	}
 	return items, nil
 }
 
-func (b *Book) Parent() CatalogItem {
+func (b *Book) Parent() Item {
 	return b.parent
 }
 
@@ -153,7 +153,7 @@ type Node struct {
 	Book      *Book
 	HasContent bool
 	ChildCount int
-	parent	   CatalogItem
+	parent	   Item
 }
 
 func (n Node) DisplayName() string {
@@ -172,12 +172,12 @@ func (n Node) Language() *Language {
 	return n.Book.Language()
 }
 
-func (n Node) Children() ([]CatalogItem, error) {
+func (n Node) Children() ([]Item, error) {
 	nodes, err := n.Book.parser.Children(n)
 	if err != nil {
 		return nil, err
 	}
-	items := make([]CatalogItem, len(nodes))
+	items := make([]Item, len(nodes))
 	for i, n := range nodes {
 		items[i] = n
 	}
@@ -189,6 +189,6 @@ func (n Node) Content() (template.HTML, error) {
 	return template.HTML(html), err
 }
 
-func (n Node) Parent() CatalogItem {
+func (n Node) Parent() Item {
 	return n.parent
 }

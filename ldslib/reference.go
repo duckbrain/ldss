@@ -10,7 +10,7 @@ import (
 type Reference struct {
 	bookName          string
 	glPath            string
-	item              CatalogItem
+	item              Item
 	chapter           int
 	verseSelected     int
 	versesHighlighted []int
@@ -115,6 +115,8 @@ func (p *RefParser) parse() {
 			goto Done
 		case "1nephi", "1ne":
 			ref.glPath = "/scriptures/bofm/1-ne"
+		case "psalm", "psalms":
+			ref.glPath = "/scriptures/ot/ps"
 		default:
 			goto Done
 		}
@@ -145,7 +147,7 @@ func (p *RefParser) Book() (*Book, error) {
 	return nil, nil
 }
 
-func (p *RefParser) Item() (CatalogItem, error) {
+func (p *RefParser) Item() (Item, error) {
 	return p.lib.lookupGlURI(p.ref.glPath, p.cat)
 }
 
