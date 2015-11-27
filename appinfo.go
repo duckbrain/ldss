@@ -1,8 +1,8 @@
 package main
 
 import (
-	"os"
 	"log"
+	"os"
 )
 
 type app interface {
@@ -11,14 +11,14 @@ type app interface {
 }
 
 type appinfo struct {
-	args []string
+	args   []string
 	config Config
-	fmt *log.Logger
-	efmt *log.Logger
+	fmt    *log.Logger
+	efmt   *log.Logger
 }
 
 func (a *appinfo) setInfo(args []string, config Config) {
-	a.args = args;
+	a.args = args
 	a.config = config
 	a.fmt = log.New(os.Stdin, "", 0)
 	a.efmt = log.New(os.Stderr, "", 0)

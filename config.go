@@ -20,19 +20,19 @@ type Config struct {
 }
 
 type ConfigurationOptions struct {
-	Language      string
-	DataDirectory string
-	ServerURL     string
-	WebPort       int
+	Language        string
+	DataDirectory   string
+	ServerURL       string
+	WebPort         int
 	WebTemplatePath string
 }
 
 func (op *ConfigurationOptions) String() string {
 	return fmt.Sprintf("Language:      %v\n", op.Language) +
-	fmt.Sprintf("ServerURL:       %v\n", op.ServerURL) +
-	fmt.Sprintf("DataDirectory:   %v\n", op.DataDirectory) +
-	fmt.Sprintf("WebPort:         %v\n", op.WebPort) +
-	fmt.Sprintf("WebTemplatePath: %v\n", op.WebTemplatePath)
+		fmt.Sprintf("ServerURL:       %v\n", op.ServerURL) +
+		fmt.Sprintf("DataDirectory:   %v\n", op.DataDirectory) +
+		fmt.Sprintf("WebPort:         %v\n", op.WebPort) +
+		fmt.Sprintf("WebTemplatePath: %v\n", op.WebTemplatePath)
 }
 
 func loadDefaultOptions() ConfigurationOptions {
