@@ -64,7 +64,7 @@ func (l *catalogParser) populateIfNeeded() error {
 
 func (l *catalogParser) addFolders(folders []*Folder, parent Item) {
 	for _, f := range folders {
-		f.Catalog = l.catalog
+		f.catalog = l.catalog
 		f.parent = parent
 		l.foldersById[f.ID] = f
 		l.addFolders(f.Folders, f)
@@ -74,7 +74,7 @@ func (l *catalogParser) addFolders(folders []*Folder, parent Item) {
 
 func (l *catalogParser) addBooks(books []*Book, parent Item) {
 	for _, b := range books {
-		b.Catalog = l.catalog
+		b.catalog = l.catalog
 		b.parent = parent
 		l.booksById[b.ID] = b
 		l.booksByGlURI[b.GlURI] = b

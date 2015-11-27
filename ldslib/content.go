@@ -1,6 +1,7 @@
 package ldslib
 
 import (
+	"html/template"
 	"strconv"
 	"strings"
 	"golang.org/x/net/html"
@@ -24,11 +25,26 @@ const (
 type Content struct {
 	Title, Subtitle, Summary string
 	Verses []Verse
+	originalHtml template.HTML
 }
 
+func (c *Content) String() string {
+	return string(c.originalHtml)
+}
+
+func (c *Content) HTML() template.HTML {
+	return c.originalHtml
+}
+ 
 type Verse struct {
 	Number int
 	Text string
+}
+
+type VerseReference struct {
+	Verse int
+	Letter rune
+	
 }
 
 func (p *ContentParser) parse() error {
@@ -92,6 +108,7 @@ func (p *ContentParser) parse() error {
 	if verse.Number > 0 {
 		content.Verses = append(content.Verses, verse)
 	}
+	content.originalHtml = template.HTML(p.contentHtml)
 	
 	p.content = content
 	return nil

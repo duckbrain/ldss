@@ -115,7 +115,7 @@ func (p *RefParser) parse() {
 			goto Done
 		case "1nephi", "1ne":
 			ref.glPath = "/scriptures/bofm/1-ne"
-		case "psalm", "psalms":
+		case "ps", "psalm", "psalms":
 			ref.glPath = "/scriptures/ot/ps"
 		default:
 			goto Done

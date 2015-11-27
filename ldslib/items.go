@@ -2,7 +2,6 @@ package ldslib
 
 import (
 	"fmt"
-	"html/template"
 )
 
 type Item interface {
@@ -70,7 +69,7 @@ type Folder struct {
 	ID       int       `json:"id"`
 	folder
 	parent   Item
-	Catalog  *Catalog
+	catalog  *Catalog
 }
 
 func (f Folder) String() string {
@@ -86,7 +85,7 @@ func (f Folder) Path() string {
 }
 
 func (f Folder) Language() *Language {
-	return f.Catalog.language
+	return f.catalog.language
 }
 
 func (f Folder) Parent() Item {
@@ -102,7 +101,7 @@ type Book struct {
 	Name     string `json:"name"`
 	URL      string `json:"url"`
 	GlURI    string `json:"gl_uri"`
-	Catalog  *Catalog
+	catalog  *Catalog
 	parser   *bookParser
 	parent   Item
 }
@@ -120,12 +119,12 @@ func (b *Book) Path() string {
 }
 
 func (b *Book) Language() *Language {
-	return b.Catalog.language
+	return b.catalog.language
 }
 
 func (b *Book) Children() ([]Item, error) {
 	if b.parser == nil {
-		b.parser = newBookParser(b, b.Catalog.parser.source)
+		b.parser = newBookParser(b, b.catalog.parser.source)
 	}
 	nodes, err := b.parser.Index()
 	if err != nil {
@@ -184,9 +183,13 @@ func (n Node) Children() ([]Item, error) {
 	return items, nil
 }
 
-func (n Node) Content() (template.HTML, error) {
-	html, err := n.Book.parser.Content(n)
-	return template.HTML(html), err
+func (n Node) Content() (*Content, error) {
+	rawContent, err := n.Book.parser.Content(n)
+	if err != nil {
+		return nil, err
+	}
+	parser := ContentParser{contentHtml: rawContent}
+	return parser.Content()
 }
 
 func (n Node) Parent() Item {

@@ -1,6 +1,7 @@
 package main
 
 import (
+	"encoding/json"
 	"html/template"
 	"strings"
 	"fmt"
@@ -24,6 +25,7 @@ type webtemplateData struct {
 
 func (app web) run() {
 	http.HandleFunc("/", app.handler)
+	http.HandleFunc("/json/", app.handleJSON)
 	
 	app.initTemplates()
 	
@@ -54,6 +56,29 @@ func (app *web) loadTemplate(path string) *template.Template {
 
 func (app *web) loadLayoutTemplate(path string, layout *template.Template) {
 	//temp := app.loadTemplate(path)
+	// Need to create Executor interface to make this work
+}
+
+func (app *web) handleJSON(w http.ResponseWriter, r *http.Request) {
+	lang, err := app.config.Library.Language(r.URL.Query().Get("lang"))
+	if err != nil {
+		lang = app.config.SelectedLanguage()
+	}
+	catalog := app.config.Catalog(lang)
+	path := r.URL.Path[len("/json"):]
+	fmt.Println("Looking for :" + path)
+	item, err := app.config.Library.Lookup(path, catalog)
+	if err != nil {
+		panic(err)
+	}
+	data, err := json.Marshal(item)
+	if err != nil {
+		panic(err)
+	}
+	_, err = w.Write(data)
+	if err != nil {
+		panic(err)
+	}
 }
 
 func (app *web) handler(w http.ResponseWriter, r *http.Request) {
@@ -118,8 +143,10 @@ func (app *web) print(w http.ResponseWriter, r *http.Request, item ldslib.Item) 
 		Item ldslib.Item
 		Content template.HTML
 		Children []ldslib.Item
+		LangCode string
 	}{}
 	data.Item = item
+	data.LangCode = item.Language().GlCode
 	data.Children, err = app.config.Library.Children(item)
 	if err != nil {
 		panic (err)
@@ -129,9 +156,11 @@ func (app *web) print(w http.ResponseWriter, r *http.Request, item ldslib.Item) 
 		case ldslib.Node:
 			node := item.(ldslib.Node)
 			if node.HasContent {
-				if data.Content, err = node.Content(); err != nil {
+				content, err := node.Content()
+				if err != nil {
 					panic(err)
 				}
+				data.Content = content.HTML()
 				err = app.templates.nodeContent.Execute(w, data)
 			} else {
 				err = app.templates.nodeChildren.Execute(w, data)

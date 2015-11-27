@@ -6,9 +6,33 @@ import (
 	"ldslib"
 	"strings"
 	"os"
+	"github.com/fatih/color"
 )
 
+type cmdcolors struct {
+	title, subtitle, summary, verse, content *color.Color
+}
+
+func colors(enabled bool) *cmdcolors {
+	c := cmdcolors{}
+	c.content = color.New()
+	if enabled {
+		c.title = color.New(color.Bold).Add(color.Underline).Add(color.FgWhite).Add(color.BgHiMagenta)
+		c.subtitle = color.New(color.Bold).Add(color.FgGreen)
+		c.summary= color.New(color.Italic).Add(color.BgBlue).Add(color.FgBlack)
+		c.verse = color.New(color.Bold).Add(color.FgRed)
+	} else {
+		c.title = c.content
+		c.subtitle = c.content
+		c.summary = c.content
+		c.verse = c.content
+	}
+	return &c
+}
+
 func cmd(args []string, config Config) {
+	c := colors(true)
+	
 	efmt := log.New(os.Stderr, "", 0)
 	switch args[0] {
 		case "lookup":
@@ -26,15 +50,16 @@ func cmd(args []string, config Config) {
 						panic(err)
 					}
 					//TODO: Format
-					fmt.Println(content.Title)
+					c.title.Printf("   %v   \n", content.Title)
 					if len(content.Subtitle) > 0 {
-						fmt.Println(content.Subtitle)
+						c.subtitle.Println(content.Subtitle)
 					}
 					if len(content.Summary) > 0 {
-						fmt.Println(content.Summary)
+						c.summary.Println(content.Summary)
 					}
 					for _, verse := range content.Verses {
-						fmt.Printf("%v %v\n", verse.Number, verse.Text)
+						c.verse.Printf("%v ", verse.Number)
+						c.content.Println(verse.Text)
 					}
 					break
 				} else {

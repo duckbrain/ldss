@@ -44,7 +44,7 @@ func (c localSource) CatalogPath(language *Language) string {
 	return mkdirAndGetFile(c.BasePath, language.GlCode, "catalog.json")
 }
 func (c localSource) BookPath(book *Book) string {
-	return mkdirAndGetFile(c.BasePath, book.Catalog.Language().GlCode, book.GlURI, "contents.sqlite")
+	return mkdirAndGetFile(c.BasePath, book.catalog.Language().GlCode, book.GlURI, "contents.sqlite")
 }
 func (c localSource) Open(path string) (io.ReadCloser, error) {
 	return os.Open(path)

@@ -58,7 +58,7 @@ func (l *Library) populateCatalog(lang *Language) *catalogParser {
 }
 
 func (l *Library) populateBook(book *Book) *bookParser {
-	id := langBookID{book.Catalog.language.ID, book.ID}
+	id := langBookID{book.catalog.language.ID, book.ID}
 	b, ok := l.booksByLangBookId[id]
 	if !ok {
 		b = newBookParser(book, l.source)
@@ -93,6 +93,9 @@ func (l *Library) Book(path string, catalog *Catalog) (*Book, error) {
 
 func (l *Library) lookupGlURI(path string, catalog *Catalog) (Item, error) {
 	c := l.populateCatalog(catalog.Language())
+	if path == "" {
+		return nil, fmt.Errorf("Cannot use empty string as a path")
+	}
 	if path == "/" {
 		return c.Catalog()
 	}
