@@ -1,16 +1,16 @@
 package ldslib
 
 import (
-	"fmt"
-	"os"
 	"database/sql"
+	"fmt"
 	_ "github.com/mattn/go-sqlite3"
+	"os"
 )
 
 type bookParser struct {
-	source Source
-	book   *Book
-	db     *sql.DB
+	source                             Source
+	book                               *Book
+	db                                 *sql.DB
 	stmtChildren, stmtUri, stmtContent *sql.Stmt
 }
 
@@ -25,7 +25,7 @@ const sqlQueryNode = `
 `
 
 func newBookParser(book *Book, source Source) *bookParser {
-	return &bookParser{ source: source, book: book }
+	return &bookParser{source: source, book: book}
 }
 
 func (l *bookParser) populate() error {
@@ -79,7 +79,7 @@ func (l *bookParser) Children(parent Node) ([]Node, error) {
 	}
 	nodes := make([]Node, 0)
 	for rows.Next() {
-		node := Node{ Book: l.book }
+		node := Node{Book: l.book}
 		if node.ID > 0 {
 			node.parent = node
 		}
@@ -93,7 +93,7 @@ func (l *bookParser) Children(parent Node) ([]Node, error) {
 }
 
 func (l *bookParser) GlUri(uri string) (Node, error) {
-	node := Node{ Book: l.book }
+	node := Node{Book: l.book}
 	if err := l.populate(); err != nil {
 		return node, err
 	}

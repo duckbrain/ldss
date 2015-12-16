@@ -5,7 +5,7 @@ import (
 )
 
 type notDownloadedErr struct {
-	err error
+	err  error
 	item fmt.Stringer
 }
 

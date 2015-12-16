@@ -18,19 +18,19 @@ type Item interface {
  */
 
 type folder struct {
-	Name     string    `json:"name"`
-	Folders  []*Folder `json:"folders"`
-	Books    []*Book   `json:"books"`
+	Name    string    `json:"name"`
+	Folders []*Folder `json:"folders"`
+	Books   []*Book   `json:"books"`
 }
 
 func (f *folder) Children() ([]Item, error) {
 	folderLen := len(f.Folders)
-	items := make([]Item, folderLen + len(f.Books))
+	items := make([]Item, folderLen+len(f.Books))
 	for i, f := range f.Folders {
 		items[i] = f
 	}
 	for i, f := range f.Books {
-		items[folderLen + i] = f
+		items[folderLen+i] = f
 	}
 	return items, nil
 }
@@ -66,10 +66,10 @@ func (c Catalog) Language() *Language {
  */
 
 type Folder struct {
-	ID       int       `json:"id"`
+	ID int `json:"id"`
 	folder
-	parent   Item
-	catalog  *Catalog
+	parent  Item
+	catalog *Catalog
 }
 
 func (f Folder) String() string {
@@ -97,13 +97,13 @@ func (f Folder) Parent() Item {
  */
 
 type Book struct {
-	ID       int    `json:"id"`
-	Name     string `json:"name"`
-	URL      string `json:"url"`
-	GlURI    string `json:"gl_uri"`
-	catalog  *Catalog
-	parser   *bookParser
-	parent   Item
+	ID      int    `json:"id"`
+	Name    string `json:"name"`
+	URL     string `json:"url"`
+	GlURI   string `json:"gl_uri"`
+	catalog *Catalog
+	parser  *bookParser
+	parent  Item
 }
 
 func (b *Book) String() string {
@@ -149,10 +149,10 @@ type Node struct {
 	ID         int
 	Name       string
 	GlURI      string
-	Book      *Book
+	Book       *Book
 	HasContent bool
 	ChildCount int
-	parent	   Item
+	parent     Item
 }
 
 func (n Node) DisplayName() string {
