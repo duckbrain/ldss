@@ -1,9 +1,9 @@
 package ldslib
 
 import (
-	"strconv"
 	"fmt"
 	"net/url"
+	"strconv"
 	"strings"
 )
 
@@ -23,8 +23,8 @@ func (ref Reference) String() string {
 type RefParser struct {
 	lib *Library
 	cat *Catalog
-	s    []string
-	ref  Reference
+	s   []string
+	ref Reference
 }
 
 func NewRefParser(lib *Library, cat *Catalog) RefParser {
@@ -64,7 +64,7 @@ func (p *RefParser) LoadGlURL(glUrl string) {
 func (p *RefParser) parse() {
 	ref := Reference{}
 	s := p.s
-	
+
 	if _, err := strconv.Atoi(s[0]); err == nil {
 		// Nodes that start with a number (we don't check if the number is good)
 		switch s[1] {
@@ -95,13 +95,13 @@ func (p *RefParser) parse() {
 		s = s[1:]
 		switch w {
 		case "ot":
-			ref.glPath =  "/scriptures/ot"
+			ref.glPath = "/scriptures/ot"
 			goto Done
 		case "nt":
-			ref.glPath =  "/scriptures/nt"
+			ref.glPath = "/scriptures/nt"
 			goto Done
 		case "bom", "bofm":
-			ref.glPath =  "/scriptures/bofm"
+			ref.glPath = "/scriptures/bofm"
 			goto Done
 		case "dc", "d&c":
 			if len(s) == 1 {
@@ -111,7 +111,7 @@ func (p *RefParser) parse() {
 				ref.glPath = "/scriptures/dc-testament/dc"
 			}
 		case "pgp":
-			ref.glPath =  "/scriptures/pgp"
+			ref.glPath = "/scriptures/pgp"
 			goto Done
 		case "1nephi", "1ne":
 			ref.glPath = "/scriptures/bofm/1-ne"
@@ -121,7 +121,7 @@ func (p *RefParser) parse() {
 			goto Done
 		}
 	}
-	
+
 	if len(s) > 0 {
 		if chapter, err := strconv.Atoi(s[0]); err == nil {
 			ref.chapter = chapter
@@ -136,7 +136,7 @@ func (p *RefParser) parse() {
 			//TODO May have : seperator
 		}
 	}
-	
+
 Done:
 	p.ref = ref
 	p.s = s
@@ -178,8 +178,8 @@ func (p *RefParser) glURI(s string) (ref Reference, err error) {
 	if err != nil {
 		ref.verseSelected = 0
 	}
-	
+
 	//TODO Parse Verses and other stuff to work with LDS.org URLs
-	
+
 	return
 }
