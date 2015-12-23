@@ -34,10 +34,10 @@ func (app web) run() {
 
 func (app *web) initTemplates() {
 	app.templates = &webtemplates{}
-	app.templates.layout = app.loadTemplate("layout.html")
-	app.templates.nodeContent = app.loadTemplate("node-content.html")
-	app.templates.nodeChildren = app.loadTemplate("node-children.html")
-	app.templates.err = app.loadTemplate("403.html")
+	app.templates.layout = app.loadTemplate("layout.tpl")
+	app.templates.nodeContent = app.loadTemplate("node-content.tpl")
+	app.templates.nodeChildren = app.loadTemplate("node-children.tpl")
+	app.templates.err = app.loadTemplate("403.tpl")
 }
 
 func (app *web) loadTemplate(path string) *template.Template {
