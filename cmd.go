@@ -3,7 +3,7 @@ package main
 import (
 	"fmt"
 	"github.com/fatih/color"
-	"ldslib"
+	"ldss/ldslib"
 	"log"
 	"os"
 	"strings"

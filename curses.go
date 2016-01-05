@@ -2,7 +2,7 @@ package main
 
 import (
 	"github.com/rthornton128/goncurses"
-	"ldslib"
+	"ldss/ldslib"
 	"log"
 )
 
