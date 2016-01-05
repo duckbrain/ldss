@@ -2,23 +2,21 @@ DEBUG ?= 1
 
 all: ldss
 
-ifeq (DEBUG, 1)
-ldss: *.go ldslib/*.go bindata-debug.go
-	go build 
+ifeq ($(DEBUG), 1)
+ldss: *.go lib/*.go bindata-debug.go
+	go install --tags debug
 else
-ldss: *.go ldslib/*.go bindata.go
-	go build 
+ldss: *.go lib/*.go bindata.go
+	go install 
 endif
 
 run: ldss
 	./ldss
 
 bindata-debug.go:
-	rm -f bindata.go
-	${GOPATH}/bin/go-bindata -debug data/...
+	${GOPATH}/bin/go-bindata -debug -tags "debug" -o "$@" data/...
 bindata.go: $(shell find data -print)
-	rm -f bindata-debug.go
-	${GOPATH}/bin/go-bindata data/...
+	${GOPATH}/bin/go-bindata -tags "!debug" -o "$@" data/...
 
 run-lookup: ldss
 	./ldss lookup 1 Ne 3:17
