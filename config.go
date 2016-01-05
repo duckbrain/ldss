@@ -3,7 +3,7 @@ package main
 import (
 	"encoding/json"
 	"fmt"
-	"ldss/ldslib"
+	"ldss/lib"
 	"os"
 	"os/user"
 	"path"
@@ -12,11 +12,11 @@ import (
 
 type Config struct {
 	op             ConfigurationOptions
-	OnlineContent  ldslib.Source
-	OfflineContent ldslib.Source
-	Library        *ldslib.Library
-	Reference      ldslib.RefParser
-	Download       *ldslib.Downloader
+	OnlineContent  lib.Source
+	OfflineContent lib.Source
+	Library        *lib.Library
+	Reference      lib.RefParser
+	Download       *lib.Downloader
 }
 
 type ConfigurationOptions struct {
@@ -88,14 +88,14 @@ func loadFileOptions(op ConfigurationOptions) ConfigurationOptions {
 
 func LoadConfiguration(op ConfigurationOptions) Config {
 	c := Config{op: op}
-	c.OnlineContent = ldslib.NewOnlineSource(op.ServerURL)
-	c.OfflineContent = ldslib.NewOfflineSource(op.DataDirectory)
-	c.Library = ldslib.NewLibrary(c.OfflineContent)
-	c.Download = ldslib.NewDownloader(c.OnlineContent, c.OfflineContent)
+	c.OnlineContent = lib.NewOnlineSource(op.ServerURL)
+	c.OfflineContent = lib.NewOfflineSource(op.DataDirectory)
+	c.Library = lib.NewLibrary(c.OfflineContent)
+	c.Download = lib.NewDownloader(c.OnlineContent, c.OfflineContent)
 	return c
 }
 
-func (c *Config) Languages() []ldslib.Language {
+func (c *Config) Languages() []lib.Language {
 	langs, err := c.Library.Languages()
 	if err != nil {
 		c.Download.Languages()
@@ -107,7 +107,7 @@ func (c *Config) Languages() []ldslib.Language {
 	return langs
 }
 
-func (c *Config) Language(s string) *ldslib.Language {
+func (c *Config) Language(s string) *lib.Language {
 	lang, err := c.Library.Language(s)
 	if err != nil {
 		//TODO: Output stderr
@@ -120,11 +120,11 @@ func (c *Config) Language(s string) *ldslib.Language {
 	return lang
 }
 
-func (c *Config) SelectedLanguage() *ldslib.Language {
+func (c *Config) SelectedLanguage() *lib.Language {
 	return c.Language(c.op.Language)
 }
 
-func (c *Config) Catalog(lang *ldslib.Language) *ldslib.Catalog {
+func (c *Config) Catalog(lang *lib.Language) *lib.Catalog {
 	catalog, err := c.Library.Catalog(lang)
 	if err != nil {
 		c.Download.Catalog(lang)
@@ -136,6 +136,6 @@ func (c *Config) Catalog(lang *ldslib.Language) *ldslib.Catalog {
 	return catalog
 }
 
-func (c *Config) SelectedCatalog() *ldslib.Catalog {
+func (c *Config) SelectedCatalog() *lib.Catalog {
 	return c.Catalog(c.SelectedLanguage())
 }

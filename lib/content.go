@@ -1,4 +1,4 @@
-package ldslib
+package lib
 
 import (
 	"golang.org/x/net/html"
