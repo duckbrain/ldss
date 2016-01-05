@@ -44,6 +44,8 @@ func main() {
 			gui(args, config)
 		case "curses":
 			app = &curses{}
+		case "shell":
+			app = &shell{}
 		default:
 			cmd(args, config)
 		}
