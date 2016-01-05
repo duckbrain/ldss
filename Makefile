@@ -1,5 +1,6 @@
 DEBUG ?= 1
 BINARY = ${GOPATH}/bin/ldss
+BINDATA = ${GOPATH}/bin/go-bindata
 
 all: $(BINARY)
 
@@ -11,17 +12,18 @@ $(BINARY): ldss/*.go lib/*.go ldss/bindata.go
 	go install ./ldss
 endif
 
-run: ldss
+run: $(BINARY)
 	$(BINARY)
-
-ldss/bindata-debug.go:
-	${GOPATH}/bin/go-bindata -debug -tags "debug" -o "$@" data/...
-ldss/bindata.go: $(shell find data -print)
-	${GOPATH}/bin/go-bindata -tags "!debug" -o "$@" data/...
-
-run-lookup: ldss
+run-lookup: $(BINARY)
 	$(BINARY) lookup 1 Ne 3:17
 
-depends:
+ldss/bindata-debug.go:
+	$(BINDATA) -debug -tags "debug" -o "$@" data/...
+ldss/bindata.go: $(shell find data -print)
+	$(BINDATA) -tags "!debug" -o "$@" data/...
+
+$(BINDATA):
 	go get -u github.com/jteeuwen/go-bindata/...
+
+depends: $(BINDATA)
 	go get ./...
