@@ -4,7 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"html/template"
-	"ldslib"
+	"ldss/lib"
 	"net/http"
 	"strings"
 )
@@ -34,10 +34,10 @@ func (app web) run() {
 
 func (app *web) initTemplates() {
 	app.templates = &webtemplates{}
-	app.templates.layout = app.loadTemplate("layout.html")
-	app.templates.nodeContent = app.loadTemplate("node-content.html")
-	app.templates.nodeChildren = app.loadTemplate("node-children.html")
-	app.templates.err = app.loadTemplate("403.html")
+	app.templates.layout = app.loadTemplate("layout.tpl")
+	app.templates.nodeContent = app.loadTemplate("node-content.tpl")
+	app.templates.nodeChildren = app.loadTemplate("node-children.tpl")
+	app.templates.err = app.loadTemplate("403.tpl")
 }
 
 func (app *web) loadTemplate(path string) *template.Template {
@@ -87,11 +87,11 @@ func (app *web) handler(w http.ResponseWriter, r *http.Request) {
 	defer func() {
 		if rec := recover(); rec != nil {
 			switch rec.(type) {
-			case ldslib.NotDownloadedBookErr:
+			case lib.NotDownloadedBookErr:
 				http.Redirect(w, r, "/download", http.StatusFound)
-			case ldslib.NotDownloadedCatalogErr:
+			case lib.NotDownloadedCatalogErr:
 				http.Redirect(w, r, "/download", http.StatusFound)
-			case ldslib.NotDownloadedLanguageErr:
+			case lib.NotDownloadedLanguageErr:
 				http.Redirect(w, r, "/download", http.StatusFound)
 			case error:
 				err := rec.(error)
@@ -136,12 +136,12 @@ func (app *web) handler(w http.ResponseWriter, r *http.Request) {
 
 }
 
-func (app *web) print(w http.ResponseWriter, r *http.Request, item ldslib.Item) {
+func (app *web) print(w http.ResponseWriter, r *http.Request, item lib.Item) {
 	var err error
 	data := struct {
-		Item     ldslib.Item
+		Item     lib.Item
 		Content  template.HTML
-		Children []ldslib.Item
+		Children []lib.Item
 		LangCode string
 	}{}
 	data.Item = item
@@ -152,8 +152,8 @@ func (app *web) print(w http.ResponseWriter, r *http.Request, item ldslib.Item) 
 	}
 
 	switch item.(type) {
-	case ldslib.Node:
-		node := item.(ldslib.Node)
+	case lib.Node:
+		node := item.(lib.Node)
 		if node.HasContent {
 			content, err := node.Content()
 			if err != nil {

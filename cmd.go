@@ -3,7 +3,7 @@ package main
 import (
 	"fmt"
 	"github.com/fatih/color"
-	"ldslib"
+	"ldss/lib"
 	"log"
 	"os"
 	"strings"
@@ -41,9 +41,9 @@ func cmd(args []string, config Config) {
 			panic(err)
 		}
 
-		var children []ldslib.Item
+		var children []lib.Item
 
-		if node, ok := item.(ldslib.Node); ok {
+		if node, ok := item.(lib.Node); ok {
 			if node.HasContent {
 				content, err := config.Library.Content(node)
 				if err != nil {
