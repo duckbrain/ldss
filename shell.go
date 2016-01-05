@@ -2,7 +2,7 @@ package main
 
 import (
 	"bufio"
-	"io"
+	_ "io"
 	"os"
 	"fmt"
 )
@@ -23,6 +23,8 @@ func (app shell) run() {
 func (app shell) handleLine(cin *bufio.Reader) {
 	fmt.Printf("> ");
 	line, isPrefix, err := cin.ReadLine()
+	_ = line
+	_ = isPrefix
 	if err != nil {
 		panic(err)
 	}
