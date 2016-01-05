@@ -1,25 +1,26 @@
 DEBUG ?= 1
+BINARY = ${GOPATH}/bin/ldss
 
-all: ldss
+all: $(BINARY)
 
 ifeq ($(DEBUG), 1)
-ldss: *.go lib/*.go bindata-debug.go
-	go install --tags debug
+$(BINARY): ldss/*.go lib/*.go ldss/bindata-debug.go
+	go install --tags debug ./ldss
 else
-ldss: *.go lib/*.go bindata.go
-	go install 
+$(BINARY): ldss/*.go lib/*.go ldss/bindata.go
+	go install ./ldss
 endif
 
 run: ldss
-	./ldss
+	$(BINARY)
 
-bindata-debug.go:
+ldss/bindata-debug.go:
 	${GOPATH}/bin/go-bindata -debug -tags "debug" -o "$@" data/...
-bindata.go: $(shell find data -print)
+ldss/bindata.go: $(shell find data -print)
 	${GOPATH}/bin/go-bindata -tags "!debug" -o "$@" data/...
 
 run-lookup: ldss
-	./ldss lookup 1 Ne 3:17
+	$(BINARY) lookup 1 Ne 3:17
 
 depends:
 	go get -u github.com/jteeuwen/go-bindata/...
