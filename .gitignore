@@ -6,7 +6,8 @@
 .*.swp
 
 bindata.go
-bindata-debug.go
+bindata_debug.go
+bindata_release.go
 .depends
 
 # Folders

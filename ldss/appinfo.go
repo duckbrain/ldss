@@ -2,7 +2,6 @@ package main
 
 import (
 	"log"
-	"os"
 )
 
 type app interface {
@@ -15,11 +14,5 @@ type appinfo struct {
 	config Config
 	fmt    *log.Logger
 	efmt   *log.Logger
-}
-
-func (a *appinfo) setInfo(args []string, config Config) {
-	a.args = args
-	a.config = config
-	a.fmt = log.New(os.Stdin, "", 0)
-	a.efmt = log.New(os.Stderr, "", 0)
+	debug  *log.Logger
 }
