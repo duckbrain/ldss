@@ -6,10 +6,10 @@ DEPENDS = ldss/*.go lib/*.go .depends $(BINDATA)
 all: $(BINARY)
 
 ifeq ($(DEBUG), 1)
-$(BINARY): $(DEPENDS) ldss/bindata-debug.go
+$(BINARY): $(DEPENDS) ldss/bindata_debug.go
 	go install --tags debug ./ldss
 else
-$(BINARY): $(DEPENDS) ldss/bindata.go
+$(BINARY): $(DEPENDS) ldss/bindata_release.go
 	go install ./ldss
 endif
 
@@ -18,9 +18,9 @@ run: $(BINARY)
 run-lookup: $(BINARY)
 	$(BINARY) lookup 1 Ne 3:17
 
-ldss/bindata-debug.go:
+ldss/bindata_debug.go:
 	$(BINDATA) -nomemcopy -debug -tags "debug" -o "$@" data/...
-ldss/bindata.go: $(shell find data -print)
+ldss/bindata_release.go: $(shell find data -print)
 	$(BINDATA) -nomemcopy -tags "!debug" -o "$@" data/...
 
 $(BINDATA):
@@ -29,9 +29,14 @@ $(BINDATA):
 .depends: 
 	go get -d ./...
 	@echo "Flags make that dependances are gotten" > .depends
+	
+format:
+	go fmt ldss/*
+	go fmt lib/*
 
 clean:
 	rm -f ${GOPATH}/bin/ldss
+	rm -f ldss/bindata.go ldss/bindata_debug.go ldss/bindata_release.go
 	go clean -r
 
 clean-tree: clean
