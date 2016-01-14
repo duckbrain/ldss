@@ -46,7 +46,7 @@ func (c Catalog) DisplayName() string {
 }
 
 func (c Catalog) String() string {
-	return fmt.Sprintf("Catalog: %v {folders[%v] books[%v]}", c.Name, len(c.Folders), len(c.Books))
+	return fmt.Sprintf("%v {folders[%v] books[%v]}", c.Name, len(c.Folders), len(c.Books))
 }
 
 func (c Catalog) Path() string {
@@ -73,7 +73,7 @@ type Folder struct {
 }
 
 func (f Folder) String() string {
-	return fmt.Sprintf("Folder: %v {folders[%v] books[%v]}", f.Name, len(f.Folders), len(f.Books))
+	return fmt.Sprintf("%v {folders[%v] books[%v]}", f.Name, len(f.Folders), len(f.Books))
 }
 
 func (f Folder) DisplayName() string {
@@ -107,7 +107,7 @@ type Book struct {
 }
 
 func (b *Book) String() string {
-	return fmt.Sprintf("Book: %v {%v}", b.Name, b.GlURI)
+	return fmt.Sprintf("%v {%v}", b.Name, b.GlURI)
 }
 
 func (b *Book) DisplayName() string {

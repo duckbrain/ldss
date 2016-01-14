@@ -3,8 +3,9 @@ package lib
 import (
 	"database/sql"
 	"fmt"
-	_ "github.com/mattn/go-sqlite3"
 	"os"
+
+	_ "github.com/mattn/go-sqlite3"
 )
 
 type bookParser struct {
@@ -39,6 +40,11 @@ func (l *bookParser) populate() error {
 		if err != nil {
 			return err
 		}
+		var count int
+		err = db.QueryRow("SELECT COUNT(*) FROM node;").Scan(&count)
+		if err != nil {
+			return &NotDownloadedBookErr{err, l.book}
+		}
 		l.db = db
 		l.stmtChildren, err = db.Prepare(sqlQueryNode + " WHERE parent_id = ?")
 		if err != nil {
@@ -51,11 +57,6 @@ func (l *bookParser) populate() error {
 		l.stmtContent, err = db.Prepare("SELECT content FROM node WHERE id = ?")
 		if err != nil {
 			return err
-		}
-		var count int
-		err = db.QueryRow("SELECT COUNT(*) FROM node;").Scan(&count)
-		if err != nil {
-			return &NotDownloadedBookErr{err, l.book}
 		}
 	}
 	return nil
