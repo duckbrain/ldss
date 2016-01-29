@@ -9,6 +9,11 @@ import (
 	"strings"
 )
 
+type cmd struct {
+	appinfo
+	colors cmdcolors
+}
+
 type cmdcolors struct {
 	title, subtitle, summary, verse, content *color.Color
 }
@@ -30,14 +35,18 @@ func colors(enabled bool) *cmdcolors {
 	return &c
 }
 
-func cmd(args []string, config Config) {
+func (app *cmd) run () {
 	c := colors(true)
+	args := app.args
+	config := app.config
 
 	efmt := log.New(os.Stderr, "", 0)
 	switch args[0] {
 	case "lookup":
-		item, err := config.Library.Lookup(strings.Join(args[1:], " "), config.SelectedCatalog())
+		lookupString := strings.Join(args[1:], " ")
+		item, err := config.Library.Lookup(lookupString, config.SelectedCatalog())
 		if err != nil {
+			efmt.Printf("Path \"%v\" not found.", lookupString)
 			panic(err)
 		}
 
@@ -125,6 +134,8 @@ func cmd(args []string, config Config) {
 			config.Download.Book(book)
 		}
 	default:
-		fmt.Printf("Unknown command \"%s\"\n", args[0])
+		app.args = append([]string{"lookup"}, app.args...);
+		app.run();
+		//fmt.Printf("Unknown command \"%s\"\n", args[0])
 	}
 }

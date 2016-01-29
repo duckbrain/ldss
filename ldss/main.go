@@ -6,6 +6,11 @@ import (
 )
 
 var _ color.Color
+var apps map[string]app
+
+func init() {
+	apps = make(map[string]app)
+}
 
 func main() {
 	/*defer func() {
@@ -22,7 +27,6 @@ func main() {
 	op = loadFileOptions(op)
 	op, args := loadParameterOptions(op)
 	config := LoadConfiguration(op)
-	var app app
 
 	if len(args) == 0 {
 		PrintInstructions()
@@ -38,18 +42,12 @@ func main() {
 			}
 		case "config":
 			fmt.Print(op)
-		case "web":
-			app = &web{}
-		case "gui":
-			gui(args, config)
-		case "curses":
-			app = &curses{}
-		case "shell":
-			app = &shell{}
 		default:
-			cmd(args, config)
-		}
-		if app != nil {
+			var ok bool
+			var app app
+			if app, ok = apps[args[0]]; !ok {
+				app = &cmd{}
+			}
 			app.setInfo(args, config)
 			app.run()
 		}

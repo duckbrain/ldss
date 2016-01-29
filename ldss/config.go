@@ -10,6 +10,13 @@ import (
 	"strconv"
 )
 
+type DefaultCommands int
+
+const (
+	DefaultCommandLookup DefaultCommands = iota
+	DefaultCommandCurses
+)
+
 type Config struct {
 	op             ConfigurationOptions
 	OnlineContent  lib.Source
@@ -17,6 +24,7 @@ type Config struct {
 	Library        *lib.Library
 	Reference      lib.RefParser
 	Download       *lib.Downloader
+	DefaultCommand DefaultCommands
 }
 
 type ConfigurationOptions struct {
@@ -27,7 +35,7 @@ type ConfigurationOptions struct {
 	WebTemplatePath string
 }
 
-func (op *ConfigurationOptions) String() string {
+func (op ConfigurationOptions) String() string {
 	return fmt.Sprintf("Language:      %v\n", op.Language) +
 		fmt.Sprintf("ServerURL:       %v\n", op.ServerURL) +
 		fmt.Sprintf("DataDirectory:   %v\n", op.DataDirectory) +

@@ -15,6 +15,10 @@ type web struct {
 	templates *webtemplates
 }
 
+func init() {
+	apps["web"] = &web{}
+}
+
 func (app web) run() {
 	http.HandleFunc("/", app.handler)
 	http.HandleFunc("/json/", app.handleJSON)

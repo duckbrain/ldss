@@ -1,3 +1,5 @@
+// +build !noshell
+
 package main
 
 import (
@@ -9,6 +11,10 @@ import (
 
 type shell struct {
 	appinfo
+}
+
+func init() {
+	apps["shell"] = &shell{}
 }
 
 func (app shell) run() {

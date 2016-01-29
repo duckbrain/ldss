@@ -1,5 +1,9 @@
 package main
 
+import (
+	"html/template"
+)
+
 type webtemplates struct {
 	nodeChildren, nodeContent, layout, err *template.Template
 }
