@@ -35,7 +35,7 @@ func colors(enabled bool) *cmdcolors {
 	return &c
 }
 
-func (app *cmd) run () {
+func (app *cmd) run() {
 	c := colors(true)
 	args := app.args
 	config := app.config
@@ -134,8 +134,8 @@ func (app *cmd) run () {
 			config.Download.Book(book)
 		}
 	default:
-		app.args = append([]string{"lookup"}, app.args...);
-		app.run();
+		app.args = append([]string{"lookup"}, app.args...)
+		app.run()
 		//fmt.Printf("Unknown command \"%s\"\n", args[0])
 	}
 }
