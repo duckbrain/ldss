@@ -1,16 +1,15 @@
 package lib
 
 import (
-	"golang.org/x/net/html"
 	"html/template"
-	"strconv"
-	"strings"
+	//	"strconv"
+	//"strings"
+
+	//	"golang.org/x/net/html"
 )
 
-type ContentParser struct {
-	node        Node
-	contentHtml string
-	content     *Content
+type Content struct {
+	rawHTML string
 }
 
 type parseMode int
@@ -22,17 +21,17 @@ const (
 	parseVerseMode
 )
 
-type Content struct {
+type Page struct {
 	Title, Subtitle, Summary string
 	Verses                   []Verse
 	originalHtml             template.HTML
 }
 
-func (c *Content) String() string {
+func (c *Page) String() string {
 	return string(c.originalHtml)
 }
 
-func (c *Content) HTML() template.HTML {
+func (c *Page) HTML() template.HTML {
 	return c.originalHtml
 }
 
@@ -46,10 +45,8 @@ type VerseReference struct {
 	Letter rune
 }
 
-func (p *ContentParser) parse() error {
-	if p.content != nil {
-		return nil
-	}
+/*
+func (p *Page) parse() error {
 	reader := strings.NewReader(p.contentHtml)
 	doc, err := html.Parse(reader)
 	if err != nil {
@@ -57,7 +54,7 @@ func (p *ContentParser) parse() error {
 	}
 
 	mode := parseTitleMode
-	content := new(Content)
+	content := new(Page)
 	var verse Verse
 	var f func(*html.Node)
 
@@ -113,11 +110,8 @@ func (p *ContentParser) parse() error {
 	return nil
 }
 
-func (p *ContentParser) Content() (*Content, error) {
+func (p *Page) Content() (*Page, error) {
 	err := p.parse()
 	return p.content, err
 }
-
-func (p *ContentParser) OriginalHTML() string {
-	return p.contentHtml
-}
+*/

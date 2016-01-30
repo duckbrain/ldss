@@ -1,216 +1,174 @@
 package lib
 
 import (
+	"bytes"
 	"encoding/json"
 	"fmt"
 	"os"
 	"os/user"
 	"path"
-	"bytes"
 	"strings"
-	"errors"
+	"unicode/utf8"
 )
 
-// Package configuration object loaded on package load
-var Config ConfigurationOptions
+var c *Configuration
 
-type DefaultCommands int
-
-const (
-	DefaultCommandLookup DefaultCommands = iota
-	DefaultCommandCurses
-)
-
-/*type Config struct {
-	op             ConfigurationOptions
-	OnlineContent  Source
-	OfflineContent Source
-	Library        *Library
-	Reference      RefParser
-	Download       *Downloader
-	DefaultCommand DefaultCommands
-}*/
-
-type ConfigurationOptions struct {
-	Language        string
-	DataDirectory   string
-	ServerURL       string
-	//WebPort         int TODO: Move to ldss/web.go 
-	//WebTemplatePath string
-	AppParams	map[string]interface{}
+func Config() *Configuration {
+	return c
 }
 
-type AppOption interface {
-	Name() string
-	Default() interface{}
-	Params() (rune, string) // Return the rune for -abc params and the string for --full-name params, omit the starting hyphens
-	ParseParam(string) (interface{}, error)
+type Configuration struct {
+	args        []string
+	values      map[string]interface{}
+	shortParams map[rune]configParam
+	longParams  map[string]configParam
 }
 
-func (op ConfigurationOptions) String() string {
+type configParam interface {
+	needValue() bool
+	handleValue(string, *Configuration) error
+}
+
+type AppOption struct {
+	Name     string
+	Default  interface{}
+	ShortArg rune
+	LongArg  string
+	Parse    func(string) (interface{}, error)
+}
+
+type AppFlag struct {
+	ShortArg rune
+	LongArg  string
+	Action   func(*Configuration) error
+}
+
+func (o AppOption) needValue() bool {
+	return true
+}
+
+func (o AppOption) handleValue(s string, c *Configuration) error {
+	val, err := o.Parse(s)
+	if err == nil {
+		c.Set(o.Name, val)
+	}
+	return err
+}
+
+func (o AppFlag) needValue() bool {
+	return false
+}
+
+func (o AppFlag) handleValue(s string, c *Configuration) error {
+	return o.Action(c)
+}
+
+func init() {
+	c = &Configuration{
+		values:      make(map[string]interface{}),
+		shortParams: make(map[rune]configParam),
+		longParams:  make(map[string]configParam),
+	}
+	c.loadDefaults()
+	c.loadFile()
+	c.loadParams()
+}
+
+func (c *Configuration) RegisterFlag(o AppFlag) {
+	c.shortParams[o.ShortArg] = o
+	c.longParams[o.LongArg] = o
+}
+
+func (c *Configuration) RegisterOption(o AppOption) {
+	c.shortParams[o.ShortArg] = o
+	c.longParams[o.LongArg] = o
+	c.Set(o.Name, o.Default)
+}
+
+func (c *Configuration) Set(name string, value interface{}) {
+	c.values[name] = value
+}
+
+func (c *Configuration) Get(name string) interface{} {
+	return c.values[name]
+}
+
+func (c *Configuration) String() string {
 	var buffer bytes.Buffer
-	nameLen := 13
+	nameLen := 0
 
-	for key, _ := range op.AppParams {
+	for key, _ := range c.values {
 		if len(key) > nameLen {
 			nameLen = len(key)
 		}
 	}
 
-	printLn := func(key string, value interface{}) {
-		spaces := strings.Repeat(" ", nameLen - len(key) + 1)
-		buffer.WriteString(fmt.Sprintf("%v:%v%v\n", key, spaces, value));
-	}
-
-	printLn("Language", op.Language)
-	printLn("ServerURL", op.ServerURL)
-	printLn("DataDirectory", op.DataDirectory)
-
-	for key, value := range op.AppParams {
-		printLn(key, value);
+	for key, value := range c.values {
+		spaces := strings.Repeat(" ", nameLen-len(key)+1)
+		buffer.WriteString(fmt.Sprintf("%v:%v%v\n", key, spaces, value))
 	}
 
 	return buffer.String()
 }
 
-func (c *ConfigurationOptions) MarshalJSON() ([]byte, error) {
-	cmap := make(map[string]interface{})
-	cmap["Language"] = c.Language
-	cmap["DataDirectory"] = c.DataDirectory
-	cmap["ServerURL"] = c.ServerURL
-
-	for k, v := range c.AppParams {
-		cmap[k] = v
-	}
-
-	return json.Marshal(cmap)
-}
-
-func (c *ConfigurationOptions) UnMarshalJSON (data []byte) (error) {
-	var cmap map[string]interface{}
-
-	if c == nil {
-	    return errors.New("RawString: UnmarshalJSON on nil pointer")
-	}
-
-	if err := json.Unmarshal(data, &cmap); err != nil {
-	    return err
-	}
-
-	for key, val := range cmap {
-	    switch key {
-		case "Language":
-		    c.Language = val.(string)
-		case "DataDirectory":
-		    c.DataDirectory = val.(string)
-		case "ServerURL":
-		    c.ServerURL = val.(string)
-		default:
-		    c.AppParams[key] = val
-	    }
-	}
-	return nil
-}
-
-func loadDefaultOptions() ConfigurationOptions {
+func (c *Configuration) loadDefaults() {
 	currentUser, err := user.Current()
-
 	if err != nil {
 		panic(err)
 	}
 
-	op := ConfigurationOptions{}
-	op.Language = "eng"
-	op.DataDirectory = path.Join(currentUser.HomeDir, ".ldss")
-	op.ServerURL = "https://tech.lds.org/glweb"
-
-	return op
+	c.Set("Language", "eng")
+	c.Set("DataDirectory", path.Join(currentUser.HomeDir, ".ldss"))
+	c.Set("ServerURL", "https://tech.lds.org/glweb")
 }
 
-func loadParameterOptions(op ConfigurationOptions) (ConfigurationOptions, []string) {
+func (c *Configuration) loadFile() {
+	file, err := os.Open(path.Join(c.Get("DataDirectory").(string), "config.json"))
+	if err != nil {
+		return
+	}
+	if err = json.NewDecoder(file).Decode(c.values); err != nil {
+		panic(err)
+	}
+}
+
+func (c *Configuration) loadParams() {
 	args := os.Args[1:]
 	for i := 0; i < len(args); {
-		switch args[i] {
-		/*case "-p":
-			op.WebPort, err = strconv.Atoi(args[i+1])
-			if err != nil {
-				panic(fmt.Errorf("Could not convert port \"%v\" to an integer", args[i+1]))
+		arg := args[i]
+		if arg[0] == '-' {
+			var op configParam
+			var ok bool
+			if arg[1] == '-' {
+				if op, ok = c.longParams[arg[2:]]; !ok {
+					panic(fmt.Errorf("Argument \"%v\" invalid", arg))
+				}
+			} else {
+				for j := 1; j < len(arg); j++ {
+					r, _ := utf8.DecodeRuneInString(arg[j:])
+					op, ok = c.shortParams[r]
+					if !ok {
+						panic(fmt.Errorf("Argument \"-%v\" invalid", arg[j]))
+					}
+					if op.needValue() && j != len(arg)-1 {
+						panic(fmt.Errorf("Argument \"-%v\" needs a value", arg[j]))
+					}
+					op.handleValue("", c)
+				}
 			}
-			args = args[:i+copy(args[i:], args[i+2:])]*/
-		case "-l":
-			op.Language = args[i+1]
-			args = args[:i+copy(args[i:], args[i+2:])]
-		default:
+			if op.needValue() {
+				if i == len(args)-1 {
+					panic(fmt.Errorf("Argument \"%v\" needs a value", arg))
+				}
+				op.handleValue(args[i+1], c)
+				args = args[:i+copy(args[i:], args[i+2:])]
+			} else {
+				op.handleValue("", c)
+				args = args[:i+copy(args[i:], args[i+1:])]
+			}
+
+		} else {
 			i++
 		}
 	}
-	return op, args
 }
-
-func loadFileOptions(op ConfigurationOptions) ConfigurationOptions {
-	file, err := os.Open(path.Join(op.DataDirectory, "config.json"))
-	if err != nil {
-		// File does not exits, continue
-		return op
-	}
-	dec := json.NewDecoder(file)
-	err = dec.Decode(op)
-	if err != nil {
-		panic(err)
-	}
-	return op
-}
-
-/*func LoadConfiguration(op ConfigurationOptions) Config {
-	c := Config{op: op}
-	c.OnlineContent = NewOnlineSource(op.ServerURL)
-	c.OfflineContent = NewOfflineSource(op.DataDirectory)
-	c.Library = NewLibrary(c.OfflineContent)
-	c.Download = NewDownloader(c.OnlineContent, c.OfflineContent)
-	return c
-}
-
-func (c *Config) Languages() []Language {
-	langs, err := c.Library.Languages()
-	if err != nil {
-		c.Download.Languages()
-		langs, err = c.Library.Languages()
-		if err != nil {
-			panic(err)
-		}
-	}
-	return langs
-}
-
-func (c *Config) Language(s string) *Language {
-	lang, err := c.Library.Language(s)
-	if err != nil {
-		//TODO: Output stderr
-		c.Download.Languages()
-		lang, err = c.Library.Language(s)
-		if err != nil {
-			panic(err)
-		}
-	}
-	return lang
-}
-
-func (c *Config) SelectedLanguage() *Language {
-	return c.Language(c.op.Language)
-}
-
-func (c *Config) Catalog(lang *Language) *Catalog {
-	catalog, err := c.Library.Catalog(lang)
-	if err != nil {
-		c.Download.Catalog(lang)
-		catalog, err = c.Library.Catalog(lang)
-		if err != nil {
-			panic(err)
-		}
-	}
-	return catalog
-}
-
-func (c *Config) SelectedCatalog() *Catalog {
-	return c.Catalog(c.SelectedLanguage())
-}*/

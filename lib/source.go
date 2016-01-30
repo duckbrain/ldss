@@ -44,7 +44,7 @@ func (c localSource) CatalogPath(language *Language) string {
 	return mkdirAndGetFile(c.BasePath, language.GlCode, "catalog.json")
 }
 func (c localSource) BookPath(book *Book) string {
-	return mkdirAndGetFile(c.BasePath, book.catalog.Language().GlCode, book.GlURI, "contents.sqlite")
+	return mkdirAndGetFile(c.BasePath, book.catalog.Language().GlCode, book.Path(), "contents.sqlite")
 }
 func (c localSource) Open(path string) (io.ReadCloser, error) {
 	return os.Open(path)
@@ -71,7 +71,7 @@ func (c *ldsSource) CatalogPath(language *Language) string {
 	return c.getAction(fmt.Sprintf("catalog.query&languageid=%v&platformid=%v", language.ID, c.PlatformID))
 }
 func (c *ldsSource) BookPath(book *Book) string {
-	return book.URL
+	return book.URL()
 }
 func (c *ldsSource) Open(path string) (io.ReadCloser, error) {
 	resp, err := http.Get(path)

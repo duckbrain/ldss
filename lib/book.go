@@ -8,6 +8,56 @@ import (
 	_ "github.com/mattn/go-sqlite3"
 )
 
+type Book struct {
+	base    jsonBook
+	catalog *Catalog
+	parser  *bookParser
+	parent  Item
+}
+
+func (b *Book) String() string {
+	return fmt.Sprintf("%v {%v}", b.base.Name, b.base.GlURI)
+}
+
+func (b *Book) ID() int {
+	return b.base.ID
+}
+
+func (b *Book) Name() string {
+	return b.base.Name
+}
+
+func (b *Book) URL() string {
+	return b.base.URL
+}
+
+func (b *Book) Path() string {
+	return b.base.GlURI
+}
+
+func (b *Book) Language() *Language {
+	return b.catalog.language
+}
+
+func (b *Book) Children() ([]Item, error) {
+	if b.parser == nil {
+		b.parser = newBookParser(b, b.catalog.source)
+	}
+	nodes, err := b.parser.Index()
+	if err != nil {
+		return nil, err
+	}
+	items := make([]Item, len(nodes))
+	for i, n := range nodes {
+		items[i] = n
+	}
+	return items, nil
+}
+
+func (b *Book) Parent() Item {
+	return b.parent
+}
+
 type bookParser struct {
 	source                             Source
 	book                               *Book
@@ -74,17 +124,17 @@ func (l *bookParser) Children(parent Node) ([]Node, error) {
 	if err := l.populate(); err != nil {
 		return nil, err
 	}
-	rows, err := l.stmtChildren.Query(parent.ID)
+	rows, err := l.stmtChildren.Query(parent.id)
 	if err != nil {
 		return nil, err
 	}
 	nodes := make([]Node, 0)
 	for rows.Next() {
 		node := Node{Book: l.book}
-		if node.ID > 0 {
+		if node.id > 0 {
 			node.parent = node
 		}
-		err := rows.Scan(&node.ID, &node.Name, &node.GlURI, &node.HasContent, &node.ChildCount)
+		err := rows.Scan(&node.id, &node.name, &node.glURI, &node.hasContent, &node.childCount)
 		if err != nil {
 			return nil, err
 		}
@@ -98,7 +148,7 @@ func (l *bookParser) GlUri(uri string) (Node, error) {
 	if err := l.populate(); err != nil {
 		return node, err
 	}
-	err := l.stmtUri.QueryRow(uri).Scan(&node.ID, &node.Name, &node.GlURI, &node.HasContent, &node.ChildCount)
+	err := l.stmtUri.QueryRow(uri).Scan(&node.id, &node.name, &node.glURI, &node.hasContent, &node.childCount)
 	return node, err
 }
 
@@ -107,6 +157,6 @@ func (l *bookParser) Content(node Node) (string, error) {
 		return "", err
 	}
 	var content string
-	err := l.stmtContent.QueryRow(node.ID).Scan(&content)
+	err := l.stmtContent.QueryRow(node.id).Scan(&content)
 	return content, err
 }

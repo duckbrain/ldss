@@ -21,15 +21,13 @@ func (ref Reference) String() string {
 }
 
 type RefParser struct {
-	lib *Library
 	cat *Catalog
 	s   []string
 	ref Reference
 }
 
-func NewRefParser(lib *Library, cat *Catalog) RefParser {
+func NewRefParser(cat *Catalog) RefParser {
 	p := RefParser{}
-	p.lib = lib
 	p.cat = cat
 	return p
 }
@@ -148,18 +146,21 @@ func (p *RefParser) Book() (*Book, error) {
 }
 
 func (p *RefParser) Item() (Item, error) {
-	return p.lib.lookupGlURI(p.ref.glPath, p.cat)
+	//return p.lib.lookupGlURI(p.ref.glPath, p.cat)
+	return nil, nil
 }
 
 func (p *RefParser) Reference() (Reference, error) {
-	item, err := p.lib.lookupGlURI(p.ref.glPath, p.cat)
+	//item, err := p.lib.lookupGlURI(p.ref.glPath, p.cat)
+	var item Item
+	var err error
 	if err != nil {
 		return Reference{}, err
 	}
 	ref := p.ref
 	ref.item = item
 	if ref.bookName == "" {
-		ref.bookName = item.DisplayName()
+		ref.bookName = item.Name()
 	}
 	return ref, nil
 }
@@ -169,7 +170,8 @@ func (p *RefParser) glURI(s string) (ref Reference, err error) {
 	if err != nil {
 		return ref, err
 	}
-	item, err := p.lib.lookupGlURI(s, p.cat)
+	//item, err := p.lib.lookupGlURI(s, p.cat)
+	var item Item
 	if err != nil {
 		return ref, err
 	}

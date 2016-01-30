@@ -1,6 +1,11 @@
 package lib
 
-import "fmt"
+import (
+	"encoding/json"
+	"fmt"
+)
+
+var languages cache
 
 type glLanguageDescription struct {
 	Languages []Language `json:"languages"`
@@ -31,4 +36,21 @@ func (l *Language) String() string {
 	}
 
 	return id + name + code
+}
+
+func init() {
+	languages.construct = func() (interface{}, error) {
+		var description glLanguageDescription
+		file, err := source.Open(source.LanguagesPath())
+		if err != nil {
+			return nil, &NotDownloadedLanguageErr{err, nil}
+		}
+		err = json.NewDecoder(file).Decode(&description)
+		return description.Languages, err
+	}
+}
+
+func Languages() ([]Language, error) {
+	langs, err := languages.get()
+	return langs.([]Language), err
 }

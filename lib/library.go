@@ -1,60 +1,31 @@
 package lib
 
-import (
-	"encoding/json"
-	"errors"
-	"fmt"
-	"strconv"
-	"strings"
-)
-
-type Library struct {
-	source               Source
-	languages            []Language
-	catalogsByLanguageId map[int]*catalogParser
-	booksByLangBookId    map[langBookID]*bookParser
-}
+var source Source
+var catalogsByLanguageId map[int]*Catalog
+var booksByLangBookId map[langBookID]*bookParser
 
 type langBookID struct {
 	langID int
 	bookID int
 }
 
-func NewLibrary(source Source) *Library {
-	p := &Library{}
-	p.source = source
-	p.catalogsByLanguageId = make(map[int]*catalogParser)
-	p.booksByLangBookId = make(map[langBookID]*bookParser)
-	return p
+func init() {
+	//TODO Set source
+	catalogsByLanguageId = make(map[int]*Catalog)
+	booksByLangBookId = make(map[langBookID]*bookParser)
 }
 
-func (l *Library) populateLanguages() error {
-	if l.languages != nil {
-		return nil
+/*
+func (l *Library) populateCatalog(lang *Language) (*Catalog, error) {
+	if c, ok := l.catalogsByLanguageId[lang.ID]; ok {
+		return c, nil
 	}
-
-	var description glLanguageDescription
-	file, err := l.source.Open(l.source.LanguagesPath())
+	c, err := newCatalog(lang, l.source)
 	if err != nil {
-		return &NotDownloadedLanguageErr{err, nil}
+		return nil, err
 	}
-	dec := json.NewDecoder(file)
-	err = dec.Decode(&description)
-	if err != nil {
-		return err
-	}
-
-	l.languages = description.Languages
-	return nil
-}
-
-func (l *Library) populateCatalog(lang *Language) *catalogParser {
-	c, ok := l.catalogsByLanguageId[lang.ID]
-	if !ok {
-		c = newCatalogLoader(lang, l.source)
-		l.catalogsByLanguageId[lang.ID] = c
-	}
-	return c
+	l.catalogsByLanguageId[lang.ID] = c
+	return c, nil
 }
 
 func (l *Library) populateBook(book *Book) *bookParser {
@@ -68,7 +39,7 @@ func (l *Library) populateBook(book *Book) *bookParser {
 	return b
 }
 
-func (l *Library) Language(id string) (*Language, error) {
+func (l *Library) FindLanguage(id string) (*Language, error) {
 	if err := l.populateLanguages(); err != nil {
 		return nil, err
 	}
@@ -85,7 +56,7 @@ func (l *Library) Languages() ([]Language, error) {
 }
 
 func (l *Library) Catalog(lang *Language) (*Catalog, error) {
-	return l.populateCatalog(lang).Catalog()
+	return l.populateCatalog(lang)
 }
 func (l *Library) Book(path string, catalog *Catalog) (*Book, error) {
 	return l.populateCatalog(catalog.Language()).BookByUnknown(path)
@@ -97,7 +68,7 @@ func (l *Library) lookupGlURI(path string, catalog *Catalog) (Item, error) {
 		return nil, fmt.Errorf("Cannot use empty string as a path")
 	}
 	if path == "/" {
-		return c.Catalog()
+		return c, nil
 	}
 	if folderId, err := strconv.Atoi(path[1:]); err == nil {
 		return c.Folder(folderId)
@@ -140,14 +111,15 @@ func (l *Library) Children(item Item) ([]Item, error) {
 	}
 }
 
-func (l *Library) Content(node Node) (*Content, error) {
+func (l *Library) Content(node Node) (*Page, error) {
 	rawContent, err := l.populateBook(node.Book).Content(node)
 	if err != nil {
 		return nil, err
 	}
 	parser := ContentParser{contentHtml: rawContent}
-	return parser.Content()
+	//return parser.Content()
+	return nil, nil
 }
-
+*/
 //	Index(lang *Language) []CatalogItem
 //	Children(item CatalogItem) []CatalogItem
