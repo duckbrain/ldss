@@ -7,10 +7,10 @@ all: $(BINARY)
 
 ifeq ($(DEBUG), 1)
 $(BINARY): $(DEPENDS) ldss/bindata_debug.go
-	go install --tags debug ./ldss
+	go install ./ldss
 else
 $(BINARY): $(DEPENDS) ldss/bindata_release.go
-	go install ./ldss
+	go install --tags release ./ldss
 endif
 
 run: $(BINARY)
@@ -19,9 +19,9 @@ run-lookup: $(BINARY)
 	$(BINARY) lookup 1 Ne 3:17
 
 ldss/bindata_debug.go:
-	$(BINDATA) -nomemcopy -debug -tags "debug" -o "$@" data/...
+	$(BINDATA) -nomemcopy -debug -tags "!release" -o "$@" data/...
 ldss/bindata_release.go: $(shell find data -print)
-	$(BINDATA) -nomemcopy -tags "!debug" -o "$@" data/...
+	$(BINDATA) -nomemcopy -tags "release" -o "$@" data/...
 
 $(BINDATA):
 	go get -u github.com/jteeuwen/go-bindata/...

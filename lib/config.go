@@ -100,6 +100,10 @@ func (c *Configuration) RegisterOption(o AppOption) {
 	c.Set(o.Name, o.Default)
 }
 
+func (c *Configuration) Args() []string {
+	return c.Args()
+}
+
 func (c *Configuration) Set(name string, value interface{}) {
 	c.values[name] = value
 }

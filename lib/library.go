@@ -1,6 +1,5 @@
 package lib
 
-var source Source
 var catalogsByLanguageId map[int]*Catalog
 var booksByLangBookId map[langBookID]*Book
 
@@ -13,6 +12,52 @@ func init() {
 	//TODO Set source
 	catalogsByLanguageId = make(map[int]*Catalog)
 	booksByLangBookId = make(map[langBookID]*Book)
+}
+
+func autoDownload(open func() (Item, error), c chan Message) {
+	item, err := open()
+	var dlErr, preDlErr NotDownloadedErr
+	dlErr, ok := err.(NotDownloadedErr)
+	for ok {
+		if dlErr == preDlErr {
+			break
+		}
+		c <- MessageDownload{dlErr}
+		err = dlErr.Download()
+		if err != nil {
+			c <- MessageError{err}
+			return
+		}
+		item, err = open()
+		preDlErr = dlErr
+		dlErr, ok = err.(NotDownloadedErr)
+	}
+
+	if err == nil {
+		c <- MessageDone{item}
+	} else {
+		c <- MessageError{err}
+	}
+}
+
+func DefaultCatalog() <-chan Message {
+	c := make(chan Message)
+	go autoDownload(func() (Item, error) {
+		lang, err := DefaultLanguage()
+		if err != nil {
+			return nil, err
+		}
+		catalog, err := lang.Catalog()
+		if err != nil {
+			return nil, err
+		}
+		return catalog, nil
+	}, c)
+	return c
+}
+
+func Lookup(q string, c *Catalog) (Item, error) {
+	return nil, nil
 }
 
 /*
@@ -28,36 +73,7 @@ func (l *Library) populateCatalog(lang *Language) (*Catalog, error) {
 	return c, nil
 }
 
-func (l *Library) populateBook(book *Book) *bookParser {
-	id := langBookID{book.catalog.language.ID, book.ID}
-	b, ok := l.booksByLangBookId[id]
-	if !ok {
-		b = newBookParser(book, l.source)
-		l.booksByLangBookId[id] = b
-		book.parser = b
-	}
-	return b
-}
 
-func (l *Library) FindLanguage(id string) (*Language, error) {
-	if err := l.populateLanguages(); err != nil {
-		return nil, err
-	}
-	for _, lang := range l.languages {
-		if lang.Name == id || fmt.Sprintf("%v", lang.ID) == id || lang.EnglishName == id || lang.Code == id || lang.GlCode == id {
-			return &lang, nil
-		}
-	}
-	return nil, errors.New("Language not found")
-}
-
-func (l *Library) Languages() ([]Language, error) {
-	return l.languages, l.populateLanguages()
-}
-
-func (l *Library) Catalog(lang *Language) (*Catalog, error) {
-	return l.populateCatalog(lang)
-}
 func (l *Library) Book(path string, catalog *Catalog) (*Book, error) {
 	return l.populateCatalog(catalog.Language()).BookByUnknown(path)
 }

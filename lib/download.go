@@ -6,29 +6,10 @@ import (
 	"io"
 )
 
-type Downloader struct {
-	online  Source
-	offline Source
-}
-
-func NewDownloader(online Source, offline Source) *Downloader {
-	d := new(Downloader)
-	d.online = online
-	d.offline = offline
-	return d
-}
-
-func (d *Downloader) Status() {
-
-}
-
-func (d *Downloader) Missing() {
-}
-
-func (d *Downloader) downloadFile(get string, save string, zlibDecompress bool) (err error) {
+func downloadFile(get string, save string, zlibDecompress bool) (err error) {
 	var input io.Reader
 
-	body, err := d.online.Open(get)
+	body, err := server.Open(get)
 	if err != nil {
 		return
 	}
@@ -43,7 +24,7 @@ func (d *Downloader) downloadFile(get string, save string, zlibDecompress bool) 
 		input = body
 	}
 
-	file, err := d.offline.Create(save)
+	file, err := source.Create(save)
 	if err != nil {
 		return
 	}
@@ -52,18 +33,26 @@ func (d *Downloader) downloadFile(get string, save string, zlibDecompress bool) 
 	return
 }
 
-func (d *Downloader) Languages() error {
-	return d.downloadFile(d.online.LanguagesPath(), d.offline.LanguagesPath(), false)
+func DownloadLanguages() error {
+	return downloadFile(server.LanguagesPath(), source.LanguagesPath(), false)
 }
 
-func (d *Downloader) Catalog(language *Language) error {
-	return d.downloadFile(d.online.CatalogPath(language), d.offline.CatalogPath(language), false)
+func DownloadCatalog(language *Language) error {
+	return downloadFile(server.CatalogPath(language), source.CatalogPath(language), false)
 }
 
-func (d *Downloader) Book(book *Book) error {
-	return d.downloadFile(d.online.BookPath(book), d.offline.BookPath(book), true)
+func DownloadBook(book *Book) error {
+	return downloadFile(server.BookPath(book), source.BookPath(book), true)
 }
 
-func (d *Downloader) Books(languageId int) error {
+func DownloadBooks(languageId int) error {
 	return errors.New("Not Implemented")
+}
+
+func DownloadStatus() error {
+	return nil
+}
+
+func DownloadMissing() error {
+	return nil
 }

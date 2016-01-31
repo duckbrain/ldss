@@ -66,11 +66,13 @@ func (f *Catalog) Books() []*Book {
 	return f.base.Books
 }
 
-func newCatalog(lang *Language, source Source) (*Catalog, error) {
+func newCatalog(lang *Language) (*Catalog, error) {
 	var desc jsonCatalogBase
 	file, err := source.Open(source.CatalogPath(lang))
 	if err != nil {
-		return nil, &NotDownloadedBookErr{err, lang}
+		dlErr := NotDownloadedCatalogErr{lang: lang}
+		dlErr.err = err
+		return nil, dlErr
 	}
 	if err = json.NewDecoder(file).Decode(&desc); err != nil {
 		return nil, err
@@ -146,16 +148,24 @@ func (l *Catalog) BookByUnknown(id string) (*Book, error) {
 	return nil, errors.New("Book not found")
 }
 
-/*
-
 func (c *Catalog) Lookup(id string) (Item, error) {
 	if id[0] == '/' {
 		return c.LookupPath(id)
+	} else {
+		panic(errors.New("Non-path lookup not implemented"))
 	}
-	p := NewRefParser(c, c)
-	p.Load(id)
-	return p.Item()
-	return nil, nil
+}
+
+func (c *Catalog) LookupBook(q string) (*Book, error) {
+	i, err := c.Lookup(q)
+	if err != nil {
+		return nil, err
+	}
+	book, ok := i.(*Book)
+	if !ok {
+		return nil, fmt.Errorf("Result \"%v\" is not a book", i)
+	}
+	return book, nil
 }
 
 func (c *Catalog) LookupPath(path string) (Item, error) {
@@ -180,10 +190,8 @@ func (c *Catalog) LookupPath(path string) (Item, error) {
 				return book, nil
 			}
 			// Look for a node
-			b := l.populateBook(book)
-			return b.GlUri(path)
+			return book.lookupPath(path)
 		}
 	}
 	return nil, fmt.Errorf("Path \"%v\" not found", path)
 }
-*/

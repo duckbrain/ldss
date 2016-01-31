@@ -2,6 +2,8 @@ package main
 
 import (
 	"fmt"
+	"ldss/lib"
+
 	"github.com/fatih/color"
 )
 
@@ -23,10 +25,11 @@ func main() {
 		}
 	}()*/
 
-	op := loadDefaultOptions()
-	op = loadFileOptions(op)
-	op, args := loadParameterOptions(op)
-	config := LoadConfiguration(op)
+	if err := lib.Config().Init(); err != nil {
+		panic(err)
+	}
+
+	args := lib.Config().Args()
 
 	if len(args) == 0 {
 		PrintInstructions()
@@ -41,14 +44,14 @@ func main() {
 				}
 			}
 		case "config":
-			fmt.Print(op)
+			fmt.Print(lib.Config().String())
 		default:
 			var ok bool
 			var app app
 			if app, ok = apps[args[0]]; !ok {
 				app = &cmd{}
 			}
-			app.setInfo(args, config)
+			app.setInfo(args)
 			app.run()
 		}
 	}

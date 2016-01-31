@@ -1,3 +1,5 @@
+// +build !noweb
+
 package main
 
 import (

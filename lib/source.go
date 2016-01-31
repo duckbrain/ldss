@@ -9,12 +9,20 @@ import (
 	"path"
 )
 
+var source, server Source
+
+func init() {
+	source = NewOfflineSource(".ldss")
+	server = NewOnlineSource("https://tech.lds.org/glweb")
+}
+
 type Source interface {
 	LanguagesPath() string
 	CatalogPath(language *Language) string
 	BookPath(book *Book) string
 	Open(path string) (io.ReadCloser, error)
 	Create(path string) (io.WriteCloser, error)
+	Exist(path string) bool
 }
 
 type localSource struct {
@@ -23,7 +31,7 @@ type localSource struct {
 }
 
 func NewOfflineSource(path string) Source {
-	return &localSource{path, os.ModeDir | os.ModePerm}
+	return localSource{path, os.ModeDir | os.ModePerm}
 }
 
 func mkdirAndGetFile(paths ...string) string {
@@ -52,6 +60,10 @@ func (c localSource) Open(path string) (io.ReadCloser, error) {
 func (c localSource) Create(path string) (io.WriteCloser, error) {
 	return os.Create(path)
 }
+func (c localSource) Exist(path string) bool {
+	_, err := os.Stat(path)
+	return os.IsNotExist(err)
+}
 
 type ldsSource struct {
 	BasePath   string
@@ -59,24 +71,27 @@ type ldsSource struct {
 }
 
 func NewOnlineSource(path string) Source {
-	return &ldsSource{path, 17}
+	return ldsSource{path, 17}
 }
-func (c *ldsSource) getAction(action string) string {
+func (c ldsSource) getAction(action string) string {
 	return c.BasePath + "?action=" + action
 }
-func (c *ldsSource) LanguagesPath() string {
+func (c ldsSource) LanguagesPath() string {
 	return c.getAction("languages.query")
 }
-func (c *ldsSource) CatalogPath(language *Language) string {
+func (c ldsSource) CatalogPath(language *Language) string {
 	return c.getAction(fmt.Sprintf("catalog.query&languageid=%v&platformid=%v", language.ID, c.PlatformID))
 }
-func (c *ldsSource) BookPath(book *Book) string {
+func (c ldsSource) BookPath(book *Book) string {
 	return book.URL()
 }
-func (c *ldsSource) Open(path string) (io.ReadCloser, error) {
+func (c ldsSource) Open(path string) (io.ReadCloser, error) {
 	resp, err := http.Get(path)
 	return resp.Body, err
 }
-func (c *ldsSource) Create(path string) (io.WriteCloser, error) {
+func (c ldsSource) Create(path string) (io.WriteCloser, error) {
 	return nil, errors.New("Can't create an online source")
+}
+func (c ldsSource) Exist(path string) bool {
+	return true // Assume that it is all there
 }

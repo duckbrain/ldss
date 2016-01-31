@@ -38,22 +38,22 @@ func (f *Folder) ID() int {
 	return f.base.ID
 }
 
-func (f Folder) String() string {
+func (f *Folder) String() string {
 	return fmt.Sprintf("%v {folders[%v] books[%v]}", f.Name(), len(f.Folders()), len(f.Books()))
 }
 
-func (f Folder) Name() string {
+func (f *Folder) Name() string {
 	return f.base.Name
 }
 
-func (f Folder) Path() string {
+func (f *Folder) Path() string {
 	return fmt.Sprintf("/%v", f.ID)
 }
 
-func (f Folder) Language() *Language {
+func (f *Folder) Language() *Language {
 	return f.catalog.language
 }
 
-func (f Folder) Parent() Item {
+func (f *Folder) Parent() Item {
 	return f.parent
 }

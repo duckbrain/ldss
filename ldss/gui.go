@@ -1,4 +1,4 @@
-// +build nogui
+// +build !nogui,broken
 
 /*
  * This file will contain a native GUI that can be run.
@@ -23,7 +23,7 @@ func (app gui) run() {
 		address := ui.NewEntry()
 
 		address.OnChanged(func(sender *ui.Entry) {
-			_, _ := app.config.Library.Lookup(sender.Text())
+			app.config.Library.Lookup(sender.Text())
 		})
 
 		toolbar.Append(address, false)

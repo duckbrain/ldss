@@ -1,3 +1,5 @@
+// +build !noweb
+
 package main
 
 import (
@@ -7,6 +9,7 @@ import (
 	"ldss/lib"
 	"net/http"
 	"reflect"
+	"strconv"
 	"strings"
 )
 
@@ -17,7 +20,7 @@ type web struct {
 
 func init() {
 	apps["web"] = &web{}
-	lib.RegisterOption(lib.AppOption{
+	lib.Config().RegisterOption(lib.AppOption{
 		Name:     "WebPort",
 		Default:  1830,
 		ShortArg: 'p',
@@ -25,7 +28,7 @@ func init() {
 			return strconv.Atoi(arg)
 		},
 	})
-	lib.RegisterOption(lib.AppOption{
+	lib.Config().RegisterOption(lib.AppOption{
 		Name:    "WebTemplatePath",
 		Default: "",
 	})
@@ -35,21 +38,29 @@ func (app web) run() {
 	http.HandleFunc("/", app.handler)
 	http.HandleFunc("/json/", app.handleJSON)
 
+	port := lib.Config().Get("WebPort").(int)
+
 	app.initTemplates()
 
-	app.efmt.Printf("Listening on port: %v\n", app.config.op.WebPort)
-	http.ListenAndServe(fmt.Sprintf(":%v", app.config.op.WebPort), nil)
+	app.efmt.Printf("Listening on port: %v\n", port)
+	http.ListenAndServe(fmt.Sprintf(":%v", port), nil)
 }
 
 func (app *web) handleJSON(w http.ResponseWriter, r *http.Request) {
-	lang, err := app.config.Library.Language(r.URL.Query().Get("lang"))
+	lang, err := lib.LookupLanguage(r.URL.Query().Get("lang"))
 	if err != nil {
-		lang = app.config.SelectedLanguage()
+		lang, err = lib.DefaultLanguage()
+		if err != nil {
+			panic(err)
+		}
 	}
-	catalog := app.config.Catalog(lang)
+	catalog, err := lang.Catalog()
+	if err != nil {
+		panic(err)
+	}
 	path := r.URL.Path[len("/json"):]
 	fmt.Println("Looking for :" + path)
-	item, err := app.config.Library.Lookup(path, catalog)
+	item, err := catalog.Lookup(path)
 	if err != nil {
 		panic(err)
 	}
@@ -87,7 +98,7 @@ func (app *web) handler(w http.ResponseWriter, r *http.Request) {
 		}
 	}()
 
-	lang, err := app.config.Library.Language(r.URL.Query().Get("lang"))
+	lang, err := lib.LookupLanguage(r.URL.Query().Get("lang"))
 	if err != nil {
 		lang = app.config.SelectedLanguage()
 	}

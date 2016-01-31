@@ -37,9 +37,10 @@ func newBook() *Book {
 	b.dbCache.construct = func() (interface{}, error) {
 		var l bookDBConnection
 		path := source.BookPath(b)
+		dlErr := NotDownloadedBookErr{book: b}
 		if _, err := os.Stat(path); os.IsNotExist(err) {
-			fmt.Println("File not found")
-			return nil, &NotDownloadedBookErr{err, b}
+			dlErr.err = err
+			return nil, dlErr
 		}
 		db, err := sql.Open("sqlite3", path)
 		if err != nil {
@@ -48,7 +49,8 @@ func newBook() *Book {
 		var count int
 		err = db.QueryRow("SELECT COUNT(*) FROM node;").Scan(&count)
 		if err != nil {
-			return nil, &NotDownloadedBookErr{err, b}
+			dlErr.err = err
+			return nil, dlErr
 		}
 		l.db = db
 		l.stmtChildren, err = db.Prepare(sqlQueryNode + " WHERE parent_id = ?")
@@ -141,7 +143,7 @@ func (b *Book) nodeChildren(parent Node) ([]Node, error) {
 	return nodes, nil
 }
 
-func (b *Book) GlUri(uri string) (Node, error) {
+func (b *Book) lookupPath(uri string) (Node, error) {
 	node := Node{Book: b}
 	l, err := b.db()
 	if err != nil {
@@ -151,7 +153,7 @@ func (b *Book) GlUri(uri string) (Node, error) {
 	return node, err
 }
 
-func (b *Book) Content(node Node) (string, error) {
+func (b *Book) nodeContent(node Node) (string, error) {
 	l, err := b.db()
 	if err != nil {
 		return "", err

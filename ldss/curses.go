@@ -1,9 +1,12 @@
+// +build !nocurses,broken
+
 package main
 
 import (
-	"github.com/rthornton128/goncurses"
 	"ldss/lib"
 	"log"
+
+	"github.com/rthornton128/goncurses"
 )
 
 type curses struct {
@@ -23,8 +26,6 @@ func (app *curses) run() {
 	goncurses.Cursor(0)
 	stdscr.Clear()
 	stdscr.Keypad(true)
-
-	app.catalog = app.config.SelectedCatalog()
 }
 
 func (app *curses) cursesDisplay(item lib.Item) {
