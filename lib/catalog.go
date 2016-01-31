@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"strings"
 )
 
 var ErrNotFound error
@@ -139,4 +140,42 @@ func (l *Catalog) BookByUnknown(id string) (*Book, error) {
 		}
 	}
 	return nil, errors.New("Book not found")
+}
+
+func (l *Catalog) Lookup(id string) (Item, error) {
+	if id[0] == '/' {
+		return l.LookupURI(id, catalog)
+	}
+	p := NewRefParser(l, catalog)
+	p.Load(id)
+	return p.Item()
+}
+
+func (c *Catalog) LookupPath(path string) (Item, error) {
+	if path == "" {
+		return nil, fmt.Errorf("Cannot use empty string as a path")
+	}
+	if path == "/" {
+		return c, nil
+	}
+	if folderId, err := strconv.Atoi(path[1:]); err == nil {
+		return c.Folder(folderId)
+	}
+	sections := strings.Split(path, "/")
+	if sections[0] != "" {
+		return nil, fmt.Errorf("Invalid path \"%v\", must start with '/'", path)
+	}
+	for i := 1; i <= len(sections); i++ {
+		temppath := strings.Join(sections[0:i], "/")
+		book, err := c.BookByGlURI(temppath)
+		if err == nil {
+			if path == book.Path() {
+				return book, nil
+			}
+			// Look for a node
+			b := l.populateBook(book)
+			return b.GlUri(path)
+		}
+	}
+	return nil, fmt.Errorf("Path \"%v\" not found", path)
 }

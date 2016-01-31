@@ -13,7 +13,23 @@ type Book struct {
 	catalog *Catalog
 	parser  *bookParser
 	parent  Item
+	dbCache cache
 }
+
+type bookDBConnection struct {
+	db                                 *sql.DB
+	stmtChildren, stmtUri, stmtContent *sql.Stmt
+}
+
+const sqlQueryNode = `
+	SELECT
+		node.id,
+		node.title,
+		node.uri,
+		CASE WHEN node.content IS NULL THEN 0 ELSE 1 END,
+		(SELECT COUNT(*) FROM node subnode WHERE subnode.id = node.id) node_count
+	FROM node
+`
 
 func (b *Book) String() string {
 	return fmt.Sprintf("%v {%v}", b.base.Name, b.base.GlURI)
@@ -58,22 +74,14 @@ func (b *Book) Parent() Item {
 	return b.parent
 }
 
-type bookParser struct {
-	source                             Source
-	book                               *Book
-	db                                 *sql.DB
-	stmtChildren, stmtUri, stmtContent *sql.Stmt
+func (b *Book) db() (*bookDBConnection, error) {
+
+	db, err := b.dbCache.get()
+	return db.(*bookDBConnection), err
 }
 
-const sqlQueryNode = `
-	SELECT
-		node.id,
-		node.title,
-		node.uri,
-		CASE WHEN node.content IS NULL THEN 0 ELSE 1 END,
-		(SELECT COUNT(*) FROM node subnode WHERE subnode.id = node.id) node_count
-	FROM node
-`
+type bookParser struct {
+}
 
 func newBookParser(book *Book, source Source) *bookParser {
 	return &bookParser{source: source, book: book}
@@ -81,33 +89,7 @@ func newBookParser(book *Book, source Source) *bookParser {
 
 func (l *bookParser) populate() error {
 	if l.db == nil {
-		path := l.source.BookPath(l.book)
-		if _, err := os.Stat(path); os.IsNotExist(err) {
-			fmt.Println("File not found")
-			return &NotDownloadedBookErr{err, l.book}
-		}
-		db, err := sql.Open("sqlite3", path)
-		if err != nil {
-			return err
-		}
-		var count int
-		err = db.QueryRow("SELECT COUNT(*) FROM node;").Scan(&count)
-		if err != nil {
-			return &NotDownloadedBookErr{err, l.book}
-		}
-		l.db = db
-		l.stmtChildren, err = db.Prepare(sqlQueryNode + " WHERE parent_id = ?")
-		if err != nil {
-			return err
-		}
-		l.stmtUri, err = db.Prepare(sqlQueryNode + " WHERE uri = ?")
-		if err != nil {
-			return err
-		}
-		l.stmtContent, err = db.Prepare("SELECT content FROM node WHERE id = ?")
-		if err != nil {
-			return err
-		}
+
 	}
 	return nil
 }

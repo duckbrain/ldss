@@ -3,11 +3,12 @@
 package main
 
 import (
+	"ldss/lib"
 	"log"
 	"os"
 )
 
-func (a *appinfo) setInfo(args []string, config Config) {
+func (a *appinfo) setInfo(args []string, config *lib.Configuration) {
 	a.args = args
 	a.config = config
 	a.fmt = log.New(os.Stdin, "", 0)
