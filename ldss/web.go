@@ -100,9 +100,15 @@ func (app *web) handler(w http.ResponseWriter, r *http.Request) {
 
 	lang, err := lib.LookupLanguage(r.URL.Query().Get("lang"))
 	if err != nil {
-		lang = app.config.SelectedLanguage()
+		lang, err = lib.DefaultLanguage()
+		if err != nil {
+			panic(err)
+		}
 	}
-	catalog := app.config.Catalog(lang)
+	catalog, err := lang.Catalog()
+	if err != nil {
+		panic(err)
+	}
 
 	switch strings.ToLower(r.URL.Path) {
 	case "/download":
@@ -122,7 +128,7 @@ func (app *web) handler(w http.ResponseWriter, r *http.Request) {
 		}
 		w.Write(data)
 	default:
-		item, err := app.config.Library.Lookup(r.URL.Path, catalog)
+		item, err := catalog.Lookup(r.URL.Path)
 		if err != nil {
 			panic(err)
 		}
@@ -141,7 +147,7 @@ func (app *web) print(w http.ResponseWriter, r *http.Request, item lib.Item) {
 	}{}
 	data.Item = item
 	data.LangCode = item.Language().GlCode
-	data.Children, err = app.config.Library.Children(item)
+	data.Children, err = item.Children()
 	if err != nil {
 		panic(err)
 	}
@@ -149,11 +155,7 @@ func (app *web) print(w http.ResponseWriter, r *http.Request, item lib.Item) {
 	switch item.(type) {
 	case lib.Node:
 		node := item.(lib.Node)
-		if node.HasContent {
-			content, err := node.Content()
-			if err != nil {
-				panic(err)
-			}
+		if content, err := node.Content(); err == nil {
 			data.Content = content.HTML()
 			err = app.templates.nodeContent.Execute(w, data)
 		} else {

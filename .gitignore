@@ -8,6 +8,7 @@
 bindata.go
 bindata_debug.go
 bindata_release.go
+ldss/ldss
 .depends
 
 # Folders

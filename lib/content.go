@@ -12,6 +12,10 @@ type Content struct {
 	rawHTML string
 }
 
+func (c *Content) HTML() template.HTML {
+	return template.HTML(c.rawHTML)
+}
+
 type parseMode int
 
 const (

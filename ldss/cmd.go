@@ -37,7 +37,7 @@ func colors(enabled bool) *cmdcolors {
 }
 
 func (app *cmd) run() {
-	c := colors(true)
+	//c := colors(true)
 	args := app.args
 	efmt := log.New(os.Stderr, "", 0)
 	var catalog *lib.Catalog
@@ -62,6 +62,7 @@ func (app *cmd) run() {
 
 		if node, ok := item.(lib.Node); ok {
 			if content, err := node.Content(); err == nil {
+				_ = content
 				//TODO: Format
 				/*
 					c.title.Printf("   %v   \n", content.Title)
@@ -98,6 +99,9 @@ func (app *cmd) run() {
 			}
 		} else {
 			lang, err := lib.LookupLanguage(args[1])
+			if err != nil {
+				panic(err)
+			}
 			fmt.Println(lang.String())
 		}
 	case "catalog", "cat":
