@@ -27,7 +27,7 @@ func (n Node) Language() *Language {
 }
 
 func (n Node) Children() ([]Item, error) {
-	nodes, err := n.Book.parser.Children(n)
+	nodes, err := n.Book.nodeChildren(n)
 	if err != nil {
 		return nil, err
 	}

@@ -4,8 +4,12 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"strconv"
 	"strings"
 )
+
+var _ strconv.NumError
+var _ strings.Reader
 
 var ErrNotFound error
 
@@ -142,13 +146,16 @@ func (l *Catalog) BookByUnknown(id string) (*Book, error) {
 	return nil, errors.New("Book not found")
 }
 
-func (l *Catalog) Lookup(id string) (Item, error) {
+/*
+
+func (c *Catalog) Lookup(id string) (Item, error) {
 	if id[0] == '/' {
-		return l.LookupURI(id, catalog)
+		return c.LookupPath(id)
 	}
-	p := NewRefParser(l, catalog)
+	p := NewRefParser(c, c)
 	p.Load(id)
 	return p.Item()
+	return nil, nil
 }
 
 func (c *Catalog) LookupPath(path string) (Item, error) {
@@ -179,3 +186,4 @@ func (c *Catalog) LookupPath(path string) (Item, error) {
 	}
 	return nil, fmt.Errorf("Path \"%v\" not found", path)
 }
+*/

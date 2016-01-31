@@ -11,7 +11,7 @@ import (
 type Book struct {
 	base    jsonBook
 	catalog *Catalog
-	parser  *bookParser
+	parser  *Book
 	parent  Item
 	dbCache cache
 }
@@ -30,6 +30,43 @@ const sqlQueryNode = `
 		(SELECT COUNT(*) FROM node subnode WHERE subnode.id = node.id) node_count
 	FROM node
 `
+
+func newBook() *Book {
+	b := &Book{}
+
+	b.dbCache.construct = func() (interface{}, error) {
+		var l bookDBConnection
+		path := source.BookPath(b)
+		if _, err := os.Stat(path); os.IsNotExist(err) {
+			fmt.Println("File not found")
+			return nil, &NotDownloadedBookErr{err, b}
+		}
+		db, err := sql.Open("sqlite3", path)
+		if err != nil {
+			return nil, err
+		}
+		var count int
+		err = db.QueryRow("SELECT COUNT(*) FROM node;").Scan(&count)
+		if err != nil {
+			return nil, &NotDownloadedBookErr{err, b}
+		}
+		l.db = db
+		l.stmtChildren, err = db.Prepare(sqlQueryNode + " WHERE parent_id = ?")
+		if err != nil {
+			return nil, err
+		}
+		l.stmtUri, err = db.Prepare(sqlQueryNode + " WHERE uri = ?")
+		if err != nil {
+			return nil, err
+		}
+		l.stmtContent, err = db.Prepare("SELECT content FROM node WHERE id = ?")
+		if err != nil {
+			return nil, err
+		}
+		return l, nil
+	}
+	return b
+}
 
 func (b *Book) String() string {
 	return fmt.Sprintf("%v {%v}", b.base.Name, b.base.GlURI)
@@ -56,10 +93,7 @@ func (b *Book) Language() *Language {
 }
 
 func (b *Book) Children() ([]Item, error) {
-	if b.parser == nil {
-		b.parser = newBookParser(b, b.catalog.source)
-	}
-	nodes, err := b.parser.Index()
+	nodes, err := b.Index()
 	if err != nil {
 		return nil, err
 	}
@@ -75,35 +109,17 @@ func (b *Book) Parent() Item {
 }
 
 func (b *Book) db() (*bookDBConnection, error) {
-
 	db, err := b.dbCache.get()
 	return db.(*bookDBConnection), err
 }
 
-type bookParser struct {
+func (l *Book) Index() ([]Node, error) {
+	return l.nodeChildren(Node{})
 }
 
-func newBookParser(book *Book, source Source) *bookParser {
-	return &bookParser{source: source, book: book}
-}
-
-func (l *bookParser) populate() error {
-	if l.db == nil {
-
-	}
-	return nil
-}
-
-func (l *bookParser) Close() {
-	l.db.Close()
-}
-
-func (l *bookParser) Index() ([]Node, error) {
-	return l.Children(Node{})
-}
-
-func (l *bookParser) Children(parent Node) ([]Node, error) {
-	if err := l.populate(); err != nil {
+func (b *Book) nodeChildren(parent Node) ([]Node, error) {
+	l, err := b.db()
+	if err != nil {
 		return nil, err
 	}
 	rows, err := l.stmtChildren.Query(parent.id)
@@ -112,7 +128,7 @@ func (l *bookParser) Children(parent Node) ([]Node, error) {
 	}
 	nodes := make([]Node, 0)
 	for rows.Next() {
-		node := Node{Book: l.book}
+		node := Node{Book: b}
 		if node.id > 0 {
 			node.parent = node
 		}
@@ -125,20 +141,22 @@ func (l *bookParser) Children(parent Node) ([]Node, error) {
 	return nodes, nil
 }
 
-func (l *bookParser) GlUri(uri string) (Node, error) {
-	node := Node{Book: l.book}
-	if err := l.populate(); err != nil {
+func (b *Book) GlUri(uri string) (Node, error) {
+	node := Node{Book: b}
+	l, err := b.db()
+	if err != nil {
 		return node, err
 	}
-	err := l.stmtUri.QueryRow(uri).Scan(&node.id, &node.name, &node.glURI, &node.hasContent, &node.childCount)
+	err = l.stmtUri.QueryRow(uri).Scan(&node.id, &node.name, &node.glURI, &node.hasContent, &node.childCount)
 	return node, err
 }
 
-func (l *bookParser) Content(node Node) (string, error) {
-	if err := l.populate(); err != nil {
+func (b *Book) Content(node Node) (string, error) {
+	l, err := b.db()
+	if err != nil {
 		return "", err
 	}
 	var content string
-	err := l.stmtContent.QueryRow(node.id).Scan(&content)
+	err = l.stmtContent.QueryRow(node.id).Scan(&content)
 	return content, err
 }

@@ -2,7 +2,7 @@ package lib
 
 var source Source
 var catalogsByLanguageId map[int]*Catalog
-var booksByLangBookId map[langBookID]*bookParser
+var booksByLangBookId map[langBookID]*Book
 
 type langBookID struct {
 	langID int
@@ -12,7 +12,7 @@ type langBookID struct {
 func init() {
 	//TODO Set source
 	catalogsByLanguageId = make(map[int]*Catalog)
-	booksByLangBookId = make(map[langBookID]*bookParser)
+	booksByLangBookId = make(map[langBookID]*Book)
 }
 
 /*
