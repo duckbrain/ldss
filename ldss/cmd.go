@@ -16,23 +16,18 @@ type cmd struct {
 }
 
 type cmdcolors struct {
-	title, subtitle, summary, verse, content *color.Color
+	title, subtitle, summary, verse, content, message *color.Color
 }
 
 func colors(enabled bool) *cmdcolors {
 	c := cmdcolors{}
 	c.content = color.New()
-	if enabled {
-		c.title = color.New(color.Bold).Add(color.Underline).Add(color.FgWhite).Add(color.BgHiMagenta)
-		c.subtitle = color.New(color.Bold).Add(color.FgGreen)
-		c.summary = color.New(color.Italic).Add(color.BgBlue).Add(color.FgBlack)
-		c.verse = color.New(color.Bold).Add(color.FgRed)
-	} else {
-		c.title = c.content
-		c.subtitle = c.content
-		c.summary = c.content
-		c.verse = c.content
-	}
+	c.title = color.New(color.Bold).Add(color.Underline).Add(color.FgWhite).Add(color.BgHiMagenta)
+	c.subtitle = color.New(color.Bold).Add(color.FgGreen)
+	c.summary = color.New(color.Italic).Add(color.BgBlue).Add(color.FgBlack)
+	c.verse = color.New(color.Bold).Add(color.FgRed)
+	c.message = color.New(color.FgHiYellow).Add(color.Italic)
+	color.NoColor = !enabled
 	return &c
 }
 
@@ -44,7 +39,10 @@ func (app *cmd) item(c <-chan lib.Message) interface{} {
 		case lib.MessageError:
 			panic(m)
 		default:
-			app.efmt.Println(m.String())
+			if m == nil {
+				return nil
+			}
+			fmt.Printf("%v\n", m)
 		}
 	}
 	panic(fmt.Errorf("Channel completed prematurely\n"))
@@ -71,7 +69,7 @@ func (app *cmd) run() {
 
 		if node, ok := item.(lib.Node); ok {
 			if content, err := node.Content(); err == nil {
-				_ = content
+				app.fmt.Printf("%v", content.HTML())
 				//TODO: Format
 				/*
 					c.title.Printf("   %v   \n", content.Title)
@@ -137,9 +135,9 @@ func (app *cmd) run() {
 				panic(err)
 			}
 		case "all":
-			//lang := config.SelectedLanguage()
-			//efmt.Println("Downloading all content for \"" + lang.Name + "\" catalog")
-			//config.Download.Missing()
+			app.item(lib.DownloadAll(catalog.Language(), true))
+		case "missing":
+			app.item(lib.DownloadAll(catalog.Language(), false))
 		case "cat", "catalog":
 			lang, err := lib.DefaultLanguage()
 			if err != nil {

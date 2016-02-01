@@ -19,10 +19,11 @@ func init() {
 
 type Catalog struct {
 	folderBase
-	language    *Language
-	foldersById map[int]*Folder
-	booksById   map[int]*Book
-	booksByPath map[string]*Book
+	language      *Language
+	foldersById   map[int]*Folder
+	foldersByPath map[string]*Folder
+	booksById     map[int]*Book
+	booksByPath   map[string]*Book
 }
 
 func (c *Catalog) String() string {
@@ -56,6 +57,7 @@ func newCatalog(lang *Language) (*Catalog, error) {
 	c := &Catalog{}
 	c.base = desc.Catalog
 	c.foldersById = make(map[int]*Folder)
+	c.foldersByPath = make(map[string]*Folder)
 	c.booksById = make(map[int]*Book)
 	c.booksByPath = make(map[string]*Book)
 	c.language = lang
@@ -83,6 +85,7 @@ func (catalog *Catalog) addFolders(jFolders []*jsonFolder, parent Item) []*Folde
 		f.books = catalog.addBooks(base.Books, f)
 		folders[i] = f
 		catalog.foldersById[base.ID] = f
+		catalog.foldersByPath[f.Path()] = f
 	}
 	return folders
 }
@@ -96,30 +99,6 @@ func (catalog *Catalog) addBooks(jBooks []*jsonBook, parent Item) []*Book {
 		catalog.booksByPath[base.GlURI] = b
 	}
 	return books
-}
-
-func (l *Catalog) Folder(id int) (*Folder, error) {
-	c, ok := l.foldersById[id]
-	if !ok {
-		return nil, ErrNotFound
-	}
-	return c, nil
-}
-
-func (l *Catalog) Book(id int) (*Book, error) {
-	c, ok := l.booksById[id]
-	if !ok {
-		return nil, ErrNotFound
-	}
-	return c, nil
-}
-
-func (l *Catalog) BookByGlURI(glUri string) (*Book, error) {
-	c, ok := l.booksByPath[glUri]
-	if !ok {
-		return nil, ErrNotFound
-	}
-	return c, nil
 }
 
 func (l *Catalog) BookByUnknown(id string) (*Book, error) {
@@ -158,22 +137,21 @@ func (c *Catalog) LookupPath(path string) (Item, error) {
 	if path == "/" {
 		return c, nil
 	}
-	if folderId, err := strconv.Atoi(path[1:]); err == nil {
-		return c.Folder(folderId)
-	}
 	sections := strings.Split(path, "/")
 	if sections[0] != "" {
 		return nil, fmt.Errorf("Invalid path \"%v\", must start with '/'", path)
 	}
 	for i := 2; i <= len(sections); i++ {
 		temppath := strings.Join(sections[0:i], "/")
-		book, err := c.BookByGlURI(temppath)
-		if err == nil {
+
+		if book, ok := c.booksByPath[temppath]; ok {
 			if path == book.Path() {
 				return book, nil
 			}
 			// Look for a node
 			return book.lookupPath(path)
+		} else if folder, ok := c.foldersByPath[temppath]; ok {
+			return folder, nil
 		}
 	}
 	return nil, fmt.Errorf("Path \"%v\" not found", path)

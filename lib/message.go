@@ -14,7 +14,7 @@ type MessageDownload struct {
 }
 
 func (m MessageDownload) String() string {
-	return fmt.Sprintf("Downloading \"%v\"", m.err)
+	return fmt.Sprintf("Downloading \"%v\"", m.err.String())
 }
 func (m MessageDownload) Finished() bool {
 	return false

@@ -49,6 +49,7 @@ func (f *folderBase) Name() string {
 }
 
 func (f *Folder) Path() string {
+	//TODO: Calculate path based on commonality with children
 	return fmt.Sprintf("/%v", f.ID)
 }
 
