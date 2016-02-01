@@ -2,6 +2,7 @@ package lib
 
 import (
 	"fmt"
+	"strings"
 )
 
 type folderBase struct {
@@ -41,7 +42,7 @@ func (f *Folder) ID() int {
 }
 
 func (f *Folder) String() string {
-	return fmt.Sprintf("%v {folders[%v] books[%v]}", f.Name(), len(f.Folders()), len(f.Books()))
+	return fmt.Sprintf("%v {%v folders[%v] books[%v]}", f.Name(), f.Path(), len(f.Folders()), len(f.Books()))
 }
 
 func (f *folderBase) Name() string {
@@ -49,8 +50,37 @@ func (f *folderBase) Name() string {
 }
 
 func (f *Folder) Path() string {
-	//TODO: Calculate path based on commonality with children
-	return fmt.Sprintf("/%v", f.ID)
+	//Calculate path based on commonality with children
+	var childFound = false
+	var path []string
+	var search func(folder *Folder)
+
+	search = func(folder *Folder) {
+		for _, book := range folder.books {
+			p := strings.Split(book.Path(), "/")
+			if !childFound {
+				path = p
+				childFound = true
+				continue
+			}
+			for i := 0; i < len(p) && i < len(path); i++ {
+				if p[i] != path[i] {
+					path = path[0:i]
+				}
+			}
+		}
+		for _, subFolder := range folder.folders {
+			search(subFolder)
+		}
+	}
+
+	search(f)
+
+	if childFound && len(path) > 1 {
+		return strings.Join(path, "/")
+	}
+
+	return fmt.Sprintf("/%v", f.ID())
 }
 
 func (f *Folder) Language() *Language {

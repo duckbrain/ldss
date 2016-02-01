@@ -137,21 +137,20 @@ func (c *Catalog) LookupPath(path string) (Item, error) {
 	if path == "/" {
 		return c, nil
 	}
+	if folder, ok := c.foldersByPath[path]; ok {
+		return folder, nil
+	}
 	sections := strings.Split(path, "/")
 	if sections[0] != "" {
 		return nil, fmt.Errorf("Invalid path \"%v\", must start with '/'", path)
 	}
 	for i := 2; i <= len(sections); i++ {
 		temppath := strings.Join(sections[0:i], "/")
-
 		if book, ok := c.booksByPath[temppath]; ok {
 			if path == book.Path() {
 				return book, nil
 			}
-			// Look for a node
 			return book.lookupPath(path)
-		} else if folder, ok := c.foldersByPath[temppath]; ok {
-			return folder, nil
 		}
 	}
 	return nil, fmt.Errorf("Path \"%v\" not found", path)
