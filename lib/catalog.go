@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"log"
 	"strconv"
 	"strings"
 )
@@ -18,52 +19,27 @@ func init() {
 }
 
 type Catalog struct {
-	base         *jsonCatalog
-	language     *Language
-	source       Source
-	foldersById  map[int]*Folder
-	booksById    map[int]*Book
-	booksByGlURI map[string]*Book
+	folderBase
+	language    *Language
+	foldersById map[int]*Folder
+	booksById   map[int]*Book
+	booksByPath map[string]*Book
 }
 
-func (c Catalog) Name() string {
-	return c.base.Name
-}
-
-func (c Catalog) String() string {
+func (c *Catalog) String() string {
 	return fmt.Sprintf("%v {folders[%v] books[%v]}", c.base.Name, len(c.base.Folders), len(c.base.Books))
 }
 
-func (c Catalog) Path() string {
+func (c *Catalog) Path() string {
 	return "/"
 }
 
-func (c Catalog) Parent() Item {
+func (c *Catalog) Parent() Item {
 	return nil
 }
 
-func (c Catalog) Language() *Language {
+func (c *Catalog) Language() *Language {
 	return c.language
-}
-
-func (f *Catalog) Children() ([]Item, error) {
-	folderLen := len(f.base.Folders)
-	items := make([]Item, folderLen+len(f.base.Books))
-	for i, f := range f.Folders() {
-		items[i] = f
-	}
-	for i, f := range f.Books() {
-		items[folderLen+i] = f
-	}
-	return items, nil
-}
-
-func (f *Catalog) Folders() []*Folder {
-	return f.base.Folders
-}
-
-func (f *Catalog) Books() []*Book {
-	return f.base.Books
 }
 
 func newCatalog(lang *Language) (*Catalog, error) {
@@ -78,15 +54,15 @@ func newCatalog(lang *Language) (*Catalog, error) {
 		return nil, err
 	}
 
-	c := &Catalog{base: desc.Catalog}
+	c := &Catalog{}
+	c.base = desc.Catalog
 	c.foldersById = make(map[int]*Folder)
 	c.booksById = make(map[int]*Book)
-	c.booksByGlURI = make(map[string]*Book)
+	c.booksByPath = make(map[string]*Book)
 	c.language = lang
-	c.source = source
 
-	c.addFolders(c.Folders(), c)
-	c.addBooks(c.Books(), c)
+	c.folders = c.addFolders(c.base.Folders, c)
+	c.books = c.addBooks(c.base.Books, c)
 
 	return c, nil
 }
@@ -96,23 +72,31 @@ type glCatalogDescrpition struct {
 	CoverArtBaseUrl string   `json:"cover_art_base_url"`
 }
 
-func (l *Catalog) addFolders(folders []*Folder, parent Item) {
-	for _, f := range folders {
-		f.catalog = l
-		f.parent = parent
-		l.foldersById[f.ID()] = f
-		l.addFolders(f.Folders(), f)
-		l.addBooks(f.Books(), f)
+func (catalog *Catalog) addFolders(jFolders []*jsonFolder, parent Item) []*Folder {
+	folders := make([]*Folder, len(jFolders))
+	for i, base := range jFolders {
+		f := &Folder{
+			parent:  parent,
+			catalog: catalog,
+		}
+		f.base = base
+		f.folders = catalog.addFolders(base.Folders, f)
+		f.books = catalog.addBooks(base.Books, f)
+		folders[i] = f
+		catalog.foldersById[base.ID] = f
 	}
+	return folders
 }
 
-func (l *Catalog) addBooks(books []*Book, parent Item) {
-	for _, b := range books {
-		b.catalog = l
-		b.parent = parent
-		l.booksById[b.base.ID] = b
-		l.booksByGlURI[b.Path()] = b
+func (catalog *Catalog) addBooks(jBooks []*jsonBook, parent Item) []*Book {
+	books := make([]*Book, len(jBooks))
+	for i, base := range jBooks {
+		b := newBook(base, catalog, parent)
+		books[i] = b
+		catalog.booksById[base.ID] = b
+		catalog.booksByPath[base.GlURI] = b
 	}
+	return books
 }
 
 func (l *Catalog) Folder(id int) (*Folder, error) {
@@ -132,7 +116,7 @@ func (l *Catalog) Book(id int) (*Book, error) {
 }
 
 func (l *Catalog) BookByGlURI(glUri string) (*Book, error) {
-	c, ok := l.booksByGlURI[glUri]
+	c, ok := l.booksByPath[glUri]
 	if !ok {
 		return nil, ErrNotFound
 	}
@@ -182,9 +166,10 @@ func (c *Catalog) LookupPath(path string) (Item, error) {
 	if sections[0] != "" {
 		return nil, fmt.Errorf("Invalid path \"%v\", must start with '/'", path)
 	}
-	for i := 1; i <= len(sections); i++ {
+	for i := 2; i <= len(sections); i++ {
 		temppath := strings.Join(sections[0:i], "/")
 		book, err := c.BookByGlURI(temppath)
+		log.Printf("temppath: %v, book: %v, err: %v", temppath, book, err)
 		if err == nil {
 			if path == book.Path() {
 				return book, nil

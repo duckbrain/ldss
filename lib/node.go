@@ -39,7 +39,7 @@ func (n Node) Children() ([]Item, error) {
 }
 
 func (n Node) Content() (*Content, error) {
-	rawContent, err := n.Book.parser.nodeContent(n)
+	rawContent, err := n.Book.nodeContent(n)
 	return &Content{rawHTML: rawContent}, err
 }
 

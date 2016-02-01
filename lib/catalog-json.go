@@ -1,21 +1,15 @@
 package lib
 
 type jsonCatalogBase struct {
-	Catalog         *jsonCatalog `json:"catalog"`
-	CoverArtBaseUrl string       `json:"cover_art_base_url"`
+	Catalog         *jsonFolder `json:"catalog"`
+	CoverArtBaseUrl string      `json:"cover_art_base_url"`
 }
-
-type jsonFolderBase struct {
-	Name    string    `json:"name"`
-	Folders []*Folder `json:"folders"`
-	Books   []*Book   `json:"books"`
-}
-
-type jsonCatalog jsonFolderBase
 
 type jsonFolder struct {
-	jsonFolderBase
-	ID int `json:"id"`
+	Name    string        `json:"name"`
+	Folders []*jsonFolder `json:"folders"`
+	Books   []*jsonBook   `json:"books"`
+	ID      int           `json:"id"`
 }
 
 type jsonBook struct {

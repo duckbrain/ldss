@@ -45,6 +45,9 @@ func (l *Language) Catalog() (*Catalog, error) {
 		return newCatalog(l)
 	}
 	c, err := l.catalogCache.get()
+	if err != nil {
+		return nil, err
+	}
 	return c.(*Catalog), err
 }
 
@@ -62,9 +65,14 @@ func init() {
 
 func Languages() ([]*Language, error) {
 	if !source.Exist(source.LanguagesPath()) {
-		DownloadLanguages()
+		if err := DownloadLanguages(); err != nil {
+			return nil, err
+		}
 	}
 	langs, err := languages.get()
+	if err != nil {
+		return nil, err
+	}
 	return langs.([]*Language), err
 }
 

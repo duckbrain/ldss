@@ -46,6 +46,8 @@ func (app *cmd) run() {
 		switch m.(type) {
 		case lib.MessageDone:
 			catalog = m.(lib.MessageDone).Item().(*lib.Catalog)
+		case lib.MessageError:
+			panic(m)
 		default:
 			efmt.Println(m.String())
 		}
@@ -54,7 +56,7 @@ func (app *cmd) run() {
 	switch args[0] {
 	case "lookup":
 		lookupString := strings.Join(args[1:], " ")
-		item, err := lib.Lookup(lookupString, catalog)
+		item, err := catalog.Lookup(lookupString)
 		if err != nil {
 			efmt.Printf("Path \"%v\" not found.", lookupString)
 			panic(err)

@@ -15,7 +15,7 @@ type notDownloadedErr struct {
 	err error
 }
 
-func (err *notDownloadedErr) InternalError() error {
+func (err notDownloadedErr) InternalError() error {
 	return err.err
 }
 

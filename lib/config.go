@@ -101,7 +101,7 @@ func (c *Configuration) RegisterOption(o AppOption) {
 }
 
 func (c *Configuration) Args() []string {
-	return c.Args()
+	return c.args
 }
 
 func (c *Configuration) Set(name string, value interface{}) {

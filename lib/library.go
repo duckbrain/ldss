@@ -14,35 +14,39 @@ func init() {
 	booksByLangBookId = make(map[langBookID]*Book)
 }
 
-func autoDownload(open func() (Item, error), c chan Message) {
-	item, err := open()
-	var dlErr, preDlErr NotDownloadedErr
-	dlErr, ok := err.(NotDownloadedErr)
-	for ok {
-		if dlErr == preDlErr {
-			break
+func autoDownload(open func() (Item, error)) chan Message {
+	c := make(chan Message)
+	go func() {
+		item, err := open()
+		defer close(c)
+		var dlErr, preDlErr NotDownloadedErr
+		dlErr, ok := err.(NotDownloadedErr)
+		for ok {
+			if dlErr == preDlErr {
+				return
+			}
+			c <- MessageDownload{dlErr}
+			err = dlErr.Download()
+			if err != nil {
+				c <- MessageError{err}
+				return
+			}
+			item, err = open()
+			preDlErr = dlErr
+			dlErr, ok = err.(NotDownloadedErr)
 		}
-		c <- MessageDownload{dlErr}
-		err = dlErr.Download()
-		if err != nil {
-			c <- MessageError{err}
-			return
-		}
-		item, err = open()
-		preDlErr = dlErr
-		dlErr, ok = err.(NotDownloadedErr)
-	}
 
-	if err == nil {
-		c <- MessageDone{item}
-	} else {
-		c <- MessageError{err}
-	}
+		if err == nil {
+			c <- MessageDone{item}
+		} else {
+			c <- MessageError{err}
+		}
+	}()
+	return c
 }
 
 func DefaultCatalog() <-chan Message {
-	c := make(chan Message)
-	go autoDownload(func() (Item, error) {
+	return autoDownload(func() (Item, error) {
 		lang, err := DefaultLanguage()
 		if err != nil {
 			return nil, err
@@ -52,12 +56,28 @@ func DefaultCatalog() <-chan Message {
 			return nil, err
 		}
 		return catalog, nil
-	}, c)
-	return c
+	})
 }
 
-func Lookup(q string, c *Catalog) (Item, error) {
-	return nil, nil
+func LookupPath(lang *Language, q string) <-chan Message {
+	return autoDownload(func() (Item, error) {
+		lang, err := DefaultLanguage()
+		if err != nil {
+			return nil, err
+		}
+		catalog, err := lang.Catalog()
+		if err != nil {
+			return nil, err
+		}
+		if q == catalog.Path() {
+			return catalog, nil
+		}
+		item, err := catalog.LookupPath(q)
+		if err != nil {
+			return nil, err
+		}
+		return item, nil
+	})
 }
 
 /*

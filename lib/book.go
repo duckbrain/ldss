@@ -9,9 +9,8 @@ import (
 )
 
 type Book struct {
-	base    jsonBook
+	base    *jsonBook
 	catalog *Catalog
-	parser  *Book
 	parent  Item
 	dbCache cache
 }
@@ -31,8 +30,11 @@ const sqlQueryNode = `
 	FROM node
 `
 
-func newBook() *Book {
+func newBook(base *jsonBook, catalog *Catalog, parent Item) *Book {
 	b := &Book{}
+	b.base = base
+	b.catalog = catalog
+	b.parent = parent
 
 	b.dbCache.construct = func() (interface{}, error) {
 		var l bookDBConnection
@@ -112,7 +114,10 @@ func (b *Book) Parent() Item {
 
 func (b *Book) db() (*bookDBConnection, error) {
 	db, err := b.dbCache.get()
-	return db.(*bookDBConnection), err
+	if err != nil {
+		return nil, err
+	}
+	return db.(*bookDBConnection), nil
 }
 
 func (l *Book) Index() ([]Node, error) {

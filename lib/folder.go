@@ -4,17 +4,19 @@ import (
 	"fmt"
 )
 
-/*
- * Folder
- */
+type folderBase struct {
+	base    *jsonFolder
+	folders []*Folder
+	books   []*Book
+}
 
 type Folder struct {
-	base    jsonFolder
+	folderBase
 	parent  Item
 	catalog *Catalog
 }
 
-func (f *Folder) Children() ([]Item, error) {
+func (f *folderBase) Children() ([]Item, error) {
 	folderLen := len(f.base.Folders)
 	items := make([]Item, folderLen+len(f.base.Books))
 	for i, f := range f.Folders() {
@@ -26,12 +28,12 @@ func (f *Folder) Children() ([]Item, error) {
 	return items, nil
 }
 
-func (f *Folder) Folders() []*Folder {
-	return f.base.Folders
+func (f *folderBase) Folders() []*Folder {
+	return f.folders
 }
 
-func (f *Folder) Books() []*Book {
-	return f.base.Books
+func (f *folderBase) Books() []*Book {
+	return f.books
 }
 
 func (f *Folder) ID() int {
@@ -42,7 +44,7 @@ func (f *Folder) String() string {
 	return fmt.Sprintf("%v {folders[%v] books[%v]}", f.Name(), len(f.Folders()), len(f.Books()))
 }
 
-func (f *Folder) Name() string {
+func (f *folderBase) Name() string {
 	return f.base.Name
 }
 

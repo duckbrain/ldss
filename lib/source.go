@@ -62,7 +62,7 @@ func (c localSource) Create(path string) (io.WriteCloser, error) {
 }
 func (c localSource) Exist(path string) bool {
 	_, err := os.Stat(path)
-	return os.IsNotExist(err)
+	return !os.IsNotExist(err)
 }
 
 type ldsSource struct {
