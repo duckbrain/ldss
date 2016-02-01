@@ -4,7 +4,6 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
-	"log"
 	"strconv"
 	"strings"
 )
@@ -169,7 +168,6 @@ func (c *Catalog) LookupPath(path string) (Item, error) {
 	for i := 2; i <= len(sections); i++ {
 		temppath := strings.Join(sections[0:i], "/")
 		book, err := c.BookByGlURI(temppath)
-		log.Printf("temppath: %v, book: %v, err: %v", temppath, book, err)
 		if err == nil {
 			if path == book.Path() {
 				return book, nil

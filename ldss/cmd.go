@@ -36,22 +36,29 @@ func colors(enabled bool) *cmdcolors {
 	return &c
 }
 
+func (app *cmd) item(c <-chan lib.Message) interface{} {
+	for m := range c {
+		switch m.(type) {
+		case lib.MessageDone:
+			return m.(lib.MessageDone).Item()
+		case lib.MessageError:
+			panic(m)
+		default:
+			app.efmt.Println(m.String())
+		}
+	}
+	panic(fmt.Errorf("Channel completed prematurely\n"))
+}
+
+func (app *cmd) dl(open func() (interface{}, error)) interface{} {
+	return app.item(lib.AutoDownload(open))
+}
+
 func (app *cmd) run() {
 	//c := colors(true)
 	args := app.args
 	efmt := log.New(os.Stderr, "", 0)
-	var catalog *lib.Catalog
-
-	for m := range lib.DefaultCatalog() {
-		switch m.(type) {
-		case lib.MessageDone:
-			catalog = m.(lib.MessageDone).Item().(*lib.Catalog)
-		case lib.MessageError:
-			panic(m)
-		default:
-			efmt.Println(m.String())
-		}
-	}
+	catalog := app.item(lib.DefaultCatalog()).(*lib.Catalog)
 
 	switch args[0] {
 	case "lookup":
@@ -82,10 +89,9 @@ func (app *cmd) run() {
 			}
 		}
 
-		children, err := item.Children()
-		if err != nil {
-			panic(err)
-		}
+		children := app.dl(func() (interface{}, error) {
+			return item.Children()
+		}).([]lib.Item)
 		fmt.Println(item)
 		for _, child := range children {
 			fmt.Printf("- %v\n", child)

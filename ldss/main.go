@@ -8,11 +8,6 @@ import (
 )
 
 var _ color.Color
-var apps map[string]app
-
-func init() {
-	apps = make(map[string]app)
-}
 
 func main() {
 	/*defer func() {

@@ -39,8 +39,8 @@ func newBook(base *jsonBook, catalog *Catalog, parent Item) *Book {
 	b.dbCache.construct = func() (interface{}, error) {
 		var l bookDBConnection
 		path := source.BookPath(b)
-		dlErr := NotDownloadedBookErr{book: b}
 		if _, err := os.Stat(path); os.IsNotExist(err) {
+			dlErr := NotDownloadedBookErr{book: b}
 			dlErr.err = err
 			return nil, dlErr
 		}
@@ -51,6 +51,7 @@ func newBook(base *jsonBook, catalog *Catalog, parent Item) *Book {
 		var count int
 		err = db.QueryRow("SELECT COUNT(*) FROM node;").Scan(&count)
 		if err != nil {
+			dlErr := NotDownloadedBookErr{book: b}
 			dlErr.err = err
 			return nil, dlErr
 		}
@@ -67,7 +68,7 @@ func newBook(base *jsonBook, catalog *Catalog, parent Item) *Book {
 		if err != nil {
 			return nil, err
 		}
-		return l, nil
+		return &l, nil
 	}
 	return b
 }

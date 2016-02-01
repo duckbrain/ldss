@@ -14,7 +14,7 @@ func init() {
 	booksByLangBookId = make(map[langBookID]*Book)
 }
 
-func autoDownload(open func() (Item, error)) chan Message {
+func AutoDownload(open func() (interface{}, error)) chan Message {
 	c := make(chan Message)
 	go func() {
 		item, err := open()
@@ -46,7 +46,7 @@ func autoDownload(open func() (Item, error)) chan Message {
 }
 
 func DefaultCatalog() <-chan Message {
-	return autoDownload(func() (Item, error) {
+	return AutoDownload(func() (interface{}, error) {
 		lang, err := DefaultLanguage()
 		if err != nil {
 			return nil, err
@@ -60,7 +60,7 @@ func DefaultCatalog() <-chan Message {
 }
 
 func LookupPath(lang *Language, q string) <-chan Message {
-	return autoDownload(func() (Item, error) {
+	return AutoDownload(func() (interface{}, error) {
 		lang, err := DefaultLanguage()
 		if err != nil {
 			return nil, err

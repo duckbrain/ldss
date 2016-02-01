@@ -21,13 +21,13 @@ func (m MessageDownload) Finished() bool {
 }
 
 type MessageDone struct {
-	item Item
+	item interface{}
 }
 
 func (m MessageDone) String() string {
 	return fmt.Sprintf("Finished loading \"%v\"", m.item)
 }
-func (m MessageDone) Item() Item {
+func (m MessageDone) Item() interface{} {
 	return m.item
 }
 func (m MessageDone) Finished() bool {
