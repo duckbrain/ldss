@@ -2,10 +2,10 @@ package lib
 
 import (
 	"html/template"
-	//	"strconv"
-	//"strings"
+	"strconv"
+	"strings"
 
-	//	"golang.org/x/net/html"
+	"golang.org/x/net/html"
 )
 
 type Content struct {
@@ -49,16 +49,15 @@ type VerseReference struct {
 	Letter rune
 }
 
-/*
-func (p *Page) parse() error {
-	reader := strings.NewReader(p.contentHtml)
+func (c *Content) Page() (*Page, error) {
+	reader := strings.NewReader(c.rawHTML)
 	doc, err := html.Parse(reader)
 	if err != nil {
-		return err
+		return nil, err
 	}
 
 	mode := parseTitleMode
-	content := new(Page)
+	page := new(Page)
 	var verse Verse
 	var f func(*html.Node)
 
@@ -76,7 +75,7 @@ func (p *Page) parse() error {
 				}
 				if mode == parseVerseMode && attr.Key == "id" {
 					if verse.Number > 0 {
-						content.Verses = append(content.Verses, verse)
+						page.Verses = append(page.Verses, verse)
 					}
 					verse.Number, err = strconv.Atoi(attr.Val)
 					if err != nil {
@@ -90,11 +89,11 @@ func (p *Page) parse() error {
 			text := strings.TrimSpace(n.Data)
 			switch mode {
 			case parseTitleMode:
-				content.Title += text
+				page.Title += text
 			case parseSubtitleMode:
-				content.Subtitle += text
+				page.Subtitle += text
 			case parseSummaryMode:
-				content.Summary += text
+				page.Summary += text
 			case parseVerseMode:
 				text = strings.TrimLeft(text, " 1234567890")
 				verse.Text += text + " "
@@ -106,16 +105,7 @@ func (p *Page) parse() error {
 	}
 	f(doc)
 	if verse.Number > 0 {
-		content.Verses = append(content.Verses, verse)
+		page.Verses = append(page.Verses, verse)
 	}
-	content.originalHtml = template.HTML(p.contentHtml)
-
-	p.content = content
-	return nil
+	return page, nil
 }
-
-func (p *Page) Content() (*Page, error) {
-	err := p.parse()
-	return p.content, err
-}
-*/

@@ -53,7 +53,6 @@ func (app *cmd) dl(open func() (interface{}, error)) interface{} {
 }
 
 func (app *cmd) run() {
-	//c := colors(true)
 	args := app.args
 	efmt := log.New(os.Stderr, "", 0)
 	catalog := app.item(lib.DefaultCatalog()).(*lib.Catalog)
@@ -69,20 +68,23 @@ func (app *cmd) run() {
 
 		if node, ok := item.(lib.Node); ok {
 			if content, err := node.Content(); err == nil {
-				app.fmt.Printf("%v", content.HTML())
-				//TODO: Format
-				/*
-					c.title.Printf("   %v   \n", content.Title)
-					if len(content.Subtitle) > 0 {
-						c.subtitle.Println(content.Subtitle)
-					}
-					if len(content.Summary) > 0 {
-						c.summary.Println(content.Summary)
-					}
-					for _, verse := range content.Verses {
-						c.verse.Printf("%v ", verse.Number)
-						c.content.Println(verse.Text)
-					}*/
+				//app.fmt.Printf("%v", content.HTML())
+				c := colors(true)
+				page, err := content.Page()
+				if err != nil {
+					panic(err)
+				}
+				c.title.Printf("   %v   \n", page.Title)
+				if len(page.Subtitle) > 0 {
+					c.subtitle.Println(page.Subtitle)
+				}
+				if len(page.Summary) > 0 {
+					c.summary.Println(page.Summary)
+				}
+				for _, verse := range page.Verses {
+					c.verse.Printf("%v ", verse.Number)
+					c.content.Println(verse.Text)
+				}
 				break
 			}
 		}
