@@ -2,7 +2,6 @@ package lib
 
 import (
 	"compress/zlib"
-	"errors"
 	"io"
 )
 
@@ -45,14 +44,6 @@ func DownloadCatalog(language *Language) error {
 
 func DownloadBook(book *Book) error {
 	return downloadFile(server.BookPath(book), source.BookPath(book), true)
-}
-
-func DownloadBooks(languageId int) error {
-	return errors.New("Not Implemented")
-}
-
-func DownloadStatus() error {
-	return nil
 }
 
 func DownloadAll(lang *Language, force bool) <-chan Message {

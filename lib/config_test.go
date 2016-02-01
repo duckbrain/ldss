@@ -19,7 +19,7 @@ func TestConfig(t *testing.T) {
 
 func TestConfigParams(t *testing.T) {
 	c := newConfiguration()
-	c.RegisterFlag(AppFlag{
+	c.RegisterFlag(ConfigFlag{
 		ShortArg: 'f',
 		LongArg:  "--four",
 		Action: func(c *Configuration) error {

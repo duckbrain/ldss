@@ -46,7 +46,7 @@ type Verse struct {
 
 type VerseReference struct {
 	Verse  int
-	Letter rune
+	Letter string
 }
 
 func (c *Content) Page() (*Page, error) {

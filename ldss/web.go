@@ -20,7 +20,7 @@ type web struct {
 
 func init() {
 	apps["web"] = &web{}
-	lib.Config().RegisterOption(lib.AppOption{
+	lib.Config().RegisterOption(lib.ConfigOption{
 		Name:     "WebPort",
 		Default:  1830,
 		ShortArg: 'p',
@@ -28,7 +28,7 @@ func init() {
 			return strconv.Atoi(arg)
 		},
 	})
-	lib.Config().RegisterOption(lib.AppOption{
+	lib.Config().RegisterOption(lib.ConfigOption{
 		Name:    "WebTemplatePath",
 		Default: "",
 	})

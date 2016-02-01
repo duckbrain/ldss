@@ -14,7 +14,7 @@ func init() {
 	booksByLangBookId = make(map[langBookID]*Book)
 }
 
-func AutoDownload(open func() (interface{}, error)) chan Message {
+func AutoDownload(open func() (interface{}, error)) <-chan Message {
 	c := make(chan Message)
 	go func() {
 		item, err := open()

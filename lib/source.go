@@ -9,14 +9,14 @@ import (
 	"path"
 )
 
-var source, server Source
+var source, server dataSource
 
 func init() {
-	source = NewOfflineSource(".ldss")
-	server = NewOnlineSource("https://tech.lds.org/glweb")
+	source = newOfflineSource(".ldss")
+	server = newOnlineSource("https://tech.lds.org/glweb")
 }
 
-type Source interface {
+type dataSource interface {
 	LanguagesPath() string
 	CatalogPath(language *Language) string
 	BookPath(book *Book) string
@@ -30,7 +30,7 @@ type localSource struct {
 	MkdirMode os.FileMode
 }
 
-func NewOfflineSource(path string) Source {
+func newOfflineSource(path string) dataSource {
 	return localSource{path, os.ModeDir | os.ModePerm}
 }
 
@@ -70,7 +70,7 @@ type ldsSource struct {
 	PlatformID int
 }
 
-func NewOnlineSource(path string) Source {
+func newOnlineSource(path string) dataSource {
 	return ldsSource{path, 17}
 }
 func (c ldsSource) getAction(action string) string {

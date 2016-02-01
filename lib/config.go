@@ -29,7 +29,7 @@ type configParam interface {
 	handleValue(string, *Configuration) error
 }
 
-type AppOption struct {
+type ConfigOption struct {
 	Name     string
 	Default  interface{}
 	ShortArg rune
@@ -37,17 +37,17 @@ type AppOption struct {
 	Parse    func(string) (interface{}, error)
 }
 
-type AppFlag struct {
+type ConfigFlag struct {
 	ShortArg rune
 	LongArg  string
 	Action   func(*Configuration) error
 }
 
-func (o AppOption) needValue() bool {
+func (o ConfigOption) needValue() bool {
 	return true
 }
 
-func (o AppOption) handleValue(s string, c *Configuration) error {
+func (o ConfigOption) handleValue(s string, c *Configuration) error {
 	val, err := o.Parse(s)
 	if err == nil {
 		c.Set(o.Name, val)
@@ -55,11 +55,11 @@ func (o AppOption) handleValue(s string, c *Configuration) error {
 	return err
 }
 
-func (o AppFlag) needValue() bool {
+func (o ConfigFlag) needValue() bool {
 	return false
 }
 
-func (o AppFlag) handleValue(s string, c *Configuration) error {
+func (o ConfigFlag) handleValue(s string, c *Configuration) error {
 	return o.Action(c)
 }
 
@@ -89,12 +89,12 @@ func (c *Configuration) Init() error {
 	return nil
 }
 
-func (c *Configuration) RegisterFlag(o AppFlag) {
+func (c *Configuration) RegisterFlag(o ConfigFlag) {
 	c.shortParams[o.ShortArg] = o
 	c.longParams[o.LongArg] = o
 }
 
-func (c *Configuration) RegisterOption(o AppOption) {
+func (c *Configuration) RegisterOption(o ConfigOption) {
 	c.shortParams[o.ShortArg] = o
 	c.longParams[o.LongArg] = o
 	c.Set(o.Name, o.Default)
