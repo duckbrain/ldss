@@ -77,7 +77,10 @@ func (f *Folder) Path() string {
 	search(f)
 
 	if childFound && len(path) > 1 {
-		return strings.Join(path, "/")
+		p := strings.Join(path, "/")
+		if _, ok := f.catalog.foldersByPath[p]; !ok {
+			return p
+		}
 	}
 
 	return fmt.Sprintf("/%v", f.ID())

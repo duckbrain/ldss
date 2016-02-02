@@ -126,8 +126,7 @@ func (app *cmd) run() {
 		}
 	case "download", "dl":
 		if len(args) == 1 {
-			efmt.Println("Must provide argment of what to download")
-			efmt.Println("usage: ldss download|dl lang|<lang>|<book>")
+			app.item(lib.DownloadAll(catalog.Language(), false))
 			return
 		}
 		switch args[1] {
@@ -148,12 +147,17 @@ func (app *cmd) run() {
 			efmt.Println("Downloading \"" + lang.Name + "\" language catalog")
 			lib.DownloadCatalog(lang)
 		default:
-			book, err := catalog.LookupBook(args[1])
+			item, err := catalog.Lookup(args[1])
 			if err != nil {
 				panic("Unknown download \"" + args[1] + "\"")
 			}
-			efmt.Printf("Downloading book \"%v\" for the \"%v\" catalog\n", book.Name, catalog.Name)
-			lib.DownloadBook(book)
+			if book, ok := item.(*lib.Book); ok {
+				efmt.Printf("Downloading book \"%v\" for the \"%v\" catalog\n", book.Name(), catalog.Name())
+				lib.DownloadBook(book)
+			} else if folder, ok := item.(*lib.Folder); ok {
+				efmt.Printf("Downloading folder \"%v\" for the \"%v\" catalog\n", folder.Name(), catalog.Name())
+				lib.DownloadChildren(folder, false)
+			}
 		}
 	default:
 		app.args = append([]string{"lookup"}, app.args...)

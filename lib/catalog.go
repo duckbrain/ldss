@@ -86,6 +86,7 @@ func (catalog *Catalog) addFolders(jFolders []*jsonFolder, parent Item) []*Folde
 		folders[i] = f
 		catalog.foldersById[base.ID] = f
 		catalog.foldersByPath[f.Path()] = f
+		catalog.foldersByPath[fmt.Sprintf("/%v", f.ID())] = f
 	}
 	return folders
 }

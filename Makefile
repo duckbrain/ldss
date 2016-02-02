@@ -3,7 +3,7 @@ BINARY = ${GOPATH}/bin/ldss
 BINDATA = ${GOPATH}/bin/go-bindata
 DEPENDS = ldss/*.go lib/*.go .depends $(BINDATA) 
 
-all: $(BINARY)
+all: $(BINARY) ldss/bindata_debug.go ldss/bindata_release.go
 
 ifeq ($(DEBUG), 1)
 $(BINARY): $(DEPENDS) ldss/bindata_debug.go

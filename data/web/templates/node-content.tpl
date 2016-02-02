@@ -1,2 +1,2 @@
-<h1>{{ .Item.DisplayName }}</h1>
+<h1>{{ .Item.Name }}</h1>
 {{ .Content }}
