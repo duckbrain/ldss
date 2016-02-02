@@ -46,20 +46,21 @@ func DownloadBook(book *Book) error {
 	return downloadFile(server.BookPath(book), source.BookPath(book), true)
 }
 
-func DownloadAll(lang *Language, force bool) <-chan Message {
+func DownloadChildren(item Item, force bool) <-chan Message {
+	// Find the catalog
+	var catalog *Catalog
+	parent := item
+	for {
+		if c, ok := parent.(*Catalog); ok {
+			catalog = c
+			break
+		}
+		parent = parent.Parent()
+	}
+
+	// Open a channel and start searching
 	c := make(chan Message)
 	go func() {
-		if force || !source.Exist(source.CatalogPath(lang)) {
-			c <- MessageDownload{NotDownloadedCatalogErr{notDownloadedErr{}, lang}}
-			DownloadCatalog(lang)
-		}
-
-		catalog, err := lang.Catalog()
-		if err != nil {
-			c <- MessageError{err}
-			return
-		}
-
 		lock := make(chan interface{})
 		limit := make(chan interface{}, DownloadLimit)
 		for i := 0; i < cap(limit); i++ {
@@ -73,6 +74,13 @@ func DownloadAll(lang *Language, force bool) <-chan Message {
 					limit <- nil
 				}()
 				if force || !source.Exist(source.BookPath(book)) {
+					// Skip if the book is not a child of the item
+					for parent := book.Parent(); parent != item; parent = parent.Parent() {
+						if parent == nil {
+							return
+						}
+					}
+
 					c <- MessageDownload{NotDownloadedBookErr{notDownloadedErr{}, book}}
 					if err := DownloadBook(book); err != nil {
 						//TODO Send warning message of error
@@ -85,6 +93,29 @@ func DownloadAll(lang *Language, force bool) <-chan Message {
 		}
 		//TODO Keep track of stats and send a message before closing
 		c <- MessageDone{catalog}
+		close(c)
+	}()
+	return c
+}
+
+func DownloadAll(lang *Language, force bool) <-chan Message {
+	c := make(chan Message)
+	go func() {
+		if force || !source.Exist(source.CatalogPath(lang)) {
+			c <- MessageDownload{NotDownloadedCatalogErr{notDownloadedErr{}, lang}}
+			DownloadCatalog(lang)
+		}
+
+		catalog, err := lang.Catalog()
+		if err != nil {
+			c <- MessageError{err}
+			close(c)
+			return
+		}
+
+		for m := range DownloadChildren(catalog, force) {
+			c <- m
+		}
 		close(c)
 	}()
 	return c
