@@ -8,5 +8,7 @@ type Item interface {
 	Path() string
 	Language() *Language
 	Parent() Item
+	Next() Item
+	Previous() Item
 	fmt.Stringer
 }

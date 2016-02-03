@@ -47,5 +47,11 @@ func (app gui) run() {
 func (app *gui) addPage(path string) {
 	page := newGuiPage()
 	app.tab.Append(fmt.Sprintf("Tab %v", app.tab.NumPages()+1), page.box)
+	page.btnNewTab.OnClicked(func(btn *ui.Button) {
+		app.addPage("/")
+	})
+	page.btnCloseTab.OnClicked(func(btn *ui.Button) {
+		//TODO: Page tracks index to remove it
+	})
 	page.Lookup(path)
 }

@@ -51,3 +51,11 @@ func (n *Node) Parent() Item {
 		return node
 	}
 }
+
+func (n *Node) Next() Item {
+	return nil
+}
+
+func (n *Node) Previous() Item {
+	return nil
+}

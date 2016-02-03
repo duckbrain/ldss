@@ -93,3 +93,11 @@ func (f *Folder) Language() *Language {
 func (f *Folder) Parent() Item {
 	return f.parent
 }
+
+func (f *Folder) Next() Item {
+	return nil
+
+}
+func (f *Folder) Previous() Item {
+	return nil
+}

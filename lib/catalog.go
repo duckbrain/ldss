@@ -38,6 +38,14 @@ func (c *Catalog) Parent() Item {
 	return nil
 }
 
+func (c *Catalog) Next() Item {
+	return nil
+}
+
+func (c *Catalog) Previous() Item {
+	return nil
+}
+
 func (c *Catalog) Language() *Language {
 	return c.language
 }

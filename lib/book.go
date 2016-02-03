@@ -118,6 +118,14 @@ func (b *Book) Parent() Item {
 	return b.parent
 }
 
+func (b *Book) Next() Item {
+	return nil
+}
+
+func (b *Book) Previous() Item {
+	return nil
+}
+
 func (b *Book) db() (*bookDBConnection, error) {
 	db, err := b.dbCache.get()
 	if err != nil {
