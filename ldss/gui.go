@@ -1,4 +1,4 @@
-// +build !nogui,broken
+// +build !nogui
 
 /*
  * This file will contain a native GUI that can be run.
@@ -6,40 +6,46 @@
 package main
 
 import (
+	"fmt"
 	"github.com/andlabs/ui"
 )
 
 type gui struct {
 	appinfo
+	pages []guiPage
+
+	// Controls
+	tab    *ui.Tab
+	window *ui.Window
+}
+
+func init() {
+	app := gui{}
+	app.pages = make([]guiPage, 0)
+	apps["gui"] = &app
 }
 
 func (app gui) run() {
 	err := ui.Main(func() {
-		box := ui.NewVerticalBox()
-		toolbar := ui.NewHorizontalBox()
-		contents := ui.NewVerticalBox()
+		app.tab = ui.NewTab()
 
-		title := ui.NewLabel("LDS Scriptures")
-		address := ui.NewEntry()
+		app.addPage("/")
 
-		address.OnChanged(func(sender *ui.Entry) {
-			app.config.Library.Lookup(sender.Text())
-		})
-
-		toolbar.Append(address, false)
-		box.Append(title, false)
-		box.Append(toolbar, false)
-		box.Append(contents, false)
-
-		window := ui.NewWindow("Hello", 200, 100, false)
-		window.SetChild(box)
-		window.OnClosing(func(*ui.Window) bool {
+		app.window = ui.NewWindow("LDS Scriptures", 200, 100, false)
+		app.window.SetChild(app.tab)
+		app.window.OnClosing(func(*ui.Window) bool {
 			ui.Quit()
 			return true
 		})
-		window.Show()
+		app.window.Show()
 	})
 	if err != nil {
 		panic(err)
 	}
+}
+
+func (app *gui) addPage(path string) {
+	page := newGuiPage()
+	app.tab.Append(fmt.Sprintf("Tab %v", app.tab.NumPages()+1), page.box)
+	page.Lookup(path)
 }

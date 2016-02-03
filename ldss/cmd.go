@@ -66,7 +66,7 @@ func (app *cmd) run() {
 			panic(err)
 		}
 
-		if node, ok := item.(lib.Node); ok {
+		if node, ok := item.(*lib.Node); ok {
 			if content, err := node.Content(); err == nil {
 				//app.fmt.Printf("%v", content.HTML())
 				c := colors(true)

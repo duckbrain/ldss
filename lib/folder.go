@@ -78,7 +78,7 @@ func (f *Folder) Path() string {
 
 	if childFound && len(path) > 1 {
 		p := strings.Join(path, "/")
-		if _, ok := f.catalog.foldersByPath[p]; !ok {
+		if found, ok := f.catalog.foldersByPath[p]; !ok || found == f {
 			return p
 		}
 	}

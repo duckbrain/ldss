@@ -115,7 +115,7 @@ func (c *Catalog) Lookup(id string) (Item, error) {
 	if id[0] == '/' {
 		return c.LookupPath(id)
 	} else {
-		panic(errors.New("Non-path lookup not implemented"))
+		return nil, errors.New("Non-path lookup not implemented")
 	}
 }
 
@@ -138,6 +138,7 @@ func (c *Catalog) LookupPath(path string) (Item, error) {
 	if path == "/" {
 		return c, nil
 	}
+	path = strings.TrimRight(path, "/ ")
 	if folder, ok := c.foldersByPath[path]; ok {
 		return folder, nil
 	}

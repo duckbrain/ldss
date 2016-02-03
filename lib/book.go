@@ -16,8 +16,8 @@ type Book struct {
 }
 
 type bookDBConnection struct {
-	db                                 *sql.DB
-	stmtChildren, stmtUri, stmtContent *sql.Stmt
+	db                                         *sql.DB
+	stmtChildren, stmtUri, stmtId, stmtContent *sql.Stmt
 }
 
 const sqlQueryNode = `
@@ -25,6 +25,7 @@ const sqlQueryNode = `
 		node.id,
 		node.title,
 		node.uri,
+		node.parent_id,
 		CASE WHEN node.content IS NULL THEN 0 ELSE 1 END,
 		(SELECT COUNT(*) FROM node subnode WHERE subnode.id = node.id) node_count
 	FROM node
@@ -61,6 +62,10 @@ func newBook(base *jsonBook, catalog *Catalog, parent Item) *Book {
 			return nil, err
 		}
 		l.stmtUri, err = db.Prepare(sqlQueryNode + " WHERE uri = ?")
+		if err != nil {
+			return nil, err
+		}
+		l.stmtId, err = db.Prepare(sqlQueryNode + " WHERE id = ?")
 		if err != nil {
 			return nil, err
 		}
@@ -121,26 +126,27 @@ func (b *Book) db() (*bookDBConnection, error) {
 	return db.(*bookDBConnection), nil
 }
 
-func (l *Book) Index() ([]Node, error) {
-	return l.nodeChildren(Node{})
+func (l *Book) Index() ([]*Node, error) {
+	return l.nodeChildren(nil)
 }
 
-func (b *Book) nodeChildren(parent Node) ([]Node, error) {
+func (b *Book) nodeChildren(parent *Node) ([]*Node, error) {
 	l, err := b.db()
+	parentId := 0
 	if err != nil {
 		return nil, err
 	}
-	rows, err := l.stmtChildren.Query(parent.id)
+	if parent != nil {
+		parentId = parent.id
+	}
+	rows, err := l.stmtChildren.Query(parentId)
 	if err != nil {
 		return nil, err
 	}
-	nodes := make([]Node, 0)
+	nodes := make([]*Node, 0)
 	for rows.Next() {
-		node := Node{Book: b}
-		if node.id > 0 {
-			node.parent = node
-		}
-		err := rows.Scan(&node.id, &node.name, &node.glURI, &node.hasContent, &node.childCount)
+		node := &Node{Book: b}
+		err := rows.Scan(&node.id, &node.name, &node.glURI, &node.parentId, &node.hasContent, &node.childCount)
 		if err != nil {
 			return nil, err
 		}
@@ -149,17 +155,28 @@ func (b *Book) nodeChildren(parent Node) ([]Node, error) {
 	return nodes, nil
 }
 
-func (b *Book) lookupPath(uri string) (Node, error) {
-	node := Node{Book: b}
+func (b *Book) lookupPath(uri string) (*Node, error) {
+	node := &Node{Book: b}
 	l, err := b.db()
 	if err != nil {
 		return node, err
 	}
-	err = l.stmtUri.QueryRow(uri).Scan(&node.id, &node.name, &node.glURI, &node.hasContent, &node.childCount)
+	err = l.stmtUri.QueryRow(uri).Scan(&node.id, &node.name, &node.glURI, &node.parentId, &node.hasContent, &node.childCount)
 	return node, err
 }
 
-func (b *Book) nodeContent(node Node) (string, error) {
+func (b *Book) lookupId(id int) (*Node, error) {
+	node := &Node{Book: b}
+	l, err := b.db()
+	if err != nil {
+		return node, err
+	}
+	err = l.stmtId.QueryRow(id).Scan(&node.id, &node.name, &node.glURI, &node.parentId, &node.hasContent, &node.childCount)
+	return node, err
+
+}
+
+func (b *Book) nodeContent(node *Node) (string, error) {
 	l, err := b.db()
 	if err != nil {
 		return "", err

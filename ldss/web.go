@@ -153,8 +153,8 @@ func (app *web) print(w http.ResponseWriter, r *http.Request, item lib.Item) {
 	}
 
 	switch item.(type) {
-	case lib.Node:
-		node := item.(lib.Node)
+	case *lib.Node:
+		node := item.(*lib.Node)
 		if content, err := node.Content(); err == nil {
 			data.Content = content.HTML()
 			err = app.templates.nodeContent.Execute(w, data)
