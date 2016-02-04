@@ -11,12 +11,6 @@ import (
 var _ strconv.NumError
 var _ strings.Reader
 
-var ErrNotFound error
-
-func init() {
-	ErrNotFound = errors.New("Item not found")
-}
-
 type Catalog struct {
 	folderBase
 	language      *Language

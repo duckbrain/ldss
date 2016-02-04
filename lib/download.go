@@ -5,6 +5,7 @@ import (
 	"io"
 )
 
+// The number of simultanious downloads when using DownloadChildren or DownloadAll
 var DownloadLimit int = 6
 
 func downloadFile(get string, save string, zlibDecompress bool) (err error) {

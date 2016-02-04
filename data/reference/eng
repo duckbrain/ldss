@@ -1,7 +1,18 @@
 42762:Music:/music
 
+# Book of Mormon
 bofm:bom:/scriptures/bofm
-
-/([1-4])( |-)?nephi/:/scriptures/bofm/${1}-ne
-
-1 Nephi:1 ne:1ne:1nephi:/scriptures/bofm/1-ne
+/([1-4])( |-)?ne(phi)?/:/scriptures/bofm/${1}-ne
+jacob:/scriptures/bofm/jacob
+enos 1:enos:/scriptures/bofm/enos/1
+jarom 1:jarom:jar:/scriptures/bofm/jarom/1
+omni 1:omni:/scriptures/bofm/omni/1
+#TODO Words of Mormon
+/w(ords)?( |-)?o(f)?( |-)?m(or(m(on)?)?)?/:/scriptures/bofm/w-of-m/1
+mosiah:mos:/scriptures/bofm/mosiah
+alma:/scriptures/bofm/alma
+helaman:hel:/scriptures/bofm/helaman
+mormon:morm:/scriptures/bofm/morm
+ether:eth:/scriptures/bofm/ether
+moroni:moro:mor:/scriptures/bofm/moro
+/(bofm|bom) (pron|pronounciation)/:/scriptures/bofm/pronounciation

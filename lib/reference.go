@@ -27,21 +27,31 @@ type refParser struct {
 }
 
 func (p *refParser) lookup(q string) (string, error) {
-	q = strings.ToLower(q)
 	if strings.IndexRune(q, '/') == 0 {
 		return q, nil
 	}
+	base, _, err := p.lookupBase(q)
+	if err != nil {
+		return "", err
+	}
+	//TODO: Parse remainder for chapter, verse, etc
+	return base, nil
+}
+
+func (p *refParser) lookupBase(Q string) (string, string, error) {
+	q := strings.ToLower(Q) + " "
 	for s, r := range p.matchString {
 		if strings.Index(q, s) == 0 {
-			return r, nil
+			return r, q[len(s):], nil
 		}
 	}
 	for s, r := range p.matchRegexp {
-		if index := s.FindSubmatchIndex([]byte(q)); index != nil {
+		if i := s.FindSubmatchIndex([]byte(q)); i != nil {
 			b := make([]byte, 0)
-			b = s.ExpandString(b, r, q, index)
-			return string(b), nil
+			b = s.ExpandString(b, r, q, i)
+			e := s.ReplaceAllString(q, "")
+			return string(b), e, nil
 		}
 	}
-	return "", errors.New("Query \"" + q + "\" not found")
+	return "", "", errors.New("Query \"" + Q + "\" not found")
 }

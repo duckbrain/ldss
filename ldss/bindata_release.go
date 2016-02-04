@@ -94,7 +94,7 @@ func dataHelpConfig() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "data/help/config", size: 376, mode: os.FileMode(420), modTime: time.Unix(1446215291, 0)}
+	info := bindataFileInfo{name: "data/help/config", size: 376, mode: os.FileMode(420), modTime: time.Unix(1446244351, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -114,7 +114,7 @@ func dataHelpDownload() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "data/help/download", size: 40, mode: os.FileMode(420), modTime: time.Unix(1446243206, 0)}
+	info := bindataFileInfo{name: "data/help/download", size: 40, mode: os.FileMode(420), modTime: time.Unix(1446244351, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -134,12 +134,12 @@ func dataHelpHelp() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "data/help/help", size: 1146, mode: os.FileMode(420), modTime: time.Unix(1446215280, 0)}
+	info := bindataFileInfo{name: "data/help/help", size: 1146, mode: os.FileMode(420), modTime: time.Unix(1446244351, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
 
-var _dataReferenceEng = "\x1f\x8b\x08\x00\x00\x09\x6e\x88\x00\xff\x32\x31\x32\x37\x33\xb2\xf2\x2d\x2d\xce\x4c\xb6\xd2\xcf\x05\x51\x5c\x5c\x49\xf9\x69\xb9\x56\x49\xf9\xb9\x56\xfa\xc5\xc9\x45\x99\x05\x25\xa5\x45\xa9\xc5\xfa\x20\x41\x2e\x2e\x7d\x8d\x68\x43\x5d\x93\x58\x4d\x0d\x85\x1a\x5d\x4d\xfb\xbc\xd4\x82\x8c\x4c\x7d\x0c\x65\xfa\x2a\xd5\x86\xb5\xba\x79\xa9\x5c\x5c\x86\x0a\x7e\x20\x25\x56\x86\x0a\x79\xa9\x56\x86\x10\x0c\xe2\x63\xe8\x30\x04\x2a\x07\x04\x00\x00\xff\xff\x9c\x15\x58\x15\x8b\x00\x00\x00"
+var _dataReferenceEng = "\x1f\x8b\x08\x00\x00\x09\x6e\x88\x00\xff\x6c\x52\x31\x6b\xf3\x30\x10\xdd\xf5\x2b\x04\xf9\x06\x69\x30\xc2\x21\x7c\x05\x2d\x86\xd2\x35\x64\x29\x74\x28\x1d\x64\x57\xc6\x6a\x73\x3a\x23\xd9\x64\xa8\xfb\xdf\x7b\x97\xb4\xd0\x22\x61\x78\x4f\xbc\xf7\x7c\xe7\x3b\xeb\xb0\xbf\xfb\xbf\xb7\xc7\x35\x87\xc1\x1a\x60\x12\x62\x27\xef\x11\xdf\x25\x8e\xf2\x88\x09\x30\x8a\x1e\x47\xb0\x3d\x82\x35\x79\x48\x61\x5e\xd6\xe4\xb3\x61\x51\x18\xf5\xdc\x36\x87\x17\xad\xe4\xd6\xe8\x2e\x7a\x35\x4f\x41\x77\xa6\x08\x9a\x7f\x1f\xed\x67\x13\xbd\x78\x73\x03\xf6\xa5\x7d\x95\x85\x8f\x98\x65\x6b\x99\xca\x08\xab\xa6\xa5\x02\x09\x81\x42\x57\x66\xac\x15\x23\x8b\xa2\x08\x31\x50\x92\xa9\x0c\xb1\x4a\x99\xdd\xe3\xe9\xe1\x24\x9f\x30\xbd\xe6\x5f\x03\x9b\x8b\x62\x45\x77\xb7\xb9\x50\x8d\x3f\x47\x20\x43\x11\x44\xdd\xf1\x53\x99\xf4\xd2\xe0\xd8\x70\x7b\xc0\x1c\xdc\x64\xa1\x36\xcc\xcd\x13\xee\x0c\xae\x34\x59\x15\x93\x3f\x3b\x70\xd1\x12\x97\x89\x6f\x93\x5a\xf0\xe7\x5a\xa6\x5a\x8f\x04\xc2\x2f\x93\x4f\x96\xb0\xb2\x50\xb6\xb8\x04\xd2\x7e\x98\x18\xaa\x65\x90\xfe\x33\x9f\x37\xba\x03\x5a\xaa\x99\xde\xd8\x18\x70\x8d\x43\x70\x4b\xa0\x6d\x54\x16\xf1\x37\xf1\x15\x00\x00\xff\xff\x1c\xdf\xc0\x7a\x69\x02\x00\x00"
 
 func dataReferenceEngBytes() ([]byte, error) {
 	return bindataRead(
@@ -154,7 +154,7 @@ func dataReferenceEng() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "data/reference/eng", size: 139, mode: os.FileMode(420), modTime: time.Unix(1454553698, 0)}
+	info := bindataFileInfo{name: "data/reference/eng", size: 617, mode: os.FileMode(420), modTime: time.Unix(1454599247, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -174,7 +174,7 @@ func dataReferenceExample() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "data/reference/example", size: 274, mode: os.FileMode(420), modTime: time.Unix(1454518745, 0)}
+	info := bindataFileInfo{name: "data/reference/example", size: 274, mode: os.FileMode(420), modTime: time.Unix(1454567340, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -194,7 +194,7 @@ func dataWebFaviconIco() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "data/web/favicon.ico", size: 73070, mode: os.FileMode(420), modTime: time.Unix(1446755399, 0)}
+	info := bindataFileInfo{name: "data/web/favicon.ico", size: 73070, mode: os.FileMode(420), modTime: time.Unix(1450845449, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -214,7 +214,7 @@ func dataWebTemplates403Tpl() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "data/web/templates/403.tpl", size: 48, mode: os.FileMode(420), modTime: time.Unix(1450881824, 0)}
+	info := bindataFileInfo{name: "data/web/templates/403.tpl", size: 48, mode: os.FileMode(420), modTime: time.Unix(1450845449, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -234,7 +234,7 @@ func dataWebTemplatesLayoutTpl() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "data/web/templates/layout.tpl", size: 139, mode: os.FileMode(420), modTime: time.Unix(1450881824, 0)}
+	info := bindataFileInfo{name: "data/web/templates/layout.tpl", size: 139, mode: os.FileMode(420), modTime: time.Unix(1450845449, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -254,7 +254,7 @@ func dataWebTemplatesNodeChildrenTpl() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "data/web/templates/node-children.tpl", size: 199, mode: os.FileMode(420), modTime: time.Unix(1454379834, 0)}
+	info := bindataFileInfo{name: "data/web/templates/node-children.tpl", size: 199, mode: os.FileMode(420), modTime: time.Unix(1454567340, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -274,7 +274,7 @@ func dataWebTemplatesNodeContentTpl() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "data/web/templates/node-content.tpl", size: 41, mode: os.FileMode(420), modTime: time.Unix(1454379944, 0)}
+	info := bindataFileInfo{name: "data/web/templates/node-content.tpl", size: 41, mode: os.FileMode(420), modTime: time.Unix(1454567340, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -331,16 +331,16 @@ func AssetNames() []string {
 
 // _bindata is a table, holding each asset generator, mapped to its name.
 var _bindata = map[string]func() (*asset, error){
-	"data/help/config": dataHelpConfig,
-	"data/help/download": dataHelpDownload,
-	"data/help/help": dataHelpHelp,
-	"data/reference/eng": dataReferenceEng,
-	"data/reference/example": dataReferenceExample,
-	"data/web/favicon.ico": dataWebFaviconIco,
-	"data/web/templates/403.tpl": dataWebTemplates403Tpl,
-	"data/web/templates/layout.tpl": dataWebTemplatesLayoutTpl,
+	"data/help/config":                     dataHelpConfig,
+	"data/help/download":                   dataHelpDownload,
+	"data/help/help":                       dataHelpHelp,
+	"data/reference/eng":                   dataReferenceEng,
+	"data/reference/example":               dataReferenceExample,
+	"data/web/favicon.ico":                 dataWebFaviconIco,
+	"data/web/templates/403.tpl":           dataWebTemplates403Tpl,
+	"data/web/templates/layout.tpl":        dataWebTemplatesLayoutTpl,
 	"data/web/templates/node-children.tpl": dataWebTemplatesNodeChildrenTpl,
-	"data/web/templates/node-content.tpl": dataWebTemplatesNodeContentTpl,
+	"data/web/templates/node-content.tpl":  dataWebTemplatesNodeContentTpl,
 }
 
 // AssetDir returns the file names below a certain
@@ -382,24 +382,25 @@ type bintree struct {
 	Func     func() (*asset, error)
 	Children map[string]*bintree
 }
+
 var _bintree = &bintree{nil, map[string]*bintree{
 	"data": &bintree{nil, map[string]*bintree{
 		"help": &bintree{nil, map[string]*bintree{
-			"config": &bintree{dataHelpConfig, map[string]*bintree{}},
+			"config":   &bintree{dataHelpConfig, map[string]*bintree{}},
 			"download": &bintree{dataHelpDownload, map[string]*bintree{}},
-			"help": &bintree{dataHelpHelp, map[string]*bintree{}},
+			"help":     &bintree{dataHelpHelp, map[string]*bintree{}},
 		}},
 		"reference": &bintree{nil, map[string]*bintree{
-			"eng": &bintree{dataReferenceEng, map[string]*bintree{}},
+			"eng":     &bintree{dataReferenceEng, map[string]*bintree{}},
 			"example": &bintree{dataReferenceExample, map[string]*bintree{}},
 		}},
 		"web": &bintree{nil, map[string]*bintree{
 			"favicon.ico": &bintree{dataWebFaviconIco, map[string]*bintree{}},
 			"templates": &bintree{nil, map[string]*bintree{
-				"403.tpl": &bintree{dataWebTemplates403Tpl, map[string]*bintree{}},
-				"layout.tpl": &bintree{dataWebTemplatesLayoutTpl, map[string]*bintree{}},
+				"403.tpl":           &bintree{dataWebTemplates403Tpl, map[string]*bintree{}},
+				"layout.tpl":        &bintree{dataWebTemplatesLayoutTpl, map[string]*bintree{}},
 				"node-children.tpl": &bintree{dataWebTemplatesNodeChildrenTpl, map[string]*bintree{}},
-				"node-content.tpl": &bintree{dataWebTemplatesNodeContentTpl, map[string]*bintree{}},
+				"node-content.tpl":  &bintree{dataWebTemplatesNodeContentTpl, map[string]*bintree{}},
 			}},
 		}},
 	}},
@@ -451,4 +452,3 @@ func _filePath(dir, name string) string {
 	cannonicalName := strings.Replace(name, "\\", "/", -1)
 	return filepath.Join(append([]string{dir}, strings.Split(cannonicalName, "/")...)...)
 }
-

@@ -9,7 +9,6 @@ type langBookID struct {
 }
 
 func init() {
-	//TODO Set source
 	catalogsByLanguageId = make(map[int]*Catalog)
 	booksByLangBookId = make(map[langBookID]*Book)
 }
@@ -59,6 +58,8 @@ func DefaultCatalog() <-chan Message {
 	})
 }
 
+// Does a full lookup of a query string. Downloads any missing elements
+// needed to find what is requested.
 func Lookup(lang *Language, q string) <-chan Message {
 	return AutoDownload(func() (interface{}, error) {
 		ref, err := lang.ref()
@@ -83,48 +84,3 @@ func Lookup(lang *Language, q string) <-chan Message {
 		return item, nil
 	})
 }
-
-/*
-func (l *Library) populateCatalog(lang *Language) (*Catalog, error) {
-	if c, ok := l.catalogsByLanguageId[lang.ID]; ok {
-		return c, nil
-	}
-	c, err := newCatalog(lang, l.source)
-	if err != nil {
-		return nil, err
-	}
-	l.catalogsByLanguageId[lang.ID] = c
-	return c, nil
-}
-
-
-func (l *Library) Book(path string, catalog *Catalog) (*Book, error) {
-	return l.populateCatalog(catalog.Language()).BookByUnknown(path)
-}
-
-
-
-
-
-func (l *Library) Children(item Item) ([]Item, error) {
-	switch item.(type) {
-	case *Book:
-		l.populateBook(item.(*Book))
-		return item.Children()
-	default:
-		return item.Children()
-	}
-}
-
-func (l *Library) Content(node Node) (*Page, error) {
-	rawContent, err := l.populateBook(node.Book).Content(node)
-	if err != nil {
-		return nil, err
-	}
-	parser := ContentParser{contentHtml: rawContent}
-	//return parser.Content()
-	return nil, nil
-}
-*/
-//	Index(lang *Language) []CatalogItem
-//	Children(item CatalogItem) []CatalogItem

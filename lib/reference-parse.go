@@ -28,14 +28,16 @@ func newRefParser(file []byte) *refParser {
 			p.matchFolder[id] = path
 			tokens = tokens[1:]
 		} else if len(tokens) == 1 && isRegex.MatchString(tokens[0]) {
-			r, err := regexp.Compile(tokens[0][1 : len(tokens[0])-2])
+			exp := tokens[0][1:len(tokens[0])-1] + " "
+			r, err := regexp.Compile(exp)
 			if err == nil {
+				r.Longest()
 				p.matchRegexp[r] = path
 				continue
 			}
 		}
 		for _, t := range tokens {
-			p.matchString[strings.ToLower(t)] = path
+			p.matchString[strings.ToLower(t)] = path + " "
 		}
 	}
 	return p

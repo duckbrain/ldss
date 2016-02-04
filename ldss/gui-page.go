@@ -10,7 +10,8 @@ type guiPage struct {
 	app                                                 *gui
 	item                                                lib.Item
 	lang                                                *lib.Language
-	box, toolbar, contents                              *ui.Box
+	box, toolbar                                        *ui.Box
+	contents                                            *guiRenderer
 	address                                             *ui.Entry
 	title, status                                       *ui.Label
 	btnUp, btnNext, btnPrevious, btnNewTab, btnCloseTab *ui.Button
@@ -25,7 +26,7 @@ func newGuiPage() *guiPage {
 
 	p.box = ui.NewVerticalBox()
 	p.toolbar = ui.NewHorizontalBox()
-	p.contents = ui.NewVerticalBox()
+	p.contents = newGuiRenderer()
 
 	p.btnUp = ui.NewButton("Up")
 	p.btnUp.OnClicked(func(btn *ui.Button) {
@@ -82,9 +83,10 @@ func toggleBtn(btn *ui.Button, item interface{}) {
 
 func (p *guiPage) SetItem(item lib.Item, setText bool) {
 	if p.item != nil {
-		p.contents.Delete(0)
+		//p.contents.Delete(0)
 	}
 	p.childMap = make(map[uintptr]string)
+	p.contents.SetItem(item)
 	if item == nil {
 		p.title.SetText("")
 		p.btnUp.Disable()
@@ -98,30 +100,32 @@ func (p *guiPage) SetItem(item lib.Item, setText bool) {
 		if setText {
 			p.address.SetText(item.Path())
 		}
-		children, err := item.Children()
-		if err != nil {
-			p.ShowError(err)
-			return
-		}
-		colsGrp := ui.NewHorizontalBox()
-		cols := []*ui.Box{
-			ui.NewVerticalBox(),
-			ui.NewVerticalBox(),
-			ui.NewVerticalBox(),
-		}
-		for i, c := range children {
-			btn := ui.NewButton(c.Name())
-			btn.OnClicked(func(btn *ui.Button) {
-				path := p.childMap[btn.Handle()]
-				p.Lookup(path)
-			})
-			p.childMap[btn.Handle()] = c.Path()
-			cols[i%len(cols)].Append(btn, false)
-		}
-		for _, col := range cols {
-			colsGrp.Append(col, true)
-		}
-		p.contents.Append(colsGrp, false)
+		/*
+			children, err := item.Children()
+			if err != nil {
+				p.ShowError(err)
+				return
+			}
+			colsGrp := ui.NewHorizontalBox()
+			cols := []*ui.Box{
+				ui.NewVerticalBox(),
+				ui.NewVerticalBox(),
+				ui.NewVerticalBox(),
+			}
+			for i, c := range children {
+				btn := ui.NewButton(c.Name())
+				btn.OnClicked(func(btn *ui.Button) {
+					path := p.childMap[btn.Handle()]
+					p.Lookup(path)
+				})
+				p.childMap[btn.Handle()] = c.Path()
+				cols[i%len(cols)].Append(btn, false)
+			}
+			for _, col := range cols {
+				colsGrp.Append(col, true)
+			}
+			p.contents.Append(colsGrp, false)*/
+
 	}
 	p.item = item
 }
