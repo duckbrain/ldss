@@ -3,6 +3,8 @@
 // data/help/config
 // data/help/download
 // data/help/help
+// data/reference/eng
+// data/reference/example
 // data/web/favicon.ico
 // data/web/templates/403.tpl
 // data/web/templates/layout.tpl
@@ -133,6 +135,46 @@ func dataHelpHelp() (*asset, error) {
 	}
 
 	info := bindataFileInfo{name: "data/help/help", size: 1146, mode: os.FileMode(420), modTime: time.Unix(1446215280, 0)}
+	a := &asset{bytes: bytes, info: info}
+	return a, nil
+}
+
+var _dataReferenceEng = "\x1f\x8b\x08\x00\x00\x09\x6e\x88\x00\xff\x32\x31\x32\x37\x33\xb2\xf2\x2d\x2d\xce\x4c\xb6\xd2\xcf\x05\x51\x5c\x5c\xfa\x1a\xd1\x86\xba\x26\xb1\x9a\x1a\x0a\x35\xba\x9a\xf6\x79\xa9\x1a\x05\x19\x99\x9a\xf6\xfa\x56\xfa\xc5\xc9\x45\x99\x05\x25\xa5\x45\xa9\xc5\xfa\x49\xf9\x69\xb9\xfa\x2a\xd5\x86\xb5\xba\x79\xa9\x80\x00\x00\x00\xff\xff\xa6\x9a\xd6\x04\x44\x00\x00\x00"
+
+func dataReferenceEngBytes() ([]byte, error) {
+	return bindataRead(
+		_dataReferenceEng,
+		"data/reference/eng",
+	)
+}
+
+func dataReferenceEng() (*asset, error) {
+	bytes, err := dataReferenceEngBytes()
+	if err != nil {
+		return nil, err
+	}
+
+	info := bindataFileInfo{name: "data/reference/eng", size: 68, mode: os.FileMode(420), modTime: time.Unix(1454553030, 0)}
+	a := &asset{bytes: bytes, info: info}
+	return a, nil
+}
+
+var _dataReferenceExample = "\x1f\x8b\x08\x00\x00\x09\x6e\x88\x00\xff\x64\xce\xc1\x4a\xc4\x40\x0c\x06\xe0\x7b\x9f\x22\x50\x0f\xbb\x60\x19\x66\x59\x14\x7a\x11\x3c\x78\x12\x0f\xe2\x4d\x3c\x74\xdb\x7f\x3a\x61\xdb\xcc\x90\x99\xa2\xa0\xbe\xbb\x3b\x6b\x11\x61\x0f\x21\x24\xfc\x1f\x49\x4d\x2f\x9e\x13\x39\x9e\x40\x03\x52\xaf\x7c\x40\xa2\xec\x41\x2e\xe8\xdc\xe5\xd2\x48\xe1\xa0\x90\x1e\xe7\x5c\xaa\xaa\x9a\xee\xa7\x4e\x8e\x34\xb1\x9c\xd2\x9d\x82\x78\x94\xa0\x18\xae\xd7\xd5\x3b\x67\x4f\x35\xb1\x90\xd3\x20\xf9\x7f\xa4\xe8\xc7\x10\x8e\x4b\xa4\xb9\x8b\x91\x65\xac\x2c\x3d\x21\x7a\x6e\x2d\x09\x5a\xfb\x5b\x65\x36\xe5\x9f\x98\x17\x45\x32\x87\xe0\x66\x63\x1b\x41\xf1\xcf\x18\xf1\x71\xe2\xb9\xf7\xc5\x9b\xcd\xab\x6d\xf6\x6f\xdb\x0d\x7d\x35\xdb\xbb\xb3\x35\x97\xf8\xea\xd3\x7e\xaf\xfe\x21\x4c\x03\xf4\xef\xfe\x7e\x77\x7b\xb3\x6b\xcd\xbc\x24\xee\xab\x9f\x00\x00\x00\xff\xff\x11\x25\x90\x9c\x12\x01\x00\x00"
+
+func dataReferenceExampleBytes() ([]byte, error) {
+	return bindataRead(
+		_dataReferenceExample,
+		"data/reference/example",
+	)
+}
+
+func dataReferenceExample() (*asset, error) {
+	bytes, err := dataReferenceExampleBytes()
+	if err != nil {
+		return nil, err
+	}
+
+	info := bindataFileInfo{name: "data/reference/example", size: 274, mode: os.FileMode(420), modTime: time.Unix(1454518745, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -292,6 +334,8 @@ var _bindata = map[string]func() (*asset, error){
 	"data/help/config": dataHelpConfig,
 	"data/help/download": dataHelpDownload,
 	"data/help/help": dataHelpHelp,
+	"data/reference/eng": dataReferenceEng,
+	"data/reference/example": dataReferenceExample,
 	"data/web/favicon.ico": dataWebFaviconIco,
 	"data/web/templates/403.tpl": dataWebTemplates403Tpl,
 	"data/web/templates/layout.tpl": dataWebTemplatesLayoutTpl,
@@ -344,6 +388,10 @@ var _bintree = &bintree{nil, map[string]*bintree{
 			"config": &bintree{dataHelpConfig, map[string]*bintree{}},
 			"download": &bintree{dataHelpDownload, map[string]*bintree{}},
 			"help": &bintree{dataHelpHelp, map[string]*bintree{}},
+		}},
+		"reference": &bintree{nil, map[string]*bintree{
+			"eng": &bintree{dataReferenceEng, map[string]*bintree{}},
+			"example": &bintree{dataReferenceExample, map[string]*bintree{}},
 		}},
 		"web": &bintree{nil, map[string]*bintree{
 			"favicon.ico": &bintree{dataWebFaviconIco, map[string]*bintree{}},

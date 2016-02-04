@@ -1,0 +1,7 @@
+42762:Music:/music
+
+bofm:bom:/scriptures/bofm
+
+/([1-4])( |-)?nephi/:/scriptures/bofm/${1}-ne
+
+1 Nephi:1 ne:1ne:1nephi:/scriptures/bofm/1-ne

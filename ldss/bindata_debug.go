@@ -3,6 +3,8 @@
 // data/help/config
 // data/help/download
 // data/help/help
+// data/reference/eng
+// data/reference/example
 // data/web/favicon.ico
 // data/web/templates/403.tpl
 // data/web/templates/layout.tpl
@@ -38,7 +40,7 @@ type asset struct {
 
 // dataHelpConfig reads file data from disk. It returns an error on failure.
 func dataHelpConfig() (*asset, error) {
-	path := "/home/jonathan/workspace/golang/src/ldss/data/help/config"
+	path := "/home/jonathan/workspace/ldss/data/help/config"
 	name := "data/help/config"
 	bytes, err := bindataRead(path, name)
 	if err != nil {
@@ -56,7 +58,7 @@ func dataHelpConfig() (*asset, error) {
 
 // dataHelpDownload reads file data from disk. It returns an error on failure.
 func dataHelpDownload() (*asset, error) {
-	path := "/home/jonathan/workspace/golang/src/ldss/data/help/download"
+	path := "/home/jonathan/workspace/ldss/data/help/download"
 	name := "data/help/download"
 	bytes, err := bindataRead(path, name)
 	if err != nil {
@@ -74,8 +76,44 @@ func dataHelpDownload() (*asset, error) {
 
 // dataHelpHelp reads file data from disk. It returns an error on failure.
 func dataHelpHelp() (*asset, error) {
-	path := "/home/jonathan/workspace/golang/src/ldss/data/help/help"
+	path := "/home/jonathan/workspace/ldss/data/help/help"
 	name := "data/help/help"
+	bytes, err := bindataRead(path, name)
+	if err != nil {
+		return nil, err
+	}
+
+	fi, err := os.Stat(path)
+	if err != nil {
+		err = fmt.Errorf("Error reading asset info %s at %s: %v", name, path, err)
+	}
+
+	a := &asset{bytes: bytes, info: fi}
+	return a, err
+}
+
+// dataReferenceEng reads file data from disk. It returns an error on failure.
+func dataReferenceEng() (*asset, error) {
+	path := "/home/jonathan/workspace/ldss/data/reference/eng"
+	name := "data/reference/eng"
+	bytes, err := bindataRead(path, name)
+	if err != nil {
+		return nil, err
+	}
+
+	fi, err := os.Stat(path)
+	if err != nil {
+		err = fmt.Errorf("Error reading asset info %s at %s: %v", name, path, err)
+	}
+
+	a := &asset{bytes: bytes, info: fi}
+	return a, err
+}
+
+// dataReferenceExample reads file data from disk. It returns an error on failure.
+func dataReferenceExample() (*asset, error) {
+	path := "/home/jonathan/workspace/ldss/data/reference/example"
+	name := "data/reference/example"
 	bytes, err := bindataRead(path, name)
 	if err != nil {
 		return nil, err
@@ -92,7 +130,7 @@ func dataHelpHelp() (*asset, error) {
 
 // dataWebFaviconIco reads file data from disk. It returns an error on failure.
 func dataWebFaviconIco() (*asset, error) {
-	path := "/home/jonathan/workspace/golang/src/ldss/data/web/favicon.ico"
+	path := "/home/jonathan/workspace/ldss/data/web/favicon.ico"
 	name := "data/web/favicon.ico"
 	bytes, err := bindataRead(path, name)
 	if err != nil {
@@ -110,7 +148,7 @@ func dataWebFaviconIco() (*asset, error) {
 
 // dataWebTemplates403Tpl reads file data from disk. It returns an error on failure.
 func dataWebTemplates403Tpl() (*asset, error) {
-	path := "/home/jonathan/workspace/golang/src/ldss/data/web/templates/403.tpl"
+	path := "/home/jonathan/workspace/ldss/data/web/templates/403.tpl"
 	name := "data/web/templates/403.tpl"
 	bytes, err := bindataRead(path, name)
 	if err != nil {
@@ -128,7 +166,7 @@ func dataWebTemplates403Tpl() (*asset, error) {
 
 // dataWebTemplatesLayoutTpl reads file data from disk. It returns an error on failure.
 func dataWebTemplatesLayoutTpl() (*asset, error) {
-	path := "/home/jonathan/workspace/golang/src/ldss/data/web/templates/layout.tpl"
+	path := "/home/jonathan/workspace/ldss/data/web/templates/layout.tpl"
 	name := "data/web/templates/layout.tpl"
 	bytes, err := bindataRead(path, name)
 	if err != nil {
@@ -146,7 +184,7 @@ func dataWebTemplatesLayoutTpl() (*asset, error) {
 
 // dataWebTemplatesNodeChildrenTpl reads file data from disk. It returns an error on failure.
 func dataWebTemplatesNodeChildrenTpl() (*asset, error) {
-	path := "/home/jonathan/workspace/golang/src/ldss/data/web/templates/node-children.tpl"
+	path := "/home/jonathan/workspace/ldss/data/web/templates/node-children.tpl"
 	name := "data/web/templates/node-children.tpl"
 	bytes, err := bindataRead(path, name)
 	if err != nil {
@@ -164,7 +202,7 @@ func dataWebTemplatesNodeChildrenTpl() (*asset, error) {
 
 // dataWebTemplatesNodeContentTpl reads file data from disk. It returns an error on failure.
 func dataWebTemplatesNodeContentTpl() (*asset, error) {
-	path := "/home/jonathan/workspace/golang/src/ldss/data/web/templates/node-content.tpl"
+	path := "/home/jonathan/workspace/ldss/data/web/templates/node-content.tpl"
 	name := "data/web/templates/node-content.tpl"
 	bytes, err := bindataRead(path, name)
 	if err != nil {
@@ -235,6 +273,8 @@ var _bindata = map[string]func() (*asset, error){
 	"data/help/config": dataHelpConfig,
 	"data/help/download": dataHelpDownload,
 	"data/help/help": dataHelpHelp,
+	"data/reference/eng": dataReferenceEng,
+	"data/reference/example": dataReferenceExample,
 	"data/web/favicon.ico": dataWebFaviconIco,
 	"data/web/templates/403.tpl": dataWebTemplates403Tpl,
 	"data/web/templates/layout.tpl": dataWebTemplatesLayoutTpl,
@@ -287,6 +327,10 @@ var _bintree = &bintree{nil, map[string]*bintree{
 			"config": &bintree{dataHelpConfig, map[string]*bintree{}},
 			"download": &bintree{dataHelpDownload, map[string]*bintree{}},
 			"help": &bintree{dataHelpHelp, map[string]*bintree{}},
+		}},
+		"reference": &bintree{nil, map[string]*bintree{
+			"eng": &bintree{dataReferenceEng, map[string]*bintree{}},
+			"example": &bintree{dataReferenceExample, map[string]*bintree{}},
 		}},
 		"web": &bintree{nil, map[string]*bintree{
 			"favicon.ico": &bintree{dataWebFaviconIco, map[string]*bintree{}},

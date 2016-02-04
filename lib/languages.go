@@ -20,6 +20,7 @@ type Language struct {
 	Code         string `json:"code"`
 	GlCode       string `json:"code_three"`
 	catalogCache cache
+	reference    cache
 }
 
 func (l *Language) String() string {
@@ -49,6 +50,14 @@ func (l *Language) Catalog() (*Catalog, error) {
 		return nil, err
 	}
 	return c.(*Catalog), err
+}
+
+func (l *Language) ref() (*refParser, error) {
+	ref, err := l.reference.get()
+	if err != nil {
+		return nil, err
+	}
+	return ref.(*refParser), nil
 }
 
 func init() {

@@ -3,26 +3,16 @@ package main
 import (
 	"fmt"
 	"ldss/lib"
-
-	"github.com/fatih/color"
 )
 
-var _ color.Color
-
 func main() {
-	/*defer func() {
-		if r := recover(); r != nil {
-			err, ok := r.(error)
-			if !ok {
-				err = fmt.Errorf("%v", r)
-			}
-			color.Println("@rfatal error@{|}: " + err.Error())
-		}
-	}()*/
-
 	if err := lib.Config().Init(); err != nil {
 		panic(err)
 	}
+
+	lib.SetReferenceParseReader(func(lang *lib.Language) ([]byte, error) {
+		return Asset("data/reference/" + lang.GlCode)
+	})
 
 	args := lib.Config().Args()
 

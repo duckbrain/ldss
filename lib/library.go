@@ -59,9 +59,13 @@ func DefaultCatalog() <-chan Message {
 	})
 }
 
-func LookupPath(lang *Language, q string) <-chan Message {
+func Lookup(lang *Language, q string) <-chan Message {
 	return AutoDownload(func() (interface{}, error) {
-		lang, err := DefaultLanguage()
+		ref, err := lang.ref()
+		if err != nil {
+			return nil, err
+		}
+		q, err = ref.lookup(q)
 		if err != nil {
 			return nil, err
 		}

@@ -1,0 +1,12 @@
+# This file describes the format for reference files
+
+# Blank lines are ignored, lines with # in front are ignored
+
+# Lookup mapping
+1 Nephi:1 ne:1ne:1nephi:/scriptures/bofm/1-ne
+
+# Regex matching
+/([1-4])( |-)?nephi/:/scriptures/bofm/${1}-ne
+
+# Folder mapping
+42762:/music

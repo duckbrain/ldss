@@ -1,8 +1,9 @@
 package main
 
 import (
-	"github.com/andlabs/ui"
 	"ldss/lib"
+
+	"github.com/andlabs/ui"
 )
 
 type guiPage struct {
@@ -68,7 +69,7 @@ func newGuiPage() *guiPage {
 }
 
 func (p *guiPage) Lookup(s string) {
-	p.handleMessages(lib.LookupPath(p.lang, s), true)
+	p.handleMessages(lib.Lookup(p.lang, s), true)
 }
 
 func toggleBtn(btn *ui.Button, item interface{}) {
@@ -146,5 +147,5 @@ func (p *guiPage) handleMessages(c <-chan lib.Message, setText bool) {
 }
 
 func (p *guiPage) onPathChanged(sender *ui.Entry) {
-	p.handleMessages(lib.LookupPath(p.lang, sender.Text()), false)
+	p.handleMessages(lib.Lookup(p.lang, sender.Text()), false)
 }
