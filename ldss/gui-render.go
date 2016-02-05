@@ -13,7 +13,7 @@ type guiRenderer struct {
 	page                                                         *lib.Page
 	elements                                                     []guiRenderElement
 	titleFont, subtitleFont, summaryFont, verseFont, contentFont *ui.Font
-	lastWidth                                                    float64
+	width, height, scrollY                                       float64
 }
 
 type guiRenderElement struct {
@@ -59,34 +59,44 @@ func (r *guiRenderer) SetItem(item lib.Item) error {
 			return err
 		}
 	}
+	
+	// Add the elements
+	if r.elements != nil {
+		for _, ele := range r.elements {
+			ele.layout.Free()
+		}
+	}
+	if r.page == nil {
+		return nil
+	}
+	
+	r.elements = make([]guiRenderElement, 3+len(r.page.Verses))
+	r.elements[0] = guiRenderElement{
+		layout: ui.NewTextLayout(r.page.Title, r.titleFont, r.width),
+	}
+	r.elements[1] = guiRenderElement{
+		layout: ui.NewTextLayout(r.page.Subtitle, r.subtitleFont, r.width),
+	}
+	r.elements[2] = guiRenderElement{
+		layout: ui.NewTextLayout(r.page.Summary, r.summaryFont, r.width),
+	}
+	for i, v := range r.page.Verses {
+		//TODO Add verse number with float left
+		r.elements[i+3] = guiRenderElement{
+			layout: ui.NewTextLayout(v.Text, r.contentFont, r.width),
+		}
+	}
 
-	r.lastWidth = 0
+	r.width = 0
 	r.area.QueueRedrawAll()
 	return nil
 }
 
 func (r *guiRenderer) layout(width float64) {
-	if r.page == nil || r.lastWidth == width {
+	if r.width == width {
 		return
 	}
-
-	// Recalculate positions based on elements
-	r.elements = make([]guiRenderElement, 3+len(r.page.Verses))
-	r.elements[0] = guiRenderElement{
-		layout: ui.NewTextLayout(r.page.Title, r.titleFont, width),
-	}
-	r.elements[1] = guiRenderElement{
-		layout: ui.NewTextLayout(r.page.Subtitle, r.subtitleFont, width),
-	}
-	r.elements[2] = guiRenderElement{
-		layout: ui.NewTextLayout(r.page.Summary, r.summaryFont, width),
-	}
-	for i, v := range r.page.Verses {
-		//TODO Add verse number with float left
-		r.elements[i+3] = guiRenderElement{
-			layout: ui.NewTextLayout(v.Text, r.contentFont, width),
-		}
-	}
+	
 
 	y := 0.0
 	for i, ele := range r.elements {
@@ -96,22 +106,23 @@ func (r *guiRenderer) layout(width float64) {
 		r.elements[i] = ele
 	}
 
-	r.lastWidth = width
+	r.width = width
+	r.height = y
 }
 
 func (r *guiRenderer) Draw(a *ui.Area, dp *ui.AreaDrawParams) {
-	fmt.Printf("Area Size: %v, %v Clip Box: %v, %v, %v, %v\n", dp.AreaHeight, dp.AreaWidth, dp.ClipX, dp.ClipY, dp.ClipWidth, dp.ClipHeight)
+	//fmt.Printf("Area Size: %v, %v Clip Box: %v, %v, %v, %v\n", dp.AreaHeight, dp.AreaWidth, dp.ClipX, dp.ClipY, dp.ClipWidth, dp.ClipHeight)
 	r.layout(dp.AreaWidth)
 	if r.elements == nil {
 		return
 	}
 	for _, e := range r.elements {
-		dp.Context.Text(e.x, e.y, e.layout)
+		dp.Context.Text(e.x, e.y - r.scrollY, e.layout)
 	}
 }
 
 func (r *guiRenderer) MouseEvent(a *ui.Area, me *ui.AreaMouseEvent) {
-
+	fmt.Printf("Up/Down:%v/%v Count:%v Modifiers:%v Held:%v \n", me.X, me.Y, me.AreaWidth, me.AreaHeight, me.Up, me.Down, me.Count, me.Modifiers, me.Held);
 }
 
 func (r *guiRenderer) MouseCrossed(a *ui.Area, left bool) {
@@ -123,6 +134,17 @@ func (r *guiRenderer) DragBroken(a *ui.Area) {
 }
 
 func (r *guiRenderer) KeyEvent(a *ui.Area, ke *ui.AreaKeyEvent) (handled bool) {
+	handled = true
+	switch ke.Key {
+		case 'j':
+			r.scrollY -= 10
+			r.area.QueueRedrawAll()
+		case 'k':
+			r.scrollY += 10
+			r.area.QueueRedrawAll()
+		default:
+			return false
+	}
 	return
 }
 
