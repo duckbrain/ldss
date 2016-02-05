@@ -331,16 +331,16 @@ func AssetNames() []string {
 
 // _bindata is a table, holding each asset generator, mapped to its name.
 var _bindata = map[string]func() (*asset, error){
-	"data/help/config": dataHelpConfig,
-	"data/help/download": dataHelpDownload,
-	"data/help/help": dataHelpHelp,
-	"data/reference/eng": dataReferenceEng,
-	"data/reference/example": dataReferenceExample,
-	"data/web/favicon.ico": dataWebFaviconIco,
-	"data/web/templates/403.tpl": dataWebTemplates403Tpl,
-	"data/web/templates/layout.tpl": dataWebTemplatesLayoutTpl,
+	"data/help/config":                     dataHelpConfig,
+	"data/help/download":                   dataHelpDownload,
+	"data/help/help":                       dataHelpHelp,
+	"data/reference/eng":                   dataReferenceEng,
+	"data/reference/example":               dataReferenceExample,
+	"data/web/favicon.ico":                 dataWebFaviconIco,
+	"data/web/templates/403.tpl":           dataWebTemplates403Tpl,
+	"data/web/templates/layout.tpl":        dataWebTemplatesLayoutTpl,
 	"data/web/templates/node-children.tpl": dataWebTemplatesNodeChildrenTpl,
-	"data/web/templates/node-content.tpl": dataWebTemplatesNodeContentTpl,
+	"data/web/templates/node-content.tpl":  dataWebTemplatesNodeContentTpl,
 }
 
 // AssetDir returns the file names below a certain
@@ -382,24 +382,25 @@ type bintree struct {
 	Func     func() (*asset, error)
 	Children map[string]*bintree
 }
+
 var _bintree = &bintree{nil, map[string]*bintree{
 	"data": &bintree{nil, map[string]*bintree{
 		"help": &bintree{nil, map[string]*bintree{
-			"config": &bintree{dataHelpConfig, map[string]*bintree{}},
+			"config":   &bintree{dataHelpConfig, map[string]*bintree{}},
 			"download": &bintree{dataHelpDownload, map[string]*bintree{}},
-			"help": &bintree{dataHelpHelp, map[string]*bintree{}},
+			"help":     &bintree{dataHelpHelp, map[string]*bintree{}},
 		}},
 		"reference": &bintree{nil, map[string]*bintree{
-			"eng": &bintree{dataReferenceEng, map[string]*bintree{}},
+			"eng":     &bintree{dataReferenceEng, map[string]*bintree{}},
 			"example": &bintree{dataReferenceExample, map[string]*bintree{}},
 		}},
 		"web": &bintree{nil, map[string]*bintree{
 			"favicon.ico": &bintree{dataWebFaviconIco, map[string]*bintree{}},
 			"templates": &bintree{nil, map[string]*bintree{
-				"403.tpl": &bintree{dataWebTemplates403Tpl, map[string]*bintree{}},
-				"layout.tpl": &bintree{dataWebTemplatesLayoutTpl, map[string]*bintree{}},
+				"403.tpl":           &bintree{dataWebTemplates403Tpl, map[string]*bintree{}},
+				"layout.tpl":        &bintree{dataWebTemplatesLayoutTpl, map[string]*bintree{}},
 				"node-children.tpl": &bintree{dataWebTemplatesNodeChildrenTpl, map[string]*bintree{}},
-				"node-content.tpl": &bintree{dataWebTemplatesNodeContentTpl, map[string]*bintree{}},
+				"node-content.tpl":  &bintree{dataWebTemplatesNodeContentTpl, map[string]*bintree{}},
 			}},
 		}},
 	}},
@@ -451,4 +452,3 @@ func _filePath(dir, name string) string {
 	cannonicalName := strings.Replace(name, "\\", "/", -1)
 	return filepath.Join(append([]string{dir}, strings.Split(cannonicalName, "/")...)...)
 }
-

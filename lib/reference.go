@@ -1,10 +1,10 @@
 package lib
 
 import (
-	"errors"
-	"fmt"
 	"bufio"
 	"bytes"
+	"errors"
+	"fmt"
 	"regexp"
 	"strconv"
 	"strings"
@@ -46,7 +46,7 @@ type refParser struct {
 	matchString map[string]string
 	matchRegexp map[*regexp.Regexp]string
 	matchFolder map[int]string
-	parseClean *regexp.Regexp
+	parseClean  *regexp.Regexp
 }
 
 func newRefParser(file []byte) *refParser {
@@ -54,7 +54,7 @@ func newRefParser(file []byte) *refParser {
 		matchFolder: make(map[int]string),
 		matchString: make(map[string]string),
 		matchRegexp: make(map[*regexp.Regexp]string),
-		parseClean: regexp.MustCompile("( |:)+"),
+		parseClean:  regexp.MustCompile("( |:)+"),
 	}
 	s := bufio.NewScanner(bytes.NewReader(file))
 	isRegex := regexp.MustCompile("^\\/.*\\/$")
@@ -79,7 +79,7 @@ func newRefParser(file []byte) *refParser {
 			}
 		}
 		for _, t := range tokens {
-			p.matchString[strings.ToLower(t) + " "] = path
+			p.matchString[strings.ToLower(t)+" "] = path
 		}
 	}
 	return p
@@ -89,19 +89,19 @@ func (p *refParser) lookup(q string) (string, error) {
 	// Clean q
 	q = strings.TrimSpace(q)
 	q = strings.ToLower(q) + " "
-	
+
 	if strings.IndexRune(q, '/') == 0 {
 		return q, nil
 	}
-	
+
 	q = p.parseClean.ReplaceAllString(q, " ")
-	
+
 	// Parse from the match maps
 	base, remainder, err := p.lookupBase(q)
 	if err != nil {
 		return "", err
 	}
-	
+
 	if i := strings.LastIndex(base, "#"); i != -1 {
 		directive := string(base[i:])
 		base = string(base[:i])
@@ -111,14 +111,14 @@ func (p *refParser) lookup(q string) (string, error) {
 		// Parse remainder for chapter, verse, etc
 		tokens := strings.Split(strings.TrimRight(remainder, " "), " ")
 		switch directive {
-			case "#":
-				i, err := strconv.Atoi(tokens[0])
-				if err != nil {
-					return "", err
-				}
-				base = fmt.Sprintf("%v/%v", base, i)
-			default:
-				return "", fmt.Errorf("Unknown directive %v", directive)
+		case "#":
+			i, err := strconv.Atoi(tokens[0])
+			if err != nil {
+				return "", err
+			}
+			base = fmt.Sprintf("%v/%v", base, i)
+		default:
+			return "", fmt.Errorf("Unknown directive %v", directive)
 		}
 		return base, nil
 	} else {
@@ -127,7 +127,7 @@ func (p *refParser) lookup(q string) (string, error) {
 		}
 		//TODO Handle remainder
 	}
-	
+
 	return base, nil
 }
 

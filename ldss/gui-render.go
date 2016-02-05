@@ -8,12 +8,14 @@ import (
 )
 
 type guiRenderer struct {
-	area                                                         *ui.Area
-	item                                                         lib.Item
-	page                                                         *lib.Page
-	elements                                                     []guiRenderElement
-	titleFont, subtitleFont, summaryFont, verseFont, contentFont *ui.Font
-	width, height, scrollY                                       float64
+	area                    *ui.Area
+	item                    lib.Item
+	page                    *lib.Page
+	elements                []guiRenderElement
+	titleFont, subtitleFont *ui.Font
+	summaryFont, verseFont  *ui.Font
+	contentFont             *ui.Font
+	width, height, scrollY  float64
 }
 
 type guiRenderElement struct {
@@ -59,7 +61,7 @@ func (r *guiRenderer) SetItem(item lib.Item) error {
 			return err
 		}
 	}
-	
+
 	// Add the elements
 	if r.elements != nil {
 		for _, ele := range r.elements {
@@ -69,7 +71,7 @@ func (r *guiRenderer) SetItem(item lib.Item) error {
 	if r.page == nil {
 		return nil
 	}
-	
+
 	r.elements = make([]guiRenderElement, 3+len(r.page.Verses))
 	r.elements[0] = guiRenderElement{
 		layout: ui.NewTextLayout(r.page.Title, r.titleFont, r.width),
@@ -96,7 +98,6 @@ func (r *guiRenderer) layout(width float64) {
 	if r.width == width {
 		return
 	}
-	
 
 	y := 0.0
 	for i, ele := range r.elements {
@@ -117,12 +118,12 @@ func (r *guiRenderer) Draw(a *ui.Area, dp *ui.AreaDrawParams) {
 		return
 	}
 	for _, e := range r.elements {
-		dp.Context.Text(e.x, e.y - r.scrollY, e.layout)
+		dp.Context.Text(e.x, e.y-r.scrollY, e.layout)
 	}
 }
 
 func (r *guiRenderer) MouseEvent(a *ui.Area, me *ui.AreaMouseEvent) {
-	fmt.Printf("Up/Down:%v/%v Count:%v Modifiers:%v Held:%v \n", me.X, me.Y, me.AreaWidth, me.AreaHeight, me.Up, me.Down, me.Count, me.Modifiers, me.Held);
+	fmt.Printf("Up/Down:%v/%v Count:%v Modifiers:%v Held:%v \n", me.X, me.Y, me.AreaWidth, me.AreaHeight, me.Up, me.Down, me.Count, me.Modifiers, me.Held)
 }
 
 func (r *guiRenderer) MouseCrossed(a *ui.Area, left bool) {
@@ -136,14 +137,14 @@ func (r *guiRenderer) DragBroken(a *ui.Area) {
 func (r *guiRenderer) KeyEvent(a *ui.Area, ke *ui.AreaKeyEvent) (handled bool) {
 	handled = true
 	switch ke.Key {
-		case 'j':
-			r.scrollY -= 10
-			r.area.QueueRedrawAll()
-		case 'k':
-			r.scrollY += 10
-			r.area.QueueRedrawAll()
-		default:
-			return false
+	case 'j':
+		r.scrollY -= 10
+		r.area.QueueRedrawAll()
+	case 'k':
+		r.scrollY += 10
+		r.area.QueueRedrawAll()
+	default:
+		return false
 	}
 	return
 }
