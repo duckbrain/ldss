@@ -55,6 +55,12 @@ func (f *Folder) Path() string {
 	var path []string
 	var search func(folder *Folder)
 
+	if p, err := f.Language().ref(); err == nil {
+		if path, ok := p.matchFolder[f.ID()]; ok {
+			return path
+		}
+	}
+
 	search = func(folder *Folder) {
 		for _, book := range folder.books {
 			p := strings.Split(book.Path(), "/")
