@@ -1,11 +1,33 @@
 package lib
 
 import (
+	"bufio"
+	"bytes"
 	"errors"
 	"fmt"
 	"regexp"
+	"strconv"
 	"strings"
 )
+
+func SetReferenceParseReader(open func(lang *Language) ([]byte, error)) {
+	langs, err := Languages()
+	if err != nil {
+		panic(err)
+	}
+	for _, lang := range langs {
+		func(l *Language) {
+			l.reference.construct = func() (interface{}, error) {
+				file, err := open(l)
+				if err != nil {
+					return nil, err
+				}
+				return newRefParser(file), nil
+			}
+		}(lang)
+	}
+
+}
 
 type Reference struct {
 	bookName          string
@@ -24,22 +46,92 @@ type refParser struct {
 	matchString map[string]string
 	matchRegexp map[*regexp.Regexp]string
 	matchFolder map[int]string
+	parseClean  *regexp.Regexp
+}
+
+func newRefParser(file []byte) *refParser {
+	p := &refParser{
+		matchFolder: make(map[int]string),
+		matchString: make(map[string]string),
+		matchRegexp: make(map[*regexp.Regexp]string),
+		parseClean:  regexp.MustCompile("( |:)+"),
+	}
+	s := bufio.NewScanner(bytes.NewReader(file))
+	isRegex := regexp.MustCompile("^\\/.*\\/$")
+	for s.Scan() {
+		line := s.Text()
+		if len(line) == 0 || strings.IndexRune(line, '#') == 0 {
+			continue
+		}
+		tokens := strings.Split(line, ":")
+		path := tokens[len(tokens)-1]
+		tokens = tokens[:len(tokens)-1]
+		if id, err := strconv.Atoi(tokens[0]); err == nil {
+			p.matchFolder[id] = path
+			tokens = tokens[1:]
+		} else if len(tokens) == 1 && isRegex.MatchString(tokens[0]) {
+			exp := "^" + tokens[0][1:len(tokens[0])-1] + " "
+			r, err := regexp.Compile(exp)
+			if err == nil {
+				r.Longest()
+				p.matchRegexp[r] = path
+				continue
+			}
+		}
+		for _, t := range tokens {
+			p.matchString[strings.ToLower(t)+" "] = path
+		}
+	}
+	return p
 }
 
 func (p *refParser) lookup(q string) (string, error) {
+	// Clean q
+	q = strings.TrimSpace(q)
+	q = strings.ToLower(q) + " "
+
 	if strings.IndexRune(q, '/') == 0 {
 		return q, nil
 	}
-	base, _, err := p.lookupBase(q)
+
+	q = p.parseClean.ReplaceAllString(q, " ")
+
+	// Parse from the match maps
+	base, remainder, err := p.lookupBase(q)
 	if err != nil {
 		return "", err
 	}
-	//TODO: Parse remainder for chapter, verse, etc
+
+	if i := strings.LastIndex(base, "#"); i != -1 {
+		directive := string(base[i:])
+		base = string(base[:i])
+		if len(remainder) == 0 {
+			return base, nil
+		}
+		// Parse remainder for chapter, verse, etc
+		tokens := strings.Split(strings.TrimRight(remainder, " "), " ")
+		switch directive {
+		case "#":
+			i, err := strconv.Atoi(tokens[0])
+			if err != nil {
+				return "", err
+			}
+			base = fmt.Sprintf("%v/%v", base, i)
+		default:
+			return "", fmt.Errorf("Unknown directive %v", directive)
+		}
+		return base, nil
+	} else {
+		if len(remainder) == 0 {
+			return base, nil
+		}
+		//TODO Handle remainder
+	}
+
 	return base, nil
 }
 
-func (p *refParser) lookupBase(Q string) (string, string, error) {
-	q := strings.ToLower(Q) + " "
+func (p *refParser) lookupBase(q string) (string, string, error) {
 	for s, r := range p.matchString {
 		if strings.Index(q, s) == 0 {
 			return r, q[len(s):], nil
@@ -53,5 +145,5 @@ func (p *refParser) lookupBase(Q string) (string, string, error) {
 			return string(b), e, nil
 		}
 	}
-	return "", "", errors.New("Query \"" + Q + "\" not found")
+	return "", "", errors.New("Query \"" + q + "\" not found")
 }

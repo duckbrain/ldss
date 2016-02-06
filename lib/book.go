@@ -170,6 +170,9 @@ func (b *Book) lookupPath(uri string) (*Node, error) {
 		return node, err
 	}
 	err = l.stmtUri.QueryRow(uri).Scan(&node.id, &node.name, &node.glURI, &node.parentId, &node.hasContent, &node.childCount)
+	if err != nil {
+		return nil, fmt.Errorf("Path %v not found", uri)
+	}
 	return node, err
 }
 

@@ -31,7 +31,7 @@ func (app gui) run() {
 
 		app.addPage("/")
 
-		app.window = ui.NewWindow("LDS Scriptures", 200, 100, false)
+		app.window = ui.NewWindow("LDS Scriptures", 200, 300, false)
 		app.window.SetChild(app.tab)
 		app.window.OnClosing(func(*ui.Window) bool {
 			ui.Quit()
