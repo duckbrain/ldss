@@ -10,28 +10,30 @@ import (
 var _ fmt.Formatter
 
 type guiRenderer struct {
-	area, measureArea       *ui.Area
-	box                     *ui.Box
-	item                    lib.Item
-	page                    *lib.Page
-	elements                []guiRenderElement
-	titleFont, subtitleFont *ui.Font
-	summaryFont, verseFont  *ui.Font
-	contentFont             *ui.Font
-	width, height, scrollY  float64
+	area, measureArea                   *ui.Area
+	box                                 *ui.Box
+	item                                lib.Item
+	page                                *lib.Page
+	elements                            []guiRenderElement
+	titleFont, subtitleFont             *ui.Font
+	summaryFont, verseFont              *ui.Font
+	contentFont                         *ui.Font
+	width, height, scrollY              float64
 	marginTop, marginBottom, marginSide float64
+	onItemChange                        func(lib.Item, *guiRenderer)
 }
 
 type guiRenderElement struct {
 	layout *ui.TextLayout
 	x, y   float64
+	inline bool
 }
 
 func newGuiRenderer() *guiRenderer {
 	r := &guiRenderer{
-		marginTop: 20,
+		marginTop:    20,
 		marginBottom: 20,
-		marginSide: 20,
+		marginSide:   20,
 	}
 	// Scrolling Area
 	r.area = ui.NewScrollingArea(r, 400, 400)
@@ -43,20 +45,20 @@ func newGuiRenderer() *guiRenderer {
 	toolbarContainer.Append(r.measureArea, true)
 	r.box.Append(r.area, true)
 	r.box.Append(toolbarContainer, false)
-	
+
 	r.contentFont = ui.LoadClosestFont(&ui.FontDescriptor{
-		Family: "Ubuntu",
+		Family: "Deja Vu",
 		Size:   12,
 	})
 	r.titleFont = ui.LoadClosestFont(&ui.FontDescriptor{
-		Family: "Ubuntu",
+		Family: "Deja Vu",
 		Size:   12,
-		Weight: ui.TextWeightBold,
+		Weight: ui.TextWeightHeavy,
 	})
 	r.titleFont = r.contentFont
 	r.subtitleFont = r.contentFont
 	r.summaryFont = ui.LoadClosestFont(&ui.FontDescriptor{
-		Family: "Ubuntu",
+		Family: "Deja Vu",
 		Size:   12,
 		Italic: ui.TextItalicItalic,
 	})
@@ -66,6 +68,9 @@ func newGuiRenderer() *guiRenderer {
 
 func (r *guiRenderer) SetItem(item lib.Item) error {
 	r.item = item
+	if r.onItemChange != nil {
+		r.onItemChange(item, r)
+	}
 	if node, ok := item.(*lib.Node); ok {
 		content, err := node.Content()
 		if err != nil {
@@ -77,6 +82,10 @@ func (r *guiRenderer) SetItem(item lib.Item) error {
 			r.page = nil
 			return err
 		}
+	} else {
+		r.page = nil
+		children, err := item.Children()
+
 	}
 
 	// Add the elements
@@ -85,11 +94,12 @@ func (r *guiRenderer) SetItem(item lib.Item) error {
 			ele.layout.Free()
 		}
 	}
+	r.elements = make([]guiRenderElement, 3+len(r.page.Verses)*2)
+
 	if r.page == nil {
 		return nil
 	}
 
-	r.elements = make([]guiRenderElement, 3+len(r.page.Verses))
 	r.elements[0] = guiRenderElement{
 		layout: ui.NewTextLayout(r.page.Title, r.titleFont, r.width),
 	}
@@ -101,7 +111,11 @@ func (r *guiRenderer) SetItem(item lib.Item) error {
 	}
 	for i, v := range r.page.Verses {
 		//TODO Add verse number with float left
-		r.elements[i+3] = guiRenderElement{
+		r.elements[i*2+3] = guiRenderElement{
+			layout: ui.NewTextLayout(fmt.Sprintf("%v ", v.Number), r.verseFont, r.width),
+			inline: true,
+		}
+		r.elements[i*2+4] = guiRenderElement{
 			layout: ui.NewTextLayout(v.Text, r.contentFont, r.width),
 		}
 	}
@@ -113,13 +127,21 @@ func (r *guiRenderer) SetItem(item lib.Item) error {
 }
 
 func (r *guiRenderer) layout(width float64) {
+	x := r.marginSide
 	y := r.marginTop
 	for i, ele := range r.elements {
 		ele.y = y
-		ele.x = r.marginSide
-		ele.layout.SetWidth(width - r.marginSide * 2)
-		_, h := ele.layout.Extents()
-		y += h
+		ele.x = x
+		ele.layout.SetWidth(width - r.marginSide - x)
+		w, h := ele.layout.Extents()
+		if ele.inline {
+			x += w
+		} else {
+			y += h
+			x = r.marginSide
+			fmt.Printf("Layout: %v, %v, %v, %v\n", x, y, w, h)
+		}
+
 		r.elements[i] = ele
 	}
 
@@ -191,7 +213,6 @@ func (r *guiRenderer) Disable() {
 	r.box.Disable()
 }
 
-
 type guiRenderMeasure struct {
 	parent *guiRenderer
 }
@@ -201,7 +222,7 @@ func (r *guiRenderMeasure) Draw(a *ui.Area, dp *ui.AreaDrawParams) {
 		fmt.Printf("Size change: %v\n", dp.AreaWidth)
 		r.parent.layout(dp.AreaWidth)
 	}
-		
+
 	//Fill background
 	p := ui.NewPath(ui.Winding)
 	p.AddRectangle(0, 0, dp.AreaWidth, dp.AreaHeight)
