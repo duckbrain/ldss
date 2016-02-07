@@ -67,6 +67,13 @@ func newGuiRenderer() *guiRenderer {
 }
 
 func (r *guiRenderer) SetItem(item lib.Item) error {
+	if r.elements != nil {
+		for _, ele := range r.elements {
+			ele.layout.Free()
+		}
+	}
+	r.elements = nil
+
 	r.item = item
 	if r.onItemChange != nil {
 		r.onItemChange(item, r)
@@ -82,42 +89,39 @@ func (r *guiRenderer) SetItem(item lib.Item) error {
 			r.page = nil
 			return err
 		}
+		// Add the elements
+		r.elements = make([]guiRenderElement, 3+len(r.page.Verses)*2)
+
+		if r.page == nil {
+			return nil
+		}
+
+		r.elements[0] = guiRenderElement{
+			layout: ui.NewTextLayout(r.page.Title, r.titleFont, r.width),
+		}
+		r.elements[1] = guiRenderElement{
+			layout: ui.NewTextLayout(r.page.Subtitle, r.subtitleFont, r.width),
+		}
+		r.elements[2] = guiRenderElement{
+			layout: ui.NewTextLayout(r.page.Summary, r.summaryFont, r.width),
+		}
+		for i, v := range r.page.Verses {
+			//TODO Add verse number with float left
+			r.elements[i*2+3] = guiRenderElement{
+				layout: ui.NewTextLayout(fmt.Sprintf("%v ", v.Number), r.verseFont, r.width),
+				inline: true,
+			}
+			r.elements[i*2+4] = guiRenderElement{
+				layout: ui.NewTextLayout(v.Text, r.contentFont, r.width),
+			}
+		}
 	} else {
 		r.page = nil
 		children, err := item.Children()
-
-	}
-
-	// Add the elements
-	if r.elements != nil {
-		for _, ele := range r.elements {
-			ele.layout.Free()
+		if err != nil {
+			return err
 		}
-	}
-	r.elements = make([]guiRenderElement, 3+len(r.page.Verses)*2)
-
-	if r.page == nil {
-		return nil
-	}
-
-	r.elements[0] = guiRenderElement{
-		layout: ui.NewTextLayout(r.page.Title, r.titleFont, r.width),
-	}
-	r.elements[1] = guiRenderElement{
-		layout: ui.NewTextLayout(r.page.Subtitle, r.subtitleFont, r.width),
-	}
-	r.elements[2] = guiRenderElement{
-		layout: ui.NewTextLayout(r.page.Summary, r.summaryFont, r.width),
-	}
-	for i, v := range r.page.Verses {
-		//TODO Add verse number with float left
-		r.elements[i*2+3] = guiRenderElement{
-			layout: ui.NewTextLayout(fmt.Sprintf("%v ", v.Number), r.verseFont, r.width),
-			inline: true,
-		}
-		r.elements[i*2+4] = guiRenderElement{
-			layout: ui.NewTextLayout(v.Text, r.contentFont, r.width),
-		}
+		_ = children
 	}
 
 	//r.width = 0
@@ -141,7 +145,6 @@ func (r *guiRenderer) layout(width float64) {
 			x = r.marginSide
 			fmt.Printf("Layout: %v, %v, %v, %v\n", x, y, w, h)
 		}
-
 		r.elements[i] = ele
 	}
 

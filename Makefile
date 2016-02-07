@@ -20,8 +20,10 @@ run-lookup: $(BINARY)
 
 ldss/bindata_debug.go:
 	$(BINDATA) -nomemcopy -debug -tags "!release" -o "$@" data/...
+	gofmt -w "$@"
 ldss/bindata_release.go: $(shell find data -print)
 	$(BINDATA) -nomemcopy -tags "release" -o "$@" data/...
+	gofmt -w "$@"
 
 $(BINDATA):
 	go get -u github.com/jteeuwen/go-bindata/...
