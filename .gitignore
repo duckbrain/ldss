@@ -6,7 +6,7 @@
 .*.swp
 
 bindata.go
-ldss/ldss
+ldss
 /.ldss
 .depends
 

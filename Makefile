@@ -1,16 +1,16 @@
 DEBUG ?= 1
 BINARY = ${GOPATH}/bin/ldss
 BINDATA = ${GOPATH}/bin/go-bindata
-DEPENDS = ldss/*.go lib/*.go .depends $(BINDATA) 
+DEPENDS = *.go lib/*.go .depends $(BINDATA) 
 
-all: $(BINARY) ldss/bindata_debug.go ldss/bindata_release.go
+all: $(BINARY) bindata_debug.go bindata_release.go
 
 ifeq ($(DEBUG), 1)
-$(BINARY): $(DEPENDS) ldss/bindata_debug.go
-	go install ./ldss
+$(BINARY): $(DEPENDS) bindata_debug.go
+	go install .
 else
-$(BINARY): $(DEPENDS) ldss/bindata_release.go
-	go install --tags release ./ldss
+$(BINARY): $(DEPENDS) bindata_release.go
+	go install --tags release .
 endif
 
 run: $(BINARY)
@@ -18,10 +18,10 @@ run: $(BINARY)
 run-lookup: $(BINARY)
 	$(BINARY) lookup 1 Ne 3:17
 
-ldss/bindata_debug.go:
+bindata_debug.go:
 	$(BINDATA) -nomemcopy -debug -tags "!release" -o "$@" data/...
 	gofmt -w "$@"
-ldss/bindata_release.go: $(shell find data -print)
+bindata_release.go: $(shell find data -print)
 	$(BINDATA) -nomemcopy -tags "release" -o "$@" data/...
 	gofmt -w "$@"
 
@@ -33,12 +33,12 @@ $(BINDATA):
 	@echo "Flags make that dependances are gotten" > .depends
 	
 format:
-	go fmt ldss/*
+	go fmt *
 	go fmt lib/*
 
 clean:
-	rm -f ${GOPATH}/bin/ldss
-	rm -f ldss/bindata.go ldss/bindata_debug.go ldss/bindata_release.go
+	rm -f $(BINARY)
+	rm -f bindata.go bindata_debug.go bindata_release.go
 	go clean -r
 
 clean-tree: clean
