@@ -15,33 +15,33 @@ type guiPage struct {
 	address                                             *ui.Entry
 	title, status                                       *ui.Label
 	btnUp, btnNext, btnPrevious, btnNewTab, btnCloseTab *ui.Button
-	childMap                                            map[uintptr]string
+	//childMap                                            map[uintptr]string
 }
 
 func newGuiPage() *guiPage {
 	var err error
 	p := &guiPage{}
 
-	p.childMap = make(map[uintptr]string)
+	//p.childMap = make(map[uintptr]string)
 
 	p.box = ui.NewVerticalBox()
 	p.toolbar = ui.NewHorizontalBox()
 	p.contents = newGuiRenderer()
 
-	p.btnUp = ui.NewButton("Up")
+	p.btnUp = ui.NewButton("")
 	p.btnUp.OnClicked(func(btn *ui.Button) {
 		p.SetItem(p.item.Parent(), true)
 	})
-	p.btnNext = ui.NewButton("Next")
+	p.btnNext = ui.NewButton("")
 	p.btnNext.OnClicked(func(btn *ui.Button) {
 		p.SetItem(p.item.Next(), true)
 	})
-	p.btnPrevious = ui.NewButton("Previous")
+	p.btnPrevious = ui.NewButton("")
 	p.btnPrevious.OnClicked(func(btn *ui.Button) {
 		p.SetItem(p.item.Previous(), true)
 	})
-	p.btnNewTab = ui.NewButton("+")
-	p.btnCloseTab = ui.NewButton("-")
+	p.btnNewTab = ui.NewButton("")
+	p.btnCloseTab = ui.NewButton("")
 
 	p.lang, err = lib.DefaultLanguage()
 
@@ -85,7 +85,7 @@ func (p *guiPage) SetItem(item lib.Item, setText bool) {
 	if p.item != nil {
 		//p.contents.Delete(0)
 	}
-	p.childMap = make(map[uintptr]string)
+	//p.childMap = make(map[uintptr]string)
 	p.contents.SetItem(item)
 	if item == nil {
 		p.title.SetText("")
@@ -100,32 +100,6 @@ func (p *guiPage) SetItem(item lib.Item, setText bool) {
 		if setText {
 			p.address.SetText(item.Path())
 		}
-		/*
-			children, err := item.Children()
-			if err != nil {
-				p.ShowError(err)
-				return
-			}
-			colsGrp := ui.NewHorizontalBox()
-			cols := []*ui.Box{
-				ui.NewVerticalBox(),
-				ui.NewVerticalBox(),
-				ui.NewVerticalBox(),
-			}
-			for i, c := range children {
-				btn := ui.NewButton(c.Name())
-				btn.OnClicked(func(btn *ui.Button) {
-					path := p.childMap[btn.Handle()]
-					p.Lookup(path)
-				})
-				p.childMap[btn.Handle()] = c.Path()
-				cols[i%len(cols)].Append(btn, false)
-			}
-			for _, col := range cols {
-				colsGrp.Append(col, true)
-			}
-			p.contents.Append(colsGrp, false)*/
-
 	}
 	p.item = item
 }
