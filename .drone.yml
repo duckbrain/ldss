@@ -3,4 +3,5 @@ debug: true
 build:
         image: hypriot/rpi-golang
         commands:
+                - go get ./...
                 - go build
