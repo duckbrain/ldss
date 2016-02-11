@@ -17,6 +17,6 @@ moroni:moro:mor:/scriptures/bofm/moro#
 /(bofm|bom) (pron|pronounciation)/:/scriptures/bofm/pronounciation
 
 # D&C
-dc:d&c:doctrine and covenants:/scriptures/dc
+dc:d&c:doctrine and covenants:/scriptures/dc-testament/dc#
 dc od:d&c od:doctrine and covenants official declaration:/scriptures/dc
 
