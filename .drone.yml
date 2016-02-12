@@ -4,4 +4,4 @@ build:
         image: hypriot/rpi-golang
         commands:
                 - go get ./...
-                - go build
+                - go build --tags nogui .
