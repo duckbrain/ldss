@@ -3,5 +3,6 @@ debug: true
 build:
         image: hypriot/rpi-golang
         commands:
+                - ln -s $PWD $GOPATH/src
                 - go get ./...
                 - go build --tags nogui .
