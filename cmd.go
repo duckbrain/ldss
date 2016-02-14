@@ -55,16 +55,16 @@ func (app *cmd) dl(open func() (interface{}, error)) interface{} {
 func (app *cmd) run() {
 	args := app.args
 	efmt := log.New(os.Stderr, "", 0)
-	catalog := app.item(lib.DefaultCatalog()).(*lib.Catalog)
+	lang, err := lib.DefaultLanguage()
+
+	if err != nil {
+		panic(err)
+	}
 
 	switch args[0] {
 	case "lookup":
 		lookupString := strings.Join(args[1:], " ")
-		item, err := catalog.Lookup(lookupString)
-		if err != nil {
-			efmt.Printf("Path \"%v\" not found.", lookupString)
-			panic(err)
-		}
+		item := app.item(lib.Lookup(lang, lookupString)).(lib.Item)
 
 		if node, ok := item.(*lib.Node); ok {
 			if content, err := node.Content(); err == nil {
@@ -122,11 +122,12 @@ func (app *cmd) run() {
 				fmt.Println(l.String())
 			}
 		} else {
+			catalog := app.item(lib.DefaultCatalog()).(*lib.Catalog)
 			fmt.Println(catalog.String())
 		}
 	case "download", "dl":
 		if len(args) == 1 {
-			app.item(lib.DownloadAll(catalog.Language(), false))
+			app.item(lib.DownloadAll(lang, false))
 			return
 		}
 		switch args[1] {
@@ -136,9 +137,9 @@ func (app *cmd) run() {
 				panic(err)
 			}
 		case "all":
-			app.item(lib.DownloadAll(catalog.Language(), true))
+			app.item(lib.DownloadAll(lang, true))
 		case "missing":
-			app.item(lib.DownloadAll(catalog.Language(), false))
+			app.item(lib.DownloadAll(lang, false))
 		case "cat", "catalog":
 			lang, err := lib.DefaultLanguage()
 			if err != nil {
@@ -147,6 +148,7 @@ func (app *cmd) run() {
 			efmt.Println("Downloading \"" + lang.Name + "\" language catalog")
 			lib.DownloadCatalog(lang)
 		default:
+			catalog := app.item(lib.DefaultCatalog()).(*lib.Catalog)
 			item, err := catalog.Lookup(args[1])
 			if err != nil {
 				panic("Unknown download \"" + args[1] + "\"")
