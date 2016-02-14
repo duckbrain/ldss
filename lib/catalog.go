@@ -137,7 +137,7 @@ func (c *Catalog) LookupPath(path string) (Item, error) {
 	if path == "" {
 		return nil, fmt.Errorf("Cannot use empty string as a path")
 	}
-	if path == "/" {
+	if strings.TrimSpace(path) == "/" {
 		return c, nil
 	}
 	path = strings.TrimRight(path, "/ ")

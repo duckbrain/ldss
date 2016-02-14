@@ -94,7 +94,7 @@ func dataHelpConfig() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "data/help/config", size: 376, mode: os.FileMode(420), modTime: time.Unix(1446215291, 0)}
+	info := bindataFileInfo{name: "data/help/config", size: 376, mode: os.FileMode(420), modTime: time.Unix(1446244351, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -114,7 +114,7 @@ func dataHelpDownload() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "data/help/download", size: 40, mode: os.FileMode(420), modTime: time.Unix(1446243206, 0)}
+	info := bindataFileInfo{name: "data/help/download", size: 40, mode: os.FileMode(420), modTime: time.Unix(1446244351, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -134,7 +134,7 @@ func dataHelpHelp() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "data/help/help", size: 1146, mode: os.FileMode(420), modTime: time.Unix(1446215280, 0)}
+	info := bindataFileInfo{name: "data/help/help", size: 1146, mode: os.FileMode(420), modTime: time.Unix(1446244351, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -154,7 +154,7 @@ func dataReferenceEng() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "data/reference/eng", size: 743, mode: os.FileMode(420), modTime: time.Unix(1455047096, 0)}
+	info := bindataFileInfo{name: "data/reference/eng", size: 743, mode: os.FileMode(420), modTime: time.Unix(1455253924, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -174,7 +174,7 @@ func dataReferenceExample() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "data/reference/example", size: 274, mode: os.FileMode(420), modTime: time.Unix(1454518745, 0)}
+	info := bindataFileInfo{name: "data/reference/example", size: 274, mode: os.FileMode(420), modTime: time.Unix(1454567340, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -194,7 +194,7 @@ func dataWebFaviconIco() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "data/web/favicon.ico", size: 73070, mode: os.FileMode(420), modTime: time.Unix(1446755399, 0)}
+	info := bindataFileInfo{name: "data/web/favicon.ico", size: 73070, mode: os.FileMode(420), modTime: time.Unix(1450845449, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -214,7 +214,7 @@ func dataWebTemplates403Tpl() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "data/web/templates/403.tpl", size: 48, mode: os.FileMode(420), modTime: time.Unix(1450881824, 0)}
+	info := bindataFileInfo{name: "data/web/templates/403.tpl", size: 48, mode: os.FileMode(420), modTime: time.Unix(1450845449, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -234,7 +234,7 @@ func dataWebTemplatesLayoutTpl() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "data/web/templates/layout.tpl", size: 139, mode: os.FileMode(420), modTime: time.Unix(1450881824, 0)}
+	info := bindataFileInfo{name: "data/web/templates/layout.tpl", size: 139, mode: os.FileMode(420), modTime: time.Unix(1450845449, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -254,7 +254,7 @@ func dataWebTemplatesNodeChildrenTpl() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "data/web/templates/node-children.tpl", size: 199, mode: os.FileMode(420), modTime: time.Unix(1454379834, 0)}
+	info := bindataFileInfo{name: "data/web/templates/node-children.tpl", size: 199, mode: os.FileMode(420), modTime: time.Unix(1454567340, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -274,7 +274,7 @@ func dataWebTemplatesNodeContentTpl() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "data/web/templates/node-content.tpl", size: 41, mode: os.FileMode(420), modTime: time.Unix(1454379944, 0)}
+	info := bindataFileInfo{name: "data/web/templates/node-content.tpl", size: 41, mode: os.FileMode(420), modTime: time.Unix(1454567340, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }

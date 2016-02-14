@@ -1,9 +1,13 @@
 package lib
 
+import (
+	"fmt"
+)
+
 type Node struct {
 	id         int
 	name       string
-	glURI      string
+	path       string
 	Book       *Book
 	hasContent bool
 	childCount int
@@ -15,11 +19,11 @@ func (n *Node) Name() string {
 }
 
 func (n *Node) String() string {
-	return n.name
+	return fmt.Sprintf("%v {%v}", n.name, n.path)
 }
 
 func (n *Node) Path() string {
-	return n.glURI
+	return n.path
 }
 
 func (n *Node) Language() *Language {
@@ -53,9 +57,9 @@ func (n *Node) Parent() Item {
 }
 
 func (n *Node) Next() Item {
-	return nil
+	return genericNextPrevious(n, 1)
 }
 
 func (n *Node) Previous() Item {
-	return nil
+	return genericNextPrevious(n, -1)
 }

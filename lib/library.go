@@ -58,6 +58,31 @@ func DefaultCatalog() <-chan Message {
 	})
 }
 
+func genericNextPrevious(item Item, direction int) Item {
+	parent := item.Parent()
+	if parent == nil {
+		return nil
+	}
+	siblings, err := parent.Children()
+	if err != nil {
+		return nil
+	}
+	for i, sibling := range siblings {
+		if sibling == item {
+			if i+direction < 0 {
+				//TODO get last child of parent's sibling
+				return nil
+			}
+			if i+direction >= len(siblings) {
+				//TODO get first child of parent's sibling
+				return nil
+			}
+			return siblings[i+direction]
+		}
+	}
+	return nil
+}
+
 // Does a full lookup of a query string. Downloads any missing elements
 // needed to find what is requested.
 func Lookup(lang *Language, q string) <-chan Message {
@@ -73,9 +98,6 @@ func Lookup(lang *Language, q string) <-chan Message {
 		catalog, err := lang.Catalog()
 		if err != nil {
 			return nil, err
-		}
-		if q == catalog.Path() {
-			return catalog, nil
 		}
 		item, err := catalog.LookupPath(q)
 		if err != nil {

@@ -119,11 +119,11 @@ func (b *Book) Parent() Item {
 }
 
 func (b *Book) Next() Item {
-	return nil
+	return genericNextPrevious(b, 1)
 }
 
 func (b *Book) Previous() Item {
-	return nil
+	return genericNextPrevious(b, -1)
 }
 
 func (b *Book) db() (*bookDBConnection, error) {
@@ -154,7 +154,7 @@ func (b *Book) nodeChildren(parent *Node) ([]*Node, error) {
 	nodes := make([]*Node, 0)
 	for rows.Next() {
 		node := &Node{Book: b}
-		err := rows.Scan(&node.id, &node.name, &node.glURI, &node.parentId, &node.hasContent, &node.childCount)
+		err := rows.Scan(&node.id, &node.name, &node.path, &node.parentId, &node.hasContent, &node.childCount)
 		if err != nil {
 			return nil, err
 		}
@@ -169,7 +169,7 @@ func (b *Book) lookupPath(uri string) (*Node, error) {
 	if err != nil {
 		return node, err
 	}
-	err = l.stmtUri.QueryRow(uri).Scan(&node.id, &node.name, &node.glURI, &node.parentId, &node.hasContent, &node.childCount)
+	err = l.stmtUri.QueryRow(uri).Scan(&node.id, &node.name, &node.path, &node.parentId, &node.hasContent, &node.childCount)
 	if err != nil {
 		return nil, fmt.Errorf("Path %v not found", uri)
 	}
@@ -182,7 +182,7 @@ func (b *Book) lookupId(id int) (*Node, error) {
 	if err != nil {
 		return node, err
 	}
-	err = l.stmtId.QueryRow(id).Scan(&node.id, &node.name, &node.glURI, &node.parentId, &node.hasContent, &node.childCount)
+	err = l.stmtId.QueryRow(id).Scan(&node.id, &node.name, &node.path, &node.parentId, &node.hasContent, &node.childCount)
 	return node, err
 
 }
