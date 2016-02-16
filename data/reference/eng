@@ -16,6 +16,35 @@ ether:eth:/scriptures/bofm/ether#
 moroni:moro:mor:/scriptures/bofm/moro#
 /(bofm|bom) (pron|pronounciation)/:/scriptures/bofm/pronounciation
 
+# New Testament
+new testament:nt:/scriptures/nt
+new testament title:nt title:/scriptures/nt/title-page
+matthew:matt:/scriptures/nt/matt#
+mark:/scriptures/nt/mark#
+luke:/scriptures/nt/luke#
+john:/scriptures/nt/john#
+acts:act:/scriptures/nt/acts#
+romans:rom:/scriptures/nt/rom#
+/([1-2])( |-)?(cor(inthians)?)/:/scriptures/nt/${1}-cor#
+galatians:gal:/scriptures/nt/gal#
+ephesians:eph:/scriptures/nt/eph#
+philippians:philip:/scriptures/nt/philip#
+colossians:col:/scriptures/nt/col#
+/([1-2])( |-)?(thes(salonians)?)/:/scriptures/nt/${1}-thes#
+/([1-2])( |-)?(tim(othy)?)/:/scriptures/nt/${1}-tim#
+titus:/scriptures/nt/titus#
+philemon:philem:phil:/scriptures/nt/philem#
+hebrews:hebrew:heb:/scriptures/nt/heb#
+james:/scriptures/nt/james#
+/([1-2])( |-)?(pet(er)?)/:/scriptures/nt/${1}-pet#
+/([1-2])( |-)?(tim(othy)?)/:/scriptures/nt/${1}-tim#
+/([1-3])( |-)?(john|jn|jon)/:/scriptures/nt/${1}-jn#
+jude 1:jude:/scriptures/nt/jude/1
+revelation:rev:/scriptures/nt/rev#
+
+# Old Testament
+
+
 # D&C
 dc:d&c:doctrine and covenants:/scriptures/dc-testament/dc#
 dc od:d&c od:doctrine and covenants official declaration:/scriptures/dc
