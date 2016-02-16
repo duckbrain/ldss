@@ -47,12 +47,17 @@ func (o ConfigOption) needValue() bool {
 	return true
 }
 
-func (o ConfigOption) handleValue(s string, c *Configuration) error {
-	val, err := o.Parse(s)
+func (o ConfigOption) handleValue(s string, c *Configuration) (err error) {
+	var val interface{}
+	if o.Parse != nil {
+		val, err = o.Parse(s)
+	} else {
+		val = s
+	}
 	if err == nil {
 		c.Set(o.Name, val)
 	}
-	return err
+	return
 }
 
 func (o ConfigFlag) needValue() bool {

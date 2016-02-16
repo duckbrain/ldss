@@ -6,6 +6,14 @@ import (
 )
 
 func main() {
+
+	lib.Config().RegisterOption(lib.ConfigOption{
+		Name:     "Language",
+		Default:  "eng",
+		ShortArg: 'l',
+		LongArg:  "lang",
+	})
+
 	if err := lib.Config().Init(); err != nil {
 		panic(err)
 	}
