@@ -3,9 +3,11 @@
 package main
 
 import (
+	"bytes"
 	"encoding/json"
 	"fmt"
 	"html/template"
+	"io"
 	"ldss/lib"
 	"net/http"
 	"reflect"
@@ -78,6 +80,8 @@ func (app *web) handler(w http.ResponseWriter, r *http.Request) {
 	//TODO Remove for production
 	app.initTemplates()
 
+	buff := new(bytes.Buffer)
+
 	defer func() {
 		if rec := recover(); rec != nil {
 			app.debug.Println(reflect.TypeOf(rec))
@@ -119,7 +123,7 @@ func (app *web) handler(w http.ResponseWriter, r *http.Request) {
 			fmt.Fprintf(w, "Download content here")
 		}
 	case "/":
-		app.print(w, r, catalog)
+		app.print(buff, r, catalog)
 	case "/favicon.ico":
 		w.Header().Set("Content-type", "image/x-icon")
 		data, err := Asset("data/web/favicon.ico")
@@ -132,21 +136,32 @@ func (app *web) handler(w http.ResponseWriter, r *http.Request) {
 		if err != nil {
 			panic(err)
 		}
-		app.print(w, r, item)
+		app.print(buff, r, item)
 	}
+
+	layout := struct {
+		Title   string
+		Content template.HTML
+	}{
+		Title:   "LDS Scriptures",
+		Content: template.HTML(buff.String()),
+	}
+
+	app.templates.layout.Execute(w, layout)
 
 }
 
-func (app *web) print(w http.ResponseWriter, r *http.Request, item lib.Item) {
+func (app *web) print(w io.Writer, r *http.Request, item lib.Item) {
 	var err error
 	data := struct {
 		Item     lib.Item
 		Content  template.HTML
 		Children []lib.Item
 		LangCode string
-	}{}
-	data.Item = item
-	data.LangCode = item.Language().GlCode
+	}{
+		Item:     item,
+		LangCode: item.Language().GlCode,
+	}
 	data.Children, err = item.Children()
 	if err != nil {
 		panic(err)
