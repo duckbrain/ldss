@@ -8,6 +8,9 @@ import (
 	_ "github.com/mattn/go-sqlite3"
 )
 
+// Represents a book in the catalog or one of it's folders and
+// provides a way to access the nodes in it's database if
+// downloaded.
 type Book struct {
 	base    *jsonBook
 	catalog *Catalog
@@ -78,30 +81,38 @@ func newBook(base *jsonBook, catalog *Catalog, parent Item) *Book {
 	return b
 }
 
+// A short human-readable representation of the book, mostly useful for debugging.
 func (b *Book) String() string {
 	return fmt.Sprintf("%v {%v}", b.base.Name, b.base.GlURI)
 }
 
+// An ID for the book. This is unique to this book within it's language.
 func (b *Book) ID() int {
 	return b.base.ID
 }
 
+// The name of this book.
 func (b *Book) Name() string {
 	return b.base.Name
 }
 
+// The URL the database of this book is located at online.
 func (b *Book) URL() string {
 	return b.base.URL
 }
 
+// The Gospel Library Path of this book, unique within it's language
 func (b *Book) Path() string {
 	return b.base.GlURI
 }
 
+// The language this book is in
 func (b *Book) Language() *Language {
 	return b.catalog.language
 }
 
+// Children in this book. This is identical to the Index function, but returns
+// the index as a []Item
 func (b *Book) Children() ([]Item, error) {
 	nodes, err := b.Index()
 	if err != nil {
@@ -114,18 +125,22 @@ func (b *Book) Children() ([]Item, error) {
 	return items, nil
 }
 
+// Parent Folder or Catalog of this book
 func (b *Book) Parent() Item {
 	return b.parent
 }
 
+// Next Book in the Folder
 func (b *Book) Next() Item {
 	return genericNextPrevious(b, 1)
 }
 
+// Previous Book in the Folder
 func (b *Book) Previous() Item {
 	return genericNextPrevious(b, -1)
 }
 
+// The SQLite database connector with some prepared statements. Cached for subsequent uses.
 func (b *Book) db() (*bookDBConnection, error) {
 	db, err := b.dbCache.get()
 	if err != nil {
@@ -134,10 +149,13 @@ func (b *Book) db() (*bookDBConnection, error) {
 	return db.(*bookDBConnection), nil
 }
 
+// Returns the Nodes at the root of this book.
 func (l *Book) Index() ([]*Node, error) {
 	return l.nodeChildren(nil)
 }
 
+// Returns the Nodes that are children of the passed node. If the passed Node
+// is nil, it will return the Index
 func (b *Book) nodeChildren(parent *Node) ([]*Node, error) {
 	l, err := b.db()
 	parentId := 0

@@ -10,6 +10,9 @@ import (
 	"strings"
 )
 
+// Sets a function that will be called to get the ldss reference language file
+// for a passed language. This will likely be from a file, but could be from
+// another source, such as an embedded resource.
 func SetReferenceParseReader(open func(lang *Language) ([]byte, error)) {
 	langs, err := Languages()
 	if err != nil {

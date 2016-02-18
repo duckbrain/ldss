@@ -13,6 +13,11 @@ func init() {
 	booksByLangBookId = make(map[langBookID]*Book)
 }
 
+// Calls the open function and downloads any missing content if has not
+// been downloaded yet. If it does download something, it will retry the
+// open function repeatedly until it gets no download errors (or repeated
+// ones). It provides information about these downloads and the final
+// result through a series of messages from the returned channel.
 func AutoDownload(open func() (interface{}, error)) <-chan Message {
 	c := make(chan Message)
 	go func() {
@@ -44,20 +49,9 @@ func AutoDownload(open func() (interface{}, error)) <-chan Message {
 	return c
 }
 
-func DefaultCatalog() <-chan Message {
-	return AutoDownload(func() (interface{}, error) {
-		lang, err := DefaultLanguage()
-		if err != nil {
-			return nil, err
-		}
-		catalog, err := lang.Catalog()
-		if err != nil {
-			return nil, err
-		}
-		return catalog, nil
-	})
-}
-
+// Gets the next or previous sibling of an item using it's
+// interface functions. Used to implement Next and Previous
+// on the Item interface. Only pass -1 or 1 to direction.
 func genericNextPrevious(item Item, direction int) Item {
 	parent := item.Parent()
 	if parent == nil {
@@ -83,8 +77,8 @@ func genericNextPrevious(item Item, direction int) Item {
 	return nil
 }
 
-// Does a full lookup of a query string. Downloads any missing elements
-// needed to find what is requested.
+// Uses AutoDownload to lookup a string. Uses reference lookups or paths
+// to find the item.
 func Lookup(lang *Language, q string) <-chan Message {
 	return AutoDownload(func() (interface{}, error) {
 		ref, err := lang.ref()

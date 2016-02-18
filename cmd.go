@@ -122,7 +122,7 @@ func (app *cmd) run() {
 				fmt.Println(l.String())
 			}
 		} else {
-			catalog := app.item(lib.DefaultCatalog()).(*lib.Catalog)
+			catalog := app.item(lib.Lookup(lang, "/")).(*lib.Catalog)
 			fmt.Println(catalog.String())
 		}
 	case "download", "dl":
@@ -141,23 +141,15 @@ func (app *cmd) run() {
 		case "missing":
 			app.item(lib.DownloadAll(lang, false))
 		case "cat", "catalog":
-			lang, err := lib.DefaultLanguage()
-			if err != nil {
-				panic(err)
-			}
 			efmt.Println("Downloading \"" + lang.Name + "\" language catalog")
 			lib.DownloadCatalog(lang)
 		default:
-			catalog := app.item(lib.DefaultCatalog()).(*lib.Catalog)
-			item, err := catalog.Lookup(args[1])
-			if err != nil {
-				panic("Unknown download \"" + args[1] + "\"")
-			}
+			item := app.item(lib.Lookup(lang, args[1]))
 			if book, ok := item.(*lib.Book); ok {
-				efmt.Printf("Downloading book \"%v\" for the \"%v\" catalog\n", book.Name(), catalog.Name())
+				efmt.Printf("Downloading book \"%v\"\n", book.Name())
 				lib.DownloadBook(book)
 			} else if folder, ok := item.(*lib.Folder); ok {
-				efmt.Printf("Downloading folder \"%v\" for the \"%v\" catalog\n", folder.Name(), catalog.Name())
+				efmt.Printf("Downloading folder \"%v\"\n", folder.Name())
 				lib.DownloadChildren(folder, false)
 			}
 		}

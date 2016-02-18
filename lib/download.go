@@ -8,6 +8,7 @@ import (
 // The number of simultanious downloads when using DownloadChildren or DownloadAll
 var DownloadLimit int = 6
 
+// Downloads the content at the get path to the save path, optionally zlib decompressing it.
 func downloadFile(get string, save string, zlibDecompress bool) (err error) {
 	var input io.Reader
 
@@ -35,18 +36,22 @@ func downloadFile(get string, save string, zlibDecompress bool) (err error) {
 	return
 }
 
+// Downloads the list of languages
 func DownloadLanguages() error {
 	return downloadFile(server.LanguagesPath(), source.LanguagesPath(), false)
 }
 
+// Downloads the catalog for the passed language
 func DownloadCatalog(language *Language) error {
 	return downloadFile(server.CatalogPath(language), source.CatalogPath(language), false)
 }
 
+// Downloads the passed book
 func DownloadBook(book *Book) error {
 	return downloadFile(server.BookPath(book), source.BookPath(book), true)
 }
 
+// Recursively downloads all children of the passed Catalog or Folder.
 func DownloadChildren(item Item, force bool) <-chan Message {
 	// Find the catalog
 	var catalog *Catalog
@@ -99,6 +104,8 @@ func DownloadChildren(item Item, force bool) <-chan Message {
 	return c
 }
 
+// Downloads the catalog and all books for a language. If force is true, it will
+// download these items even if they are already downloaded, replacing them.
 func DownloadAll(lang *Language, force bool) <-chan Message {
 	c := make(chan Message)
 	go func() {

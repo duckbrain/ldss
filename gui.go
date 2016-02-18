@@ -1,8 +1,5 @@
 // +build !nogui
 
-/*
- * This file will contain a native GUI that can be run.
- */
 package main
 
 import (
