@@ -13,16 +13,32 @@ type glLanguageDescription struct {
 	Success   bool        `json:"success"`
 }
 
+// Defines a language as from the server. The fields should not be modified.
 type Language struct {
-	ID           int    `json:"id"`
-	Name         string `json:"name"`
-	EnglishName  string `json:"eng_name"`
-	Code         string `json:"code"`
-	GlCode       string `json:"code_three"`
+	// The Gospel Library ID for the language. Used for downloads.
+	ID int `json:"id"`
+
+	// Native representation of the language in the language observed
+	Name string `json:"name"`
+
+	// English representation of the language
+	EnglishName string `json:"eng_name"`
+
+	// The internationalization (i18n) code used in most programs
+	Code string `json:"code"`
+
+	// Gospel Library language code, seen in the urls of https://lds.org
+	GlCode string `json:"code_three"`
+
 	catalogCache cache
 	reference    cache
 }
 
+// Returns a human readable version of the language that is appropriate to
+// show an end user. It will format the language to contain it's native
+// representation as well as the English representation. It will also show
+// the standard internationalization code as well as the Gospel Library
+// language code.
 func (l *Language) String() string {
 	var id, name, code string
 
@@ -41,6 +57,7 @@ func (l *Language) String() string {
 	return id + name + code
 }
 
+// Gets the catalog for this language. If cached, it will return the cached version.
 func (l *Language) Catalog() (*Catalog, error) {
 	l.catalogCache.construct = func() (interface{}, error) {
 		return newCatalog(l)
@@ -72,6 +89,7 @@ func init() {
 	}
 }
 
+// Returns a list of all languages available. Downloads the languages if not already downloaded first.
 func Languages() ([]*Language, error) {
 	if !source.Exist(source.LanguagesPath()) {
 		if err := DownloadLanguages(); err != nil {
@@ -85,19 +103,22 @@ func Languages() ([]*Language, error) {
 	return langs.([]*Language), err
 }
 
+// Finds a language by any of the accepted methods, compares ID, Code, and GlCode
 func LookupLanguage(id string) (*Language, error) {
 	langs, err := Languages()
 	if err != nil {
 		return nil, err
 	}
 	for _, lang := range langs {
-		if lang.Name == id || fmt.Sprintf("%v", lang.ID) == id || lang.EnglishName == id || lang.Code == id || lang.GlCode == id {
+		if lang.Name == id || fmt.Sprintf("%v", lang.ID) == id || lang.Code == id || lang.GlCode == id {
 			return lang, nil
 		}
 	}
 	return nil, errors.New("Language not found")
 }
 
+// Gets the language defined by the configuration option "Language"
 func DefaultLanguage() (*Language, error) {
+	// TODO Try English if there is a problem with the configuration
 	return LookupLanguage(Config().Get("Language").(string))
 }

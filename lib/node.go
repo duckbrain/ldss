@@ -42,9 +42,9 @@ func (n *Node) Children() ([]Item, error) {
 	return items, nil
 }
 
-func (n *Node) Content() (*Content, error) {
+func (n *Node) Content() (Content, error) {
 	rawContent, err := n.Book.nodeContent(n)
-	return &Content{rawHTML: rawContent}, err
+	return Content(rawContent), err
 }
 
 func (n *Node) Parent() Item {

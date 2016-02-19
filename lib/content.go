@@ -1,20 +1,15 @@
 package lib
 
 import (
-	"html/template"
 	"strconv"
 	"strings"
 
 	"golang.org/x/net/html"
 )
 
-type Content struct {
-	rawHTML string
-}
-
-func (c *Content) HTML() template.HTML {
-	return template.HTML(c.rawHTML)
-}
+// Content pulled from a node in the SQlite database. Is the content of the node
+// formatted as HTML
+type Content string
 
 type parseMode int
 
@@ -25,18 +20,10 @@ const (
 	parseVerseMode
 )
 
+// A page parsed from a node's Content
 type Page struct {
 	Title, Subtitle, Summary string
 	Verses                   []Verse
-	originalHtml             template.HTML
-}
-
-func (c *Page) String() string {
-	return string(c.originalHtml)
-}
-
-func (c *Page) HTML() template.HTML {
-	return c.originalHtml
 }
 
 type Verse struct {
@@ -49,8 +36,10 @@ type VerseReference struct {
 	Letter string
 }
 
-func (c *Content) Page() (*Page, error) {
-	reader := strings.NewReader(c.rawHTML)
+// Parse the content for a page. The page contains an structured representation
+// of the content that can be displayed programattically in a variety of ways.
+func (c Content) Page() (*Page, error) {
+	reader := strings.NewReader(string(c))
 	doc, err := html.Parse(reader)
 	if err != nil {
 		return nil, err

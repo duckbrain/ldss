@@ -2,7 +2,6 @@ package lib
 
 import (
 	"encoding/json"
-	"errors"
 	"fmt"
 	"strconv"
 	"strings"
@@ -116,7 +115,7 @@ func (catalog *Catalog) addFolders(jFolders []*jsonFolder, parent Item) []*Folde
 	return folders
 }
 
-// Converts jsonFolders into Folders
+// Converts jsonBooks into Books and sets their parent item
 func (catalog *Catalog) addBooks(jBooks []*jsonBook, parent Item) []*Book {
 	books := make([]*Book, len(jBooks))
 	for i, base := range jBooks {
@@ -128,40 +127,12 @@ func (catalog *Catalog) addBooks(jBooks []*jsonBook, parent Item) []*Book {
 	return books
 }
 
-func (l *Catalog) BookByUnknown(id string) (*Book, error) {
-	for _, book := range l.booksById {
-		if book.Name() == id || fmt.Sprintf("%v", book.ID) == id || book.URL() == id || book.Path() == id {
-			return book, nil
-		}
-	}
-	return nil, errors.New("Book not found")
-}
-
-func (c *Catalog) Lookup(id string) (Item, error) {
-	if id[0] == '/' {
-		return c.LookupPath(id)
-	} else {
-		return nil, errors.New("Non-path lookup not implemented")
-	}
-}
-
-func (c *Catalog) LookupBook(q string) (*Book, error) {
-	i, err := c.Lookup(q)
-	if err != nil {
-		return nil, err
-	}
-	book, ok := i.(*Book)
-	if !ok {
-		return nil, fmt.Errorf("Result \"%v\" is not a book", i)
-	}
-	return book, nil
-}
-
+// Finds an Item by it's path. Expects a fully qualified path. An empty string
+// or "/" will return this catalog. Will return an error if there is an error
+// loading the item or it is not downloaded.
 func (c *Catalog) LookupPath(path string) (Item, error) {
-	if path == "" {
-		return nil, fmt.Errorf("Cannot use empty string as a path")
-	}
-	if strings.TrimSpace(path) == "/" {
+	path = strings.TrimSpace(path)
+	if path == "" || path == "/" {
 		return c, nil
 	}
 	path = strings.TrimRight(path, "/ ")

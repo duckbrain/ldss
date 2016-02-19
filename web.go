@@ -62,7 +62,7 @@ func (app *web) handleJSON(w http.ResponseWriter, r *http.Request) {
 	}
 	path := r.URL.Path[len("/json"):]
 	fmt.Println("Looking for :" + path)
-	item, err := catalog.Lookup(path)
+	item, err := catalog.LookupPath(path)
 	if err != nil {
 		panic(err)
 	}
@@ -132,7 +132,7 @@ func (app *web) handler(w http.ResponseWriter, r *http.Request) {
 		}
 		w.Write(data)
 	default:
-		item, err := catalog.Lookup(r.URL.Path)
+		item, err := catalog.LookupPath(r.URL.Path)
 		if err != nil {
 			panic(err)
 		}
@@ -171,7 +171,7 @@ func (app *web) print(w io.Writer, r *http.Request, item lib.Item) {
 	case *lib.Node:
 		node := item.(*lib.Node)
 		if content, err := node.Content(); err == nil {
-			data.Content = content.HTML()
+			data.Content = template.HTML(content)
 			err = app.templates.nodeContent.Execute(w, data)
 		} else {
 			err = app.templates.nodeChildren.Execute(w, data)

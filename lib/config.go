@@ -13,10 +13,13 @@ import (
 
 var c *Configuration
 
+// Gets the singleton Configuration for the application.
 func Config() *Configuration {
 	return c
 }
 
+// Represents the configuration options, flags, and values provided to direct
+// operation.
 type Configuration struct {
 	args        []string
 	values      map[string]interface{}
@@ -29,6 +32,10 @@ type configParam interface {
 	handleValue(string, *Configuration) error
 }
 
+// Defines the long and short version of argument options hat can be passed
+// to the program as well as how to parse the following string as a value.
+// Also defines a name used in config files and a default value.
+// Any value can be ommitted, except fo the name.
 type ConfigOption struct {
 	Name     string
 	Default  interface{}
@@ -37,6 +44,9 @@ type ConfigOption struct {
 	Parse    func(string) (interface{}, error)
 }
 
+// Defines the long and short version of argument flags that can be passed
+// to the program as well as the action to perform if the flag is encountered.
+// Either of the ShortArg or LongArg may be permitted.
 type ConfigFlag struct {
 	ShortArg rune
 	LongArg  string
@@ -80,6 +90,9 @@ func newConfiguration() *Configuration {
 	}
 }
 
+// Gets the options for starting the program and sets them appropriately.
+// First loads the default values, then overrites and adds values from the
+// config file, finnaly overrites and adds values from command line paramters.
 func (c *Configuration) Init() error {
 	//TODO: Use errors instead of panics
 	if err := c.loadDefaults(); err != nil {
@@ -94,31 +107,40 @@ func (c *Configuration) Init() error {
 	return nil
 }
 
+// Defines a new ConfigFlag to parse from the config file and command line
+// paramters before calling Init()
 func (c *Configuration) RegisterFlag(o ConfigFlag) {
 	c.shortParams[o.ShortArg] = o
 	c.longParams[o.LongArg] = o
 }
 
+// Defines a new ConfigOption to parse from the config file and command line
+// paramters before calling Init()
 func (c *Configuration) RegisterOption(o ConfigOption) {
 	c.shortParams[o.ShortArg] = o
 	c.longParams[o.LongArg] = o
 	c.Set(o.Name, o.Default)
 }
 
+// An ordered list of arguments passed to the program that were not flags or options
 func (c *Configuration) Args() []string {
 	return c.args
 }
 
+// Sets a value by it's string name
 func (c *Configuration) Set(name string, value interface{}) {
 	c.values[name] = value
 }
 
+// Gets a value by it's string name
 func (c *Configuration) Get(name string) interface{} {
 	return c.values[name]
 }
 
+// Gives a string representation of the configuration options, formatted for
+// command line output
 func (c *Configuration) String() string {
-	var buffer bytes.Buffer
+	buffer := new(bytes.Buffer)
 	nameLen := 0
 
 	for key, _ := range c.values {
