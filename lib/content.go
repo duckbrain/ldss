@@ -23,17 +23,10 @@ const (
 // A page parsed from a node's Content
 type Page struct {
 	Title, Subtitle, Summary string
-	Verses                   []Verse
-}
-
-type Verse struct {
-	Number int
-	Text   string
-}
-
-type VerseReference struct {
-	Verse  int
-	Letter string
+	Verses                   []struct {
+		Number int
+		Text   string
+	}
 }
 
 // Parse the content for a page. The page contains an structured representation
@@ -47,7 +40,10 @@ func (c Content) Page() (*Page, error) {
 
 	mode := parseTitleMode
 	page := new(Page)
-	var verse Verse
+	var verse struct {
+		Number int
+		Text   string
+	}
 	var f func(*html.Node)
 
 	f = func(n *html.Node) {

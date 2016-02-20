@@ -32,7 +32,7 @@ func SetReferenceParseReader(open func(lang *Language) ([]byte, error)) {
 
 }
 
-type Reference struct {
+type reference struct {
 	bookName          string
 	glPath            string
 	item              Item
@@ -41,7 +41,7 @@ type Reference struct {
 	versesHighlighted []int
 }
 
-func (ref Reference) String() string {
+func (ref reference) String() string {
 	return fmt.Sprintf("%v %v:%v", ref.bookName, ref.chapter, ref.verseSelected)
 }
 
