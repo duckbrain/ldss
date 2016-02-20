@@ -10,7 +10,6 @@ import (
 	"io"
 	"ldss/lib"
 	"net/http"
-	"reflect"
 	"strconv"
 	"strings"
 )
@@ -39,6 +38,7 @@ func init() {
 func (app web) run() {
 	http.HandleFunc("/", app.handler)
 	http.HandleFunc("/json/", app.handleJSON)
+	http.HandleFunc("/lookup", app.handleLookup)
 
 	port := lib.Config().Get("WebPort").(int)
 
@@ -48,7 +48,7 @@ func (app web) run() {
 	http.ListenAndServe(fmt.Sprintf(":%v", port), nil)
 }
 
-func (app *web) handleJSON(w http.ResponseWriter, r *http.Request) {
+func (app *web) lang(r *http.Request) *lib.Language {
 	lang, err := lib.LookupLanguage(r.URL.Query().Get("lang"))
 	if err != nil {
 		lang, err = lib.DefaultLanguage()
@@ -56,6 +56,35 @@ func (app *web) handleJSON(w http.ResponseWriter, r *http.Request) {
 			panic(err)
 		}
 	}
+	return lang
+}
+
+func (app *web) handleError(w http.ResponseWriter, r *http.Request) {
+	if rec := recover(); rec != nil {
+		var err error
+		switch rec.(type) {
+		case error:
+			err = rec.(error)
+		default:
+			err = fmt.Errorf("%v", rec)
+		}
+		app.templates.err.Execute(w, err)
+	}
+}
+
+func (app *web) handleLookup(w http.ResponseWriter, r *http.Request) {
+	path, err := app.lang(r).Reference(r.URL.Query().Get("q"))
+	if err != nil {
+		panic(err)
+	}
+	http.Redirect(w, r, path, http.StatusFound)
+}
+
+func (app *web) handleStatic(w http.ResponseWriter, r *http.Request) {
+}
+
+func (app *web) handleJSON(w http.ResponseWriter, r *http.Request) {
+	lang := app.lang(r)
 	catalog, err := lang.Catalog()
 	if err != nil {
 		panic(err)
@@ -77,42 +106,21 @@ func (app *web) handleJSON(w http.ResponseWriter, r *http.Request) {
 }
 
 func (app *web) handler(w http.ResponseWriter, r *http.Request) {
+	lang := app.lang(r)
+	buff := new(bytes.Buffer)
+	defer app.handleError(w, r)
 	//TODO Remove for production
 	app.initTemplates()
 
-	buff := new(bytes.Buffer)
-
-	defer func() {
-		if rec := recover(); rec != nil {
-			app.debug.Println(reflect.TypeOf(rec))
-			switch rec.(type) {
-			case *lib.NotDownloadedBookErr:
-				http.Redirect(w, r, "/download", http.StatusFound)
-			case *lib.NotDownloadedCatalogErr:
-				http.Redirect(w, r, "/download", http.StatusFound)
-			case *lib.NotDownloadedLanguageErr:
-				http.Redirect(w, r, "/download", http.StatusFound)
-			case error:
-				err := rec.(error)
-				app.templates.err.Execute(w, err)
-			default:
-				err := fmt.Errorf("%v", rec)
-				app.templates.err.Execute(w, err)
-			}
-		}
-	}()
-
-	lang, err := lib.LookupLanguage(r.URL.Query().Get("lang"))
-	if err != nil {
-		lang, err = lib.DefaultLanguage()
-		if err != nil {
-			panic(err)
-		}
-	}
 	catalog, err := lang.Catalog()
 	if err != nil {
 		panic(err)
 	}
+	item, err := catalog.Lookup(r.URL.Path)
+	if err != nil {
+		panic(err)
+	}
+	app.print(buff, r, item)
 
 	switch strings.ToLower(r.URL.Path) {
 	case "/download":
@@ -122,8 +130,6 @@ func (app *web) handler(w http.ResponseWriter, r *http.Request) {
 		case "POST":
 			fmt.Fprintf(w, "Download content here")
 		}
-	case "/":
-		app.print(buff, r, catalog)
 	case "/favicon.ico":
 		w.Header().Set("Content-type", "image/x-icon")
 		data, err := Asset("data/web/favicon.ico")
@@ -132,11 +138,6 @@ func (app *web) handler(w http.ResponseWriter, r *http.Request) {
 		}
 		w.Write(data)
 	default:
-		item, err := catalog.Lookup(r.URL.Path)
-		if err != nil {
-			panic(err)
-		}
-		app.print(buff, r, item)
 	}
 
 	layout := struct {
@@ -169,8 +170,7 @@ func (app *web) print(w io.Writer, r *http.Request, item lib.Item) {
 
 	switch item.(type) {
 	case *lib.Node:
-		node := item.(*lib.Node)
-		if content, err := node.Content(); err == nil {
+		if content, err := item.(*lib.Node).Content(); err == nil {
 			data.Content = content.HTML()
 			err = app.templates.nodeContent.Execute(w, data)
 		} else {

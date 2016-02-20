@@ -60,6 +60,14 @@ func (l *Language) ref() (*refParser, error) {
 	return ref.(*refParser), nil
 }
 
+func (l *Language) Reference(q string) (string, error) {
+	ref, err := l.ref()
+	if err != nil {
+		return "", err
+	}
+	return ref.lookup(q)
+}
+
 func init() {
 	languages.construct = func() (interface{}, error) {
 		var description glLanguageDescription
