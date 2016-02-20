@@ -68,7 +68,6 @@ func (app *cmd) run() {
 
 		if node, ok := item.(*lib.Node); ok {
 			if content, err := node.Content(); err == nil {
-				//app.fmt.Printf("%v", content.HTML())
 				c := colors(true)
 				page, err := content.Page()
 				if err != nil {
@@ -156,6 +155,5 @@ func (app *cmd) run() {
 	default:
 		app.args = append([]string{"lookup"}, app.args...)
 		app.run()
-		//fmt.Printf("Unknown command \"%s\"\n", args[0])
 	}
 }

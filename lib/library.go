@@ -82,12 +82,11 @@ func genericNextPrevious(item Item, direction int) Item {
 func Lookup(lang *Language, q string) <-chan Message {
 	return AutoDownload(func() (interface{}, error) {
 		ref, err := lang.ref()
-		if err != nil {
-			return nil, err
-		}
-		q, err = ref.lookup(q)
-		if err != nil {
-			return nil, err
+		if err == nil {
+			q, err = ref.lookup(q)
+			if err != nil {
+				return nil, err
+			}
 		}
 		catalog, err := lang.Catalog()
 		if err != nil {
