@@ -43,9 +43,58 @@ jude 1:jude:/scriptures/nt/jude/1
 revelation:rev:/scriptures/nt/rev#
 
 # Old Testament
+old testament:ot:/scriptures/ot
+old testament title:ot title:/scriptures/ot/title-page
+genesis:gen:/scriptures/ot/gen#
+exodus:ex:/scriptures/ot/ex#
+leviticus:lev:/scriptures/ot/lev#
+numbers:num:/scriptures/ot/num#
+deuteronomy:deut:/scriptures/ot/deut#
+joshua:josh:/scriptures/ot/josh#
+judges:judg:/scriptures/ot/judg
+ruth:/scriptures/ot/ruth#
+
+ezra:/scriptures/ot/ezra#
+nehemiah:neh:/scriptures/ot/neh#
+esther:ester:esth:/scriptures/ot/esth#
+job:/scriptures/ot/job#
+psalms:psalm:ps:/scriptures/ot/ps#
+proverbs:prov:/scriptures/ot/prov#
+ecclesiasties:eccl:/scriptures/ot/ecll#
+song of solomon:sofs:s of s:song:/scriptures/ot/song#
+isaiah:isa:/scriptures/ot/isa#
+jeremiah:jer:/scriptures/ot/jer#
+lamentations:lamentation:lam:/scriptures/ot/lam#
+ezekiel:ezek:ezk:/scriptures/ot/ezk#
+daniel:dan:/scriptures/ot/dan#
+hosea:/scriptures/ot/hosea#
+joel:/scriptures/ot/joel#
+amos:/scriptures/ot/amos#
 
 
 # D&C
 dc:d&c:doctrine and covenants:/scriptures/dc-testament/dc#
 dc od:d&c od:doctrine and covenants official declaration:/scriptures/dc
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 

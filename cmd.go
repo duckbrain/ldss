@@ -31,7 +31,7 @@ func colors(enabled bool) *cmdcolors {
 	return &c
 }
 
-func (app *cmd) item(c <-chan lib.Message) interface{} {
+func item(c <-chan lib.Message) interface{} {
 	for m := range c {
 		switch m.(type) {
 		case lib.MessageDone:
@@ -46,6 +46,10 @@ func (app *cmd) item(c <-chan lib.Message) interface{} {
 		}
 	}
 	panic(fmt.Errorf("Channel completed prematurely\n"))
+}
+
+func (app *cmd) item(c <-chan lib.Message) interface{} {
+	return item(c)
 }
 
 func (app *cmd) dl(open func() (interface{}, error)) interface{} {
