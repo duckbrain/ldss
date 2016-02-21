@@ -134,19 +134,25 @@ func (p *refParser) lookup(q string) (string, error) {
 	return base, nil
 }
 
-func (p *refParser) lookupBase(q string) (string, string, error) {
+func (p *refParser) lookupBase(q string) (path, rem string, err error) {
 	for s, r := range p.matchString {
-		if strings.Index(q, s) == 0 {
-			return r, q[len(s):], nil
+		if strings.Index(q, s) == 0 && (len(rem) == 0 || len(rem) > len(q)-len(s)) {
+			path = r
+			rem = q[len(s):]
 		}
 	}
 	for s, r := range p.matchRegexp {
 		if i := s.FindSubmatchIndex([]byte(q)); i != nil {
-			b := make([]byte, 0)
-			b = s.ExpandString(b, r, q, i)
-			e := s.ReplaceAllString(q, "")
-			return string(b), e, nil
+			remTemp := s.ReplaceAllString(q, "")
+			if len(rem) == 0 || len(rem) > len(remTemp) {
+				rem = remTemp
+				b := []byte{}
+				path = string(s.ExpandString(b, r, q, i))
+			}
 		}
 	}
-	return "", "", errors.New("Query \"" + q + "\" not found")
+	if path == "" {
+		err = errors.New("Query \"" + q + "\" not found")
+	}
+	return
 }

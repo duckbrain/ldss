@@ -1,7 +1,7 @@
 42762:Music:/music
 
 # Book of Mormon
-bofm:bom:/scriptures/bofm
+bofm:bom:book of mormon:/scriptures/bofm
 /([1-4])( |-)?ne(phi)?/:/scriptures/bofm/${1}-ne#
 jacob:/scriptures/bofm/jacob#
 enos 1:enos:/scriptures/bofm/enos/1
@@ -14,7 +14,7 @@ helaman:hel:/scriptures/bofm/helaman#
 mormon:morm:/scriptures/bofm/morm#
 ether:eth:/scriptures/bofm/ether#
 moroni:moro:mor:/scriptures/bofm/moro#
-/(bofm|bom) (pron|pronounciation)/:/scriptures/bofm/pronounciation
+/(bofm|bom|book of mormon) (pron|pronounciation( guide)?)/:/scriptures/bofm/pronunciation
 
 # New Testament
 new testament:nt:/scriptures/nt
@@ -53,7 +53,9 @@ deuteronomy:deut:/scriptures/ot/deut#
 joshua:josh:/scriptures/ot/josh#
 judges:judg:/scriptures/ot/judg
 ruth:/scriptures/ot/ruth#
-
+/([1-2])( |-)?(sam(uel)?)/:/scriptures/ot/${1}-sam#
+/([1-2])( |-)?(kgs|kings)/:/scriptures/ot/${1}-kgs#
+/([1-2])( |-)?(chr(onicles)?)/:/scriptures/ot/${1}-chr#
 ezra:/scriptures/ot/ezra#
 nehemiah:neh:/scriptures/ot/neh#
 esther:ester:esth:/scriptures/ot/esth#
@@ -70,6 +72,15 @@ daniel:dan:/scriptures/ot/dan#
 hosea:/scriptures/ot/hosea#
 joel:/scriptures/ot/joel#
 amos:/scriptures/ot/amos#
+obadiah:obadiah 1:obad:obad 1:/scriptures/ot/obad/1
+jonah:/scriptures/ot/jonah#
+micah:/scriptures/ot/micah#
+nahum:/scriptures/ot/nahum#
+habakkuk:hab:/scriptures/ot/hab#
+zephaniah:zeph:/scriptures/ot/zeph#
+haggai:hag:/scriptures/ot/hag#
+zechariah:zech:/scriptures/ot/zech#
+malachi:mal:/scriptures/ot/mal#
 
 
 # D&C
