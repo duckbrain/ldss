@@ -39,16 +39,13 @@ func (app web) run() {
 	http.HandleFunc("/", app.handler)
 	http.HandleFunc("/api/", app.handleJSON)
 	http.HandleFunc("/lookup", app.handleLookup)
+	http.HandleFunc("/favicon.ico", app.handleStatic)
+	http.HandleFunc("/css", app.handleStatic)
 
 	port := lib.Config().Get("WebPort").(int)
 	app.initTemplates()
 	app.efmt.Printf("Listening on port: %v\n", port)
 	http.ListenAndServe(fmt.Sprintf(":%v", port), nil)
-}
-
-func (app web) static(path string) ([]byte, error) {
-	//TODO Have a way to load from a file
-	return Asset(path)
 }
 
 func (app *web) lang(r *http.Request) *lib.Language {
@@ -83,8 +80,15 @@ func (app *web) handleLookup(w http.ResponseWriter, r *http.Request) {
 	http.Redirect(w, r, path, http.StatusFound)
 }
 
-func (app *web) handleStatic(w http.ResponseWriter, r *http.Request) error {
-	data, err := Asset("data/web" + r.URL.Path)
+func (app *web) handleStatic(w http.ResponseWriter, r *http.Request) {
+	defer app.handleError(w, r)
+	if err := app.static(w, r); err != nil {
+		panic(err)
+	}
+}
+
+func (app *web) static(w http.ResponseWriter, r *http.Request) error {
+	data, err := Asset("data/web/static" + r.URL.Path)
 	if err != nil {
 		return err
 	}
@@ -125,7 +129,7 @@ func (app *web) handleJSON(w http.ResponseWriter, r *http.Request) {
 func (app *web) handler(w http.ResponseWriter, r *http.Request) {
 	defer app.handleError(w, r)
 
-	if err := app.handleStatic(w, r); err == nil {
+	if app.static(w, r) == nil {
 		return
 	}
 
@@ -191,6 +195,8 @@ func (app *web) print(w io.Writer, r *http.Request, item lib.Item) {
 		} else {
 			err = app.templates.nodeChildren.Execute(w, data)
 		}
+	default:
+		err = app.templates.nodeChildren.Execute(w, data)
 	}
 
 	if err != nil {
