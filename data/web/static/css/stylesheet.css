@@ -1,5 +1,7 @@
 .toolbar {
-	background-color: black;
+	display: flex;
+	align-items: center;
+	background-color: #ddd;
 	position: fixed;
 	top: 0;
 	left: 0;
