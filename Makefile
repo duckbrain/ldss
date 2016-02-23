@@ -18,7 +18,7 @@ run: $(BINARY)
 run-lookup: $(BINARY)
 	$(BINARY) lookup 1 Ne 3:17
 
-bindata_debug.go:
+bindata_debug.go: $(shell find data -print)
 	$(BINDATA) -nomemcopy -debug -tags "!release" -o "$@" data/...
 	gofmt -w "$@"
 bindata_release.go: $(shell find data -print)
