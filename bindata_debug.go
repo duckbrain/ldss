@@ -5,7 +5,8 @@
 // data/help/help
 // data/reference/eng
 // data/reference/example
-// data/web/favicon.ico
+// data/web/static/css/stylesheet.css
+// data/web/static/favicon.ico
 // data/web/templates/403.tpl
 // data/web/templates/layout.tpl
 // data/web/templates/node-children.tpl
@@ -128,10 +129,28 @@ func dataReferenceExample() (*asset, error) {
 	return a, err
 }
 
-// dataWebFaviconIco reads file data from disk. It returns an error on failure.
-func dataWebFaviconIco() (*asset, error) {
-	path := "/home/jonathan/workspace/golang/src/ldss/data/web/favicon.ico"
-	name := "data/web/favicon.ico"
+// dataWebStaticCssStylesheetCss reads file data from disk. It returns an error on failure.
+func dataWebStaticCssStylesheetCss() (*asset, error) {
+	path := "/home/jonathan/workspace/golang/src/ldss/data/web/static/css/stylesheet.css"
+	name := "data/web/static/css/stylesheet.css"
+	bytes, err := bindataRead(path, name)
+	if err != nil {
+		return nil, err
+	}
+
+	fi, err := os.Stat(path)
+	if err != nil {
+		err = fmt.Errorf("Error reading asset info %s at %s: %v", name, path, err)
+	}
+
+	a := &asset{bytes: bytes, info: fi}
+	return a, err
+}
+
+// dataWebStaticFaviconIco reads file data from disk. It returns an error on failure.
+func dataWebStaticFaviconIco() (*asset, error) {
+	path := "/home/jonathan/workspace/golang/src/ldss/data/web/static/favicon.ico"
+	name := "data/web/static/favicon.ico"
 	bytes, err := bindataRead(path, name)
 	if err != nil {
 		return nil, err
@@ -275,7 +294,8 @@ var _bindata = map[string]func() (*asset, error){
 	"data/help/help":                       dataHelpHelp,
 	"data/reference/eng":                   dataReferenceEng,
 	"data/reference/example":               dataReferenceExample,
-	"data/web/favicon.ico":                 dataWebFaviconIco,
+	"data/web/static/css/stylesheet.css":   dataWebStaticCssStylesheetCss,
+	"data/web/static/favicon.ico":          dataWebStaticFaviconIco,
 	"data/web/templates/403.tpl":           dataWebTemplates403Tpl,
 	"data/web/templates/layout.tpl":        dataWebTemplatesLayoutTpl,
 	"data/web/templates/node-children.tpl": dataWebTemplatesNodeChildrenTpl,
@@ -334,7 +354,12 @@ var _bintree = &bintree{nil, map[string]*bintree{
 			"example": &bintree{dataReferenceExample, map[string]*bintree{}},
 		}},
 		"web": &bintree{nil, map[string]*bintree{
-			"favicon.ico": &bintree{dataWebFaviconIco, map[string]*bintree{}},
+			"static": &bintree{nil, map[string]*bintree{
+				"css": &bintree{nil, map[string]*bintree{
+					"stylesheet.css": &bintree{dataWebStaticCssStylesheetCss, map[string]*bintree{}},
+				}},
+				"favicon.ico": &bintree{dataWebStaticFaviconIco, map[string]*bintree{}},
+			}},
 			"templates": &bintree{nil, map[string]*bintree{
 				"403.tpl":           &bintree{dataWebTemplates403Tpl, map[string]*bintree{}},
 				"layout.tpl":        &bintree{dataWebTemplatesLayoutTpl, map[string]*bintree{}},

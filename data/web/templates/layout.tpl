@@ -5,6 +5,14 @@
 	<title>{{ .Title }}</title>
 </head>
 <body>
-{{ .Content }}
+	<div class="toolbar">
+		<form action="/lookup" method="GET">
+			<input type="text" name="q">
+			<button>Lookup</button>
+		</form>
+	</div>
+	<div class="main-content">
+	{{ .Content }}
+	</div>
 </body>
 </html>

@@ -10,9 +10,8 @@ import (
 	"io"
 	"ldss/lib"
 	"net/http"
-	"reflect"
+	"path"
 	"strconv"
-	"strings"
 )
 
 type web struct {
@@ -38,17 +37,18 @@ func init() {
 
 func (app web) run() {
 	http.HandleFunc("/", app.handler)
-	http.HandleFunc("/json/", app.handleJSON)
+	http.HandleFunc("/api/", app.handleJSON)
+	http.HandleFunc("/lookup", app.handleLookup)
+	http.HandleFunc("/favicon.ico", app.handleStatic)
+	http.HandleFunc("/css", app.handleStatic)
 
 	port := lib.Config().Get("WebPort").(int)
-
 	app.initTemplates()
-
 	app.efmt.Printf("Listening on port: %v\n", port)
 	http.ListenAndServe(fmt.Sprintf(":%v", port), nil)
 }
 
-func (app *web) handleJSON(w http.ResponseWriter, r *http.Request) {
+func (app *web) lang(r *http.Request) *lib.Language {
 	lang, err := lib.LookupLanguage(r.URL.Query().Get("lang"))
 	if err != nil {
 		lang, err = lib.DefaultLanguage()
@@ -56,6 +56,56 @@ func (app *web) handleJSON(w http.ResponseWriter, r *http.Request) {
 			panic(err)
 		}
 	}
+	return lang
+}
+
+func (app *web) handleError(w http.ResponseWriter, r *http.Request) {
+	if rec := recover(); rec != nil {
+		var err error
+		switch rec.(type) {
+		case error:
+			err = rec.(error)
+		default:
+			err = fmt.Errorf("%v", rec)
+		}
+		app.templates.err.Execute(w, err)
+	}
+}
+
+func (app *web) handleLookup(w http.ResponseWriter, r *http.Request) {
+	path, err := app.lang(r).Reference(r.URL.Query().Get("q"))
+	if err != nil {
+		panic(err)
+	}
+	http.Redirect(w, r, path, http.StatusFound)
+}
+
+func (app *web) handleStatic(w http.ResponseWriter, r *http.Request) {
+	defer app.handleError(w, r)
+	if err := app.static(w, r); err != nil {
+		panic(err)
+	}
+}
+
+func (app *web) static(w http.ResponseWriter, r *http.Request) error {
+	data, err := Asset("data/web/static" + r.URL.Path)
+	if err != nil {
+		return err
+	}
+
+	switch path.Ext(r.URL.Path) {
+	case ".ico":
+		w.Header().Set("Content-type", "image/x-icon")
+	case ".css":
+		w.Header().Set("Content-type", "text/css")
+	}
+
+	w.Write(data)
+	return nil
+}
+
+func (app *web) handleJSON(w http.ResponseWriter, r *http.Request) {
+	lang := app.lang(r)
 	catalog, err := lang.Catalog()
 	if err != nil {
 		panic(err)
@@ -77,67 +127,40 @@ func (app *web) handleJSON(w http.ResponseWriter, r *http.Request) {
 }
 
 func (app *web) handler(w http.ResponseWriter, r *http.Request) {
+	defer app.handleError(w, r)
+
+	if app.static(w, r) == nil {
+		return
+	}
+
+	//Try to load static
+	data, err := Asset("data/web" + r.URL.Path)
+	if err == nil {
+		switch path.Ext(r.URL.Path) {
+		case ".ico":
+			w.Header().Set("Content-type", "image/x-icon")
+		case ".css":
+			w.Header().Set("Content-type", "text/css")
+		}
+		w.Write(data)
+		return
+	}
+
+	lang := app.lang(r)
+	buff := new(bytes.Buffer)
 	//TODO Remove for production
 	app.initTemplates()
 
-	buff := new(bytes.Buffer)
-
-	defer func() {
-		if rec := recover(); rec != nil {
-			app.debug.Println(reflect.TypeOf(rec))
-			switch rec.(type) {
-			case *lib.NotDownloadedBookErr:
-				http.Redirect(w, r, "/download", http.StatusFound)
-			case *lib.NotDownloadedCatalogErr:
-				http.Redirect(w, r, "/download", http.StatusFound)
-			case *lib.NotDownloadedLanguageErr:
-				http.Redirect(w, r, "/download", http.StatusFound)
-			case error:
-				err := rec.(error)
-				app.templates.err.Execute(w, err)
-			default:
-				err := fmt.Errorf("%v", rec)
-				app.templates.err.Execute(w, err)
-			}
-		}
-	}()
-
-	lang, err := lib.LookupLanguage(r.URL.Query().Get("lang"))
-	if err != nil {
-		lang, err = lib.DefaultLanguage()
-		if err != nil {
-			panic(err)
-		}
-	}
 	catalog, err := lang.Catalog()
 	if err != nil {
 		panic(err)
 	}
 
-	switch strings.ToLower(r.URL.Path) {
-	case "/download":
-		switch r.Method {
-		case "GET":
-			fmt.Fprintf(w, "Download Page Here")
-		case "POST":
-			fmt.Fprintf(w, "Download content here")
-		}
-	case "/":
-		app.print(buff, r, catalog)
-	case "/favicon.ico":
-		w.Header().Set("Content-type", "image/x-icon")
-		data, err := Asset("data/web/favicon.ico")
-		if err != nil {
-			panic(err)
-		}
-		w.Write(data)
-	default:
-		item, err := catalog.LookupPath(r.URL.Path)
-		if err != nil {
-			panic(err)
-		}
-		app.print(buff, r, item)
+	item, err := catalog.LookupPath(r.URL.Path)
+	if err != nil {
+		panic(err)
 	}
+	app.print(buff, r, item)
 
 	layout := struct {
 		Title   string
@@ -146,9 +169,7 @@ func (app *web) handler(w http.ResponseWriter, r *http.Request) {
 		Title:   "LDS Scriptures",
 		Content: template.HTML(buff.String()),
 	}
-
 	app.templates.layout.Execute(w, layout)
-
 }
 
 func (app *web) print(w io.Writer, r *http.Request, item lib.Item) {
@@ -169,8 +190,7 @@ func (app *web) print(w io.Writer, r *http.Request, item lib.Item) {
 
 	switch item.(type) {
 	case *lib.Node:
-		node := item.(*lib.Node)
-		if content, err := node.Content(); err == nil {
+		if content, err := item.(*lib.Node).Content(); err == nil {
 			data.Content = template.HTML(content)
 			err = app.templates.nodeContent.Execute(w, data)
 		} else {
@@ -179,6 +199,7 @@ func (app *web) print(w io.Writer, r *http.Request, item lib.Item) {
 	default:
 		err = app.templates.nodeChildren.Execute(w, data)
 	}
+
 	if err != nil {
 		panic(err)
 	}

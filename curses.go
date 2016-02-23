@@ -31,7 +31,7 @@ func (app *curses) run() {
 func (app *curses) cursesDisplay(item lib.Item) {
 	switch item.(type) {
 	case lib.Node:
-		//fmt.Println(config.Library.Content(item.(lib.Node)))
+		//fmt.Println(config.Library.Content(item))
 	default:
 		children, err := app.config.Library.Children(item)
 		if err != nil {
