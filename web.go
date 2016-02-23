@@ -10,8 +10,8 @@ import (
 	"io"
 	"ldss/lib"
 	"net/http"
+	"path"
 	"strconv"
-	"strings"
 )
 
 type web struct {
@@ -37,15 +37,18 @@ func init() {
 
 func (app web) run() {
 	http.HandleFunc("/", app.handler)
-	http.HandleFunc("/json/", app.handleJSON)
+	http.HandleFunc("/api/", app.handleJSON)
 	http.HandleFunc("/lookup", app.handleLookup)
 
 	port := lib.Config().Get("WebPort").(int)
-
 	app.initTemplates()
-
 	app.efmt.Printf("Listening on port: %v\n", port)
 	http.ListenAndServe(fmt.Sprintf(":%v", port), nil)
+}
+
+func (app web) static(path string) ([]byte, error) {
+	//TODO Have a way to load from a file
+	return Asset(path)
 }
 
 func (app *web) lang(r *http.Request) *lib.Language {
@@ -80,7 +83,21 @@ func (app *web) handleLookup(w http.ResponseWriter, r *http.Request) {
 	http.Redirect(w, r, path, http.StatusFound)
 }
 
-func (app *web) handleStatic(w http.ResponseWriter, r *http.Request) {
+func (app *web) handleStatic(w http.ResponseWriter, r *http.Request) error {
+	data, err := Asset("data/web" + r.URL.Path)
+	if err != nil {
+		return err
+	}
+
+	switch path.Ext(r.URL.Path) {
+	case ".ico":
+		w.Header().Set("Content-type", "image/x-icon")
+	case ".css":
+		w.Header().Set("Content-type", "text/css")
+	}
+
+	w.Write(data)
+	return nil
 }
 
 func (app *web) handleJSON(w http.ResponseWriter, r *http.Request) {
@@ -106,9 +123,27 @@ func (app *web) handleJSON(w http.ResponseWriter, r *http.Request) {
 }
 
 func (app *web) handler(w http.ResponseWriter, r *http.Request) {
+	defer app.handleError(w, r)
+
+	if err := app.handleStatic(w, r); err == nil {
+		return
+	}
+
+	//Try to load static
+	data, err := Asset("data/web" + r.URL.Path)
+	if err == nil {
+		switch path.Ext(r.URL.Path) {
+		case ".ico":
+			w.Header().Set("Content-type", "image/x-icon")
+		case ".css":
+			w.Header().Set("Content-type", "text/css")
+		}
+		w.Write(data)
+		return
+	}
+
 	lang := app.lang(r)
 	buff := new(bytes.Buffer)
-	defer app.handleError(w, r)
 	//TODO Remove for production
 	app.initTemplates()
 
@@ -122,24 +157,6 @@ func (app *web) handler(w http.ResponseWriter, r *http.Request) {
 	}
 	app.print(buff, r, item)
 
-	switch strings.ToLower(r.URL.Path) {
-	case "/download":
-		switch r.Method {
-		case "GET":
-			fmt.Fprintf(w, "Download Page Here")
-		case "POST":
-			fmt.Fprintf(w, "Download content here")
-		}
-	case "/favicon.ico":
-		w.Header().Set("Content-type", "image/x-icon")
-		data, err := Asset("data/web/favicon.ico")
-		if err != nil {
-			panic(err)
-		}
-		w.Write(data)
-	default:
-	}
-
 	layout := struct {
 		Title   string
 		Content template.HTML
@@ -147,9 +164,7 @@ func (app *web) handler(w http.ResponseWriter, r *http.Request) {
 		Title:   "LDS Scriptures",
 		Content: template.HTML(buff.String()),
 	}
-
 	app.templates.layout.Execute(w, layout)
-
 }
 
 func (app *web) print(w io.Writer, r *http.Request, item lib.Item) {
@@ -176,9 +191,8 @@ func (app *web) print(w io.Writer, r *http.Request, item lib.Item) {
 		} else {
 			err = app.templates.nodeChildren.Execute(w, data)
 		}
-	default:
-		err = app.templates.nodeChildren.Execute(w, data)
 	}
+
 	if err != nil {
 		panic(err)
 	}
