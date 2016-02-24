@@ -158,10 +158,12 @@ func (app *web) handler(w http.ResponseWriter, r *http.Request) {
 	layout := struct {
 		Title   string
 		Content template.HTML
+		Lang    *lib.Language
 		Item    lib.Item
 	}{
 		Title:   "LDS Scriptures",
 		Content: template.HTML(buff.String()),
+		Lang:    lang,
 		Item:    item,
 	}
 	app.templates.layout.Execute(w, layout)
