@@ -98,6 +98,12 @@ func (app *web) static(w http.ResponseWriter, r *http.Request) error {
 		w.Header().Set("Content-type", "image/x-icon")
 	case ".css":
 		w.Header().Set("Content-type", "text/css")
+	case ".js":
+		w.Header().Set("Content-type", "application/x-javascript")
+	case ".svg":
+		w.Header().Set("Content-type", "image/svg+xml")
+	default:
+		panic(fmt.Errorf("Unknown extension"))
 	}
 
 	w.Write(data)
@@ -130,19 +136,6 @@ func (app *web) handler(w http.ResponseWriter, r *http.Request) {
 	defer app.handleError(w, r)
 
 	if app.static(w, r) == nil {
-		return
-	}
-
-	//Try to load static
-	data, err := Asset("data/web" + r.URL.Path)
-	if err == nil {
-		switch path.Ext(r.URL.Path) {
-		case ".ico":
-			w.Header().Set("Content-type", "image/x-icon")
-		case ".css":
-			w.Header().Set("Content-type", "text/css")
-		}
-		w.Write(data)
 		return
 	}
 

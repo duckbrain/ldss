@@ -1,10 +1,32 @@
 .toolbar {
 	display: flex;
+	justify-content: space-between;
 	align-items: center;
-	background-color: #ddd;
+	background-color: #aaa;
 	position: fixed;
 	top: 0;
 	left: 0;
 	right: 0;
 	height: 32px;
+}
+
+.button {
+	background-color: #ccc;
+	cursor: pointer;
+	padding: 5px 15px;
+	border: solid 1px #777;
+}
+.button:hover {
+	background-color: #ddd;
+}
+.button:active {
+	background-color: #999;
+}
+.button[disabled] {
+	background-color: #999;
+	cursor: default;
+}
+
+.toolbar .button {
+	margin: 0 0 9px;
 }
