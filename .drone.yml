@@ -4,7 +4,6 @@ build:
         image: hypriot/rpi-golang
         commands:
                 - echo "GOPATH" "$GOPATH"
-                - echo "PWD" "$PWD"
                 - ln -s $PWD $GOPATH/src
                 - go get -d ./...
                 - go build --tags nogui .
