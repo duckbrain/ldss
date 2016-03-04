@@ -21,7 +21,7 @@ type web struct {
 
 func init() {
 	apps["web"] = &web{}
-	lib.Config().RegisterOption(lib.ConfigOption{
+	Config().RegisterOption(ConfigOption{
 		Name:     "WebPort",
 		Default:  1830,
 		ShortArg: 'p',
@@ -29,7 +29,7 @@ func init() {
 			return strconv.Atoi(arg)
 		},
 	})
-	lib.Config().RegisterOption(lib.ConfigOption{
+	Config().RegisterOption(ConfigOption{
 		Name:    "WebTemplatePath",
 		Default: "",
 	})
@@ -42,19 +42,16 @@ func (app web) run() {
 	http.HandleFunc("/favicon.ico", app.handleStatic)
 	http.HandleFunc("/css", app.handleStatic)
 
-	port := lib.Config().Get("WebPort").(int)
+	port := Config().Get("WebPort").(int)
 	app.initTemplates()
 	app.efmt.Printf("Listening on port: %v\n", port)
 	http.ListenAndServe(fmt.Sprintf(":%v", port), nil)
 }
 
-func (app *web) lang(r *http.Request) *lib.Language {
+func (app *web) language(r *http.Request) *lib.Language {
 	lang, err := lib.LookupLanguage(r.URL.Query().Get("lang"))
 	if err != nil {
-		lang, err = lib.DefaultLanguage()
-		if err != nil {
-			panic(err)
-		}
+		return app.lang
 	}
 	return lang
 }
@@ -73,7 +70,7 @@ func (app *web) handleError(w http.ResponseWriter, r *http.Request) {
 }
 
 func (app *web) handleLookup(w http.ResponseWriter, r *http.Request) {
-	path, err := app.lang(r).Reference(r.URL.Query().Get("q"))
+	path, err := app.language(r).Reference(r.URL.Query().Get("q"))
 	if err != nil {
 		panic(err)
 	}
@@ -111,7 +108,7 @@ func (app *web) static(w http.ResponseWriter, r *http.Request) error {
 }
 
 func (app *web) handleJSON(w http.ResponseWriter, r *http.Request) {
-	lang := app.lang(r)
+	lang := app.language(r)
 	catalog, err := lang.Catalog()
 	if err != nil {
 		panic(err)
@@ -139,7 +136,7 @@ func (app *web) handler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	lang := app.lang(r)
+	lang := app.language(r)
 	buff := new(bytes.Buffer)
 	//TODO Remove for production
 	app.initTemplates()

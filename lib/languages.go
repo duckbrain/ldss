@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"os"
 )
 
 var languages cache
@@ -88,7 +89,7 @@ func (l *Language) Reference(q string) (string, error) {
 func init() {
 	languages.construct = func() (interface{}, error) {
 		var description glLanguageDescription
-		file, err := source.Open(source.LanguagesPath())
+		file, err := os.Open(languagesPath())
 		if err != nil {
 			return nil, &NotDownloadedLanguageErr{err}
 		}
@@ -99,7 +100,8 @@ func init() {
 
 // Returns a list of all languages available. Downloads the languages if not already downloaded first.
 func Languages() ([]*Language, error) {
-	if !source.Exist(source.LanguagesPath()) {
+	fmt.Println(languagesPath())
+	if !fileExist(languagesPath()) {
 		if err := DownloadLanguages(); err != nil {
 			return nil, err
 		}
@@ -123,10 +125,4 @@ func LookupLanguage(id string) (*Language, error) {
 		}
 	}
 	return nil, errors.New("Language not found")
-}
-
-// Gets the language defined by the configuration option "Language"
-func DefaultLanguage() (*Language, error) {
-	// TODO Try English if there is a problem with the configuration
-	return LookupLanguage(Config().Get("Language").(string))
 }

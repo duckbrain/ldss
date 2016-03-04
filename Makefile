@@ -1,7 +1,7 @@
 DEBUG ?= 1
 BINARY = ${GOPATH}/bin/ldss
 BINDATA = ${GOPATH}/bin/go-bindata
-DEPENDS = *.go lib/*.go .depends $(BINDATA) 
+DEPENDS = .depends *.go lib/*.go
 
 all: $(BINARY) bindata_debug.go bindata_release.go
 
@@ -13,15 +13,10 @@ $(BINARY): $(DEPENDS) bindata_release.go
 	go install --tags release .
 endif
 
-run: $(BINARY)
-	$(BINARY)
-run-lookup: $(BINARY)
-	$(BINARY) lookup 1 Ne 3:17
-
-bindata_debug.go: $(shell find data -print)
+bindata_debug.go: $(BINDATA) $(shell find data -print)
 	$(BINDATA) -nomemcopy -debug -tags "!release" -o "$@" data/...
 	gofmt -w "$@"
-bindata_release.go: $(shell find data -print)
+bindata_release.go: $(BINDATA) $(shell find data -print)
 	$(BINDATA) -nomemcopy -tags "release" -o "$@" data/...
 	gofmt -w "$@"
 
