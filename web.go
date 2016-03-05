@@ -110,23 +110,78 @@ func (app *web) static(w http.ResponseWriter, r *http.Request) error {
 	return nil
 }
 
+func (app *web) itemsRelativesPath(item lib.Item) interface{} {
+	if item != nil {
+		data := struct {
+			Name string `json:"name"`
+			Type string `json:"type"`
+			Path string `json:"path"`
+		}{item.Name(), "", item.Path()}
+
+		switch item.(type) {
+		case *lib.Catalog:
+			data.Type = "catalog"
+		case *lib.Folder:
+			data.Type = "folder"
+		case *lib.Book:
+			data.Type = "book"
+		case *lib.Node:
+			data.Type = "node"
+		}
+
+		return data
+	} else {
+		return nil
+	}
+}
+
 func (app *web) handleJSON(w http.ResponseWriter, r *http.Request) {
-	lang := app.lang(r)
-	catalog, err := lang.Catalog()
+	defer app.handleError(w, r)
+
+	catalog, err := app.lang(r).Catalog()
 	if err != nil {
 		panic(err)
 	}
-	path := r.URL.Path[len("/json"):]
-	fmt.Println("Looking for :" + path)
+	path := r.URL.Path[len("/api"):]
 	item, err := catalog.LookupPath(path)
 	if err != nil {
 		panic(err)
 	}
-	data, err := json.Marshal(item)
+
+	data := map[string]interface{}{}
+
+	data["name"] = item.Name()
+	data["path"] = item.Path()
+	data["language"] = item.Language().GlCode
+	data["parent"] = app.itemsRelativesPath(item.Parent())
+	data["next"] = app.itemsRelativesPath(item.Next())
+	data["previous"] = app.itemsRelativesPath(item.Previous())
+
+	switch item := item.(type) {
+	case *lib.Catalog:
+		data["type"] = "catalog"
+	case *lib.Folder:
+		data["type"] = "folder"
+	case *lib.Book:
+		data["type"] = "book"
+	case *lib.Node:
+		data["type"] = "node"
+		data["content"], _ = item.Content()
+	}
+
+	if childItems, err := item.Children(); err == nil {
+		children := make([]interface{}, len(childItems))
+		for i, child := range childItems {
+			children[i] = app.itemsRelativesPath(child)
+		}
+		data["children"] = children
+	}
+
+	json, err := json.Marshal(data)
 	if err != nil {
 		panic(err)
 	}
-	_, err = w.Write(data)
+	_, err = w.Write(json)
 	if err != nil {
 		panic(err)
 	}
@@ -200,4 +255,34 @@ func (app *web) print(w io.Writer, r *http.Request, item lib.Item) {
 	if err != nil {
 		panic(err)
 	}
+}
+
+type webtemplates struct {
+	nodeChildren, nodeContent, layout, err *template.Template
+}
+
+func (app *web) initTemplates() {
+	app.templates = &webtemplates{}
+	app.templates.layout = app.loadTemplate("layout.tpl")
+	app.templates.nodeContent = app.loadTemplate("node-content.tpl")
+	app.templates.nodeChildren = app.loadTemplate("node-children.tpl")
+	app.templates.err = app.loadTemplate("403.tpl")
+}
+
+func (app *web) loadTemplate(path string) *template.Template {
+	data, err := Asset("data/web/templates/" + path)
+	if err != nil {
+		panic(err)
+	}
+	temp := template.New(path)
+	temp, err = temp.Parse(string(data))
+	if err != nil {
+		panic(err)
+	}
+	return temp
+}
+
+func (app *web) loadLayoutTemplate(path string, layout *template.Template) {
+	//temp := app.loadTemplate(path)
+	// Need to create Executor interface to make this work
 }

@@ -3,6 +3,7 @@
 // data/help/config
 // data/help/download
 // data/help/help
+// data/help/rest
 // data/reference/eng
 // data/reference/example
 // data/web/static/css/.stylesheet.css.swp
@@ -267,7 +268,7 @@ type asset struct {
 
 // dataHelpConfig reads file data from disk. It returns an error on failure.
 func dataHelpConfig() (*asset, error) {
-	path := "/home/jonathan/workspace/ldss/data/help/config"
+	path := "/home/jonathan/workspace/golang/src/ldss/data/help/config"
 	name := "data/help/config"
 	bytes, err := bindataRead(path, name)
 	if err != nil {
@@ -285,7 +286,7 @@ func dataHelpConfig() (*asset, error) {
 
 // dataHelpDownload reads file data from disk. It returns an error on failure.
 func dataHelpDownload() (*asset, error) {
-	path := "/home/jonathan/workspace/ldss/data/help/download"
+	path := "/home/jonathan/workspace/golang/src/ldss/data/help/download"
 	name := "data/help/download"
 	bytes, err := bindataRead(path, name)
 	if err != nil {
@@ -303,8 +304,26 @@ func dataHelpDownload() (*asset, error) {
 
 // dataHelpHelp reads file data from disk. It returns an error on failure.
 func dataHelpHelp() (*asset, error) {
-	path := "/home/jonathan/workspace/ldss/data/help/help"
+	path := "/home/jonathan/workspace/golang/src/ldss/data/help/help"
 	name := "data/help/help"
+	bytes, err := bindataRead(path, name)
+	if err != nil {
+		return nil, err
+	}
+
+	fi, err := os.Stat(path)
+	if err != nil {
+		err = fmt.Errorf("Error reading asset info %s at %s: %v", name, path, err)
+	}
+
+	a := &asset{bytes: bytes, info: fi}
+	return a, err
+}
+
+// dataHelpRest reads file data from disk. It returns an error on failure.
+func dataHelpRest() (*asset, error) {
+	path := "/home/jonathan/workspace/golang/src/ldss/data/help/rest"
+	name := "data/help/rest"
 	bytes, err := bindataRead(path, name)
 	if err != nil {
 		return nil, err
@@ -321,7 +340,7 @@ func dataHelpHelp() (*asset, error) {
 
 // dataReferenceEng reads file data from disk. It returns an error on failure.
 func dataReferenceEng() (*asset, error) {
-	path := "/home/jonathan/workspace/ldss/data/reference/eng"
+	path := "/home/jonathan/workspace/golang/src/ldss/data/reference/eng"
 	name := "data/reference/eng"
 	bytes, err := bindataRead(path, name)
 	if err != nil {
@@ -339,7 +358,7 @@ func dataReferenceEng() (*asset, error) {
 
 // dataReferenceExample reads file data from disk. It returns an error on failure.
 func dataReferenceExample() (*asset, error) {
-	path := "/home/jonathan/workspace/ldss/data/reference/example"
+	path := "/home/jonathan/workspace/golang/src/ldss/data/reference/example"
 	name := "data/reference/example"
 	bytes, err := bindataRead(path, name)
 	if err != nil {
@@ -357,7 +376,7 @@ func dataReferenceExample() (*asset, error) {
 
 // dataWebStaticCssStylesheetCssSwp reads file data from disk. It returns an error on failure.
 func dataWebStaticCssStylesheetCssSwp() (*asset, error) {
-	path := "/home/jonathan/workspace/ldss/data/web/static/css/.stylesheet.css.swp"
+	path := "/home/jonathan/workspace/golang/src/ldss/data/web/static/css/.stylesheet.css.swp"
 	name := "data/web/static/css/.stylesheet.css.swp"
 	bytes, err := bindataRead(path, name)
 	if err != nil {
@@ -375,7 +394,7 @@ func dataWebStaticCssStylesheetCssSwp() (*asset, error) {
 
 // dataWebStaticCssStylesheetCss reads file data from disk. It returns an error on failure.
 func dataWebStaticCssStylesheetCss() (*asset, error) {
-	path := "/home/jonathan/workspace/ldss/data/web/static/css/stylesheet.css"
+	path := "/home/jonathan/workspace/golang/src/ldss/data/web/static/css/stylesheet.css"
 	name := "data/web/static/css/stylesheet.css"
 	bytes, err := bindataRead(path, name)
 	if err != nil {
@@ -393,7 +412,7 @@ func dataWebStaticCssStylesheetCss() (*asset, error) {
 
 // dataWebStaticFaviconIco reads file data from disk. It returns an error on failure.
 func dataWebStaticFaviconIco() (*asset, error) {
-	path := "/home/jonathan/workspace/ldss/data/web/static/favicon.ico"
+	path := "/home/jonathan/workspace/golang/src/ldss/data/web/static/favicon.ico"
 	name := "data/web/static/favicon.ico"
 	bytes, err := bindataRead(path, name)
 	if err != nil {
@@ -411,7 +430,7 @@ func dataWebStaticFaviconIco() (*asset, error) {
 
 // dataWebStaticSvgIconLicense reads file data from disk. It returns an error on failure.
 func dataWebStaticSvgIconLicense() (*asset, error) {
-	path := "/home/jonathan/workspace/ldss/data/web/static/svg/ICON-LICENSE"
+	path := "/home/jonathan/workspace/golang/src/ldss/data/web/static/svg/ICON-LICENSE"
 	name := "data/web/static/svg/ICON-LICENSE"
 	bytes, err := bindataRead(path, name)
 	if err != nil {
@@ -429,7 +448,7 @@ func dataWebStaticSvgIconLicense() (*asset, error) {
 
 // dataWebStaticSvgReadmeMd reads file data from disk. It returns an error on failure.
 func dataWebStaticSvgReadmeMd() (*asset, error) {
-	path := "/home/jonathan/workspace/ldss/data/web/static/svg/README.md"
+	path := "/home/jonathan/workspace/golang/src/ldss/data/web/static/svg/README.md"
 	name := "data/web/static/svg/README.md"
 	bytes, err := bindataRead(path, name)
 	if err != nil {
@@ -447,7 +466,7 @@ func dataWebStaticSvgReadmeMd() (*asset, error) {
 
 // dataWebStaticSvgAccountLoginSvg reads file data from disk. It returns an error on failure.
 func dataWebStaticSvgAccountLoginSvg() (*asset, error) {
-	path := "/home/jonathan/workspace/ldss/data/web/static/svg/account-login.svg"
+	path := "/home/jonathan/workspace/golang/src/ldss/data/web/static/svg/account-login.svg"
 	name := "data/web/static/svg/account-login.svg"
 	bytes, err := bindataRead(path, name)
 	if err != nil {
@@ -465,7 +484,7 @@ func dataWebStaticSvgAccountLoginSvg() (*asset, error) {
 
 // dataWebStaticSvgAccountLogoutSvg reads file data from disk. It returns an error on failure.
 func dataWebStaticSvgAccountLogoutSvg() (*asset, error) {
-	path := "/home/jonathan/workspace/ldss/data/web/static/svg/account-logout.svg"
+	path := "/home/jonathan/workspace/golang/src/ldss/data/web/static/svg/account-logout.svg"
 	name := "data/web/static/svg/account-logout.svg"
 	bytes, err := bindataRead(path, name)
 	if err != nil {
@@ -483,7 +502,7 @@ func dataWebStaticSvgAccountLogoutSvg() (*asset, error) {
 
 // dataWebStaticSvgActionRedoSvg reads file data from disk. It returns an error on failure.
 func dataWebStaticSvgActionRedoSvg() (*asset, error) {
-	path := "/home/jonathan/workspace/ldss/data/web/static/svg/action-redo.svg"
+	path := "/home/jonathan/workspace/golang/src/ldss/data/web/static/svg/action-redo.svg"
 	name := "data/web/static/svg/action-redo.svg"
 	bytes, err := bindataRead(path, name)
 	if err != nil {
@@ -501,7 +520,7 @@ func dataWebStaticSvgActionRedoSvg() (*asset, error) {
 
 // dataWebStaticSvgActionUndoSvg reads file data from disk. It returns an error on failure.
 func dataWebStaticSvgActionUndoSvg() (*asset, error) {
-	path := "/home/jonathan/workspace/ldss/data/web/static/svg/action-undo.svg"
+	path := "/home/jonathan/workspace/golang/src/ldss/data/web/static/svg/action-undo.svg"
 	name := "data/web/static/svg/action-undo.svg"
 	bytes, err := bindataRead(path, name)
 	if err != nil {
@@ -519,7 +538,7 @@ func dataWebStaticSvgActionUndoSvg() (*asset, error) {
 
 // dataWebStaticSvgAlignCenterSvg reads file data from disk. It returns an error on failure.
 func dataWebStaticSvgAlignCenterSvg() (*asset, error) {
-	path := "/home/jonathan/workspace/ldss/data/web/static/svg/align-center.svg"
+	path := "/home/jonathan/workspace/golang/src/ldss/data/web/static/svg/align-center.svg"
 	name := "data/web/static/svg/align-center.svg"
 	bytes, err := bindataRead(path, name)
 	if err != nil {
@@ -537,7 +556,7 @@ func dataWebStaticSvgAlignCenterSvg() (*asset, error) {
 
 // dataWebStaticSvgAlignLeftSvg reads file data from disk. It returns an error on failure.
 func dataWebStaticSvgAlignLeftSvg() (*asset, error) {
-	path := "/home/jonathan/workspace/ldss/data/web/static/svg/align-left.svg"
+	path := "/home/jonathan/workspace/golang/src/ldss/data/web/static/svg/align-left.svg"
 	name := "data/web/static/svg/align-left.svg"
 	bytes, err := bindataRead(path, name)
 	if err != nil {
@@ -555,7 +574,7 @@ func dataWebStaticSvgAlignLeftSvg() (*asset, error) {
 
 // dataWebStaticSvgAlignRightSvg reads file data from disk. It returns an error on failure.
 func dataWebStaticSvgAlignRightSvg() (*asset, error) {
-	path := "/home/jonathan/workspace/ldss/data/web/static/svg/align-right.svg"
+	path := "/home/jonathan/workspace/golang/src/ldss/data/web/static/svg/align-right.svg"
 	name := "data/web/static/svg/align-right.svg"
 	bytes, err := bindataRead(path, name)
 	if err != nil {
@@ -573,7 +592,7 @@ func dataWebStaticSvgAlignRightSvg() (*asset, error) {
 
 // dataWebStaticSvgApertureSvg reads file data from disk. It returns an error on failure.
 func dataWebStaticSvgApertureSvg() (*asset, error) {
-	path := "/home/jonathan/workspace/ldss/data/web/static/svg/aperture.svg"
+	path := "/home/jonathan/workspace/golang/src/ldss/data/web/static/svg/aperture.svg"
 	name := "data/web/static/svg/aperture.svg"
 	bytes, err := bindataRead(path, name)
 	if err != nil {
@@ -591,7 +610,7 @@ func dataWebStaticSvgApertureSvg() (*asset, error) {
 
 // dataWebStaticSvgArrowBottomSvg reads file data from disk. It returns an error on failure.
 func dataWebStaticSvgArrowBottomSvg() (*asset, error) {
-	path := "/home/jonathan/workspace/ldss/data/web/static/svg/arrow-bottom.svg"
+	path := "/home/jonathan/workspace/golang/src/ldss/data/web/static/svg/arrow-bottom.svg"
 	name := "data/web/static/svg/arrow-bottom.svg"
 	bytes, err := bindataRead(path, name)
 	if err != nil {
@@ -609,7 +628,7 @@ func dataWebStaticSvgArrowBottomSvg() (*asset, error) {
 
 // dataWebStaticSvgArrowCircleBottomSvg reads file data from disk. It returns an error on failure.
 func dataWebStaticSvgArrowCircleBottomSvg() (*asset, error) {
-	path := "/home/jonathan/workspace/ldss/data/web/static/svg/arrow-circle-bottom.svg"
+	path := "/home/jonathan/workspace/golang/src/ldss/data/web/static/svg/arrow-circle-bottom.svg"
 	name := "data/web/static/svg/arrow-circle-bottom.svg"
 	bytes, err := bindataRead(path, name)
 	if err != nil {
@@ -627,7 +646,7 @@ func dataWebStaticSvgArrowCircleBottomSvg() (*asset, error) {
 
 // dataWebStaticSvgArrowCircleLeftSvg reads file data from disk. It returns an error on failure.
 func dataWebStaticSvgArrowCircleLeftSvg() (*asset, error) {
-	path := "/home/jonathan/workspace/ldss/data/web/static/svg/arrow-circle-left.svg"
+	path := "/home/jonathan/workspace/golang/src/ldss/data/web/static/svg/arrow-circle-left.svg"
 	name := "data/web/static/svg/arrow-circle-left.svg"
 	bytes, err := bindataRead(path, name)
 	if err != nil {
@@ -645,7 +664,7 @@ func dataWebStaticSvgArrowCircleLeftSvg() (*asset, error) {
 
 // dataWebStaticSvgArrowCircleRightSvg reads file data from disk. It returns an error on failure.
 func dataWebStaticSvgArrowCircleRightSvg() (*asset, error) {
-	path := "/home/jonathan/workspace/ldss/data/web/static/svg/arrow-circle-right.svg"
+	path := "/home/jonathan/workspace/golang/src/ldss/data/web/static/svg/arrow-circle-right.svg"
 	name := "data/web/static/svg/arrow-circle-right.svg"
 	bytes, err := bindataRead(path, name)
 	if err != nil {
@@ -663,7 +682,7 @@ func dataWebStaticSvgArrowCircleRightSvg() (*asset, error) {
 
 // dataWebStaticSvgArrowCircleTopSvg reads file data from disk. It returns an error on failure.
 func dataWebStaticSvgArrowCircleTopSvg() (*asset, error) {
-	path := "/home/jonathan/workspace/ldss/data/web/static/svg/arrow-circle-top.svg"
+	path := "/home/jonathan/workspace/golang/src/ldss/data/web/static/svg/arrow-circle-top.svg"
 	name := "data/web/static/svg/arrow-circle-top.svg"
 	bytes, err := bindataRead(path, name)
 	if err != nil {
@@ -681,7 +700,7 @@ func dataWebStaticSvgArrowCircleTopSvg() (*asset, error) {
 
 // dataWebStaticSvgArrowLeftSvg reads file data from disk. It returns an error on failure.
 func dataWebStaticSvgArrowLeftSvg() (*asset, error) {
-	path := "/home/jonathan/workspace/ldss/data/web/static/svg/arrow-left.svg"
+	path := "/home/jonathan/workspace/golang/src/ldss/data/web/static/svg/arrow-left.svg"
 	name := "data/web/static/svg/arrow-left.svg"
 	bytes, err := bindataRead(path, name)
 	if err != nil {
@@ -699,7 +718,7 @@ func dataWebStaticSvgArrowLeftSvg() (*asset, error) {
 
 // dataWebStaticSvgArrowRightSvg reads file data from disk. It returns an error on failure.
 func dataWebStaticSvgArrowRightSvg() (*asset, error) {
-	path := "/home/jonathan/workspace/ldss/data/web/static/svg/arrow-right.svg"
+	path := "/home/jonathan/workspace/golang/src/ldss/data/web/static/svg/arrow-right.svg"
 	name := "data/web/static/svg/arrow-right.svg"
 	bytes, err := bindataRead(path, name)
 	if err != nil {
@@ -717,7 +736,7 @@ func dataWebStaticSvgArrowRightSvg() (*asset, error) {
 
 // dataWebStaticSvgArrowThickBottomSvg reads file data from disk. It returns an error on failure.
 func dataWebStaticSvgArrowThickBottomSvg() (*asset, error) {
-	path := "/home/jonathan/workspace/ldss/data/web/static/svg/arrow-thick-bottom.svg"
+	path := "/home/jonathan/workspace/golang/src/ldss/data/web/static/svg/arrow-thick-bottom.svg"
 	name := "data/web/static/svg/arrow-thick-bottom.svg"
 	bytes, err := bindataRead(path, name)
 	if err != nil {
@@ -735,7 +754,7 @@ func dataWebStaticSvgArrowThickBottomSvg() (*asset, error) {
 
 // dataWebStaticSvgArrowThickLeftSvg reads file data from disk. It returns an error on failure.
 func dataWebStaticSvgArrowThickLeftSvg() (*asset, error) {
-	path := "/home/jonathan/workspace/ldss/data/web/static/svg/arrow-thick-left.svg"
+	path := "/home/jonathan/workspace/golang/src/ldss/data/web/static/svg/arrow-thick-left.svg"
 	name := "data/web/static/svg/arrow-thick-left.svg"
 	bytes, err := bindataRead(path, name)
 	if err != nil {
@@ -753,7 +772,7 @@ func dataWebStaticSvgArrowThickLeftSvg() (*asset, error) {
 
 // dataWebStaticSvgArrowThickRightSvg reads file data from disk. It returns an error on failure.
 func dataWebStaticSvgArrowThickRightSvg() (*asset, error) {
-	path := "/home/jonathan/workspace/ldss/data/web/static/svg/arrow-thick-right.svg"
+	path := "/home/jonathan/workspace/golang/src/ldss/data/web/static/svg/arrow-thick-right.svg"
 	name := "data/web/static/svg/arrow-thick-right.svg"
 	bytes, err := bindataRead(path, name)
 	if err != nil {
@@ -771,7 +790,7 @@ func dataWebStaticSvgArrowThickRightSvg() (*asset, error) {
 
 // dataWebStaticSvgArrowThickTopSvg reads file data from disk. It returns an error on failure.
 func dataWebStaticSvgArrowThickTopSvg() (*asset, error) {
-	path := "/home/jonathan/workspace/ldss/data/web/static/svg/arrow-thick-top.svg"
+	path := "/home/jonathan/workspace/golang/src/ldss/data/web/static/svg/arrow-thick-top.svg"
 	name := "data/web/static/svg/arrow-thick-top.svg"
 	bytes, err := bindataRead(path, name)
 	if err != nil {
@@ -789,7 +808,7 @@ func dataWebStaticSvgArrowThickTopSvg() (*asset, error) {
 
 // dataWebStaticSvgArrowTopSvg reads file data from disk. It returns an error on failure.
 func dataWebStaticSvgArrowTopSvg() (*asset, error) {
-	path := "/home/jonathan/workspace/ldss/data/web/static/svg/arrow-top.svg"
+	path := "/home/jonathan/workspace/golang/src/ldss/data/web/static/svg/arrow-top.svg"
 	name := "data/web/static/svg/arrow-top.svg"
 	bytes, err := bindataRead(path, name)
 	if err != nil {
@@ -807,7 +826,7 @@ func dataWebStaticSvgArrowTopSvg() (*asset, error) {
 
 // dataWebStaticSvgAudioSpectrumSvg reads file data from disk. It returns an error on failure.
 func dataWebStaticSvgAudioSpectrumSvg() (*asset, error) {
-	path := "/home/jonathan/workspace/ldss/data/web/static/svg/audio-spectrum.svg"
+	path := "/home/jonathan/workspace/golang/src/ldss/data/web/static/svg/audio-spectrum.svg"
 	name := "data/web/static/svg/audio-spectrum.svg"
 	bytes, err := bindataRead(path, name)
 	if err != nil {
@@ -825,7 +844,7 @@ func dataWebStaticSvgAudioSpectrumSvg() (*asset, error) {
 
 // dataWebStaticSvgAudioSvg reads file data from disk. It returns an error on failure.
 func dataWebStaticSvgAudioSvg() (*asset, error) {
-	path := "/home/jonathan/workspace/ldss/data/web/static/svg/audio.svg"
+	path := "/home/jonathan/workspace/golang/src/ldss/data/web/static/svg/audio.svg"
 	name := "data/web/static/svg/audio.svg"
 	bytes, err := bindataRead(path, name)
 	if err != nil {
@@ -843,7 +862,7 @@ func dataWebStaticSvgAudioSvg() (*asset, error) {
 
 // dataWebStaticSvgBadgeSvg reads file data from disk. It returns an error on failure.
 func dataWebStaticSvgBadgeSvg() (*asset, error) {
-	path := "/home/jonathan/workspace/ldss/data/web/static/svg/badge.svg"
+	path := "/home/jonathan/workspace/golang/src/ldss/data/web/static/svg/badge.svg"
 	name := "data/web/static/svg/badge.svg"
 	bytes, err := bindataRead(path, name)
 	if err != nil {
@@ -861,7 +880,7 @@ func dataWebStaticSvgBadgeSvg() (*asset, error) {
 
 // dataWebStaticSvgBanSvg reads file data from disk. It returns an error on failure.
 func dataWebStaticSvgBanSvg() (*asset, error) {
-	path := "/home/jonathan/workspace/ldss/data/web/static/svg/ban.svg"
+	path := "/home/jonathan/workspace/golang/src/ldss/data/web/static/svg/ban.svg"
 	name := "data/web/static/svg/ban.svg"
 	bytes, err := bindataRead(path, name)
 	if err != nil {
@@ -879,7 +898,7 @@ func dataWebStaticSvgBanSvg() (*asset, error) {
 
 // dataWebStaticSvgBarChartSvg reads file data from disk. It returns an error on failure.
 func dataWebStaticSvgBarChartSvg() (*asset, error) {
-	path := "/home/jonathan/workspace/ldss/data/web/static/svg/bar-chart.svg"
+	path := "/home/jonathan/workspace/golang/src/ldss/data/web/static/svg/bar-chart.svg"
 	name := "data/web/static/svg/bar-chart.svg"
 	bytes, err := bindataRead(path, name)
 	if err != nil {
@@ -897,7 +916,7 @@ func dataWebStaticSvgBarChartSvg() (*asset, error) {
 
 // dataWebStaticSvgBasketSvg reads file data from disk. It returns an error on failure.
 func dataWebStaticSvgBasketSvg() (*asset, error) {
-	path := "/home/jonathan/workspace/ldss/data/web/static/svg/basket.svg"
+	path := "/home/jonathan/workspace/golang/src/ldss/data/web/static/svg/basket.svg"
 	name := "data/web/static/svg/basket.svg"
 	bytes, err := bindataRead(path, name)
 	if err != nil {
@@ -915,7 +934,7 @@ func dataWebStaticSvgBasketSvg() (*asset, error) {
 
 // dataWebStaticSvgBatteryEmptySvg reads file data from disk. It returns an error on failure.
 func dataWebStaticSvgBatteryEmptySvg() (*asset, error) {
-	path := "/home/jonathan/workspace/ldss/data/web/static/svg/battery-empty.svg"
+	path := "/home/jonathan/workspace/golang/src/ldss/data/web/static/svg/battery-empty.svg"
 	name := "data/web/static/svg/battery-empty.svg"
 	bytes, err := bindataRead(path, name)
 	if err != nil {
@@ -933,7 +952,7 @@ func dataWebStaticSvgBatteryEmptySvg() (*asset, error) {
 
 // dataWebStaticSvgBatteryFullSvg reads file data from disk. It returns an error on failure.
 func dataWebStaticSvgBatteryFullSvg() (*asset, error) {
-	path := "/home/jonathan/workspace/ldss/data/web/static/svg/battery-full.svg"
+	path := "/home/jonathan/workspace/golang/src/ldss/data/web/static/svg/battery-full.svg"
 	name := "data/web/static/svg/battery-full.svg"
 	bytes, err := bindataRead(path, name)
 	if err != nil {
@@ -951,7 +970,7 @@ func dataWebStaticSvgBatteryFullSvg() (*asset, error) {
 
 // dataWebStaticSvgBeakerSvg reads file data from disk. It returns an error on failure.
 func dataWebStaticSvgBeakerSvg() (*asset, error) {
-	path := "/home/jonathan/workspace/ldss/data/web/static/svg/beaker.svg"
+	path := "/home/jonathan/workspace/golang/src/ldss/data/web/static/svg/beaker.svg"
 	name := "data/web/static/svg/beaker.svg"
 	bytes, err := bindataRead(path, name)
 	if err != nil {
@@ -969,7 +988,7 @@ func dataWebStaticSvgBeakerSvg() (*asset, error) {
 
 // dataWebStaticSvgBellSvg reads file data from disk. It returns an error on failure.
 func dataWebStaticSvgBellSvg() (*asset, error) {
-	path := "/home/jonathan/workspace/ldss/data/web/static/svg/bell.svg"
+	path := "/home/jonathan/workspace/golang/src/ldss/data/web/static/svg/bell.svg"
 	name := "data/web/static/svg/bell.svg"
 	bytes, err := bindataRead(path, name)
 	if err != nil {
@@ -987,7 +1006,7 @@ func dataWebStaticSvgBellSvg() (*asset, error) {
 
 // dataWebStaticSvgBluetoothSvg reads file data from disk. It returns an error on failure.
 func dataWebStaticSvgBluetoothSvg() (*asset, error) {
-	path := "/home/jonathan/workspace/ldss/data/web/static/svg/bluetooth.svg"
+	path := "/home/jonathan/workspace/golang/src/ldss/data/web/static/svg/bluetooth.svg"
 	name := "data/web/static/svg/bluetooth.svg"
 	bytes, err := bindataRead(path, name)
 	if err != nil {
@@ -1005,7 +1024,7 @@ func dataWebStaticSvgBluetoothSvg() (*asset, error) {
 
 // dataWebStaticSvgBoldSvg reads file data from disk. It returns an error on failure.
 func dataWebStaticSvgBoldSvg() (*asset, error) {
-	path := "/home/jonathan/workspace/ldss/data/web/static/svg/bold.svg"
+	path := "/home/jonathan/workspace/golang/src/ldss/data/web/static/svg/bold.svg"
 	name := "data/web/static/svg/bold.svg"
 	bytes, err := bindataRead(path, name)
 	if err != nil {
@@ -1023,7 +1042,7 @@ func dataWebStaticSvgBoldSvg() (*asset, error) {
 
 // dataWebStaticSvgBoltSvg reads file data from disk. It returns an error on failure.
 func dataWebStaticSvgBoltSvg() (*asset, error) {
-	path := "/home/jonathan/workspace/ldss/data/web/static/svg/bolt.svg"
+	path := "/home/jonathan/workspace/golang/src/ldss/data/web/static/svg/bolt.svg"
 	name := "data/web/static/svg/bolt.svg"
 	bytes, err := bindataRead(path, name)
 	if err != nil {
@@ -1041,7 +1060,7 @@ func dataWebStaticSvgBoltSvg() (*asset, error) {
 
 // dataWebStaticSvgBookSvg reads file data from disk. It returns an error on failure.
 func dataWebStaticSvgBookSvg() (*asset, error) {
-	path := "/home/jonathan/workspace/ldss/data/web/static/svg/book.svg"
+	path := "/home/jonathan/workspace/golang/src/ldss/data/web/static/svg/book.svg"
 	name := "data/web/static/svg/book.svg"
 	bytes, err := bindataRead(path, name)
 	if err != nil {
@@ -1059,7 +1078,7 @@ func dataWebStaticSvgBookSvg() (*asset, error) {
 
 // dataWebStaticSvgBookmarkSvg reads file data from disk. It returns an error on failure.
 func dataWebStaticSvgBookmarkSvg() (*asset, error) {
-	path := "/home/jonathan/workspace/ldss/data/web/static/svg/bookmark.svg"
+	path := "/home/jonathan/workspace/golang/src/ldss/data/web/static/svg/bookmark.svg"
 	name := "data/web/static/svg/bookmark.svg"
 	bytes, err := bindataRead(path, name)
 	if err != nil {
@@ -1077,7 +1096,7 @@ func dataWebStaticSvgBookmarkSvg() (*asset, error) {
 
 // dataWebStaticSvgBoxSvg reads file data from disk. It returns an error on failure.
 func dataWebStaticSvgBoxSvg() (*asset, error) {
-	path := "/home/jonathan/workspace/ldss/data/web/static/svg/box.svg"
+	path := "/home/jonathan/workspace/golang/src/ldss/data/web/static/svg/box.svg"
 	name := "data/web/static/svg/box.svg"
 	bytes, err := bindataRead(path, name)
 	if err != nil {
@@ -1095,7 +1114,7 @@ func dataWebStaticSvgBoxSvg() (*asset, error) {
 
 // dataWebStaticSvgBriefcaseSvg reads file data from disk. It returns an error on failure.
 func dataWebStaticSvgBriefcaseSvg() (*asset, error) {
-	path := "/home/jonathan/workspace/ldss/data/web/static/svg/briefcase.svg"
+	path := "/home/jonathan/workspace/golang/src/ldss/data/web/static/svg/briefcase.svg"
 	name := "data/web/static/svg/briefcase.svg"
 	bytes, err := bindataRead(path, name)
 	if err != nil {
@@ -1113,7 +1132,7 @@ func dataWebStaticSvgBriefcaseSvg() (*asset, error) {
 
 // dataWebStaticSvgBritishPoundSvg reads file data from disk. It returns an error on failure.
 func dataWebStaticSvgBritishPoundSvg() (*asset, error) {
-	path := "/home/jonathan/workspace/ldss/data/web/static/svg/british-pound.svg"
+	path := "/home/jonathan/workspace/golang/src/ldss/data/web/static/svg/british-pound.svg"
 	name := "data/web/static/svg/british-pound.svg"
 	bytes, err := bindataRead(path, name)
 	if err != nil {
@@ -1131,7 +1150,7 @@ func dataWebStaticSvgBritishPoundSvg() (*asset, error) {
 
 // dataWebStaticSvgBrowserSvg reads file data from disk. It returns an error on failure.
 func dataWebStaticSvgBrowserSvg() (*asset, error) {
-	path := "/home/jonathan/workspace/ldss/data/web/static/svg/browser.svg"
+	path := "/home/jonathan/workspace/golang/src/ldss/data/web/static/svg/browser.svg"
 	name := "data/web/static/svg/browser.svg"
 	bytes, err := bindataRead(path, name)
 	if err != nil {
@@ -1149,7 +1168,7 @@ func dataWebStaticSvgBrowserSvg() (*asset, error) {
 
 // dataWebStaticSvgBrushSvg reads file data from disk. It returns an error on failure.
 func dataWebStaticSvgBrushSvg() (*asset, error) {
-	path := "/home/jonathan/workspace/ldss/data/web/static/svg/brush.svg"
+	path := "/home/jonathan/workspace/golang/src/ldss/data/web/static/svg/brush.svg"
 	name := "data/web/static/svg/brush.svg"
 	bytes, err := bindataRead(path, name)
 	if err != nil {
@@ -1167,7 +1186,7 @@ func dataWebStaticSvgBrushSvg() (*asset, error) {
 
 // dataWebStaticSvgBugSvg reads file data from disk. It returns an error on failure.
 func dataWebStaticSvgBugSvg() (*asset, error) {
-	path := "/home/jonathan/workspace/ldss/data/web/static/svg/bug.svg"
+	path := "/home/jonathan/workspace/golang/src/ldss/data/web/static/svg/bug.svg"
 	name := "data/web/static/svg/bug.svg"
 	bytes, err := bindataRead(path, name)
 	if err != nil {
@@ -1185,7 +1204,7 @@ func dataWebStaticSvgBugSvg() (*asset, error) {
 
 // dataWebStaticSvgBullhornSvg reads file data from disk. It returns an error on failure.
 func dataWebStaticSvgBullhornSvg() (*asset, error) {
-	path := "/home/jonathan/workspace/ldss/data/web/static/svg/bullhorn.svg"
+	path := "/home/jonathan/workspace/golang/src/ldss/data/web/static/svg/bullhorn.svg"
 	name := "data/web/static/svg/bullhorn.svg"
 	bytes, err := bindataRead(path, name)
 	if err != nil {
@@ -1203,7 +1222,7 @@ func dataWebStaticSvgBullhornSvg() (*asset, error) {
 
 // dataWebStaticSvgCalculatorSvg reads file data from disk. It returns an error on failure.
 func dataWebStaticSvgCalculatorSvg() (*asset, error) {
-	path := "/home/jonathan/workspace/ldss/data/web/static/svg/calculator.svg"
+	path := "/home/jonathan/workspace/golang/src/ldss/data/web/static/svg/calculator.svg"
 	name := "data/web/static/svg/calculator.svg"
 	bytes, err := bindataRead(path, name)
 	if err != nil {
@@ -1221,7 +1240,7 @@ func dataWebStaticSvgCalculatorSvg() (*asset, error) {
 
 // dataWebStaticSvgCalendarSvg reads file data from disk. It returns an error on failure.
 func dataWebStaticSvgCalendarSvg() (*asset, error) {
-	path := "/home/jonathan/workspace/ldss/data/web/static/svg/calendar.svg"
+	path := "/home/jonathan/workspace/golang/src/ldss/data/web/static/svg/calendar.svg"
 	name := "data/web/static/svg/calendar.svg"
 	bytes, err := bindataRead(path, name)
 	if err != nil {
@@ -1239,7 +1258,7 @@ func dataWebStaticSvgCalendarSvg() (*asset, error) {
 
 // dataWebStaticSvgCameraSlrSvg reads file data from disk. It returns an error on failure.
 func dataWebStaticSvgCameraSlrSvg() (*asset, error) {
-	path := "/home/jonathan/workspace/ldss/data/web/static/svg/camera-slr.svg"
+	path := "/home/jonathan/workspace/golang/src/ldss/data/web/static/svg/camera-slr.svg"
 	name := "data/web/static/svg/camera-slr.svg"
 	bytes, err := bindataRead(path, name)
 	if err != nil {
@@ -1257,7 +1276,7 @@ func dataWebStaticSvgCameraSlrSvg() (*asset, error) {
 
 // dataWebStaticSvgCaretBottomSvg reads file data from disk. It returns an error on failure.
 func dataWebStaticSvgCaretBottomSvg() (*asset, error) {
-	path := "/home/jonathan/workspace/ldss/data/web/static/svg/caret-bottom.svg"
+	path := "/home/jonathan/workspace/golang/src/ldss/data/web/static/svg/caret-bottom.svg"
 	name := "data/web/static/svg/caret-bottom.svg"
 	bytes, err := bindataRead(path, name)
 	if err != nil {
@@ -1275,7 +1294,7 @@ func dataWebStaticSvgCaretBottomSvg() (*asset, error) {
 
 // dataWebStaticSvgCaretLeftSvg reads file data from disk. It returns an error on failure.
 func dataWebStaticSvgCaretLeftSvg() (*asset, error) {
-	path := "/home/jonathan/workspace/ldss/data/web/static/svg/caret-left.svg"
+	path := "/home/jonathan/workspace/golang/src/ldss/data/web/static/svg/caret-left.svg"
 	name := "data/web/static/svg/caret-left.svg"
 	bytes, err := bindataRead(path, name)
 	if err != nil {
@@ -1293,7 +1312,7 @@ func dataWebStaticSvgCaretLeftSvg() (*asset, error) {
 
 // dataWebStaticSvgCaretRightSvg reads file data from disk. It returns an error on failure.
 func dataWebStaticSvgCaretRightSvg() (*asset, error) {
-	path := "/home/jonathan/workspace/ldss/data/web/static/svg/caret-right.svg"
+	path := "/home/jonathan/workspace/golang/src/ldss/data/web/static/svg/caret-right.svg"
 	name := "data/web/static/svg/caret-right.svg"
 	bytes, err := bindataRead(path, name)
 	if err != nil {
@@ -1311,7 +1330,7 @@ func dataWebStaticSvgCaretRightSvg() (*asset, error) {
 
 // dataWebStaticSvgCaretTopSvg reads file data from disk. It returns an error on failure.
 func dataWebStaticSvgCaretTopSvg() (*asset, error) {
-	path := "/home/jonathan/workspace/ldss/data/web/static/svg/caret-top.svg"
+	path := "/home/jonathan/workspace/golang/src/ldss/data/web/static/svg/caret-top.svg"
 	name := "data/web/static/svg/caret-top.svg"
 	bytes, err := bindataRead(path, name)
 	if err != nil {
@@ -1329,7 +1348,7 @@ func dataWebStaticSvgCaretTopSvg() (*asset, error) {
 
 // dataWebStaticSvgCartSvg reads file data from disk. It returns an error on failure.
 func dataWebStaticSvgCartSvg() (*asset, error) {
-	path := "/home/jonathan/workspace/ldss/data/web/static/svg/cart.svg"
+	path := "/home/jonathan/workspace/golang/src/ldss/data/web/static/svg/cart.svg"
 	name := "data/web/static/svg/cart.svg"
 	bytes, err := bindataRead(path, name)
 	if err != nil {
@@ -1347,7 +1366,7 @@ func dataWebStaticSvgCartSvg() (*asset, error) {
 
 // dataWebStaticSvgChatSvg reads file data from disk. It returns an error on failure.
 func dataWebStaticSvgChatSvg() (*asset, error) {
-	path := "/home/jonathan/workspace/ldss/data/web/static/svg/chat.svg"
+	path := "/home/jonathan/workspace/golang/src/ldss/data/web/static/svg/chat.svg"
 	name := "data/web/static/svg/chat.svg"
 	bytes, err := bindataRead(path, name)
 	if err != nil {
@@ -1365,7 +1384,7 @@ func dataWebStaticSvgChatSvg() (*asset, error) {
 
 // dataWebStaticSvgCheckSvg reads file data from disk. It returns an error on failure.
 func dataWebStaticSvgCheckSvg() (*asset, error) {
-	path := "/home/jonathan/workspace/ldss/data/web/static/svg/check.svg"
+	path := "/home/jonathan/workspace/golang/src/ldss/data/web/static/svg/check.svg"
 	name := "data/web/static/svg/check.svg"
 	bytes, err := bindataRead(path, name)
 	if err != nil {
@@ -1383,7 +1402,7 @@ func dataWebStaticSvgCheckSvg() (*asset, error) {
 
 // dataWebStaticSvgChevronBottomSvg reads file data from disk. It returns an error on failure.
 func dataWebStaticSvgChevronBottomSvg() (*asset, error) {
-	path := "/home/jonathan/workspace/ldss/data/web/static/svg/chevron-bottom.svg"
+	path := "/home/jonathan/workspace/golang/src/ldss/data/web/static/svg/chevron-bottom.svg"
 	name := "data/web/static/svg/chevron-bottom.svg"
 	bytes, err := bindataRead(path, name)
 	if err != nil {
@@ -1401,7 +1420,7 @@ func dataWebStaticSvgChevronBottomSvg() (*asset, error) {
 
 // dataWebStaticSvgChevronLeftSvg reads file data from disk. It returns an error on failure.
 func dataWebStaticSvgChevronLeftSvg() (*asset, error) {
-	path := "/home/jonathan/workspace/ldss/data/web/static/svg/chevron-left.svg"
+	path := "/home/jonathan/workspace/golang/src/ldss/data/web/static/svg/chevron-left.svg"
 	name := "data/web/static/svg/chevron-left.svg"
 	bytes, err := bindataRead(path, name)
 	if err != nil {
@@ -1419,7 +1438,7 @@ func dataWebStaticSvgChevronLeftSvg() (*asset, error) {
 
 // dataWebStaticSvgChevronRightSvg reads file data from disk. It returns an error on failure.
 func dataWebStaticSvgChevronRightSvg() (*asset, error) {
-	path := "/home/jonathan/workspace/ldss/data/web/static/svg/chevron-right.svg"
+	path := "/home/jonathan/workspace/golang/src/ldss/data/web/static/svg/chevron-right.svg"
 	name := "data/web/static/svg/chevron-right.svg"
 	bytes, err := bindataRead(path, name)
 	if err != nil {
@@ -1437,7 +1456,7 @@ func dataWebStaticSvgChevronRightSvg() (*asset, error) {
 
 // dataWebStaticSvgChevronTopSvg reads file data from disk. It returns an error on failure.
 func dataWebStaticSvgChevronTopSvg() (*asset, error) {
-	path := "/home/jonathan/workspace/ldss/data/web/static/svg/chevron-top.svg"
+	path := "/home/jonathan/workspace/golang/src/ldss/data/web/static/svg/chevron-top.svg"
 	name := "data/web/static/svg/chevron-top.svg"
 	bytes, err := bindataRead(path, name)
 	if err != nil {
@@ -1455,7 +1474,7 @@ func dataWebStaticSvgChevronTopSvg() (*asset, error) {
 
 // dataWebStaticSvgCircleCheckSvg reads file data from disk. It returns an error on failure.
 func dataWebStaticSvgCircleCheckSvg() (*asset, error) {
-	path := "/home/jonathan/workspace/ldss/data/web/static/svg/circle-check.svg"
+	path := "/home/jonathan/workspace/golang/src/ldss/data/web/static/svg/circle-check.svg"
 	name := "data/web/static/svg/circle-check.svg"
 	bytes, err := bindataRead(path, name)
 	if err != nil {
@@ -1473,7 +1492,7 @@ func dataWebStaticSvgCircleCheckSvg() (*asset, error) {
 
 // dataWebStaticSvgCircleXSvg reads file data from disk. It returns an error on failure.
 func dataWebStaticSvgCircleXSvg() (*asset, error) {
-	path := "/home/jonathan/workspace/ldss/data/web/static/svg/circle-x.svg"
+	path := "/home/jonathan/workspace/golang/src/ldss/data/web/static/svg/circle-x.svg"
 	name := "data/web/static/svg/circle-x.svg"
 	bytes, err := bindataRead(path, name)
 	if err != nil {
@@ -1491,7 +1510,7 @@ func dataWebStaticSvgCircleXSvg() (*asset, error) {
 
 // dataWebStaticSvgClipboardSvg reads file data from disk. It returns an error on failure.
 func dataWebStaticSvgClipboardSvg() (*asset, error) {
-	path := "/home/jonathan/workspace/ldss/data/web/static/svg/clipboard.svg"
+	path := "/home/jonathan/workspace/golang/src/ldss/data/web/static/svg/clipboard.svg"
 	name := "data/web/static/svg/clipboard.svg"
 	bytes, err := bindataRead(path, name)
 	if err != nil {
@@ -1509,7 +1528,7 @@ func dataWebStaticSvgClipboardSvg() (*asset, error) {
 
 // dataWebStaticSvgClockSvg reads file data from disk. It returns an error on failure.
 func dataWebStaticSvgClockSvg() (*asset, error) {
-	path := "/home/jonathan/workspace/ldss/data/web/static/svg/clock.svg"
+	path := "/home/jonathan/workspace/golang/src/ldss/data/web/static/svg/clock.svg"
 	name := "data/web/static/svg/clock.svg"
 	bytes, err := bindataRead(path, name)
 	if err != nil {
@@ -1527,7 +1546,7 @@ func dataWebStaticSvgClockSvg() (*asset, error) {
 
 // dataWebStaticSvgCloudDownloadSvg reads file data from disk. It returns an error on failure.
 func dataWebStaticSvgCloudDownloadSvg() (*asset, error) {
-	path := "/home/jonathan/workspace/ldss/data/web/static/svg/cloud-download.svg"
+	path := "/home/jonathan/workspace/golang/src/ldss/data/web/static/svg/cloud-download.svg"
 	name := "data/web/static/svg/cloud-download.svg"
 	bytes, err := bindataRead(path, name)
 	if err != nil {
@@ -1545,7 +1564,7 @@ func dataWebStaticSvgCloudDownloadSvg() (*asset, error) {
 
 // dataWebStaticSvgCloudUploadSvg reads file data from disk. It returns an error on failure.
 func dataWebStaticSvgCloudUploadSvg() (*asset, error) {
-	path := "/home/jonathan/workspace/ldss/data/web/static/svg/cloud-upload.svg"
+	path := "/home/jonathan/workspace/golang/src/ldss/data/web/static/svg/cloud-upload.svg"
 	name := "data/web/static/svg/cloud-upload.svg"
 	bytes, err := bindataRead(path, name)
 	if err != nil {
@@ -1563,7 +1582,7 @@ func dataWebStaticSvgCloudUploadSvg() (*asset, error) {
 
 // dataWebStaticSvgCloudSvg reads file data from disk. It returns an error on failure.
 func dataWebStaticSvgCloudSvg() (*asset, error) {
-	path := "/home/jonathan/workspace/ldss/data/web/static/svg/cloud.svg"
+	path := "/home/jonathan/workspace/golang/src/ldss/data/web/static/svg/cloud.svg"
 	name := "data/web/static/svg/cloud.svg"
 	bytes, err := bindataRead(path, name)
 	if err != nil {
@@ -1581,7 +1600,7 @@ func dataWebStaticSvgCloudSvg() (*asset, error) {
 
 // dataWebStaticSvgCloudySvg reads file data from disk. It returns an error on failure.
 func dataWebStaticSvgCloudySvg() (*asset, error) {
-	path := "/home/jonathan/workspace/ldss/data/web/static/svg/cloudy.svg"
+	path := "/home/jonathan/workspace/golang/src/ldss/data/web/static/svg/cloudy.svg"
 	name := "data/web/static/svg/cloudy.svg"
 	bytes, err := bindataRead(path, name)
 	if err != nil {
@@ -1599,7 +1618,7 @@ func dataWebStaticSvgCloudySvg() (*asset, error) {
 
 // dataWebStaticSvgCodeSvg reads file data from disk. It returns an error on failure.
 func dataWebStaticSvgCodeSvg() (*asset, error) {
-	path := "/home/jonathan/workspace/ldss/data/web/static/svg/code.svg"
+	path := "/home/jonathan/workspace/golang/src/ldss/data/web/static/svg/code.svg"
 	name := "data/web/static/svg/code.svg"
 	bytes, err := bindataRead(path, name)
 	if err != nil {
@@ -1617,7 +1636,7 @@ func dataWebStaticSvgCodeSvg() (*asset, error) {
 
 // dataWebStaticSvgCogSvg reads file data from disk. It returns an error on failure.
 func dataWebStaticSvgCogSvg() (*asset, error) {
-	path := "/home/jonathan/workspace/ldss/data/web/static/svg/cog.svg"
+	path := "/home/jonathan/workspace/golang/src/ldss/data/web/static/svg/cog.svg"
 	name := "data/web/static/svg/cog.svg"
 	bytes, err := bindataRead(path, name)
 	if err != nil {
@@ -1635,7 +1654,7 @@ func dataWebStaticSvgCogSvg() (*asset, error) {
 
 // dataWebStaticSvgCollapseDownSvg reads file data from disk. It returns an error on failure.
 func dataWebStaticSvgCollapseDownSvg() (*asset, error) {
-	path := "/home/jonathan/workspace/ldss/data/web/static/svg/collapse-down.svg"
+	path := "/home/jonathan/workspace/golang/src/ldss/data/web/static/svg/collapse-down.svg"
 	name := "data/web/static/svg/collapse-down.svg"
 	bytes, err := bindataRead(path, name)
 	if err != nil {
@@ -1653,7 +1672,7 @@ func dataWebStaticSvgCollapseDownSvg() (*asset, error) {
 
 // dataWebStaticSvgCollapseLeftSvg reads file data from disk. It returns an error on failure.
 func dataWebStaticSvgCollapseLeftSvg() (*asset, error) {
-	path := "/home/jonathan/workspace/ldss/data/web/static/svg/collapse-left.svg"
+	path := "/home/jonathan/workspace/golang/src/ldss/data/web/static/svg/collapse-left.svg"
 	name := "data/web/static/svg/collapse-left.svg"
 	bytes, err := bindataRead(path, name)
 	if err != nil {
@@ -1671,7 +1690,7 @@ func dataWebStaticSvgCollapseLeftSvg() (*asset, error) {
 
 // dataWebStaticSvgCollapseRightSvg reads file data from disk. It returns an error on failure.
 func dataWebStaticSvgCollapseRightSvg() (*asset, error) {
-	path := "/home/jonathan/workspace/ldss/data/web/static/svg/collapse-right.svg"
+	path := "/home/jonathan/workspace/golang/src/ldss/data/web/static/svg/collapse-right.svg"
 	name := "data/web/static/svg/collapse-right.svg"
 	bytes, err := bindataRead(path, name)
 	if err != nil {
@@ -1689,7 +1708,7 @@ func dataWebStaticSvgCollapseRightSvg() (*asset, error) {
 
 // dataWebStaticSvgCollapseUpSvg reads file data from disk. It returns an error on failure.
 func dataWebStaticSvgCollapseUpSvg() (*asset, error) {
-	path := "/home/jonathan/workspace/ldss/data/web/static/svg/collapse-up.svg"
+	path := "/home/jonathan/workspace/golang/src/ldss/data/web/static/svg/collapse-up.svg"
 	name := "data/web/static/svg/collapse-up.svg"
 	bytes, err := bindataRead(path, name)
 	if err != nil {
@@ -1707,7 +1726,7 @@ func dataWebStaticSvgCollapseUpSvg() (*asset, error) {
 
 // dataWebStaticSvgCommandSvg reads file data from disk. It returns an error on failure.
 func dataWebStaticSvgCommandSvg() (*asset, error) {
-	path := "/home/jonathan/workspace/ldss/data/web/static/svg/command.svg"
+	path := "/home/jonathan/workspace/golang/src/ldss/data/web/static/svg/command.svg"
 	name := "data/web/static/svg/command.svg"
 	bytes, err := bindataRead(path, name)
 	if err != nil {
@@ -1725,7 +1744,7 @@ func dataWebStaticSvgCommandSvg() (*asset, error) {
 
 // dataWebStaticSvgCommentSquareSvg reads file data from disk. It returns an error on failure.
 func dataWebStaticSvgCommentSquareSvg() (*asset, error) {
-	path := "/home/jonathan/workspace/ldss/data/web/static/svg/comment-square.svg"
+	path := "/home/jonathan/workspace/golang/src/ldss/data/web/static/svg/comment-square.svg"
 	name := "data/web/static/svg/comment-square.svg"
 	bytes, err := bindataRead(path, name)
 	if err != nil {
@@ -1743,7 +1762,7 @@ func dataWebStaticSvgCommentSquareSvg() (*asset, error) {
 
 // dataWebStaticSvgCompassSvg reads file data from disk. It returns an error on failure.
 func dataWebStaticSvgCompassSvg() (*asset, error) {
-	path := "/home/jonathan/workspace/ldss/data/web/static/svg/compass.svg"
+	path := "/home/jonathan/workspace/golang/src/ldss/data/web/static/svg/compass.svg"
 	name := "data/web/static/svg/compass.svg"
 	bytes, err := bindataRead(path, name)
 	if err != nil {
@@ -1761,7 +1780,7 @@ func dataWebStaticSvgCompassSvg() (*asset, error) {
 
 // dataWebStaticSvgContrastSvg reads file data from disk. It returns an error on failure.
 func dataWebStaticSvgContrastSvg() (*asset, error) {
-	path := "/home/jonathan/workspace/ldss/data/web/static/svg/contrast.svg"
+	path := "/home/jonathan/workspace/golang/src/ldss/data/web/static/svg/contrast.svg"
 	name := "data/web/static/svg/contrast.svg"
 	bytes, err := bindataRead(path, name)
 	if err != nil {
@@ -1779,7 +1798,7 @@ func dataWebStaticSvgContrastSvg() (*asset, error) {
 
 // dataWebStaticSvgCopywritingSvg reads file data from disk. It returns an error on failure.
 func dataWebStaticSvgCopywritingSvg() (*asset, error) {
-	path := "/home/jonathan/workspace/ldss/data/web/static/svg/copywriting.svg"
+	path := "/home/jonathan/workspace/golang/src/ldss/data/web/static/svg/copywriting.svg"
 	name := "data/web/static/svg/copywriting.svg"
 	bytes, err := bindataRead(path, name)
 	if err != nil {
@@ -1797,7 +1816,7 @@ func dataWebStaticSvgCopywritingSvg() (*asset, error) {
 
 // dataWebStaticSvgCreditCardSvg reads file data from disk. It returns an error on failure.
 func dataWebStaticSvgCreditCardSvg() (*asset, error) {
-	path := "/home/jonathan/workspace/ldss/data/web/static/svg/credit-card.svg"
+	path := "/home/jonathan/workspace/golang/src/ldss/data/web/static/svg/credit-card.svg"
 	name := "data/web/static/svg/credit-card.svg"
 	bytes, err := bindataRead(path, name)
 	if err != nil {
@@ -1815,7 +1834,7 @@ func dataWebStaticSvgCreditCardSvg() (*asset, error) {
 
 // dataWebStaticSvgCropSvg reads file data from disk. It returns an error on failure.
 func dataWebStaticSvgCropSvg() (*asset, error) {
-	path := "/home/jonathan/workspace/ldss/data/web/static/svg/crop.svg"
+	path := "/home/jonathan/workspace/golang/src/ldss/data/web/static/svg/crop.svg"
 	name := "data/web/static/svg/crop.svg"
 	bytes, err := bindataRead(path, name)
 	if err != nil {
@@ -1833,7 +1852,7 @@ func dataWebStaticSvgCropSvg() (*asset, error) {
 
 // dataWebStaticSvgDashboardSvg reads file data from disk. It returns an error on failure.
 func dataWebStaticSvgDashboardSvg() (*asset, error) {
-	path := "/home/jonathan/workspace/ldss/data/web/static/svg/dashboard.svg"
+	path := "/home/jonathan/workspace/golang/src/ldss/data/web/static/svg/dashboard.svg"
 	name := "data/web/static/svg/dashboard.svg"
 	bytes, err := bindataRead(path, name)
 	if err != nil {
@@ -1851,7 +1870,7 @@ func dataWebStaticSvgDashboardSvg() (*asset, error) {
 
 // dataWebStaticSvgDataTransferDownloadSvg reads file data from disk. It returns an error on failure.
 func dataWebStaticSvgDataTransferDownloadSvg() (*asset, error) {
-	path := "/home/jonathan/workspace/ldss/data/web/static/svg/data-transfer-download.svg"
+	path := "/home/jonathan/workspace/golang/src/ldss/data/web/static/svg/data-transfer-download.svg"
 	name := "data/web/static/svg/data-transfer-download.svg"
 	bytes, err := bindataRead(path, name)
 	if err != nil {
@@ -1869,7 +1888,7 @@ func dataWebStaticSvgDataTransferDownloadSvg() (*asset, error) {
 
 // dataWebStaticSvgDataTransferUploadSvg reads file data from disk. It returns an error on failure.
 func dataWebStaticSvgDataTransferUploadSvg() (*asset, error) {
-	path := "/home/jonathan/workspace/ldss/data/web/static/svg/data-transfer-upload.svg"
+	path := "/home/jonathan/workspace/golang/src/ldss/data/web/static/svg/data-transfer-upload.svg"
 	name := "data/web/static/svg/data-transfer-upload.svg"
 	bytes, err := bindataRead(path, name)
 	if err != nil {
@@ -1887,7 +1906,7 @@ func dataWebStaticSvgDataTransferUploadSvg() (*asset, error) {
 
 // dataWebStaticSvgDeleteSvg reads file data from disk. It returns an error on failure.
 func dataWebStaticSvgDeleteSvg() (*asset, error) {
-	path := "/home/jonathan/workspace/ldss/data/web/static/svg/delete.svg"
+	path := "/home/jonathan/workspace/golang/src/ldss/data/web/static/svg/delete.svg"
 	name := "data/web/static/svg/delete.svg"
 	bytes, err := bindataRead(path, name)
 	if err != nil {
@@ -1905,7 +1924,7 @@ func dataWebStaticSvgDeleteSvg() (*asset, error) {
 
 // dataWebStaticSvgDialSvg reads file data from disk. It returns an error on failure.
 func dataWebStaticSvgDialSvg() (*asset, error) {
-	path := "/home/jonathan/workspace/ldss/data/web/static/svg/dial.svg"
+	path := "/home/jonathan/workspace/golang/src/ldss/data/web/static/svg/dial.svg"
 	name := "data/web/static/svg/dial.svg"
 	bytes, err := bindataRead(path, name)
 	if err != nil {
@@ -1923,7 +1942,7 @@ func dataWebStaticSvgDialSvg() (*asset, error) {
 
 // dataWebStaticSvgDocumentSvg reads file data from disk. It returns an error on failure.
 func dataWebStaticSvgDocumentSvg() (*asset, error) {
-	path := "/home/jonathan/workspace/ldss/data/web/static/svg/document.svg"
+	path := "/home/jonathan/workspace/golang/src/ldss/data/web/static/svg/document.svg"
 	name := "data/web/static/svg/document.svg"
 	bytes, err := bindataRead(path, name)
 	if err != nil {
@@ -1941,7 +1960,7 @@ func dataWebStaticSvgDocumentSvg() (*asset, error) {
 
 // dataWebStaticSvgDollarSvg reads file data from disk. It returns an error on failure.
 func dataWebStaticSvgDollarSvg() (*asset, error) {
-	path := "/home/jonathan/workspace/ldss/data/web/static/svg/dollar.svg"
+	path := "/home/jonathan/workspace/golang/src/ldss/data/web/static/svg/dollar.svg"
 	name := "data/web/static/svg/dollar.svg"
 	bytes, err := bindataRead(path, name)
 	if err != nil {
@@ -1959,7 +1978,7 @@ func dataWebStaticSvgDollarSvg() (*asset, error) {
 
 // dataWebStaticSvgDoubleQuoteSansLeftSvg reads file data from disk. It returns an error on failure.
 func dataWebStaticSvgDoubleQuoteSansLeftSvg() (*asset, error) {
-	path := "/home/jonathan/workspace/ldss/data/web/static/svg/double-quote-sans-left.svg"
+	path := "/home/jonathan/workspace/golang/src/ldss/data/web/static/svg/double-quote-sans-left.svg"
 	name := "data/web/static/svg/double-quote-sans-left.svg"
 	bytes, err := bindataRead(path, name)
 	if err != nil {
@@ -1977,7 +1996,7 @@ func dataWebStaticSvgDoubleQuoteSansLeftSvg() (*asset, error) {
 
 // dataWebStaticSvgDoubleQuoteSansRightSvg reads file data from disk. It returns an error on failure.
 func dataWebStaticSvgDoubleQuoteSansRightSvg() (*asset, error) {
-	path := "/home/jonathan/workspace/ldss/data/web/static/svg/double-quote-sans-right.svg"
+	path := "/home/jonathan/workspace/golang/src/ldss/data/web/static/svg/double-quote-sans-right.svg"
 	name := "data/web/static/svg/double-quote-sans-right.svg"
 	bytes, err := bindataRead(path, name)
 	if err != nil {
@@ -1995,7 +2014,7 @@ func dataWebStaticSvgDoubleQuoteSansRightSvg() (*asset, error) {
 
 // dataWebStaticSvgDoubleQuoteSerifLeftSvg reads file data from disk. It returns an error on failure.
 func dataWebStaticSvgDoubleQuoteSerifLeftSvg() (*asset, error) {
-	path := "/home/jonathan/workspace/ldss/data/web/static/svg/double-quote-serif-left.svg"
+	path := "/home/jonathan/workspace/golang/src/ldss/data/web/static/svg/double-quote-serif-left.svg"
 	name := "data/web/static/svg/double-quote-serif-left.svg"
 	bytes, err := bindataRead(path, name)
 	if err != nil {
@@ -2013,7 +2032,7 @@ func dataWebStaticSvgDoubleQuoteSerifLeftSvg() (*asset, error) {
 
 // dataWebStaticSvgDoubleQuoteSerifRightSvg reads file data from disk. It returns an error on failure.
 func dataWebStaticSvgDoubleQuoteSerifRightSvg() (*asset, error) {
-	path := "/home/jonathan/workspace/ldss/data/web/static/svg/double-quote-serif-right.svg"
+	path := "/home/jonathan/workspace/golang/src/ldss/data/web/static/svg/double-quote-serif-right.svg"
 	name := "data/web/static/svg/double-quote-serif-right.svg"
 	bytes, err := bindataRead(path, name)
 	if err != nil {
@@ -2031,7 +2050,7 @@ func dataWebStaticSvgDoubleQuoteSerifRightSvg() (*asset, error) {
 
 // dataWebStaticSvgDropletSvg reads file data from disk. It returns an error on failure.
 func dataWebStaticSvgDropletSvg() (*asset, error) {
-	path := "/home/jonathan/workspace/ldss/data/web/static/svg/droplet.svg"
+	path := "/home/jonathan/workspace/golang/src/ldss/data/web/static/svg/droplet.svg"
 	name := "data/web/static/svg/droplet.svg"
 	bytes, err := bindataRead(path, name)
 	if err != nil {
@@ -2049,7 +2068,7 @@ func dataWebStaticSvgDropletSvg() (*asset, error) {
 
 // dataWebStaticSvgEjectSvg reads file data from disk. It returns an error on failure.
 func dataWebStaticSvgEjectSvg() (*asset, error) {
-	path := "/home/jonathan/workspace/ldss/data/web/static/svg/eject.svg"
+	path := "/home/jonathan/workspace/golang/src/ldss/data/web/static/svg/eject.svg"
 	name := "data/web/static/svg/eject.svg"
 	bytes, err := bindataRead(path, name)
 	if err != nil {
@@ -2067,7 +2086,7 @@ func dataWebStaticSvgEjectSvg() (*asset, error) {
 
 // dataWebStaticSvgElevatorSvg reads file data from disk. It returns an error on failure.
 func dataWebStaticSvgElevatorSvg() (*asset, error) {
-	path := "/home/jonathan/workspace/ldss/data/web/static/svg/elevator.svg"
+	path := "/home/jonathan/workspace/golang/src/ldss/data/web/static/svg/elevator.svg"
 	name := "data/web/static/svg/elevator.svg"
 	bytes, err := bindataRead(path, name)
 	if err != nil {
@@ -2085,7 +2104,7 @@ func dataWebStaticSvgElevatorSvg() (*asset, error) {
 
 // dataWebStaticSvgEllipsesSvg reads file data from disk. It returns an error on failure.
 func dataWebStaticSvgEllipsesSvg() (*asset, error) {
-	path := "/home/jonathan/workspace/ldss/data/web/static/svg/ellipses.svg"
+	path := "/home/jonathan/workspace/golang/src/ldss/data/web/static/svg/ellipses.svg"
 	name := "data/web/static/svg/ellipses.svg"
 	bytes, err := bindataRead(path, name)
 	if err != nil {
@@ -2103,7 +2122,7 @@ func dataWebStaticSvgEllipsesSvg() (*asset, error) {
 
 // dataWebStaticSvgEnvelopeClosedSvg reads file data from disk. It returns an error on failure.
 func dataWebStaticSvgEnvelopeClosedSvg() (*asset, error) {
-	path := "/home/jonathan/workspace/ldss/data/web/static/svg/envelope-closed.svg"
+	path := "/home/jonathan/workspace/golang/src/ldss/data/web/static/svg/envelope-closed.svg"
 	name := "data/web/static/svg/envelope-closed.svg"
 	bytes, err := bindataRead(path, name)
 	if err != nil {
@@ -2121,7 +2140,7 @@ func dataWebStaticSvgEnvelopeClosedSvg() (*asset, error) {
 
 // dataWebStaticSvgEnvelopeOpenSvg reads file data from disk. It returns an error on failure.
 func dataWebStaticSvgEnvelopeOpenSvg() (*asset, error) {
-	path := "/home/jonathan/workspace/ldss/data/web/static/svg/envelope-open.svg"
+	path := "/home/jonathan/workspace/golang/src/ldss/data/web/static/svg/envelope-open.svg"
 	name := "data/web/static/svg/envelope-open.svg"
 	bytes, err := bindataRead(path, name)
 	if err != nil {
@@ -2139,7 +2158,7 @@ func dataWebStaticSvgEnvelopeOpenSvg() (*asset, error) {
 
 // dataWebStaticSvgEuroSvg reads file data from disk. It returns an error on failure.
 func dataWebStaticSvgEuroSvg() (*asset, error) {
-	path := "/home/jonathan/workspace/ldss/data/web/static/svg/euro.svg"
+	path := "/home/jonathan/workspace/golang/src/ldss/data/web/static/svg/euro.svg"
 	name := "data/web/static/svg/euro.svg"
 	bytes, err := bindataRead(path, name)
 	if err != nil {
@@ -2157,7 +2176,7 @@ func dataWebStaticSvgEuroSvg() (*asset, error) {
 
 // dataWebStaticSvgExcerptSvg reads file data from disk. It returns an error on failure.
 func dataWebStaticSvgExcerptSvg() (*asset, error) {
-	path := "/home/jonathan/workspace/ldss/data/web/static/svg/excerpt.svg"
+	path := "/home/jonathan/workspace/golang/src/ldss/data/web/static/svg/excerpt.svg"
 	name := "data/web/static/svg/excerpt.svg"
 	bytes, err := bindataRead(path, name)
 	if err != nil {
@@ -2175,7 +2194,7 @@ func dataWebStaticSvgExcerptSvg() (*asset, error) {
 
 // dataWebStaticSvgExpandDownSvg reads file data from disk. It returns an error on failure.
 func dataWebStaticSvgExpandDownSvg() (*asset, error) {
-	path := "/home/jonathan/workspace/ldss/data/web/static/svg/expand-down.svg"
+	path := "/home/jonathan/workspace/golang/src/ldss/data/web/static/svg/expand-down.svg"
 	name := "data/web/static/svg/expand-down.svg"
 	bytes, err := bindataRead(path, name)
 	if err != nil {
@@ -2193,7 +2212,7 @@ func dataWebStaticSvgExpandDownSvg() (*asset, error) {
 
 // dataWebStaticSvgExpandLeftSvg reads file data from disk. It returns an error on failure.
 func dataWebStaticSvgExpandLeftSvg() (*asset, error) {
-	path := "/home/jonathan/workspace/ldss/data/web/static/svg/expand-left.svg"
+	path := "/home/jonathan/workspace/golang/src/ldss/data/web/static/svg/expand-left.svg"
 	name := "data/web/static/svg/expand-left.svg"
 	bytes, err := bindataRead(path, name)
 	if err != nil {
@@ -2211,7 +2230,7 @@ func dataWebStaticSvgExpandLeftSvg() (*asset, error) {
 
 // dataWebStaticSvgExpandRightSvg reads file data from disk. It returns an error on failure.
 func dataWebStaticSvgExpandRightSvg() (*asset, error) {
-	path := "/home/jonathan/workspace/ldss/data/web/static/svg/expand-right.svg"
+	path := "/home/jonathan/workspace/golang/src/ldss/data/web/static/svg/expand-right.svg"
 	name := "data/web/static/svg/expand-right.svg"
 	bytes, err := bindataRead(path, name)
 	if err != nil {
@@ -2229,7 +2248,7 @@ func dataWebStaticSvgExpandRightSvg() (*asset, error) {
 
 // dataWebStaticSvgExpandUpSvg reads file data from disk. It returns an error on failure.
 func dataWebStaticSvgExpandUpSvg() (*asset, error) {
-	path := "/home/jonathan/workspace/ldss/data/web/static/svg/expand-up.svg"
+	path := "/home/jonathan/workspace/golang/src/ldss/data/web/static/svg/expand-up.svg"
 	name := "data/web/static/svg/expand-up.svg"
 	bytes, err := bindataRead(path, name)
 	if err != nil {
@@ -2247,7 +2266,7 @@ func dataWebStaticSvgExpandUpSvg() (*asset, error) {
 
 // dataWebStaticSvgExternalLinkSvg reads file data from disk. It returns an error on failure.
 func dataWebStaticSvgExternalLinkSvg() (*asset, error) {
-	path := "/home/jonathan/workspace/ldss/data/web/static/svg/external-link.svg"
+	path := "/home/jonathan/workspace/golang/src/ldss/data/web/static/svg/external-link.svg"
 	name := "data/web/static/svg/external-link.svg"
 	bytes, err := bindataRead(path, name)
 	if err != nil {
@@ -2265,7 +2284,7 @@ func dataWebStaticSvgExternalLinkSvg() (*asset, error) {
 
 // dataWebStaticSvgEyeSvg reads file data from disk. It returns an error on failure.
 func dataWebStaticSvgEyeSvg() (*asset, error) {
-	path := "/home/jonathan/workspace/ldss/data/web/static/svg/eye.svg"
+	path := "/home/jonathan/workspace/golang/src/ldss/data/web/static/svg/eye.svg"
 	name := "data/web/static/svg/eye.svg"
 	bytes, err := bindataRead(path, name)
 	if err != nil {
@@ -2283,7 +2302,7 @@ func dataWebStaticSvgEyeSvg() (*asset, error) {
 
 // dataWebStaticSvgEyedropperSvg reads file data from disk. It returns an error on failure.
 func dataWebStaticSvgEyedropperSvg() (*asset, error) {
-	path := "/home/jonathan/workspace/ldss/data/web/static/svg/eyedropper.svg"
+	path := "/home/jonathan/workspace/golang/src/ldss/data/web/static/svg/eyedropper.svg"
 	name := "data/web/static/svg/eyedropper.svg"
 	bytes, err := bindataRead(path, name)
 	if err != nil {
@@ -2301,7 +2320,7 @@ func dataWebStaticSvgEyedropperSvg() (*asset, error) {
 
 // dataWebStaticSvgFileSvg reads file data from disk. It returns an error on failure.
 func dataWebStaticSvgFileSvg() (*asset, error) {
-	path := "/home/jonathan/workspace/ldss/data/web/static/svg/file.svg"
+	path := "/home/jonathan/workspace/golang/src/ldss/data/web/static/svg/file.svg"
 	name := "data/web/static/svg/file.svg"
 	bytes, err := bindataRead(path, name)
 	if err != nil {
@@ -2319,7 +2338,7 @@ func dataWebStaticSvgFileSvg() (*asset, error) {
 
 // dataWebStaticSvgFireSvg reads file data from disk. It returns an error on failure.
 func dataWebStaticSvgFireSvg() (*asset, error) {
-	path := "/home/jonathan/workspace/ldss/data/web/static/svg/fire.svg"
+	path := "/home/jonathan/workspace/golang/src/ldss/data/web/static/svg/fire.svg"
 	name := "data/web/static/svg/fire.svg"
 	bytes, err := bindataRead(path, name)
 	if err != nil {
@@ -2337,7 +2356,7 @@ func dataWebStaticSvgFireSvg() (*asset, error) {
 
 // dataWebStaticSvgFlagSvg reads file data from disk. It returns an error on failure.
 func dataWebStaticSvgFlagSvg() (*asset, error) {
-	path := "/home/jonathan/workspace/ldss/data/web/static/svg/flag.svg"
+	path := "/home/jonathan/workspace/golang/src/ldss/data/web/static/svg/flag.svg"
 	name := "data/web/static/svg/flag.svg"
 	bytes, err := bindataRead(path, name)
 	if err != nil {
@@ -2355,7 +2374,7 @@ func dataWebStaticSvgFlagSvg() (*asset, error) {
 
 // dataWebStaticSvgFlashSvg reads file data from disk. It returns an error on failure.
 func dataWebStaticSvgFlashSvg() (*asset, error) {
-	path := "/home/jonathan/workspace/ldss/data/web/static/svg/flash.svg"
+	path := "/home/jonathan/workspace/golang/src/ldss/data/web/static/svg/flash.svg"
 	name := "data/web/static/svg/flash.svg"
 	bytes, err := bindataRead(path, name)
 	if err != nil {
@@ -2373,7 +2392,7 @@ func dataWebStaticSvgFlashSvg() (*asset, error) {
 
 // dataWebStaticSvgFolderSvg reads file data from disk. It returns an error on failure.
 func dataWebStaticSvgFolderSvg() (*asset, error) {
-	path := "/home/jonathan/workspace/ldss/data/web/static/svg/folder.svg"
+	path := "/home/jonathan/workspace/golang/src/ldss/data/web/static/svg/folder.svg"
 	name := "data/web/static/svg/folder.svg"
 	bytes, err := bindataRead(path, name)
 	if err != nil {
@@ -2391,7 +2410,7 @@ func dataWebStaticSvgFolderSvg() (*asset, error) {
 
 // dataWebStaticSvgForkSvg reads file data from disk. It returns an error on failure.
 func dataWebStaticSvgForkSvg() (*asset, error) {
-	path := "/home/jonathan/workspace/ldss/data/web/static/svg/fork.svg"
+	path := "/home/jonathan/workspace/golang/src/ldss/data/web/static/svg/fork.svg"
 	name := "data/web/static/svg/fork.svg"
 	bytes, err := bindataRead(path, name)
 	if err != nil {
@@ -2409,7 +2428,7 @@ func dataWebStaticSvgForkSvg() (*asset, error) {
 
 // dataWebStaticSvgFullscreenEnterSvg reads file data from disk. It returns an error on failure.
 func dataWebStaticSvgFullscreenEnterSvg() (*asset, error) {
-	path := "/home/jonathan/workspace/ldss/data/web/static/svg/fullscreen-enter.svg"
+	path := "/home/jonathan/workspace/golang/src/ldss/data/web/static/svg/fullscreen-enter.svg"
 	name := "data/web/static/svg/fullscreen-enter.svg"
 	bytes, err := bindataRead(path, name)
 	if err != nil {
@@ -2427,7 +2446,7 @@ func dataWebStaticSvgFullscreenEnterSvg() (*asset, error) {
 
 // dataWebStaticSvgFullscreenExitSvg reads file data from disk. It returns an error on failure.
 func dataWebStaticSvgFullscreenExitSvg() (*asset, error) {
-	path := "/home/jonathan/workspace/ldss/data/web/static/svg/fullscreen-exit.svg"
+	path := "/home/jonathan/workspace/golang/src/ldss/data/web/static/svg/fullscreen-exit.svg"
 	name := "data/web/static/svg/fullscreen-exit.svg"
 	bytes, err := bindataRead(path, name)
 	if err != nil {
@@ -2445,7 +2464,7 @@ func dataWebStaticSvgFullscreenExitSvg() (*asset, error) {
 
 // dataWebStaticSvgGlobeSvg reads file data from disk. It returns an error on failure.
 func dataWebStaticSvgGlobeSvg() (*asset, error) {
-	path := "/home/jonathan/workspace/ldss/data/web/static/svg/globe.svg"
+	path := "/home/jonathan/workspace/golang/src/ldss/data/web/static/svg/globe.svg"
 	name := "data/web/static/svg/globe.svg"
 	bytes, err := bindataRead(path, name)
 	if err != nil {
@@ -2463,7 +2482,7 @@ func dataWebStaticSvgGlobeSvg() (*asset, error) {
 
 // dataWebStaticSvgGraphSvg reads file data from disk. It returns an error on failure.
 func dataWebStaticSvgGraphSvg() (*asset, error) {
-	path := "/home/jonathan/workspace/ldss/data/web/static/svg/graph.svg"
+	path := "/home/jonathan/workspace/golang/src/ldss/data/web/static/svg/graph.svg"
 	name := "data/web/static/svg/graph.svg"
 	bytes, err := bindataRead(path, name)
 	if err != nil {
@@ -2481,7 +2500,7 @@ func dataWebStaticSvgGraphSvg() (*asset, error) {
 
 // dataWebStaticSvgGridFourUpSvg reads file data from disk. It returns an error on failure.
 func dataWebStaticSvgGridFourUpSvg() (*asset, error) {
-	path := "/home/jonathan/workspace/ldss/data/web/static/svg/grid-four-up.svg"
+	path := "/home/jonathan/workspace/golang/src/ldss/data/web/static/svg/grid-four-up.svg"
 	name := "data/web/static/svg/grid-four-up.svg"
 	bytes, err := bindataRead(path, name)
 	if err != nil {
@@ -2499,7 +2518,7 @@ func dataWebStaticSvgGridFourUpSvg() (*asset, error) {
 
 // dataWebStaticSvgGridThreeUpSvg reads file data from disk. It returns an error on failure.
 func dataWebStaticSvgGridThreeUpSvg() (*asset, error) {
-	path := "/home/jonathan/workspace/ldss/data/web/static/svg/grid-three-up.svg"
+	path := "/home/jonathan/workspace/golang/src/ldss/data/web/static/svg/grid-three-up.svg"
 	name := "data/web/static/svg/grid-three-up.svg"
 	bytes, err := bindataRead(path, name)
 	if err != nil {
@@ -2517,7 +2536,7 @@ func dataWebStaticSvgGridThreeUpSvg() (*asset, error) {
 
 // dataWebStaticSvgGridTwoUpSvg reads file data from disk. It returns an error on failure.
 func dataWebStaticSvgGridTwoUpSvg() (*asset, error) {
-	path := "/home/jonathan/workspace/ldss/data/web/static/svg/grid-two-up.svg"
+	path := "/home/jonathan/workspace/golang/src/ldss/data/web/static/svg/grid-two-up.svg"
 	name := "data/web/static/svg/grid-two-up.svg"
 	bytes, err := bindataRead(path, name)
 	if err != nil {
@@ -2535,7 +2554,7 @@ func dataWebStaticSvgGridTwoUpSvg() (*asset, error) {
 
 // dataWebStaticSvgHardDriveSvg reads file data from disk. It returns an error on failure.
 func dataWebStaticSvgHardDriveSvg() (*asset, error) {
-	path := "/home/jonathan/workspace/ldss/data/web/static/svg/hard-drive.svg"
+	path := "/home/jonathan/workspace/golang/src/ldss/data/web/static/svg/hard-drive.svg"
 	name := "data/web/static/svg/hard-drive.svg"
 	bytes, err := bindataRead(path, name)
 	if err != nil {
@@ -2553,7 +2572,7 @@ func dataWebStaticSvgHardDriveSvg() (*asset, error) {
 
 // dataWebStaticSvgHeaderSvg reads file data from disk. It returns an error on failure.
 func dataWebStaticSvgHeaderSvg() (*asset, error) {
-	path := "/home/jonathan/workspace/ldss/data/web/static/svg/header.svg"
+	path := "/home/jonathan/workspace/golang/src/ldss/data/web/static/svg/header.svg"
 	name := "data/web/static/svg/header.svg"
 	bytes, err := bindataRead(path, name)
 	if err != nil {
@@ -2571,7 +2590,7 @@ func dataWebStaticSvgHeaderSvg() (*asset, error) {
 
 // dataWebStaticSvgHeadphonesSvg reads file data from disk. It returns an error on failure.
 func dataWebStaticSvgHeadphonesSvg() (*asset, error) {
-	path := "/home/jonathan/workspace/ldss/data/web/static/svg/headphones.svg"
+	path := "/home/jonathan/workspace/golang/src/ldss/data/web/static/svg/headphones.svg"
 	name := "data/web/static/svg/headphones.svg"
 	bytes, err := bindataRead(path, name)
 	if err != nil {
@@ -2589,7 +2608,7 @@ func dataWebStaticSvgHeadphonesSvg() (*asset, error) {
 
 // dataWebStaticSvgHeartSvg reads file data from disk. It returns an error on failure.
 func dataWebStaticSvgHeartSvg() (*asset, error) {
-	path := "/home/jonathan/workspace/ldss/data/web/static/svg/heart.svg"
+	path := "/home/jonathan/workspace/golang/src/ldss/data/web/static/svg/heart.svg"
 	name := "data/web/static/svg/heart.svg"
 	bytes, err := bindataRead(path, name)
 	if err != nil {
@@ -2607,7 +2626,7 @@ func dataWebStaticSvgHeartSvg() (*asset, error) {
 
 // dataWebStaticSvgHomeSvg reads file data from disk. It returns an error on failure.
 func dataWebStaticSvgHomeSvg() (*asset, error) {
-	path := "/home/jonathan/workspace/ldss/data/web/static/svg/home.svg"
+	path := "/home/jonathan/workspace/golang/src/ldss/data/web/static/svg/home.svg"
 	name := "data/web/static/svg/home.svg"
 	bytes, err := bindataRead(path, name)
 	if err != nil {
@@ -2625,7 +2644,7 @@ func dataWebStaticSvgHomeSvg() (*asset, error) {
 
 // dataWebStaticSvgImageSvg reads file data from disk. It returns an error on failure.
 func dataWebStaticSvgImageSvg() (*asset, error) {
-	path := "/home/jonathan/workspace/ldss/data/web/static/svg/image.svg"
+	path := "/home/jonathan/workspace/golang/src/ldss/data/web/static/svg/image.svg"
 	name := "data/web/static/svg/image.svg"
 	bytes, err := bindataRead(path, name)
 	if err != nil {
@@ -2643,7 +2662,7 @@ func dataWebStaticSvgImageSvg() (*asset, error) {
 
 // dataWebStaticSvgInboxSvg reads file data from disk. It returns an error on failure.
 func dataWebStaticSvgInboxSvg() (*asset, error) {
-	path := "/home/jonathan/workspace/ldss/data/web/static/svg/inbox.svg"
+	path := "/home/jonathan/workspace/golang/src/ldss/data/web/static/svg/inbox.svg"
 	name := "data/web/static/svg/inbox.svg"
 	bytes, err := bindataRead(path, name)
 	if err != nil {
@@ -2661,7 +2680,7 @@ func dataWebStaticSvgInboxSvg() (*asset, error) {
 
 // dataWebStaticSvgInfinitySvg reads file data from disk. It returns an error on failure.
 func dataWebStaticSvgInfinitySvg() (*asset, error) {
-	path := "/home/jonathan/workspace/ldss/data/web/static/svg/infinity.svg"
+	path := "/home/jonathan/workspace/golang/src/ldss/data/web/static/svg/infinity.svg"
 	name := "data/web/static/svg/infinity.svg"
 	bytes, err := bindataRead(path, name)
 	if err != nil {
@@ -2679,7 +2698,7 @@ func dataWebStaticSvgInfinitySvg() (*asset, error) {
 
 // dataWebStaticSvgInfoSvg reads file data from disk. It returns an error on failure.
 func dataWebStaticSvgInfoSvg() (*asset, error) {
-	path := "/home/jonathan/workspace/ldss/data/web/static/svg/info.svg"
+	path := "/home/jonathan/workspace/golang/src/ldss/data/web/static/svg/info.svg"
 	name := "data/web/static/svg/info.svg"
 	bytes, err := bindataRead(path, name)
 	if err != nil {
@@ -2697,7 +2716,7 @@ func dataWebStaticSvgInfoSvg() (*asset, error) {
 
 // dataWebStaticSvgItalicSvg reads file data from disk. It returns an error on failure.
 func dataWebStaticSvgItalicSvg() (*asset, error) {
-	path := "/home/jonathan/workspace/ldss/data/web/static/svg/italic.svg"
+	path := "/home/jonathan/workspace/golang/src/ldss/data/web/static/svg/italic.svg"
 	name := "data/web/static/svg/italic.svg"
 	bytes, err := bindataRead(path, name)
 	if err != nil {
@@ -2715,7 +2734,7 @@ func dataWebStaticSvgItalicSvg() (*asset, error) {
 
 // dataWebStaticSvgJustifyCenterSvg reads file data from disk. It returns an error on failure.
 func dataWebStaticSvgJustifyCenterSvg() (*asset, error) {
-	path := "/home/jonathan/workspace/ldss/data/web/static/svg/justify-center.svg"
+	path := "/home/jonathan/workspace/golang/src/ldss/data/web/static/svg/justify-center.svg"
 	name := "data/web/static/svg/justify-center.svg"
 	bytes, err := bindataRead(path, name)
 	if err != nil {
@@ -2733,7 +2752,7 @@ func dataWebStaticSvgJustifyCenterSvg() (*asset, error) {
 
 // dataWebStaticSvgJustifyLeftSvg reads file data from disk. It returns an error on failure.
 func dataWebStaticSvgJustifyLeftSvg() (*asset, error) {
-	path := "/home/jonathan/workspace/ldss/data/web/static/svg/justify-left.svg"
+	path := "/home/jonathan/workspace/golang/src/ldss/data/web/static/svg/justify-left.svg"
 	name := "data/web/static/svg/justify-left.svg"
 	bytes, err := bindataRead(path, name)
 	if err != nil {
@@ -2751,7 +2770,7 @@ func dataWebStaticSvgJustifyLeftSvg() (*asset, error) {
 
 // dataWebStaticSvgJustifyRightSvg reads file data from disk. It returns an error on failure.
 func dataWebStaticSvgJustifyRightSvg() (*asset, error) {
-	path := "/home/jonathan/workspace/ldss/data/web/static/svg/justify-right.svg"
+	path := "/home/jonathan/workspace/golang/src/ldss/data/web/static/svg/justify-right.svg"
 	name := "data/web/static/svg/justify-right.svg"
 	bytes, err := bindataRead(path, name)
 	if err != nil {
@@ -2769,7 +2788,7 @@ func dataWebStaticSvgJustifyRightSvg() (*asset, error) {
 
 // dataWebStaticSvgKeySvg reads file data from disk. It returns an error on failure.
 func dataWebStaticSvgKeySvg() (*asset, error) {
-	path := "/home/jonathan/workspace/ldss/data/web/static/svg/key.svg"
+	path := "/home/jonathan/workspace/golang/src/ldss/data/web/static/svg/key.svg"
 	name := "data/web/static/svg/key.svg"
 	bytes, err := bindataRead(path, name)
 	if err != nil {
@@ -2787,7 +2806,7 @@ func dataWebStaticSvgKeySvg() (*asset, error) {
 
 // dataWebStaticSvgLaptopSvg reads file data from disk. It returns an error on failure.
 func dataWebStaticSvgLaptopSvg() (*asset, error) {
-	path := "/home/jonathan/workspace/ldss/data/web/static/svg/laptop.svg"
+	path := "/home/jonathan/workspace/golang/src/ldss/data/web/static/svg/laptop.svg"
 	name := "data/web/static/svg/laptop.svg"
 	bytes, err := bindataRead(path, name)
 	if err != nil {
@@ -2805,7 +2824,7 @@ func dataWebStaticSvgLaptopSvg() (*asset, error) {
 
 // dataWebStaticSvgLayersSvg reads file data from disk. It returns an error on failure.
 func dataWebStaticSvgLayersSvg() (*asset, error) {
-	path := "/home/jonathan/workspace/ldss/data/web/static/svg/layers.svg"
+	path := "/home/jonathan/workspace/golang/src/ldss/data/web/static/svg/layers.svg"
 	name := "data/web/static/svg/layers.svg"
 	bytes, err := bindataRead(path, name)
 	if err != nil {
@@ -2823,7 +2842,7 @@ func dataWebStaticSvgLayersSvg() (*asset, error) {
 
 // dataWebStaticSvgLightbulbSvg reads file data from disk. It returns an error on failure.
 func dataWebStaticSvgLightbulbSvg() (*asset, error) {
-	path := "/home/jonathan/workspace/ldss/data/web/static/svg/lightbulb.svg"
+	path := "/home/jonathan/workspace/golang/src/ldss/data/web/static/svg/lightbulb.svg"
 	name := "data/web/static/svg/lightbulb.svg"
 	bytes, err := bindataRead(path, name)
 	if err != nil {
@@ -2841,7 +2860,7 @@ func dataWebStaticSvgLightbulbSvg() (*asset, error) {
 
 // dataWebStaticSvgLinkBrokenSvg reads file data from disk. It returns an error on failure.
 func dataWebStaticSvgLinkBrokenSvg() (*asset, error) {
-	path := "/home/jonathan/workspace/ldss/data/web/static/svg/link-broken.svg"
+	path := "/home/jonathan/workspace/golang/src/ldss/data/web/static/svg/link-broken.svg"
 	name := "data/web/static/svg/link-broken.svg"
 	bytes, err := bindataRead(path, name)
 	if err != nil {
@@ -2859,7 +2878,7 @@ func dataWebStaticSvgLinkBrokenSvg() (*asset, error) {
 
 // dataWebStaticSvgLinkIntactSvg reads file data from disk. It returns an error on failure.
 func dataWebStaticSvgLinkIntactSvg() (*asset, error) {
-	path := "/home/jonathan/workspace/ldss/data/web/static/svg/link-intact.svg"
+	path := "/home/jonathan/workspace/golang/src/ldss/data/web/static/svg/link-intact.svg"
 	name := "data/web/static/svg/link-intact.svg"
 	bytes, err := bindataRead(path, name)
 	if err != nil {
@@ -2877,7 +2896,7 @@ func dataWebStaticSvgLinkIntactSvg() (*asset, error) {
 
 // dataWebStaticSvgListRichSvg reads file data from disk. It returns an error on failure.
 func dataWebStaticSvgListRichSvg() (*asset, error) {
-	path := "/home/jonathan/workspace/ldss/data/web/static/svg/list-rich.svg"
+	path := "/home/jonathan/workspace/golang/src/ldss/data/web/static/svg/list-rich.svg"
 	name := "data/web/static/svg/list-rich.svg"
 	bytes, err := bindataRead(path, name)
 	if err != nil {
@@ -2895,7 +2914,7 @@ func dataWebStaticSvgListRichSvg() (*asset, error) {
 
 // dataWebStaticSvgListSvg reads file data from disk. It returns an error on failure.
 func dataWebStaticSvgListSvg() (*asset, error) {
-	path := "/home/jonathan/workspace/ldss/data/web/static/svg/list.svg"
+	path := "/home/jonathan/workspace/golang/src/ldss/data/web/static/svg/list.svg"
 	name := "data/web/static/svg/list.svg"
 	bytes, err := bindataRead(path, name)
 	if err != nil {
@@ -2913,7 +2932,7 @@ func dataWebStaticSvgListSvg() (*asset, error) {
 
 // dataWebStaticSvgLocationSvg reads file data from disk. It returns an error on failure.
 func dataWebStaticSvgLocationSvg() (*asset, error) {
-	path := "/home/jonathan/workspace/ldss/data/web/static/svg/location.svg"
+	path := "/home/jonathan/workspace/golang/src/ldss/data/web/static/svg/location.svg"
 	name := "data/web/static/svg/location.svg"
 	bytes, err := bindataRead(path, name)
 	if err != nil {
@@ -2931,7 +2950,7 @@ func dataWebStaticSvgLocationSvg() (*asset, error) {
 
 // dataWebStaticSvgLockLockedSvg reads file data from disk. It returns an error on failure.
 func dataWebStaticSvgLockLockedSvg() (*asset, error) {
-	path := "/home/jonathan/workspace/ldss/data/web/static/svg/lock-locked.svg"
+	path := "/home/jonathan/workspace/golang/src/ldss/data/web/static/svg/lock-locked.svg"
 	name := "data/web/static/svg/lock-locked.svg"
 	bytes, err := bindataRead(path, name)
 	if err != nil {
@@ -2949,7 +2968,7 @@ func dataWebStaticSvgLockLockedSvg() (*asset, error) {
 
 // dataWebStaticSvgLockUnlockedSvg reads file data from disk. It returns an error on failure.
 func dataWebStaticSvgLockUnlockedSvg() (*asset, error) {
-	path := "/home/jonathan/workspace/ldss/data/web/static/svg/lock-unlocked.svg"
+	path := "/home/jonathan/workspace/golang/src/ldss/data/web/static/svg/lock-unlocked.svg"
 	name := "data/web/static/svg/lock-unlocked.svg"
 	bytes, err := bindataRead(path, name)
 	if err != nil {
@@ -2967,7 +2986,7 @@ func dataWebStaticSvgLockUnlockedSvg() (*asset, error) {
 
 // dataWebStaticSvgLoopCircularSvg reads file data from disk. It returns an error on failure.
 func dataWebStaticSvgLoopCircularSvg() (*asset, error) {
-	path := "/home/jonathan/workspace/ldss/data/web/static/svg/loop-circular.svg"
+	path := "/home/jonathan/workspace/golang/src/ldss/data/web/static/svg/loop-circular.svg"
 	name := "data/web/static/svg/loop-circular.svg"
 	bytes, err := bindataRead(path, name)
 	if err != nil {
@@ -2985,7 +3004,7 @@ func dataWebStaticSvgLoopCircularSvg() (*asset, error) {
 
 // dataWebStaticSvgLoopSquareSvg reads file data from disk. It returns an error on failure.
 func dataWebStaticSvgLoopSquareSvg() (*asset, error) {
-	path := "/home/jonathan/workspace/ldss/data/web/static/svg/loop-square.svg"
+	path := "/home/jonathan/workspace/golang/src/ldss/data/web/static/svg/loop-square.svg"
 	name := "data/web/static/svg/loop-square.svg"
 	bytes, err := bindataRead(path, name)
 	if err != nil {
@@ -3003,7 +3022,7 @@ func dataWebStaticSvgLoopSquareSvg() (*asset, error) {
 
 // dataWebStaticSvgLoopSvg reads file data from disk. It returns an error on failure.
 func dataWebStaticSvgLoopSvg() (*asset, error) {
-	path := "/home/jonathan/workspace/ldss/data/web/static/svg/loop.svg"
+	path := "/home/jonathan/workspace/golang/src/ldss/data/web/static/svg/loop.svg"
 	name := "data/web/static/svg/loop.svg"
 	bytes, err := bindataRead(path, name)
 	if err != nil {
@@ -3021,7 +3040,7 @@ func dataWebStaticSvgLoopSvg() (*asset, error) {
 
 // dataWebStaticSvgMagnifyingGlassSvg reads file data from disk. It returns an error on failure.
 func dataWebStaticSvgMagnifyingGlassSvg() (*asset, error) {
-	path := "/home/jonathan/workspace/ldss/data/web/static/svg/magnifying-glass.svg"
+	path := "/home/jonathan/workspace/golang/src/ldss/data/web/static/svg/magnifying-glass.svg"
 	name := "data/web/static/svg/magnifying-glass.svg"
 	bytes, err := bindataRead(path, name)
 	if err != nil {
@@ -3039,7 +3058,7 @@ func dataWebStaticSvgMagnifyingGlassSvg() (*asset, error) {
 
 // dataWebStaticSvgMapMarkerSvg reads file data from disk. It returns an error on failure.
 func dataWebStaticSvgMapMarkerSvg() (*asset, error) {
-	path := "/home/jonathan/workspace/ldss/data/web/static/svg/map-marker.svg"
+	path := "/home/jonathan/workspace/golang/src/ldss/data/web/static/svg/map-marker.svg"
 	name := "data/web/static/svg/map-marker.svg"
 	bytes, err := bindataRead(path, name)
 	if err != nil {
@@ -3057,7 +3076,7 @@ func dataWebStaticSvgMapMarkerSvg() (*asset, error) {
 
 // dataWebStaticSvgMapSvg reads file data from disk. It returns an error on failure.
 func dataWebStaticSvgMapSvg() (*asset, error) {
-	path := "/home/jonathan/workspace/ldss/data/web/static/svg/map.svg"
+	path := "/home/jonathan/workspace/golang/src/ldss/data/web/static/svg/map.svg"
 	name := "data/web/static/svg/map.svg"
 	bytes, err := bindataRead(path, name)
 	if err != nil {
@@ -3075,7 +3094,7 @@ func dataWebStaticSvgMapSvg() (*asset, error) {
 
 // dataWebStaticSvgMediaPauseSvg reads file data from disk. It returns an error on failure.
 func dataWebStaticSvgMediaPauseSvg() (*asset, error) {
-	path := "/home/jonathan/workspace/ldss/data/web/static/svg/media-pause.svg"
+	path := "/home/jonathan/workspace/golang/src/ldss/data/web/static/svg/media-pause.svg"
 	name := "data/web/static/svg/media-pause.svg"
 	bytes, err := bindataRead(path, name)
 	if err != nil {
@@ -3093,7 +3112,7 @@ func dataWebStaticSvgMediaPauseSvg() (*asset, error) {
 
 // dataWebStaticSvgMediaPlaySvg reads file data from disk. It returns an error on failure.
 func dataWebStaticSvgMediaPlaySvg() (*asset, error) {
-	path := "/home/jonathan/workspace/ldss/data/web/static/svg/media-play.svg"
+	path := "/home/jonathan/workspace/golang/src/ldss/data/web/static/svg/media-play.svg"
 	name := "data/web/static/svg/media-play.svg"
 	bytes, err := bindataRead(path, name)
 	if err != nil {
@@ -3111,7 +3130,7 @@ func dataWebStaticSvgMediaPlaySvg() (*asset, error) {
 
 // dataWebStaticSvgMediaRecordSvg reads file data from disk. It returns an error on failure.
 func dataWebStaticSvgMediaRecordSvg() (*asset, error) {
-	path := "/home/jonathan/workspace/ldss/data/web/static/svg/media-record.svg"
+	path := "/home/jonathan/workspace/golang/src/ldss/data/web/static/svg/media-record.svg"
 	name := "data/web/static/svg/media-record.svg"
 	bytes, err := bindataRead(path, name)
 	if err != nil {
@@ -3129,7 +3148,7 @@ func dataWebStaticSvgMediaRecordSvg() (*asset, error) {
 
 // dataWebStaticSvgMediaSkipBackwardSvg reads file data from disk. It returns an error on failure.
 func dataWebStaticSvgMediaSkipBackwardSvg() (*asset, error) {
-	path := "/home/jonathan/workspace/ldss/data/web/static/svg/media-skip-backward.svg"
+	path := "/home/jonathan/workspace/golang/src/ldss/data/web/static/svg/media-skip-backward.svg"
 	name := "data/web/static/svg/media-skip-backward.svg"
 	bytes, err := bindataRead(path, name)
 	if err != nil {
@@ -3147,7 +3166,7 @@ func dataWebStaticSvgMediaSkipBackwardSvg() (*asset, error) {
 
 // dataWebStaticSvgMediaSkipForwardSvg reads file data from disk. It returns an error on failure.
 func dataWebStaticSvgMediaSkipForwardSvg() (*asset, error) {
-	path := "/home/jonathan/workspace/ldss/data/web/static/svg/media-skip-forward.svg"
+	path := "/home/jonathan/workspace/golang/src/ldss/data/web/static/svg/media-skip-forward.svg"
 	name := "data/web/static/svg/media-skip-forward.svg"
 	bytes, err := bindataRead(path, name)
 	if err != nil {
@@ -3165,7 +3184,7 @@ func dataWebStaticSvgMediaSkipForwardSvg() (*asset, error) {
 
 // dataWebStaticSvgMediaStepBackwardSvg reads file data from disk. It returns an error on failure.
 func dataWebStaticSvgMediaStepBackwardSvg() (*asset, error) {
-	path := "/home/jonathan/workspace/ldss/data/web/static/svg/media-step-backward.svg"
+	path := "/home/jonathan/workspace/golang/src/ldss/data/web/static/svg/media-step-backward.svg"
 	name := "data/web/static/svg/media-step-backward.svg"
 	bytes, err := bindataRead(path, name)
 	if err != nil {
@@ -3183,7 +3202,7 @@ func dataWebStaticSvgMediaStepBackwardSvg() (*asset, error) {
 
 // dataWebStaticSvgMediaStepForwardSvg reads file data from disk. It returns an error on failure.
 func dataWebStaticSvgMediaStepForwardSvg() (*asset, error) {
-	path := "/home/jonathan/workspace/ldss/data/web/static/svg/media-step-forward.svg"
+	path := "/home/jonathan/workspace/golang/src/ldss/data/web/static/svg/media-step-forward.svg"
 	name := "data/web/static/svg/media-step-forward.svg"
 	bytes, err := bindataRead(path, name)
 	if err != nil {
@@ -3201,7 +3220,7 @@ func dataWebStaticSvgMediaStepForwardSvg() (*asset, error) {
 
 // dataWebStaticSvgMediaStopSvg reads file data from disk. It returns an error on failure.
 func dataWebStaticSvgMediaStopSvg() (*asset, error) {
-	path := "/home/jonathan/workspace/ldss/data/web/static/svg/media-stop.svg"
+	path := "/home/jonathan/workspace/golang/src/ldss/data/web/static/svg/media-stop.svg"
 	name := "data/web/static/svg/media-stop.svg"
 	bytes, err := bindataRead(path, name)
 	if err != nil {
@@ -3219,7 +3238,7 @@ func dataWebStaticSvgMediaStopSvg() (*asset, error) {
 
 // dataWebStaticSvgMedicalCrossSvg reads file data from disk. It returns an error on failure.
 func dataWebStaticSvgMedicalCrossSvg() (*asset, error) {
-	path := "/home/jonathan/workspace/ldss/data/web/static/svg/medical-cross.svg"
+	path := "/home/jonathan/workspace/golang/src/ldss/data/web/static/svg/medical-cross.svg"
 	name := "data/web/static/svg/medical-cross.svg"
 	bytes, err := bindataRead(path, name)
 	if err != nil {
@@ -3237,7 +3256,7 @@ func dataWebStaticSvgMedicalCrossSvg() (*asset, error) {
 
 // dataWebStaticSvgMenuSvg reads file data from disk. It returns an error on failure.
 func dataWebStaticSvgMenuSvg() (*asset, error) {
-	path := "/home/jonathan/workspace/ldss/data/web/static/svg/menu.svg"
+	path := "/home/jonathan/workspace/golang/src/ldss/data/web/static/svg/menu.svg"
 	name := "data/web/static/svg/menu.svg"
 	bytes, err := bindataRead(path, name)
 	if err != nil {
@@ -3255,7 +3274,7 @@ func dataWebStaticSvgMenuSvg() (*asset, error) {
 
 // dataWebStaticSvgMicrophoneSvg reads file data from disk. It returns an error on failure.
 func dataWebStaticSvgMicrophoneSvg() (*asset, error) {
-	path := "/home/jonathan/workspace/ldss/data/web/static/svg/microphone.svg"
+	path := "/home/jonathan/workspace/golang/src/ldss/data/web/static/svg/microphone.svg"
 	name := "data/web/static/svg/microphone.svg"
 	bytes, err := bindataRead(path, name)
 	if err != nil {
@@ -3273,7 +3292,7 @@ func dataWebStaticSvgMicrophoneSvg() (*asset, error) {
 
 // dataWebStaticSvgMinusSvg reads file data from disk. It returns an error on failure.
 func dataWebStaticSvgMinusSvg() (*asset, error) {
-	path := "/home/jonathan/workspace/ldss/data/web/static/svg/minus.svg"
+	path := "/home/jonathan/workspace/golang/src/ldss/data/web/static/svg/minus.svg"
 	name := "data/web/static/svg/minus.svg"
 	bytes, err := bindataRead(path, name)
 	if err != nil {
@@ -3291,7 +3310,7 @@ func dataWebStaticSvgMinusSvg() (*asset, error) {
 
 // dataWebStaticSvgMonitorSvg reads file data from disk. It returns an error on failure.
 func dataWebStaticSvgMonitorSvg() (*asset, error) {
-	path := "/home/jonathan/workspace/ldss/data/web/static/svg/monitor.svg"
+	path := "/home/jonathan/workspace/golang/src/ldss/data/web/static/svg/monitor.svg"
 	name := "data/web/static/svg/monitor.svg"
 	bytes, err := bindataRead(path, name)
 	if err != nil {
@@ -3309,7 +3328,7 @@ func dataWebStaticSvgMonitorSvg() (*asset, error) {
 
 // dataWebStaticSvgMoonSvg reads file data from disk. It returns an error on failure.
 func dataWebStaticSvgMoonSvg() (*asset, error) {
-	path := "/home/jonathan/workspace/ldss/data/web/static/svg/moon.svg"
+	path := "/home/jonathan/workspace/golang/src/ldss/data/web/static/svg/moon.svg"
 	name := "data/web/static/svg/moon.svg"
 	bytes, err := bindataRead(path, name)
 	if err != nil {
@@ -3327,7 +3346,7 @@ func dataWebStaticSvgMoonSvg() (*asset, error) {
 
 // dataWebStaticSvgMoveSvg reads file data from disk. It returns an error on failure.
 func dataWebStaticSvgMoveSvg() (*asset, error) {
-	path := "/home/jonathan/workspace/ldss/data/web/static/svg/move.svg"
+	path := "/home/jonathan/workspace/golang/src/ldss/data/web/static/svg/move.svg"
 	name := "data/web/static/svg/move.svg"
 	bytes, err := bindataRead(path, name)
 	if err != nil {
@@ -3345,7 +3364,7 @@ func dataWebStaticSvgMoveSvg() (*asset, error) {
 
 // dataWebStaticSvgMusicalNoteSvg reads file data from disk. It returns an error on failure.
 func dataWebStaticSvgMusicalNoteSvg() (*asset, error) {
-	path := "/home/jonathan/workspace/ldss/data/web/static/svg/musical-note.svg"
+	path := "/home/jonathan/workspace/golang/src/ldss/data/web/static/svg/musical-note.svg"
 	name := "data/web/static/svg/musical-note.svg"
 	bytes, err := bindataRead(path, name)
 	if err != nil {
@@ -3363,7 +3382,7 @@ func dataWebStaticSvgMusicalNoteSvg() (*asset, error) {
 
 // dataWebStaticSvgPaperclipSvg reads file data from disk. It returns an error on failure.
 func dataWebStaticSvgPaperclipSvg() (*asset, error) {
-	path := "/home/jonathan/workspace/ldss/data/web/static/svg/paperclip.svg"
+	path := "/home/jonathan/workspace/golang/src/ldss/data/web/static/svg/paperclip.svg"
 	name := "data/web/static/svg/paperclip.svg"
 	bytes, err := bindataRead(path, name)
 	if err != nil {
@@ -3381,7 +3400,7 @@ func dataWebStaticSvgPaperclipSvg() (*asset, error) {
 
 // dataWebStaticSvgPencilSvg reads file data from disk. It returns an error on failure.
 func dataWebStaticSvgPencilSvg() (*asset, error) {
-	path := "/home/jonathan/workspace/ldss/data/web/static/svg/pencil.svg"
+	path := "/home/jonathan/workspace/golang/src/ldss/data/web/static/svg/pencil.svg"
 	name := "data/web/static/svg/pencil.svg"
 	bytes, err := bindataRead(path, name)
 	if err != nil {
@@ -3399,7 +3418,7 @@ func dataWebStaticSvgPencilSvg() (*asset, error) {
 
 // dataWebStaticSvgPeopleSvg reads file data from disk. It returns an error on failure.
 func dataWebStaticSvgPeopleSvg() (*asset, error) {
-	path := "/home/jonathan/workspace/ldss/data/web/static/svg/people.svg"
+	path := "/home/jonathan/workspace/golang/src/ldss/data/web/static/svg/people.svg"
 	name := "data/web/static/svg/people.svg"
 	bytes, err := bindataRead(path, name)
 	if err != nil {
@@ -3417,7 +3436,7 @@ func dataWebStaticSvgPeopleSvg() (*asset, error) {
 
 // dataWebStaticSvgPersonSvg reads file data from disk. It returns an error on failure.
 func dataWebStaticSvgPersonSvg() (*asset, error) {
-	path := "/home/jonathan/workspace/ldss/data/web/static/svg/person.svg"
+	path := "/home/jonathan/workspace/golang/src/ldss/data/web/static/svg/person.svg"
 	name := "data/web/static/svg/person.svg"
 	bytes, err := bindataRead(path, name)
 	if err != nil {
@@ -3435,7 +3454,7 @@ func dataWebStaticSvgPersonSvg() (*asset, error) {
 
 // dataWebStaticSvgPhoneSvg reads file data from disk. It returns an error on failure.
 func dataWebStaticSvgPhoneSvg() (*asset, error) {
-	path := "/home/jonathan/workspace/ldss/data/web/static/svg/phone.svg"
+	path := "/home/jonathan/workspace/golang/src/ldss/data/web/static/svg/phone.svg"
 	name := "data/web/static/svg/phone.svg"
 	bytes, err := bindataRead(path, name)
 	if err != nil {
@@ -3453,7 +3472,7 @@ func dataWebStaticSvgPhoneSvg() (*asset, error) {
 
 // dataWebStaticSvgPieChartSvg reads file data from disk. It returns an error on failure.
 func dataWebStaticSvgPieChartSvg() (*asset, error) {
-	path := "/home/jonathan/workspace/ldss/data/web/static/svg/pie-chart.svg"
+	path := "/home/jonathan/workspace/golang/src/ldss/data/web/static/svg/pie-chart.svg"
 	name := "data/web/static/svg/pie-chart.svg"
 	bytes, err := bindataRead(path, name)
 	if err != nil {
@@ -3471,7 +3490,7 @@ func dataWebStaticSvgPieChartSvg() (*asset, error) {
 
 // dataWebStaticSvgPinSvg reads file data from disk. It returns an error on failure.
 func dataWebStaticSvgPinSvg() (*asset, error) {
-	path := "/home/jonathan/workspace/ldss/data/web/static/svg/pin.svg"
+	path := "/home/jonathan/workspace/golang/src/ldss/data/web/static/svg/pin.svg"
 	name := "data/web/static/svg/pin.svg"
 	bytes, err := bindataRead(path, name)
 	if err != nil {
@@ -3489,7 +3508,7 @@ func dataWebStaticSvgPinSvg() (*asset, error) {
 
 // dataWebStaticSvgPlayCircleSvg reads file data from disk. It returns an error on failure.
 func dataWebStaticSvgPlayCircleSvg() (*asset, error) {
-	path := "/home/jonathan/workspace/ldss/data/web/static/svg/play-circle.svg"
+	path := "/home/jonathan/workspace/golang/src/ldss/data/web/static/svg/play-circle.svg"
 	name := "data/web/static/svg/play-circle.svg"
 	bytes, err := bindataRead(path, name)
 	if err != nil {
@@ -3507,7 +3526,7 @@ func dataWebStaticSvgPlayCircleSvg() (*asset, error) {
 
 // dataWebStaticSvgPlusSvg reads file data from disk. It returns an error on failure.
 func dataWebStaticSvgPlusSvg() (*asset, error) {
-	path := "/home/jonathan/workspace/ldss/data/web/static/svg/plus.svg"
+	path := "/home/jonathan/workspace/golang/src/ldss/data/web/static/svg/plus.svg"
 	name := "data/web/static/svg/plus.svg"
 	bytes, err := bindataRead(path, name)
 	if err != nil {
@@ -3525,7 +3544,7 @@ func dataWebStaticSvgPlusSvg() (*asset, error) {
 
 // dataWebStaticSvgPowerStandbySvg reads file data from disk. It returns an error on failure.
 func dataWebStaticSvgPowerStandbySvg() (*asset, error) {
-	path := "/home/jonathan/workspace/ldss/data/web/static/svg/power-standby.svg"
+	path := "/home/jonathan/workspace/golang/src/ldss/data/web/static/svg/power-standby.svg"
 	name := "data/web/static/svg/power-standby.svg"
 	bytes, err := bindataRead(path, name)
 	if err != nil {
@@ -3543,7 +3562,7 @@ func dataWebStaticSvgPowerStandbySvg() (*asset, error) {
 
 // dataWebStaticSvgPrintSvg reads file data from disk. It returns an error on failure.
 func dataWebStaticSvgPrintSvg() (*asset, error) {
-	path := "/home/jonathan/workspace/ldss/data/web/static/svg/print.svg"
+	path := "/home/jonathan/workspace/golang/src/ldss/data/web/static/svg/print.svg"
 	name := "data/web/static/svg/print.svg"
 	bytes, err := bindataRead(path, name)
 	if err != nil {
@@ -3561,7 +3580,7 @@ func dataWebStaticSvgPrintSvg() (*asset, error) {
 
 // dataWebStaticSvgProjectSvg reads file data from disk. It returns an error on failure.
 func dataWebStaticSvgProjectSvg() (*asset, error) {
-	path := "/home/jonathan/workspace/ldss/data/web/static/svg/project.svg"
+	path := "/home/jonathan/workspace/golang/src/ldss/data/web/static/svg/project.svg"
 	name := "data/web/static/svg/project.svg"
 	bytes, err := bindataRead(path, name)
 	if err != nil {
@@ -3579,7 +3598,7 @@ func dataWebStaticSvgProjectSvg() (*asset, error) {
 
 // dataWebStaticSvgPulseSvg reads file data from disk. It returns an error on failure.
 func dataWebStaticSvgPulseSvg() (*asset, error) {
-	path := "/home/jonathan/workspace/ldss/data/web/static/svg/pulse.svg"
+	path := "/home/jonathan/workspace/golang/src/ldss/data/web/static/svg/pulse.svg"
 	name := "data/web/static/svg/pulse.svg"
 	bytes, err := bindataRead(path, name)
 	if err != nil {
@@ -3597,7 +3616,7 @@ func dataWebStaticSvgPulseSvg() (*asset, error) {
 
 // dataWebStaticSvgPuzzlePieceSvg reads file data from disk. It returns an error on failure.
 func dataWebStaticSvgPuzzlePieceSvg() (*asset, error) {
-	path := "/home/jonathan/workspace/ldss/data/web/static/svg/puzzle-piece.svg"
+	path := "/home/jonathan/workspace/golang/src/ldss/data/web/static/svg/puzzle-piece.svg"
 	name := "data/web/static/svg/puzzle-piece.svg"
 	bytes, err := bindataRead(path, name)
 	if err != nil {
@@ -3615,7 +3634,7 @@ func dataWebStaticSvgPuzzlePieceSvg() (*asset, error) {
 
 // dataWebStaticSvgQuestionMarkSvg reads file data from disk. It returns an error on failure.
 func dataWebStaticSvgQuestionMarkSvg() (*asset, error) {
-	path := "/home/jonathan/workspace/ldss/data/web/static/svg/question-mark.svg"
+	path := "/home/jonathan/workspace/golang/src/ldss/data/web/static/svg/question-mark.svg"
 	name := "data/web/static/svg/question-mark.svg"
 	bytes, err := bindataRead(path, name)
 	if err != nil {
@@ -3633,7 +3652,7 @@ func dataWebStaticSvgQuestionMarkSvg() (*asset, error) {
 
 // dataWebStaticSvgRainSvg reads file data from disk. It returns an error on failure.
 func dataWebStaticSvgRainSvg() (*asset, error) {
-	path := "/home/jonathan/workspace/ldss/data/web/static/svg/rain.svg"
+	path := "/home/jonathan/workspace/golang/src/ldss/data/web/static/svg/rain.svg"
 	name := "data/web/static/svg/rain.svg"
 	bytes, err := bindataRead(path, name)
 	if err != nil {
@@ -3651,7 +3670,7 @@ func dataWebStaticSvgRainSvg() (*asset, error) {
 
 // dataWebStaticSvgRandomSvg reads file data from disk. It returns an error on failure.
 func dataWebStaticSvgRandomSvg() (*asset, error) {
-	path := "/home/jonathan/workspace/ldss/data/web/static/svg/random.svg"
+	path := "/home/jonathan/workspace/golang/src/ldss/data/web/static/svg/random.svg"
 	name := "data/web/static/svg/random.svg"
 	bytes, err := bindataRead(path, name)
 	if err != nil {
@@ -3669,7 +3688,7 @@ func dataWebStaticSvgRandomSvg() (*asset, error) {
 
 // dataWebStaticSvgReloadSvg reads file data from disk. It returns an error on failure.
 func dataWebStaticSvgReloadSvg() (*asset, error) {
-	path := "/home/jonathan/workspace/ldss/data/web/static/svg/reload.svg"
+	path := "/home/jonathan/workspace/golang/src/ldss/data/web/static/svg/reload.svg"
 	name := "data/web/static/svg/reload.svg"
 	bytes, err := bindataRead(path, name)
 	if err != nil {
@@ -3687,7 +3706,7 @@ func dataWebStaticSvgReloadSvg() (*asset, error) {
 
 // dataWebStaticSvgResizeBothSvg reads file data from disk. It returns an error on failure.
 func dataWebStaticSvgResizeBothSvg() (*asset, error) {
-	path := "/home/jonathan/workspace/ldss/data/web/static/svg/resize-both.svg"
+	path := "/home/jonathan/workspace/golang/src/ldss/data/web/static/svg/resize-both.svg"
 	name := "data/web/static/svg/resize-both.svg"
 	bytes, err := bindataRead(path, name)
 	if err != nil {
@@ -3705,7 +3724,7 @@ func dataWebStaticSvgResizeBothSvg() (*asset, error) {
 
 // dataWebStaticSvgResizeHeightSvg reads file data from disk. It returns an error on failure.
 func dataWebStaticSvgResizeHeightSvg() (*asset, error) {
-	path := "/home/jonathan/workspace/ldss/data/web/static/svg/resize-height.svg"
+	path := "/home/jonathan/workspace/golang/src/ldss/data/web/static/svg/resize-height.svg"
 	name := "data/web/static/svg/resize-height.svg"
 	bytes, err := bindataRead(path, name)
 	if err != nil {
@@ -3723,7 +3742,7 @@ func dataWebStaticSvgResizeHeightSvg() (*asset, error) {
 
 // dataWebStaticSvgResizeWidthSvg reads file data from disk. It returns an error on failure.
 func dataWebStaticSvgResizeWidthSvg() (*asset, error) {
-	path := "/home/jonathan/workspace/ldss/data/web/static/svg/resize-width.svg"
+	path := "/home/jonathan/workspace/golang/src/ldss/data/web/static/svg/resize-width.svg"
 	name := "data/web/static/svg/resize-width.svg"
 	bytes, err := bindataRead(path, name)
 	if err != nil {
@@ -3741,7 +3760,7 @@ func dataWebStaticSvgResizeWidthSvg() (*asset, error) {
 
 // dataWebStaticSvgRssAltSvg reads file data from disk. It returns an error on failure.
 func dataWebStaticSvgRssAltSvg() (*asset, error) {
-	path := "/home/jonathan/workspace/ldss/data/web/static/svg/rss-alt.svg"
+	path := "/home/jonathan/workspace/golang/src/ldss/data/web/static/svg/rss-alt.svg"
 	name := "data/web/static/svg/rss-alt.svg"
 	bytes, err := bindataRead(path, name)
 	if err != nil {
@@ -3759,7 +3778,7 @@ func dataWebStaticSvgRssAltSvg() (*asset, error) {
 
 // dataWebStaticSvgRssSvg reads file data from disk. It returns an error on failure.
 func dataWebStaticSvgRssSvg() (*asset, error) {
-	path := "/home/jonathan/workspace/ldss/data/web/static/svg/rss.svg"
+	path := "/home/jonathan/workspace/golang/src/ldss/data/web/static/svg/rss.svg"
 	name := "data/web/static/svg/rss.svg"
 	bytes, err := bindataRead(path, name)
 	if err != nil {
@@ -3777,7 +3796,7 @@ func dataWebStaticSvgRssSvg() (*asset, error) {
 
 // dataWebStaticSvgScriptSvg reads file data from disk. It returns an error on failure.
 func dataWebStaticSvgScriptSvg() (*asset, error) {
-	path := "/home/jonathan/workspace/ldss/data/web/static/svg/script.svg"
+	path := "/home/jonathan/workspace/golang/src/ldss/data/web/static/svg/script.svg"
 	name := "data/web/static/svg/script.svg"
 	bytes, err := bindataRead(path, name)
 	if err != nil {
@@ -3795,7 +3814,7 @@ func dataWebStaticSvgScriptSvg() (*asset, error) {
 
 // dataWebStaticSvgShareBoxedSvg reads file data from disk. It returns an error on failure.
 func dataWebStaticSvgShareBoxedSvg() (*asset, error) {
-	path := "/home/jonathan/workspace/ldss/data/web/static/svg/share-boxed.svg"
+	path := "/home/jonathan/workspace/golang/src/ldss/data/web/static/svg/share-boxed.svg"
 	name := "data/web/static/svg/share-boxed.svg"
 	bytes, err := bindataRead(path, name)
 	if err != nil {
@@ -3813,7 +3832,7 @@ func dataWebStaticSvgShareBoxedSvg() (*asset, error) {
 
 // dataWebStaticSvgShareSvg reads file data from disk. It returns an error on failure.
 func dataWebStaticSvgShareSvg() (*asset, error) {
-	path := "/home/jonathan/workspace/ldss/data/web/static/svg/share.svg"
+	path := "/home/jonathan/workspace/golang/src/ldss/data/web/static/svg/share.svg"
 	name := "data/web/static/svg/share.svg"
 	bytes, err := bindataRead(path, name)
 	if err != nil {
@@ -3831,7 +3850,7 @@ func dataWebStaticSvgShareSvg() (*asset, error) {
 
 // dataWebStaticSvgShieldSvg reads file data from disk. It returns an error on failure.
 func dataWebStaticSvgShieldSvg() (*asset, error) {
-	path := "/home/jonathan/workspace/ldss/data/web/static/svg/shield.svg"
+	path := "/home/jonathan/workspace/golang/src/ldss/data/web/static/svg/shield.svg"
 	name := "data/web/static/svg/shield.svg"
 	bytes, err := bindataRead(path, name)
 	if err != nil {
@@ -3849,7 +3868,7 @@ func dataWebStaticSvgShieldSvg() (*asset, error) {
 
 // dataWebStaticSvgSignalSvg reads file data from disk. It returns an error on failure.
 func dataWebStaticSvgSignalSvg() (*asset, error) {
-	path := "/home/jonathan/workspace/ldss/data/web/static/svg/signal.svg"
+	path := "/home/jonathan/workspace/golang/src/ldss/data/web/static/svg/signal.svg"
 	name := "data/web/static/svg/signal.svg"
 	bytes, err := bindataRead(path, name)
 	if err != nil {
@@ -3867,7 +3886,7 @@ func dataWebStaticSvgSignalSvg() (*asset, error) {
 
 // dataWebStaticSvgSignpostSvg reads file data from disk. It returns an error on failure.
 func dataWebStaticSvgSignpostSvg() (*asset, error) {
-	path := "/home/jonathan/workspace/ldss/data/web/static/svg/signpost.svg"
+	path := "/home/jonathan/workspace/golang/src/ldss/data/web/static/svg/signpost.svg"
 	name := "data/web/static/svg/signpost.svg"
 	bytes, err := bindataRead(path, name)
 	if err != nil {
@@ -3885,7 +3904,7 @@ func dataWebStaticSvgSignpostSvg() (*asset, error) {
 
 // dataWebStaticSvgSortAscendingSvg reads file data from disk. It returns an error on failure.
 func dataWebStaticSvgSortAscendingSvg() (*asset, error) {
-	path := "/home/jonathan/workspace/ldss/data/web/static/svg/sort-ascending.svg"
+	path := "/home/jonathan/workspace/golang/src/ldss/data/web/static/svg/sort-ascending.svg"
 	name := "data/web/static/svg/sort-ascending.svg"
 	bytes, err := bindataRead(path, name)
 	if err != nil {
@@ -3903,7 +3922,7 @@ func dataWebStaticSvgSortAscendingSvg() (*asset, error) {
 
 // dataWebStaticSvgSortDescendingSvg reads file data from disk. It returns an error on failure.
 func dataWebStaticSvgSortDescendingSvg() (*asset, error) {
-	path := "/home/jonathan/workspace/ldss/data/web/static/svg/sort-descending.svg"
+	path := "/home/jonathan/workspace/golang/src/ldss/data/web/static/svg/sort-descending.svg"
 	name := "data/web/static/svg/sort-descending.svg"
 	bytes, err := bindataRead(path, name)
 	if err != nil {
@@ -3921,7 +3940,7 @@ func dataWebStaticSvgSortDescendingSvg() (*asset, error) {
 
 // dataWebStaticSvgSpreadsheetSvg reads file data from disk. It returns an error on failure.
 func dataWebStaticSvgSpreadsheetSvg() (*asset, error) {
-	path := "/home/jonathan/workspace/ldss/data/web/static/svg/spreadsheet.svg"
+	path := "/home/jonathan/workspace/golang/src/ldss/data/web/static/svg/spreadsheet.svg"
 	name := "data/web/static/svg/spreadsheet.svg"
 	bytes, err := bindataRead(path, name)
 	if err != nil {
@@ -3939,7 +3958,7 @@ func dataWebStaticSvgSpreadsheetSvg() (*asset, error) {
 
 // dataWebStaticSvgStarSvg reads file data from disk. It returns an error on failure.
 func dataWebStaticSvgStarSvg() (*asset, error) {
-	path := "/home/jonathan/workspace/ldss/data/web/static/svg/star.svg"
+	path := "/home/jonathan/workspace/golang/src/ldss/data/web/static/svg/star.svg"
 	name := "data/web/static/svg/star.svg"
 	bytes, err := bindataRead(path, name)
 	if err != nil {
@@ -3957,7 +3976,7 @@ func dataWebStaticSvgStarSvg() (*asset, error) {
 
 // dataWebStaticSvgSunSvg reads file data from disk. It returns an error on failure.
 func dataWebStaticSvgSunSvg() (*asset, error) {
-	path := "/home/jonathan/workspace/ldss/data/web/static/svg/sun.svg"
+	path := "/home/jonathan/workspace/golang/src/ldss/data/web/static/svg/sun.svg"
 	name := "data/web/static/svg/sun.svg"
 	bytes, err := bindataRead(path, name)
 	if err != nil {
@@ -3975,7 +3994,7 @@ func dataWebStaticSvgSunSvg() (*asset, error) {
 
 // dataWebStaticSvgTabletSvg reads file data from disk. It returns an error on failure.
 func dataWebStaticSvgTabletSvg() (*asset, error) {
-	path := "/home/jonathan/workspace/ldss/data/web/static/svg/tablet.svg"
+	path := "/home/jonathan/workspace/golang/src/ldss/data/web/static/svg/tablet.svg"
 	name := "data/web/static/svg/tablet.svg"
 	bytes, err := bindataRead(path, name)
 	if err != nil {
@@ -3993,7 +4012,7 @@ func dataWebStaticSvgTabletSvg() (*asset, error) {
 
 // dataWebStaticSvgTagSvg reads file data from disk. It returns an error on failure.
 func dataWebStaticSvgTagSvg() (*asset, error) {
-	path := "/home/jonathan/workspace/ldss/data/web/static/svg/tag.svg"
+	path := "/home/jonathan/workspace/golang/src/ldss/data/web/static/svg/tag.svg"
 	name := "data/web/static/svg/tag.svg"
 	bytes, err := bindataRead(path, name)
 	if err != nil {
@@ -4011,7 +4030,7 @@ func dataWebStaticSvgTagSvg() (*asset, error) {
 
 // dataWebStaticSvgTagsSvg reads file data from disk. It returns an error on failure.
 func dataWebStaticSvgTagsSvg() (*asset, error) {
-	path := "/home/jonathan/workspace/ldss/data/web/static/svg/tags.svg"
+	path := "/home/jonathan/workspace/golang/src/ldss/data/web/static/svg/tags.svg"
 	name := "data/web/static/svg/tags.svg"
 	bytes, err := bindataRead(path, name)
 	if err != nil {
@@ -4029,7 +4048,7 @@ func dataWebStaticSvgTagsSvg() (*asset, error) {
 
 // dataWebStaticSvgTargetSvg reads file data from disk. It returns an error on failure.
 func dataWebStaticSvgTargetSvg() (*asset, error) {
-	path := "/home/jonathan/workspace/ldss/data/web/static/svg/target.svg"
+	path := "/home/jonathan/workspace/golang/src/ldss/data/web/static/svg/target.svg"
 	name := "data/web/static/svg/target.svg"
 	bytes, err := bindataRead(path, name)
 	if err != nil {
@@ -4047,7 +4066,7 @@ func dataWebStaticSvgTargetSvg() (*asset, error) {
 
 // dataWebStaticSvgTaskSvg reads file data from disk. It returns an error on failure.
 func dataWebStaticSvgTaskSvg() (*asset, error) {
-	path := "/home/jonathan/workspace/ldss/data/web/static/svg/task.svg"
+	path := "/home/jonathan/workspace/golang/src/ldss/data/web/static/svg/task.svg"
 	name := "data/web/static/svg/task.svg"
 	bytes, err := bindataRead(path, name)
 	if err != nil {
@@ -4065,7 +4084,7 @@ func dataWebStaticSvgTaskSvg() (*asset, error) {
 
 // dataWebStaticSvgTerminalSvg reads file data from disk. It returns an error on failure.
 func dataWebStaticSvgTerminalSvg() (*asset, error) {
-	path := "/home/jonathan/workspace/ldss/data/web/static/svg/terminal.svg"
+	path := "/home/jonathan/workspace/golang/src/ldss/data/web/static/svg/terminal.svg"
 	name := "data/web/static/svg/terminal.svg"
 	bytes, err := bindataRead(path, name)
 	if err != nil {
@@ -4083,7 +4102,7 @@ func dataWebStaticSvgTerminalSvg() (*asset, error) {
 
 // dataWebStaticSvgTextSvg reads file data from disk. It returns an error on failure.
 func dataWebStaticSvgTextSvg() (*asset, error) {
-	path := "/home/jonathan/workspace/ldss/data/web/static/svg/text.svg"
+	path := "/home/jonathan/workspace/golang/src/ldss/data/web/static/svg/text.svg"
 	name := "data/web/static/svg/text.svg"
 	bytes, err := bindataRead(path, name)
 	if err != nil {
@@ -4101,7 +4120,7 @@ func dataWebStaticSvgTextSvg() (*asset, error) {
 
 // dataWebStaticSvgThumbDownSvg reads file data from disk. It returns an error on failure.
 func dataWebStaticSvgThumbDownSvg() (*asset, error) {
-	path := "/home/jonathan/workspace/ldss/data/web/static/svg/thumb-down.svg"
+	path := "/home/jonathan/workspace/golang/src/ldss/data/web/static/svg/thumb-down.svg"
 	name := "data/web/static/svg/thumb-down.svg"
 	bytes, err := bindataRead(path, name)
 	if err != nil {
@@ -4119,7 +4138,7 @@ func dataWebStaticSvgThumbDownSvg() (*asset, error) {
 
 // dataWebStaticSvgThumbUpSvg reads file data from disk. It returns an error on failure.
 func dataWebStaticSvgThumbUpSvg() (*asset, error) {
-	path := "/home/jonathan/workspace/ldss/data/web/static/svg/thumb-up.svg"
+	path := "/home/jonathan/workspace/golang/src/ldss/data/web/static/svg/thumb-up.svg"
 	name := "data/web/static/svg/thumb-up.svg"
 	bytes, err := bindataRead(path, name)
 	if err != nil {
@@ -4137,7 +4156,7 @@ func dataWebStaticSvgThumbUpSvg() (*asset, error) {
 
 // dataWebStaticSvgTimerSvg reads file data from disk. It returns an error on failure.
 func dataWebStaticSvgTimerSvg() (*asset, error) {
-	path := "/home/jonathan/workspace/ldss/data/web/static/svg/timer.svg"
+	path := "/home/jonathan/workspace/golang/src/ldss/data/web/static/svg/timer.svg"
 	name := "data/web/static/svg/timer.svg"
 	bytes, err := bindataRead(path, name)
 	if err != nil {
@@ -4155,7 +4174,7 @@ func dataWebStaticSvgTimerSvg() (*asset, error) {
 
 // dataWebStaticSvgTransferSvg reads file data from disk. It returns an error on failure.
 func dataWebStaticSvgTransferSvg() (*asset, error) {
-	path := "/home/jonathan/workspace/ldss/data/web/static/svg/transfer.svg"
+	path := "/home/jonathan/workspace/golang/src/ldss/data/web/static/svg/transfer.svg"
 	name := "data/web/static/svg/transfer.svg"
 	bytes, err := bindataRead(path, name)
 	if err != nil {
@@ -4173,7 +4192,7 @@ func dataWebStaticSvgTransferSvg() (*asset, error) {
 
 // dataWebStaticSvgTrashSvg reads file data from disk. It returns an error on failure.
 func dataWebStaticSvgTrashSvg() (*asset, error) {
-	path := "/home/jonathan/workspace/ldss/data/web/static/svg/trash.svg"
+	path := "/home/jonathan/workspace/golang/src/ldss/data/web/static/svg/trash.svg"
 	name := "data/web/static/svg/trash.svg"
 	bytes, err := bindataRead(path, name)
 	if err != nil {
@@ -4191,7 +4210,7 @@ func dataWebStaticSvgTrashSvg() (*asset, error) {
 
 // dataWebStaticSvgUnderlineSvg reads file data from disk. It returns an error on failure.
 func dataWebStaticSvgUnderlineSvg() (*asset, error) {
-	path := "/home/jonathan/workspace/ldss/data/web/static/svg/underline.svg"
+	path := "/home/jonathan/workspace/golang/src/ldss/data/web/static/svg/underline.svg"
 	name := "data/web/static/svg/underline.svg"
 	bytes, err := bindataRead(path, name)
 	if err != nil {
@@ -4209,7 +4228,7 @@ func dataWebStaticSvgUnderlineSvg() (*asset, error) {
 
 // dataWebStaticSvgVerticalAlignBottomSvg reads file data from disk. It returns an error on failure.
 func dataWebStaticSvgVerticalAlignBottomSvg() (*asset, error) {
-	path := "/home/jonathan/workspace/ldss/data/web/static/svg/vertical-align-bottom.svg"
+	path := "/home/jonathan/workspace/golang/src/ldss/data/web/static/svg/vertical-align-bottom.svg"
 	name := "data/web/static/svg/vertical-align-bottom.svg"
 	bytes, err := bindataRead(path, name)
 	if err != nil {
@@ -4227,7 +4246,7 @@ func dataWebStaticSvgVerticalAlignBottomSvg() (*asset, error) {
 
 // dataWebStaticSvgVerticalAlignCenterSvg reads file data from disk. It returns an error on failure.
 func dataWebStaticSvgVerticalAlignCenterSvg() (*asset, error) {
-	path := "/home/jonathan/workspace/ldss/data/web/static/svg/vertical-align-center.svg"
+	path := "/home/jonathan/workspace/golang/src/ldss/data/web/static/svg/vertical-align-center.svg"
 	name := "data/web/static/svg/vertical-align-center.svg"
 	bytes, err := bindataRead(path, name)
 	if err != nil {
@@ -4245,7 +4264,7 @@ func dataWebStaticSvgVerticalAlignCenterSvg() (*asset, error) {
 
 // dataWebStaticSvgVerticalAlignTopSvg reads file data from disk. It returns an error on failure.
 func dataWebStaticSvgVerticalAlignTopSvg() (*asset, error) {
-	path := "/home/jonathan/workspace/ldss/data/web/static/svg/vertical-align-top.svg"
+	path := "/home/jonathan/workspace/golang/src/ldss/data/web/static/svg/vertical-align-top.svg"
 	name := "data/web/static/svg/vertical-align-top.svg"
 	bytes, err := bindataRead(path, name)
 	if err != nil {
@@ -4263,7 +4282,7 @@ func dataWebStaticSvgVerticalAlignTopSvg() (*asset, error) {
 
 // dataWebStaticSvgVideoSvg reads file data from disk. It returns an error on failure.
 func dataWebStaticSvgVideoSvg() (*asset, error) {
-	path := "/home/jonathan/workspace/ldss/data/web/static/svg/video.svg"
+	path := "/home/jonathan/workspace/golang/src/ldss/data/web/static/svg/video.svg"
 	name := "data/web/static/svg/video.svg"
 	bytes, err := bindataRead(path, name)
 	if err != nil {
@@ -4281,7 +4300,7 @@ func dataWebStaticSvgVideoSvg() (*asset, error) {
 
 // dataWebStaticSvgVolumeHighSvg reads file data from disk. It returns an error on failure.
 func dataWebStaticSvgVolumeHighSvg() (*asset, error) {
-	path := "/home/jonathan/workspace/ldss/data/web/static/svg/volume-high.svg"
+	path := "/home/jonathan/workspace/golang/src/ldss/data/web/static/svg/volume-high.svg"
 	name := "data/web/static/svg/volume-high.svg"
 	bytes, err := bindataRead(path, name)
 	if err != nil {
@@ -4299,7 +4318,7 @@ func dataWebStaticSvgVolumeHighSvg() (*asset, error) {
 
 // dataWebStaticSvgVolumeLowSvg reads file data from disk. It returns an error on failure.
 func dataWebStaticSvgVolumeLowSvg() (*asset, error) {
-	path := "/home/jonathan/workspace/ldss/data/web/static/svg/volume-low.svg"
+	path := "/home/jonathan/workspace/golang/src/ldss/data/web/static/svg/volume-low.svg"
 	name := "data/web/static/svg/volume-low.svg"
 	bytes, err := bindataRead(path, name)
 	if err != nil {
@@ -4317,7 +4336,7 @@ func dataWebStaticSvgVolumeLowSvg() (*asset, error) {
 
 // dataWebStaticSvgVolumeOffSvg reads file data from disk. It returns an error on failure.
 func dataWebStaticSvgVolumeOffSvg() (*asset, error) {
-	path := "/home/jonathan/workspace/ldss/data/web/static/svg/volume-off.svg"
+	path := "/home/jonathan/workspace/golang/src/ldss/data/web/static/svg/volume-off.svg"
 	name := "data/web/static/svg/volume-off.svg"
 	bytes, err := bindataRead(path, name)
 	if err != nil {
@@ -4335,7 +4354,7 @@ func dataWebStaticSvgVolumeOffSvg() (*asset, error) {
 
 // dataWebStaticSvgWarningSvg reads file data from disk. It returns an error on failure.
 func dataWebStaticSvgWarningSvg() (*asset, error) {
-	path := "/home/jonathan/workspace/ldss/data/web/static/svg/warning.svg"
+	path := "/home/jonathan/workspace/golang/src/ldss/data/web/static/svg/warning.svg"
 	name := "data/web/static/svg/warning.svg"
 	bytes, err := bindataRead(path, name)
 	if err != nil {
@@ -4353,7 +4372,7 @@ func dataWebStaticSvgWarningSvg() (*asset, error) {
 
 // dataWebStaticSvgWifiSvg reads file data from disk. It returns an error on failure.
 func dataWebStaticSvgWifiSvg() (*asset, error) {
-	path := "/home/jonathan/workspace/ldss/data/web/static/svg/wifi.svg"
+	path := "/home/jonathan/workspace/golang/src/ldss/data/web/static/svg/wifi.svg"
 	name := "data/web/static/svg/wifi.svg"
 	bytes, err := bindataRead(path, name)
 	if err != nil {
@@ -4371,7 +4390,7 @@ func dataWebStaticSvgWifiSvg() (*asset, error) {
 
 // dataWebStaticSvgWrenchSvg reads file data from disk. It returns an error on failure.
 func dataWebStaticSvgWrenchSvg() (*asset, error) {
-	path := "/home/jonathan/workspace/ldss/data/web/static/svg/wrench.svg"
+	path := "/home/jonathan/workspace/golang/src/ldss/data/web/static/svg/wrench.svg"
 	name := "data/web/static/svg/wrench.svg"
 	bytes, err := bindataRead(path, name)
 	if err != nil {
@@ -4389,7 +4408,7 @@ func dataWebStaticSvgWrenchSvg() (*asset, error) {
 
 // dataWebStaticSvgXSvg reads file data from disk. It returns an error on failure.
 func dataWebStaticSvgXSvg() (*asset, error) {
-	path := "/home/jonathan/workspace/ldss/data/web/static/svg/x.svg"
+	path := "/home/jonathan/workspace/golang/src/ldss/data/web/static/svg/x.svg"
 	name := "data/web/static/svg/x.svg"
 	bytes, err := bindataRead(path, name)
 	if err != nil {
@@ -4407,7 +4426,7 @@ func dataWebStaticSvgXSvg() (*asset, error) {
 
 // dataWebStaticSvgYenSvg reads file data from disk. It returns an error on failure.
 func dataWebStaticSvgYenSvg() (*asset, error) {
-	path := "/home/jonathan/workspace/ldss/data/web/static/svg/yen.svg"
+	path := "/home/jonathan/workspace/golang/src/ldss/data/web/static/svg/yen.svg"
 	name := "data/web/static/svg/yen.svg"
 	bytes, err := bindataRead(path, name)
 	if err != nil {
@@ -4425,7 +4444,7 @@ func dataWebStaticSvgYenSvg() (*asset, error) {
 
 // dataWebStaticSvgZoomInSvg reads file data from disk. It returns an error on failure.
 func dataWebStaticSvgZoomInSvg() (*asset, error) {
-	path := "/home/jonathan/workspace/ldss/data/web/static/svg/zoom-in.svg"
+	path := "/home/jonathan/workspace/golang/src/ldss/data/web/static/svg/zoom-in.svg"
 	name := "data/web/static/svg/zoom-in.svg"
 	bytes, err := bindataRead(path, name)
 	if err != nil {
@@ -4443,7 +4462,7 @@ func dataWebStaticSvgZoomInSvg() (*asset, error) {
 
 // dataWebStaticSvgZoomOutSvg reads file data from disk. It returns an error on failure.
 func dataWebStaticSvgZoomOutSvg() (*asset, error) {
-	path := "/home/jonathan/workspace/ldss/data/web/static/svg/zoom-out.svg"
+	path := "/home/jonathan/workspace/golang/src/ldss/data/web/static/svg/zoom-out.svg"
 	name := "data/web/static/svg/zoom-out.svg"
 	bytes, err := bindataRead(path, name)
 	if err != nil {
@@ -4461,7 +4480,7 @@ func dataWebStaticSvgZoomOutSvg() (*asset, error) {
 
 // dataWebTemplates403Tpl reads file data from disk. It returns an error on failure.
 func dataWebTemplates403Tpl() (*asset, error) {
-	path := "/home/jonathan/workspace/ldss/data/web/templates/403.tpl"
+	path := "/home/jonathan/workspace/golang/src/ldss/data/web/templates/403.tpl"
 	name := "data/web/templates/403.tpl"
 	bytes, err := bindataRead(path, name)
 	if err != nil {
@@ -4479,7 +4498,7 @@ func dataWebTemplates403Tpl() (*asset, error) {
 
 // dataWebTemplatesLayoutTpl reads file data from disk. It returns an error on failure.
 func dataWebTemplatesLayoutTpl() (*asset, error) {
-	path := "/home/jonathan/workspace/ldss/data/web/templates/layout.tpl"
+	path := "/home/jonathan/workspace/golang/src/ldss/data/web/templates/layout.tpl"
 	name := "data/web/templates/layout.tpl"
 	bytes, err := bindataRead(path, name)
 	if err != nil {
@@ -4497,7 +4516,7 @@ func dataWebTemplatesLayoutTpl() (*asset, error) {
 
 // dataWebTemplatesNodeChildrenTpl reads file data from disk. It returns an error on failure.
 func dataWebTemplatesNodeChildrenTpl() (*asset, error) {
-	path := "/home/jonathan/workspace/ldss/data/web/templates/node-children.tpl"
+	path := "/home/jonathan/workspace/golang/src/ldss/data/web/templates/node-children.tpl"
 	name := "data/web/templates/node-children.tpl"
 	bytes, err := bindataRead(path, name)
 	if err != nil {
@@ -4515,7 +4534,7 @@ func dataWebTemplatesNodeChildrenTpl() (*asset, error) {
 
 // dataWebTemplatesNodeContentTpl reads file data from disk. It returns an error on failure.
 func dataWebTemplatesNodeContentTpl() (*asset, error) {
-	path := "/home/jonathan/workspace/ldss/data/web/templates/node-content.tpl"
+	path := "/home/jonathan/workspace/golang/src/ldss/data/web/templates/node-content.tpl"
 	name := "data/web/templates/node-content.tpl"
 	bytes, err := bindataRead(path, name)
 	if err != nil {
@@ -4586,6 +4605,7 @@ var _bindata = map[string]func() (*asset, error){
 	"data/help/config":                                 dataHelpConfig,
 	"data/help/download":                               dataHelpDownload,
 	"data/help/help":                                   dataHelpHelp,
+	"data/help/rest":                                   dataHelpRest,
 	"data/reference/eng":                               dataReferenceEng,
 	"data/reference/example":                           dataReferenceExample,
 	"data/web/static/css/.stylesheet.css.swp":          dataWebStaticCssStylesheetCssSwp,
@@ -4868,6 +4888,7 @@ var _bintree = &bintree{nil, map[string]*bintree{
 			"config":   &bintree{dataHelpConfig, map[string]*bintree{}},
 			"download": &bintree{dataHelpDownload, map[string]*bintree{}},
 			"help":     &bintree{dataHelpHelp, map[string]*bintree{}},
+			"rest":     &bintree{dataHelpRest, map[string]*bintree{}},
 		}},
 		"reference": &bintree{nil, map[string]*bintree{
 			"eng":     &bintree{dataReferenceEng, map[string]*bintree{}},

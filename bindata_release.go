@@ -3,6 +3,7 @@
 // data/help/config
 // data/help/download
 // data/help/help
+// data/help/rest
 // data/reference/eng
 // data/reference/example
 // data/web/static/css/.stylesheet.css.swp
@@ -362,6 +363,26 @@ func dataHelpHelp() (*asset, error) {
 	}
 
 	info := bindataFileInfo{name: "data/help/help", size: 1146, mode: os.FileMode(420), modTime: time.Unix(1455442682, 0)}
+	a := &asset{bytes: bytes, info: info}
+	return a, nil
+}
+
+var _dataHelpRest = "\x1f\x8b\x08\x00\x00\x09\x6e\x88\x00\xff\xca\x49\x29\x2e\x56\x48\xce\xcf\x2b\x49\xcc\xcc\x2b\x56\x48\x54\x08\x72\x0d\x0e\x49\x2b\xcd\x51\x70\x0c\xf0\x54\x28\xc9\x48\x2c\x51\xc8\x2f\xc9\x48\x2d\x52\x48\x2c\x28\xc8\xc9\x4c\x4e\x2c\xc9\xcc\x07\xaa\x4a\x4e\xcc\x53\x28\x2d\x4e\xd5\xe3\xe2\x02\x04\x00\x00\xff\xff\xaa\x82\xcb\xda\x3e\x00\x00\x00"
+
+func dataHelpRestBytes() ([]byte, error) {
+	return bindataRead(
+		_dataHelpRest,
+		"data/help/rest",
+	)
+}
+
+func dataHelpRest() (*asset, error) {
+	bytes, err := dataHelpRestBytes()
+	if err != nil {
+		return nil, err
+	}
+
+	info := bindataFileInfo{name: "data/help/rest", size: 62, mode: os.FileMode(420), modTime: time.Unix(1456797095, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -5101,6 +5122,7 @@ var _bindata = map[string]func() (*asset, error){
 	"data/help/config":                                 dataHelpConfig,
 	"data/help/download":                               dataHelpDownload,
 	"data/help/help":                                   dataHelpHelp,
+	"data/help/rest":                                   dataHelpRest,
 	"data/reference/eng":                               dataReferenceEng,
 	"data/reference/example":                           dataReferenceExample,
 	"data/web/static/css/.stylesheet.css.swp":          dataWebStaticCssStylesheetCssSwp,
@@ -5383,6 +5405,7 @@ var _bintree = &bintree{nil, map[string]*bintree{
 			"config":   &bintree{dataHelpConfig, map[string]*bintree{}},
 			"download": &bintree{dataHelpDownload, map[string]*bintree{}},
 			"help":     &bintree{dataHelpHelp, map[string]*bintree{}},
+			"rest":     &bintree{dataHelpRest, map[string]*bintree{}},
 		}},
 		"reference": &bintree{nil, map[string]*bintree{
 			"eng":     &bintree{dataReferenceEng, map[string]*bintree{}},
