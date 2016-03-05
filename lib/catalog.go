@@ -3,6 +3,7 @@ package lib
 import (
 	"encoding/json"
 	"fmt"
+	"os"
 	"strconv"
 	"strings"
 )
@@ -56,7 +57,7 @@ func newCatalog(lang *Language) (*Catalog, error) {
 		Catalog         *jsonFolder `json:"catalog"`
 		CoverArtBaseUrl string      `json:"cover_art_base_url"`
 	}
-	file, err := source.Open(source.CatalogPath(lang))
+	file, err := os.Open(catalogPath(lang))
 	if err != nil {
 		dlErr := NotDownloadedCatalogErr{lang: lang}
 		dlErr.err = err

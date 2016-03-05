@@ -42,7 +42,7 @@ func newBook(base *jsonBook, catalog *Catalog, parent Item) *Book {
 
 	b.dbCache.construct = func() (interface{}, error) {
 		var l bookDBConnection
-		path := source.BookPath(b)
+		path := bookPath(b)
 		if _, err := os.Stat(path); os.IsNotExist(err) {
 			dlErr := NotDownloadedBookErr{book: b}
 			dlErr.err = err

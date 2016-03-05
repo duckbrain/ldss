@@ -59,11 +59,7 @@ func (app *cmd) dl(open func() (interface{}, error)) interface{} {
 func (app *cmd) run() {
 	args := app.args
 	efmt := log.New(os.Stderr, "", 0)
-	lang, err := lib.DefaultLanguage()
-
-	if err != nil {
-		panic(err)
-	}
+	lang := app.lang
 
 	switch args[0] {
 	case "lookup":

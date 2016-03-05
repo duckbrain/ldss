@@ -23,7 +23,6 @@ type guiPage struct {
 }
 
 func newGuiPage() *guiPage {
-	var err error
 	p := &guiPage{}
 
 	//p.childMap = make(map[uintptr]string)
@@ -47,11 +46,7 @@ func newGuiPage() *guiPage {
 	p.btnNewTab = ui.NewButton("")
 	p.btnCloseTab = ui.NewButton("")
 
-	p.lang, err = lib.DefaultLanguage()
-
-	if err != nil {
-		panic(err)
-	}
+	p.lang = p.app.lang
 
 	p.title = ui.NewLabel("LDS Scriptures")
 	p.status = ui.NewLabel("")

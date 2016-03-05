@@ -2,7 +2,9 @@ package lib
 
 import (
 	"compress/zlib"
+	"fmt"
 	"io"
+	"os"
 )
 
 // The number of simultanious downloads when using DownloadChildren or DownloadAll
@@ -12,7 +14,7 @@ var DownloadLimit int = 6
 func downloadFile(get string, save string, zlibDecompress bool) (err error) {
 	var input io.Reader
 
-	body, err := server.Open(get)
+	body, err := os.Open(get)
 	if err != nil {
 		return
 	}
@@ -27,7 +29,7 @@ func downloadFile(get string, save string, zlibDecompress bool) (err error) {
 		input = body
 	}
 
-	file, err := source.Create(save)
+	file, err := os.Create(save)
 	if err != nil {
 		return
 	}
@@ -38,17 +40,18 @@ func downloadFile(get string, save string, zlibDecompress bool) (err error) {
 
 // Downloads the list of languages
 func DownloadLanguages() error {
-	return downloadFile(server.LanguagesPath(), source.LanguagesPath(), false)
+	return downloadFile(getServerAction("languages.query"), languagesPath(), false)
 }
 
 // Downloads the catalog for the passed language
 func DownloadCatalog(language *Language) error {
-	return downloadFile(server.CatalogPath(language), source.CatalogPath(language), false)
+	path := getServerAction(fmt.Sprintf("catalog.query&languageid=%v&platformid=%v", language.ID, platformID))
+	return downloadFile(path, catalogPath(language), false)
 }
 
 // Downloads the passed book
 func DownloadBook(book *Book) error {
-	return downloadFile(server.BookPath(book), source.BookPath(book), true)
+	return downloadFile(book.URL(), bookPath(book), true)
 }
 
 // Recursively downloads all children of the passed Catalog or Folder.
@@ -79,7 +82,7 @@ func DownloadChildren(item Item, force bool) <-chan Message {
 					lock <- nil
 					limit <- nil
 				}()
-				if force || !source.Exist(source.BookPath(book)) {
+				if force || !fileExist(bookPath(book)) {
 					// Skip if the book is not a child of the item
 					for parent := book.Parent(); parent != item; parent = parent.Parent() {
 						if parent == nil {
@@ -109,7 +112,7 @@ func DownloadChildren(item Item, force bool) <-chan Message {
 func DownloadAll(lang *Language, force bool) <-chan Message {
 	c := make(chan Message)
 	go func() {
-		if force || !source.Exist(source.CatalogPath(lang)) {
+		if force || !fileExist(catalogPath(lang)) {
 			c <- MessageDownload{NotDownloadedCatalogErr{notDownloadedErr{}, lang}}
 			DownloadCatalog(lang)
 		}
