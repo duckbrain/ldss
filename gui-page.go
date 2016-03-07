@@ -11,14 +11,16 @@ import (
 )
 
 type guiPage struct {
-	app                                                                     *gui
-	item                                                                    lib.Item
-	lang                                                                    *lib.Language
-	box, toolbar                                                            *ui.Box
-	contents                                                                *uidoc.UIDoc
-	address                                                                 *ui.Entry
-	title, status                                                           *ui.Label
-	btnUp, btnNext, btnPrevious, btnNewTab, btnCloseTab                     *ui.Button
+	app  *gui
+	item lib.Item
+
+	box, toolbar  *ui.Box
+	contents      *uidoc.UIDoc
+	address       *ui.Entry
+	title, status *ui.Label
+
+	btnUp, btnNext, btnPrevious, btnNewTab, btnCloseTab *ui.Button
+
 	titleFont, subtitleFont, summaryFont, verseFont, contentFont, errorFont *ui.Font
 }
 
@@ -45,8 +47,6 @@ func newGuiPage() *guiPage {
 	})
 	p.btnNewTab = ui.NewButton("")
 	p.btnCloseTab = ui.NewButton("")
-
-	p.lang = p.app.lang
 
 	p.title = ui.NewLabel("LDS Scriptures")
 	p.status = ui.NewLabel("")
@@ -91,7 +91,7 @@ func newGuiPage() *guiPage {
 }
 
 func (p *guiPage) Lookup(s string) {
-	p.handleMessages(lib.Lookup(p.lang, s), true)
+	p.handleMessages(lib.Lookup(p.app.lang, s), true)
 }
 
 func toggleBtn(btn *ui.Button, item interface{}) {
@@ -203,5 +203,5 @@ func (p *guiPage) handleMessages(c <-chan lib.Message, setText bool) {
 }
 
 func (p *guiPage) onPathChanged(sender *ui.Entry) {
-	p.handleMessages(lib.Lookup(p.lang, sender.Text()), false)
+	p.handleMessages(lib.Lookup(p.app.lang, sender.Text()), false)
 }
