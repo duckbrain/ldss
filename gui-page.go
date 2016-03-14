@@ -13,19 +13,23 @@ import (
 type guiPage struct {
 	app  *gui
 	item lib.Item
+	lang *lib.Language
 
 	box, toolbar  *ui.Box
 	contents      *uidoc.UIDoc
 	address       *ui.Entry
 	title, status *ui.Label
+	languages     *ui.Combobox
 
 	btnUp, btnNext, btnPrevious, btnNewTab, btnCloseTab *ui.Button
 
 	titleFont, subtitleFont, summaryFont, verseFont, contentFont, errorFont *ui.Font
 }
 
-func newGuiPage() *guiPage {
+func newGuiPage(parentApp *gui) *guiPage {
 	p := &guiPage{}
+	p.app = parentApp
+	p.lang = p.app.lang
 
 	//p.childMap = make(map[uintptr]string)
 
@@ -54,10 +58,23 @@ func newGuiPage() *guiPage {
 
 	p.address.OnChanged(p.onPathChanged)
 
+	p.languages = ui.NewCombobox()
+	for i, l := range p.app.languages {
+		p.languages.Append(l.String())
+		if l == p.lang {
+			p.languages.SetSelected(i)
+		}
+	}
+	p.languages.OnSelected(func(*ui.Combobox) {
+		p.lang = p.app.languages[p.languages.Selected()]
+		p.onPathChanged(p.address)
+	})
+
 	p.toolbar.Append(p.btnPrevious, false)
 	p.toolbar.Append(p.btnUp, false)
 	p.toolbar.Append(p.address, true)
 	p.toolbar.Append(p.btnNext, false)
+	p.toolbar.Append(p.languages, false)
 	p.toolbar.Append(p.btnNewTab, false)
 	p.toolbar.Append(p.btnCloseTab, false)
 	p.box.Append(p.title, false)
@@ -91,7 +108,7 @@ func newGuiPage() *guiPage {
 }
 
 func (p *guiPage) Lookup(s string) {
-	p.handleMessages(lib.Lookup(p.app.lang, s), true)
+	p.handleMessages(lib.Lookup(p.lang, s), true)
 }
 
 func toggleBtn(btn *ui.Button, item interface{}) {
@@ -203,5 +220,5 @@ func (p *guiPage) handleMessages(c <-chan lib.Message, setText bool) {
 }
 
 func (p *guiPage) onPathChanged(sender *ui.Entry) {
-	p.handleMessages(lib.Lookup(p.app.lang, sender.Text()), false)
+	p.handleMessages(lib.Lookup(p.lang, sender.Text()), false)
 }
