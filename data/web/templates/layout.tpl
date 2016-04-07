@@ -18,7 +18,7 @@
 	<a class="button" id="previous" {{template "ItemHref" .Item.Previous}}>
 		<img src="/svg/chevron-left.svg" alt="Previous">
 	</a>
-	<a class="button" id="up-level" {{template "ItemHref" .Item.Parent}}>
+	<a class="button" id="parent" {{template "ItemHref" .Item.Parent}}>
 		<img src="/svg/chevron-top.svg" alt="Up">
 	</a>
 	<form action="/lookup" method="GET">
@@ -34,5 +34,6 @@
 {{ .Content -}}
 </div>
 
+<script src="/js/ldss.js"></script>
 </body>
 </html>

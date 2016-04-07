@@ -279,8 +279,3 @@ func (app *web) loadTemplate(path string) *template.Template {
 	}
 	return temp
 }
-
-func (app *web) loadLayoutTemplate(path string, layout *template.Template) {
-	//temp := app.loadTemplate(path)
-	// Need to create Executor interface to make this work
-}

@@ -100,7 +100,6 @@ func init() {
 
 // Returns a list of all languages available. Downloads the languages if not already downloaded first.
 func Languages() ([]*Language, error) {
-	fmt.Println(languagesPath())
 	if !fileExist(languagesPath()) {
 		if err := DownloadLanguages(); err != nil {
 			return nil, err
