@@ -1,4 +1,4 @@
-// +build !nogui
+// +build !gui
 
 package main
 
