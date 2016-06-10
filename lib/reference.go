@@ -70,6 +70,9 @@ func newRefParser(file []byte) *refParser {
 		path := tokens[len(tokens)-1]
 		tokens = tokens[:len(tokens)-1]
 		if id, err := strconv.Atoi(tokens[0]); err == nil {
+			if v, ok := p.matchFolder[id]; ok {
+				panic(fmt.Errorf("Token %v already used for %v", id, v))
+			}
 			p.matchFolder[id] = path
 			tokens = tokens[1:]
 		} else if len(tokens) == 1 && isRegex.MatchString(tokens[0]) {
@@ -82,7 +85,11 @@ func newRefParser(file []byte) *refParser {
 			}
 		}
 		for _, t := range tokens {
-			p.matchString[strings.ToLower(t)+" "] = path
+			t = strings.ToLower(t) + " "
+			if v, ok := p.matchString[t]; ok {
+				panic(fmt.Errorf("Token %v already used for %v", t, v))
+			}
+			p.matchString[t] = path
 		}
 	}
 	return p

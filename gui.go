@@ -1,16 +1,18 @@
-// +build !nogui
+// +build !gui
 
 package main
 
 import (
 	"fmt"
+	"ldss/lib"
 
 	"github.com/andlabs/ui"
 )
 
 type gui struct {
 	appinfo
-	pages []*guiPage
+	pages     []*guiPage
+	languages []*lib.Language
 
 	// Controls
 	tab    *ui.Tab
@@ -23,7 +25,13 @@ func init() {
 	apps["gui"] = &app
 }
 
-func (app gui) run() {
+func (app *gui) run() {
+	if langs, err := lib.Languages(); err == nil {
+		app.languages = langs
+	} else {
+		panic(err)
+	}
+
 	err := ui.Main(func() {
 		app.tab = ui.NewTab()
 
@@ -43,7 +51,7 @@ func (app gui) run() {
 }
 
 func (app *gui) addPage(path string) {
-	page := newGuiPage(app.lang)
+	page := newGuiPage(app)
 	app.pages = append(app.pages, page)
 	app.tab.Append(fmt.Sprintf("Tab %v", app.tab.NumPages()+1), page.box)
 	page.btnNewTab.OnClicked(func(btn *ui.Button) {

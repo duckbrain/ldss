@@ -8,6 +8,7 @@
 // data/reference/example
 // data/web/static/css/stylesheet.css
 // data/web/static/favicon.ico
+// data/web/static/js/ldss.js
 // data/web/static/svg/ICON-LICENSE
 // data/web/static/svg/README.md
 // data/web/static/svg/account-login.svg
@@ -321,7 +322,7 @@ func dataHelpConfig() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "data/help/config", size: 376, mode: os.FileMode(420), modTime: time.Unix(1457058732, 0)}
+	info := bindataFileInfo{name: "data/help/config", size: 376, mode: os.FileMode(420), modTime: time.Unix(1463336120, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -341,7 +342,7 @@ func dataHelpDownload() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "data/help/download", size: 40, mode: os.FileMode(420), modTime: time.Unix(1457058732, 0)}
+	info := bindataFileInfo{name: "data/help/download", size: 40, mode: os.FileMode(420), modTime: time.Unix(1463336120, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -361,7 +362,7 @@ func dataHelpHelp() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "data/help/help", size: 1146, mode: os.FileMode(420), modTime: time.Unix(1457058732, 0)}
+	info := bindataFileInfo{name: "data/help/help", size: 1146, mode: os.FileMode(420), modTime: time.Unix(1463336120, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -381,12 +382,12 @@ func dataHelpRest() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "data/help/rest", size: 62, mode: os.FileMode(420), modTime: time.Unix(1456797095, 0)}
+	info := bindataFileInfo{name: "data/help/rest", size: 62, mode: os.FileMode(420), modTime: time.Unix(1463336120, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
 
-var _dataReferenceEng = "\x1f\x8b\x08\x00\x00\x09\x6e\x88\x00\xff\x9c\x56\x41\x6f\xdc\x36\x13\xbd\xf3\x57\x08\xd0\x87\x40\x8b\x0f\x8b\xb5\xdd\x6d\x82\xf2\x62\xa0\x29\xd0\x53\xda\x4b\x6f\x41\x0e\x5c\x6a\x76\x45\xaf\x48\x2e\x48\xc9\x76\x5c\xe5\xbf\xf7\x0d\xb5\xb6\xb3\xa4\x1c\xa0\x4d\x6c\x0e\xf5\xe6\x71\xcc\x19\xce\x0c\xb9\xbd\xf9\xf0\xfe\x46\x7e\x1a\xa3\xd1\x72\x63\x59\x08\x51\x57\xbf\x7a\x7f\xac\xfc\xbe\xfa\xe4\x83\xf5\x4e\xec\xfc\xde\xca\x9d\xe7\xdf\x19\xb7\x09\x97\x9b\xa8\x83\x39\x0d\x63\xa0\xb8\x61\x8e\xd8\x34\x9f\xaf\xd7\xdb\x2f\xab\xa6\x9a\xd6\xab\x5b\x47\xcd\xa9\x33\xab\xdb\x4d\x41\xdc\xfc\xef\xef\xeb\x6f\x6b\x47\xb5\xb8\x53\xda\xef\x4a\x7d\x82\x6b\x41\xce\xc7\xea\x5a\xb2\x28\x39\x8c\x6e\xae\x61\x21\x78\x0b\x52\x92\x3c\x2e\x59\x83\x0a\x54\x6f\x9d\x01\x93\x45\x49\x62\x14\x9c\xcd\x43\xe3\x43\x1b\x57\xb7\xb3\x0f\xbe\xd9\x3f\x4f\x2d\x14\x0d\x06\xb7\xba\xe5\xff\x0b\x5e\x3d\xac\xfd\x7e\xcd\x7f\xc8\xfa\x68\x54\x27\xed\xd2\xb6\x67\x5d\x2d\x54\x6f\x55\xa9\x65\xb4\x16\x1d\xf5\xca\x2a\x27\x21\x4b\xca\x59\x59\x8b\xf3\x29\xb0\x58\xfa\x33\xc1\x22\x80\x43\x47\x41\x62\x5c\x08\x1f\xab\x92\x11\x8f\x70\xb0\xe0\x61\xd1\x90\xaf\x71\xb2\xfc\x31\x21\x09\xa6\xcb\x24\x58\x55\xcd\x09\x16\x26\x1e\xfc\xe8\xb4\x51\x83\xf1\xae\xa9\x0e\xa3\x69\x09\x71\x5a\x08\x13\x53\x5f\x98\x9c\x6e\x7f\xd0\x43\xf5\x17\xc5\x41\x59\x72\x83\x70\xf8\x1a\x9e\xbf\x24\x7e\xbe\x37\x90\xeb\xab\xc1\x0c\x3d\xc9\x97\xc9\x25\x77\x93\xc0\xf5\x49\x1d\x48\x58\x35\xc0\xe3\x07\xc9\x32\xa7\x31\x86\x50\xa8\x70\x2c\x35\xe1\x58\x8b\x7e\x3c\x16\xa6\x19\x43\xfe\xfa\xce\xe5\x1a\xc6\x70\xbe\x7a\x88\x12\x43\xae\x65\xbc\x16\x48\x48\xe5\xa2\xe4\x94\xcd\xf4\x80\xea\xb9\x90\x6e\x9e\x0b\xa9\xd1\xc8\x3c\xe3\x86\xce\x60\x4d\x11\x53\xac\x49\xe5\x04\x52\x2d\x0e\xaa\x47\x58\xd9\x34\x66\x39\x0d\x10\x52\xe2\xd4\x51\x4c\x0c\xcc\x72\x06\xa0\x5a\xa0\x68\x7b\x73\x3a\x25\xce\x3c\xcf\x69\x33\x5a\x0b\xed\x7b\x1f\x67\x63\x98\xe6\x2c\x40\x85\x27\x38\x82\xd8\x44\xd5\x23\xe7\x7e\xe4\x0b\xd3\xca\xb5\x06\xd5\x37\x74\x5f\xdf\x5e\x65\x10\x3a\x1c\xf9\x18\x17\xf2\x60\x8c\xb3\x67\xc4\x35\x33\x4f\x92\x58\xf2\x8d\x2c\xd7\xe0\x2e\xd0\x43\x94\xb3\x64\x91\x33\x01\x71\x03\xb3\x54\xfc\xb9\x04\x16\xfb\x3f\xd1\xd0\x50\x78\x73\xf7\x50\xff\x47\x97\xd3\xa2\x9f\x5e\x16\x71\xfe\x4d\x77\xf8\x41\x75\x2e\xaf\xba\x43\x7e\xde\x8d\x2d\x71\xdb\x84\x28\xb6\x0f\x0c\x5d\x2c\xd0\x3d\xf5\xa9\x48\x25\xa6\x45\x9e\xd2\x7d\xcd\xc5\xfb\x67\xdf\x7e\x57\xbc\x1e\x5f\xaf\xc5\xeb\x2f\xb3\xdf\x67\xfa\x73\xcd\xfa\xa5\xe2\xf5\x17\xc5\x7b\x20\x87\xa4\x45\x52\x93\xcb\x59\x80\x90\xd4\x8f\xbe\xc5\xa9\xd3\x63\xae\xa5\x47\x54\x2f\xdd\x9b\xc1\x68\xe8\xfb\xcc\x0d\x10\x7a\x76\xc3\x8d\x76\x47\x21\x4a\xc8\x5c\x0f\xa8\x16\x2d\x8d\x03\x71\x83\xb3\x5f\x25\xcf\x73\x12\x63\xdc\x0b\x62\x37\x2a\xc9\x22\x27\x30\x96\x42\x7e\x40\xb2\xb0\x28\x08\xc0\x44\x18\x87\x62\x25\x63\x45\x5a\x44\x65\x9b\x91\xfa\x22\x2b\xfc\xf9\x7c\xa1\x2f\xd6\x1c\x0f\x71\x3a\x1a\x77\x88\x6f\xac\x81\xbe\xec\x3b\x5d\xc0\x7d\x67\x74\x4f\x65\xa9\x3e\xaf\x03\x07\xf1\x7f\x0a\xaa\x08\x3d\x30\x84\x96\x3a\xb2\x7c\x19\x62\x52\xc4\x96\xe0\x1a\x92\x21\xdd\x51\x71\x98\xc7\x82\xc5\x18\x07\x77\x57\x06\x15\xf5\x77\x42\x33\xb1\xe8\x53\x2c\x30\xe6\x9c\x13\x57\x7d\xf0\xf7\x14\x76\x20\x61\x52\x10\x80\x61\x13\x9a\x7d\x34\x2a\x0e\x06\x07\xc4\x5f\xc5\x2e\x74\x8f\x6e\x16\xbd\x3b\xf0\xdd\x17\xd1\xf8\xb8\x8f\x44\xbf\x8f\x32\x26\x44\xb2\x2e\x5f\xc5\x58\x2d\x4c\x54\x1c\x01\x88\x5c\x0f\x08\xae\x51\x98\x43\x84\x49\xe1\x23\xdf\xd1\x7d\xaa\x96\x54\x89\xc8\xe1\xd7\x0f\x9e\x17\xf9\xcc\x47\x4f\x4f\x74\x34\x78\x3b\xb0\xc4\x70\x2c\x8f\x06\x97\x5a\xab\x1c\x73\x20\x8a\x74\xe6\xd7\x45\xe7\x23\x15\xfb\x4d\x20\x1f\x06\x15\x01\x62\x0c\xb7\x5e\xfe\xe6\x81\x86\xb1\x5a\xf8\x9d\x6a\xd9\xc9\xb3\xe4\x77\x18\x66\x69\xc0\x3c\x5b\xc2\x28\xbf\xed\xbc\x53\x0b\xb5\xe4\xf8\xfd\x64\x8d\x2e\x75\x09\x44\xd2\xa9\x6e\xa1\x92\x19\x84\x5f\x6a\xa7\x8e\xc7\xf1\x28\x31\x29\xdc\x53\xc8\xa8\x27\x5c\x82\x08\x0d\x8c\x3f\xe5\x37\x24\x28\x4f\xe9\x8a\xec\xd4\xe1\xa0\x0c\x4c\x14\x27\x0e\x88\x4d\xe8\x4e\x85\xd9\x84\x5e\x30\xa1\x79\xff\xb8\xa9\x75\x87\x97\x97\x2a\x42\x69\xf9\x9e\xe6\xde\xfa\xdb\xbb\x8f\xa2\xd5\xb2\x7d\x87\x5f\xaf\x87\x60\x1c\x55\xca\xb5\x95\x46\x42\x3b\xe5\x86\xcb\x50\xb7\x7a\xfd\xd2\x5a\xf1\x81\x13\xd6\x95\x6f\x79\x75\x12\x8b\x06\x90\xba\x7b\x83\xa7\x58\x5f\xb5\xc8\x70\x15\xe6\xbc\xba\xb4\xca\x3b\xf9\x1d\x0d\x38\x80\xf5\xd1\xbb\x3d\xd2\xd5\x69\x12\xdb\x9b\xf7\x1f\x3e\xc8\x52\x21\xb9\x25\x33\x86\x17\xc9\x0b\x79\xd3\x9c\xc1\xea\x15\x9c\x0e\x1a\x8d\x06\x6d\x46\x9d\x82\xe9\x27\x8c\xd3\x76\xba\xda\xce\xd8\xe7\xab\xf5\x2f\x5f\xfe\xcf\x3d\xa7\xb4\x86\xc6\xf3\xf3\xb7\xcd\xd5\xf6\xc7\x56\xe1\xaf\x47\x57\x9f\x20\xa7\xeb\xab\x7f\x61\x75\xf9\xdf\x3f\x01\x00\x00\xff\xff\x88\x40\xa4\x82\x2a\x0d\x00\x00"
+var _dataReferenceEng = "\x1f\x8b\x08\x00\x00\x09\x6e\x88\x00\xff\x9c\x56\x4d\x6f\xe3\x36\x10\xbd\xf3\x57\x08\x50\xb1\x90\x51\x18\x4e\x52\x77\x83\xf2\x12\xa0\x5b\xa0\xa7\x6d\x2f\xbd\x2d\xf6\x40\x53\x63\x8b\xb1\x48\x1a\xa4\x94\x64\x53\xed\x7f\xef\x1b\x2a\x1f\x6b\x52\x59\xa0\x9b\xd8\x1c\xea\xcd\xe3\x98\x33\x9c\x19\x6a\x7b\x75\xfd\xfe\x4a\x7e\x1c\xa3\xd1\x72\x63\x59\x08\x51\x57\xbf\x7b\x7f\xac\xfc\xbe\xfa\xe8\x83\xf5\x4e\xec\xfc\xde\xca\x9d\xe7\xef\x8c\xdb\x84\xcb\x4d\xd4\xc1\x9c\x86\x31\x50\xdc\x30\x47\x6c\x9a\x4f\x97\xeb\xed\xe7\x55\x53\x4d\xeb\xd5\x8d\xa3\xe6\xd4\x99\xd5\xcd\xa6\x20\x6e\x7e\xfa\xf7\xf2\xeb\xda\x51\x2d\x6e\x95\xf6\xbb\x52\x9f\xe0\x5a\x90\xf3\xb1\xba\x94\x2c\x4a\x0e\xa3\x9b\x4b\x58\x08\xde\x82\x94\x24\x8f\x4b\xd6\xa0\x02\xd5\x5b\x67\xc0\x64\x51\x92\x18\x05\x67\x73\xdf\xf8\xd0\xc6\xd5\xcd\xec\x83\x6f\xf6\xcf\x53\x0b\x45\x83\xc1\xad\x6e\xf8\x7f\xc1\xab\xfb\xb5\xdf\xaf\xf9\x87\xac\x8f\x46\x75\xd2\x2e\x6d\x7b\xd6\xd5\x42\xf5\x56\x95\x5a\x46\x6b\xd1\x51\xaf\xac\x72\x12\xb2\xa4\x00\xac\xc5\xd3\x09\xb0\x58\xfa\x89\x60\x11\xbc\xa1\xa3\x20\x31\x2e\x84\x8e\x55\xc9\x88\x47\x28\x58\xf0\xb0\x68\xc8\xd7\x38\x55\x7e\x98\x90\x00\xd3\x79\x02\xac\xaa\xe6\x04\x0b\x13\x0f\x7e\x74\xda\xa8\xc1\x78\xd7\x54\x87\xd1\xb4\x84\x18\x2d\x84\x88\xa9\x2f\x4c\x4e\xb5\xbf\xe8\xbe\xfa\x87\xe2\xa0\x2c\xb9\x41\x38\x3c\x0d\xcf\x4f\x12\x9f\x6f\x0d\xe4\xfa\x6a\x30\x43\x4f\xf2\x65\x72\xce\xdd\x24\x70\x7d\x52\x07\x12\x56\x0d\xf0\xf8\x5e\xb2\xcc\x69\x8c\x21\x14\x2a\x1c\x4b\x4d\x38\xd6\xa2\x1f\x8f\x85\x69\xc6\x90\xbb\xbe\x73\xb9\x86\x31\x9c\xad\x1e\xa2\xc4\x90\x6b\x19\xaf\x05\x92\x51\xb9\x28\x39\x5d\x33\x3d\xa0\x7a\x2e\xa2\xab\xe7\x22\x6a\x34\xb2\xce\xb8\xa1\x33\x58\x53\xc4\x14\x6b\x52\x29\x81\x54\x8b\x83\xea\x11\x56\x36\x8d\x59\x4e\x03\x84\x94\x38\x75\x14\x13\x03\xb3\x9c\x01\xa8\x16\x28\xd8\xde\x9c\x4e\x89\x33\xcf\x73\xda\x8c\xd6\x42\xfb\xde\xc7\xd9\x18\xa6\x39\x0b\x50\xe1\x09\x8e\x20\x36\x51\xf5\xc8\xb9\xef\xf9\xc2\xb4\x72\xad\x41\xe5\x0d\xdd\x97\xb7\x57\x19\x84\x0e\x47\x3e\xc6\x85\x3c\x18\xe3\xec\x19\x71\xcd\xcc\x93\x24\x96\x7c\x23\xcb\xf5\xb7\x0b\x74\x1f\xe5\x2c\x59\xe4\x4c\x40\xdc\xbc\x2c\x15\x3f\x97\xc0\x62\xff\x27\x1a\x1a\x0a\x6f\xee\x1e\xea\x1f\x74\x39\x2d\xfa\xe5\x65\x11\xe7\xdf\x74\x8b\x0f\xaa\x73\x79\xd5\x2d\xf2\xf3\x76\x6c\x89\x5b\x26\x44\xb1\x7d\x60\xe8\x60\x81\xee\xa8\x4f\x45\x2a\x31\x2d\xf2\x94\xee\x6a\x2e\xde\xbf\xfb\xf6\x9b\xe2\xf5\x78\x7a\x2d\x5e\x7f\x9e\xfd\x3e\xd3\x3f\xd5\xac\x5f\x2a\x5e\x7f\x56\xbc\x07\x72\x48\x5a\x24\x35\xb9\x9c\x05\x08\x49\xfd\xe0\x5b\x9c\x3a\x3d\xe4\x5a\x7a\x40\xf5\xd2\x9d\x19\x8c\x86\xbe\xcf\xdc\x00\xa1\x67\x37\xdc\x68\x77\x14\xa2\x84\xcc\xf5\x80\x6a\xd1\xd2\x38\x10\x37\x38\xfb\x45\xf2\x3c\x27\x31\xc6\xbd\x20\x76\xa3\x92\x2c\x72\x02\x63\x29\xe4\x07\x24\x0b\x8b\x82\x00\x4c\x84\x71\x28\x56\x32\x56\xa4\x45\x54\xb6\x19\xa9\x2f\xb2\xc2\x3f\x9d\x2f\xf4\xc5\x9a\xe3\x21\x4e\x47\xe3\x0e\xf1\x8d\x35\xd0\x97\x7d\xa7\x0b\xb8\xeb\x8c\xee\xa9\x2c\xd5\xe7\x75\xe0\x20\xfe\x8f\x41\x15\xa1\x07\x86\xd0\x52\x47\x96\x2f\x42\x4c\x8a\xd8\x12\x5c\x43\x32\xa4\x3b\x2a\x0e\xf3\x58\xb0\x18\xe3\xe0\xee\xca\xa0\xa2\xfe\x4e\x68\x26\x16\x7d\x8a\x05\xc6\x9c\x73\xe2\xaa\x0f\xfe\x8e\xc2\x0e\x24\x4c\x0a\x02\x30\x6c\x42\xb3\x8f\x46\xc5\xc1\xe0\x80\xf8\xa9\xd8\x85\xee\xd1\xcd\xa2\x77\x07\xbe\xfb\x22\x1a\x1f\xf7\x91\xe8\xf7\x51\xc6\x84\x48\xd6\xe5\xab\x18\xab\x85\x89\x8a\x23\x00\x91\xeb\x01\xc1\x35\x0a\x73\x88\x30\x29\x7c\xe4\x3b\xba\x4f\xd5\x92\x2a\x11\x39\xfc\xfa\xc0\xf3\x22\x9f\xf9\xe8\xe9\x91\x8e\x06\xef\x0d\x2c\x31\x1c\xcb\xa3\xc1\xa5\xd6\x2a\xc7\x1c\x88\x22\x9d\x15\x4a\xaa\xf3\x91\x8a\xfd\x26\x90\x0f\x83\x8a\x00\x31\x86\x5b\x2f\x7f\xdf\x81\x86\xb1\x5a\xf8\x9d\x6a\xd9\xc9\x27\xc9\xef\x60\x98\xa5\x01\xf3\x6c\x09\xa3\xfc\x5e\xe7\x9d\x5a\xa8\x25\xc7\xef\x4e\xd6\xe8\x52\x97\x40\x24\x9d\xea\x16\x2a\x99\x41\xf8\xa5\x76\xea\x78\x1c\x8f\x12\x93\xc2\x3d\x85\x8c\x7a\xc4\x25\x88\xd0\xc0\xf8\x63\x7e\x43\x82\xf2\x98\xae\xc8\x4e\x1d\x0e\xca\xc0\x44\x71\xe2\x80\xd8\x84\xee\x54\x98\x4d\xe8\x05\x13\x9a\xf7\x8f\x9b\x5a\x77\x78\xf3\x52\x45\x28\x2d\xdf\xd3\xdc\x5b\xff\x78\xf7\x41\xb4\x5a\xb6\xef\xf0\xf5\x7a\x08\xc6\x51\xa5\x5c\x5b\x69\x24\xb4\x53\x6e\x38\x0f\x75\xab\xd7\x2f\xad\x15\x0f\x38\x61\x5d\xf9\x96\x57\x27\xb1\x68\x00\xa9\xbb\x37\x78\x15\xeb\xab\x16\x19\xae\xc2\x9c\x57\xe7\x56\x79\x27\x7f\xa2\x01\x07\xb0\x3e\x78\xb7\x47\xba\x3a\x4d\x62\x7b\xf5\xfe\xfa\x5a\x96\x0a\xc9\x2d\x99\x31\xbc\x91\xbc\x90\x37\xcd\x13\x58\xbd\x82\xd3\x41\xa3\xd1\xa0\xcd\xa8\x53\x30\xfd\x84\x71\xda\x4e\x17\xdb\x19\xfb\x74\xb1\xfe\xed\xf3\xcf\xdc\x73\x4a\x6b\x68\x3c\xbf\x7e\xdd\x5c\x6c\xbf\x6f\x15\xfe\x7a\x74\xf5\x09\x72\xba\xbc\xf8\x1f\x56\x97\xff\xfe\x0b\x00\x00\xff\xff\x7e\x40\xca\xa7\x26\x0d\x00\x00"
 
 func dataReferenceEngBytes() ([]byte, error) {
 	return bindataRead(
@@ -401,7 +402,7 @@ func dataReferenceEng() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "data/reference/eng", size: 3370, mode: os.FileMode(420), modTime: time.Unix(1457058732, 0)}
+	info := bindataFileInfo{name: "data/reference/eng", size: 3366, mode: os.FileMode(420), modTime: time.Unix(1463336120, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -421,12 +422,12 @@ func dataReferenceExample() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "data/reference/example", size: 274, mode: os.FileMode(420), modTime: time.Unix(1457058732, 0)}
+	info := bindataFileInfo{name: "data/reference/example", size: 274, mode: os.FileMode(420), modTime: time.Unix(1463336120, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
 
-var _dataWebStaticCssStylesheetCss = "\x1f\x8b\x08\x00\x00\x09\x6e\x88\x00\xff\x7c\x91\xd1\x6e\xf2\x30\x0c\x85\xaf\xe9\x53\x44\xe2\x1a\x04\xff\x2f\x84\x9a\x3d\xca\xb4\x0b\x37\x76\x8b\xb7\x10\x47\x89\xcb\x40\xd3\xde\x7d\xae\xca\xa6\x5e\x8c\xa9\x37\xa7\xf6\xe7\x1e\xfb\x74\xab\x22\xb1\x83\xe2\x3e\x9a\x15\x72\xcd\x11\x6e\xde\xf5\x91\xae\x4f\xcd\xea\x75\xac\xca\xfd\x6d\x13\x24\x29\x25\xf5\xae\x66\x08\xb4\xe9\x48\xdf\x89\x92\x01\x10\x79\x48\x1b\x56\x3a\x57\xef\x82\x21\x54\xac\xda\x41\x78\x1b\x8a\x8c\x09\x6d\x32\x4a\xf1\x6e\x0d\x00\xd6\xc8\x52\x59\x59\x92\x19\xf0\x95\xd0\x2a\x2a\xd9\xbb\x9d\x89\x48\xbd\xce\xaa\xf0\x70\xba\xcb\x13\xcd\xfa\xff\xbf\x6c\xeb\x7c\x36\xcd\xb6\x1b\x55\x25\x4d\xbb\xfe\x62\x12\x42\xb0\xa1\x30\x96\x3a\xbd\x66\xe1\xfb\x3e\x19\x10\x39\x0d\xde\x1d\xf2\xd5\xed\x0f\xd3\xb7\x56\x9d\x14\x24\xa3\xaa\x44\x46\xb7\xb7\xc6\xfa\x78\x3c\x4e\x26\x77\x0f\x7f\x92\x0b\x95\x07\x4e\x88\xb8\x44\x21\x28\x5f\xe8\x01\xdb\xb6\xed\x82\x7d\xb6\x8c\xa1\x8b\x84\x2f\x7f\xe1\x3f\x47\x20\xf5\x30\x46\x9d\x8f\xff\xfe\x53\x8b\x14\xce\x50\x06\xb6\x3c\x77\xf6\xb4\x73\x48\x5f\x01\x00\x00\xff\xff\xfc\x60\x24\x09\xd1\x01\x00\x00"
+var _dataWebStaticCssStylesheetCss = "\x1f\x8b\x08\x00\x00\x09\x6e\x88\x00\xff\x7c\x91\xdf\x6e\xf2\x30\x0c\xc5\xaf\xe9\x53\x44\xe2\xba\x08\xbe\x6f\x08\x35\x7b\x94\x69\x17\x4e\xe2\x16\x6f\x21\x8e\x12\x97\x81\x26\xde\x7d\x2e\x7f\x36\x2e\xc6\xd4\x9b\xd3\xe4\xe7\x1c\xfb\x78\x21\xcc\xd1\x41\x31\x9f\xcd\x2c\x50\xcd\x11\x8e\xd6\xf4\x11\x0f\xcf\xcd\xec\x6d\xac\x42\xfd\xb1\xf5\x9c\x04\x93\x58\x53\x33\x78\x6c\x1d\xca\x07\x62\x52\x00\x22\x0d\xa9\x25\xc1\x5d\xb5\xc6\x2b\x82\x45\x4f\x1d\xf8\xf7\xa1\xf0\x98\x82\x56\x46\x2e\xd6\xcc\x01\x40\x2f\x32\x57\x12\xe2\xa4\x06\x74\xc0\xa0\x27\xc2\xd9\x9a\xa5\x8a\x88\xbd\x5c\x54\xa1\x61\x7b\x95\x5b\xbc\xe8\xff\xff\xb2\xb6\x73\x6a\x9a\x85\x1b\x45\x38\x4d\xbd\xfe\x62\xe2\xbd\xd7\x22\x3f\x96\x3a\xfd\x66\xa6\x6b\x3f\x19\x42\xa0\x34\x58\xb3\xce\x07\xb3\x5a\x4f\x6f\xcd\x1c\x97\x80\x4a\x55\x8e\x14\xcc\x4a\x2f\xe6\x9b\xcd\x66\x32\xb9\x7a\xd8\x2d\xef\xb1\x3c\x70\x0a\x21\xdc\xa3\xe0\x85\xf6\xf8\x80\xed\xba\xee\x8e\x7d\xd1\x8c\xc1\x45\x0c\xaf\x7f\xe1\xdf\x43\x04\xec\x61\x8c\x72\x19\xfe\xb6\xa9\xbb\x14\x76\x50\x06\xd2\x3c\x97\xfa\x75\xb7\x90\x76\x40\xe9\xb6\xb3\x1f\xa8\x3d\x67\xfd\x74\x1e\xff\xf4\x15\x00\x00\xff\xff\x08\x55\xb3\xfb\xf6\x01\x00\x00"
 
 func dataWebStaticCssStylesheetCssBytes() ([]byte, error) {
 	return bindataRead(
@@ -441,7 +442,7 @@ func dataWebStaticCssStylesheetCss() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "data/web/static/css/stylesheet.css", size: 465, mode: os.FileMode(420), modTime: time.Unix(1457058732, 0)}
+	info := bindataFileInfo{name: "data/web/static/css/stylesheet.css", size: 502, mode: os.FileMode(420), modTime: time.Unix(1463336120, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -461,7 +462,27 @@ func dataWebStaticFaviconIco() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "data/web/static/favicon.ico", size: 73070, mode: os.FileMode(420), modTime: time.Unix(1457058732, 0)}
+	info := bindataFileInfo{name: "data/web/static/favicon.ico", size: 73070, mode: os.FileMode(420), modTime: time.Unix(1463336120, 0)}
+	a := &asset{bytes: bytes, info: info}
+	return a, nil
+}
+
+var _dataWebStaticJsLdssJs = "\x1f\x8b\x08\x00\x00\x09\x6e\x88\x00\xff\x84\x55\xdd\x6e\xdb\x36\x14\xbe\x96\x9e\x82\xd5\x45\x25\x21\xad\xd6\xed\xb2\x82\x51\x34\x5e\x80\x15\xc8\x76\xd3\xbd\x00\x2b\x1d\x5b\x5c\x69\x4a\x23\x29\x67\x41\xe2\x77\xdf\x39\xfc\xb3\xec\xd8\x49\x80\x18\x22\xf9\x9d\xbf\xef\x3b\x3c\xdc\xcc\xaa\xb3\x62\x54\x4c\x8e\xdb\x0a\x6a\xf6\xc4\xba\x51\x99\x51\x42\xe3\x37\x5a\xa6\xc1\xce\x5a\x31\x68\xd9\x21\xcf\xf7\x5c\x13\xc0\x82\xb2\x77\x12\xd8\x8a\xf5\x63\x37\xef\x70\xd5\xfc\x3b\x83\x7e\xfc\x0e\x12\x3a\x3b\xea\xaa\x6c\x76\x5c\xa8\x8f\x01\x5a\xd6\xad\xb3\x9c\x34\xec\xc5\x38\x9b\x5b\xab\x96\xa6\x5b\x20\x67\xf4\x79\xfb\xf8\xad\xaf\xca\x08\x8b\x66\x0a\xfe\xb3\x6f\x98\x10\x24\x45\xe1\x9a\xf6\xdf\x88\xe1\x40\xd1\xc4\x58\x6e\xa9\x9a\x27\x26\x2c\xec\x3e\x33\x35\x4b\xc9\x0e\x6d\x9e\x27\x7a\x04\x16\xa2\x3b\x98\xec\x5a\x8a\xee\xe7\xdd\x1e\x8d\x1d\x5d\x39\xc3\x3f\x72\x31\x68\xd8\xb4\x69\x65\xb9\xc6\x88\xe8\x11\x9a\xf0\xf9\xfc\x8c\xdf\x46\x77\x21\x0b\x0f\x15\x1b\x56\xf9\x73\x84\x6d\xff\xe2\x3b\x4c\x62\xb5\x62\xe5\xd7\x92\xbd\x7f\xcf\xde\x85\x23\x6e\xad\x16\x3f\x66\x0b\x86\xca\x20\x54\xff\x0d\xd3\xac\xca\x5e\x18\xfe\x43\x42\x5f\xd6\x94\x49\x96\x51\x0e\x18\x33\x98\xe1\xff\xd7\x68\x59\x95\x74\x46\xe5\xb2\xf0\x27\x47\xee\xbd\x04\xf4\xc4\xed\xa0\xd0\x75\x9d\x10\x8d\x1d\x40\x55\x91\x81\x8a\x98\xf1\x61\xb2\x41\x18\x14\xf9\xb1\x99\x66\x33\x7c\x27\xea\x2a\x47\xe0\x07\x56\x96\x1f\x1c\x83\xce\x1b\x06\xcb\xb2\x03\xfe\xe6\x19\x7a\x83\x86\x64\xc5\xca\x7f\x87\x0d\x9f\xa5\xad\x42\x2e\x87\xfc\xb0\xa0\x79\x54\xce\xdf\x7a\xe0\x6a\x0b\x9e\xe0\x8c\x48\x42\xea\x68\xbf\x46\x8f\x06\xac\x8f\x19\xf7\x30\x0c\x48\x03\x2e\xb5\x54\x95\x1c\x3b\x4e\x1e\x8f\x75\x21\xec\x34\x96\x21\x2e\xf7\x62\xeb\x70\xb7\xb3\xb5\x58\x24\x78\x75\x7c\x15\x2e\x7a\xd8\x69\xac\xb0\xae\xe1\xe9\x80\x7d\x61\x05\x28\x47\x7d\xc1\x3e\xb3\x22\xea\x50\xb4\x3e\xdb\x23\x55\xd1\x5a\xc3\x6e\xdc\xc3\x42\x8e\xa3\x74\xed\x02\x16\x04\x4c\x14\x52\xce\x2c\x15\x77\xd5\x59\xd4\xf6\x08\x31\x27\xda\xa7\x60\xa4\x50\x7d\xce\x43\xe2\x2c\x51\x45\xd1\xc2\xb5\xdf\x80\xed\x86\xaa\xf8\x85\x4f\xa2\x60\x37\x2c\x41\xce\x9a\x43\x83\xf1\x05\x53\xf9\xb8\x70\xd2\xcc\x86\xbd\x5b\xb1\xdf\x3e\x7d\xaa\x99\x1d\xf4\xf8\x80\xa3\xc4\x50\x92\xc1\x35\xc1\xfe\x31\x68\x1c\x9c\x61\xce\x94\x86\x13\x0a\x7f\xce\xa4\x5a\xf4\x99\x8b\x14\xd0\x7e\xa7\x11\xde\xf0\xcc\xc6\x01\x92\x18\x97\xf4\x5e\x4c\xa4\xd8\xb9\x61\x87\xd2\xb8\x64\x11\x86\x51\x40\xd3\xea\x1a\x32\xcd\xa1\x74\x27\x68\xed\xee\x43\x6c\x92\x26\x0c\x48\xea\xeb\xe3\x58\x6d\x84\x52\xa0\xff\xf8\xfb\xcf\xfb\xd8\x0b\xe1\x6c\xd9\xe9\x57\xe0\x65\x49\x0c\xbb\x81\x04\xbc\x07\xbd\x9c\x81\x9d\x06\xe4\x2a\x0c\x20\xec\x9a\x5f\x7d\xcf\xb8\x99\x3e\x08\xd9\x63\x7a\xaf\xc0\x67\x59\xba\xdc\x33\xef\xb8\xe9\x24\x37\xe6\x1e\x27\x41\xc3\x7b\x1c\xa8\x94\xe7\x47\x6a\x0d\xef\x34\x80\x2c\xf2\xb3\xf6\x99\xc6\x5a\x08\x43\x88\x18\xf2\xa2\xa3\x78\x18\x42\x7a\x12\xa2\xc1\x66\xd4\x77\x1c\xbb\x32\x75\x9f\x3b\x09\xb3\x29\x55\x73\xf6\x3e\x9d\x55\x23\x85\xcf\xf3\x88\xbf\x17\xea\xe7\x2b\x06\x3c\xa4\x92\x25\x70\xbc\xad\x6e\xc3\x5d\xd7\x9b\xe2\x8b\xc4\xc1\xb5\x2a\x6e\xfc\x1e\x2d\x66\xbe\x75\xe5\x2e\xec\x4e\x49\xf1\x50\xcf\x4a\xc2\x91\xac\x7c\x9a\x40\xf5\x6b\x5a\x56\xc9\xb8\x4e\x10\x62\xe2\x05\x04\xed\xea\x34\x75\x97\x3d\xb2\x44\x7a\x6d\x5c\xf9\x57\x10\x31\x80\x73\x73\xc0\xf6\x4e\x97\x2c\xa8\xd8\xa6\x01\xe1\x57\x78\xf1\xf2\xc4\x1c\xca\xe8\x1e\x48\xd2\x14\xb0\x35\xab\xb2\xa3\x47\x93\xde\x86\x97\xaf\x28\x86\x78\x10\xaa\x1f\x1f\x2e\x98\x4d\xe3\xe4\x22\xa3\xe5\xc9\xc3\x50\xb7\xff\x07\x00\x00\xff\xff\xa3\x81\x50\x81\xb7\x08\x00\x00"
+
+func dataWebStaticJsLdssJsBytes() ([]byte, error) {
+	return bindataRead(
+		_dataWebStaticJsLdssJs,
+		"data/web/static/js/ldss.js",
+	)
+}
+
+func dataWebStaticJsLdssJs() (*asset, error) {
+	bytes, err := dataWebStaticJsLdssJsBytes()
+	if err != nil {
+		return nil, err
+	}
+
+	info := bindataFileInfo{name: "data/web/static/js/ldss.js", size: 2231, mode: os.FileMode(420), modTime: time.Unix(1463336120, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -481,7 +502,7 @@ func dataWebStaticSvgIconLicense() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "data/web/static/svg/ICON-LICENSE", size: 1073, mode: os.FileMode(420), modTime: time.Unix(1457058732, 0)}
+	info := bindataFileInfo{name: "data/web/static/svg/ICON-LICENSE", size: 1073, mode: os.FileMode(420), modTime: time.Unix(1463336120, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -501,7 +522,7 @@ func dataWebStaticSvgReadmeMd() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "data/web/static/svg/README.md", size: 3501, mode: os.FileMode(420), modTime: time.Unix(1457058732, 0)}
+	info := bindataFileInfo{name: "data/web/static/svg/README.md", size: 3501, mode: os.FileMode(420), modTime: time.Unix(1463336120, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -521,7 +542,7 @@ func dataWebStaticSvgAccountLoginSvg() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "data/web/static/svg/account-login.svg", size: 154, mode: os.FileMode(420), modTime: time.Unix(1457058732, 0)}
+	info := bindataFileInfo{name: "data/web/static/svg/account-login.svg", size: 154, mode: os.FileMode(420), modTime: time.Unix(1463336120, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -541,7 +562,7 @@ func dataWebStaticSvgAccountLogoutSvg() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "data/web/static/svg/account-logout.svg", size: 159, mode: os.FileMode(420), modTime: time.Unix(1457058732, 0)}
+	info := bindataFileInfo{name: "data/web/static/svg/account-logout.svg", size: 159, mode: os.FileMode(420), modTime: time.Unix(1463336120, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -561,7 +582,7 @@ func dataWebStaticSvgActionRedoSvg() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "data/web/static/svg/action-redo.svg", size: 247, mode: os.FileMode(420), modTime: time.Unix(1457058732, 0)}
+	info := bindataFileInfo{name: "data/web/static/svg/action-redo.svg", size: 247, mode: os.FileMode(420), modTime: time.Unix(1463336120, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -581,7 +602,7 @@ func dataWebStaticSvgActionUndoSvg() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "data/web/static/svg/action-undo.svg", size: 247, mode: os.FileMode(420), modTime: time.Unix(1457058732, 0)}
+	info := bindataFileInfo{name: "data/web/static/svg/action-undo.svg", size: 247, mode: os.FileMode(420), modTime: time.Unix(1463336120, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -601,7 +622,7 @@ func dataWebStaticSvgAlignCenterSvg() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "data/web/static/svg/align-center.svg", size: 163, mode: os.FileMode(420), modTime: time.Unix(1457058732, 0)}
+	info := bindataFileInfo{name: "data/web/static/svg/align-center.svg", size: 163, mode: os.FileMode(420), modTime: time.Unix(1463336120, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -621,7 +642,7 @@ func dataWebStaticSvgAlignLeftSvg() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "data/web/static/svg/align-left.svg", size: 162, mode: os.FileMode(420), modTime: time.Unix(1457058732, 0)}
+	info := bindataFileInfo{name: "data/web/static/svg/align-left.svg", size: 162, mode: os.FileMode(420), modTime: time.Unix(1463336120, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -641,7 +662,7 @@ func dataWebStaticSvgAlignRightSvg() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "data/web/static/svg/align-right.svg", size: 163, mode: os.FileMode(420), modTime: time.Unix(1457058732, 0)}
+	info := bindataFileInfo{name: "data/web/static/svg/align-right.svg", size: 163, mode: os.FileMode(420), modTime: time.Unix(1463336120, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -661,7 +682,7 @@ func dataWebStaticSvgApertureSvg() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "data/web/static/svg/aperture.svg", size: 440, mode: os.FileMode(420), modTime: time.Unix(1457058732, 0)}
+	info := bindataFileInfo{name: "data/web/static/svg/aperture.svg", size: 440, mode: os.FileMode(420), modTime: time.Unix(1463336120, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -681,7 +702,7 @@ func dataWebStaticSvgArrowBottomSvg() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "data/web/static/svg/arrow-bottom.svg", size: 160, mode: os.FileMode(420), modTime: time.Unix(1457058732, 0)}
+	info := bindataFileInfo{name: "data/web/static/svg/arrow-bottom.svg", size: 160, mode: os.FileMode(420), modTime: time.Unix(1463336120, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -701,7 +722,7 @@ func dataWebStaticSvgArrowCircleBottomSvg() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "data/web/static/svg/arrow-circle-bottom.svg", size: 185, mode: os.FileMode(420), modTime: time.Unix(1457058732, 0)}
+	info := bindataFileInfo{name: "data/web/static/svg/arrow-circle-bottom.svg", size: 185, mode: os.FileMode(420), modTime: time.Unix(1463336120, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -721,7 +742,7 @@ func dataWebStaticSvgArrowCircleLeftSvg() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "data/web/static/svg/arrow-circle-left.svg", size: 184, mode: os.FileMode(420), modTime: time.Unix(1457058732, 0)}
+	info := bindataFileInfo{name: "data/web/static/svg/arrow-circle-left.svg", size: 184, mode: os.FileMode(420), modTime: time.Unix(1463336120, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -741,7 +762,7 @@ func dataWebStaticSvgArrowCircleRightSvg() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "data/web/static/svg/arrow-circle-right.svg", size: 186, mode: os.FileMode(420), modTime: time.Unix(1457058732, 0)}
+	info := bindataFileInfo{name: "data/web/static/svg/arrow-circle-right.svg", size: 186, mode: os.FileMode(420), modTime: time.Unix(1463336120, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -761,7 +782,7 @@ func dataWebStaticSvgArrowCircleTopSvg() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "data/web/static/svg/arrow-circle-top.svg", size: 186, mode: os.FileMode(420), modTime: time.Unix(1457058732, 0)}
+	info := bindataFileInfo{name: "data/web/static/svg/arrow-circle-top.svg", size: 186, mode: os.FileMode(420), modTime: time.Unix(1463336120, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -781,7 +802,7 @@ func dataWebStaticSvgArrowLeftSvg() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "data/web/static/svg/arrow-left.svg", size: 163, mode: os.FileMode(420), modTime: time.Unix(1457058732, 0)}
+	info := bindataFileInfo{name: "data/web/static/svg/arrow-left.svg", size: 163, mode: os.FileMode(420), modTime: time.Unix(1463336120, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -801,7 +822,7 @@ func dataWebStaticSvgArrowRightSvg() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "data/web/static/svg/arrow-right.svg", size: 159, mode: os.FileMode(420), modTime: time.Unix(1457058732, 0)}
+	info := bindataFileInfo{name: "data/web/static/svg/arrow-right.svg", size: 159, mode: os.FileMode(420), modTime: time.Unix(1463336120, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -821,7 +842,7 @@ func dataWebStaticSvgArrowThickBottomSvg() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "data/web/static/svg/arrow-thick-bottom.svg", size: 160, mode: os.FileMode(420), modTime: time.Unix(1457058732, 0)}
+	info := bindataFileInfo{name: "data/web/static/svg/arrow-thick-bottom.svg", size: 160, mode: os.FileMode(420), modTime: time.Unix(1463336120, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -841,7 +862,7 @@ func dataWebStaticSvgArrowThickLeftSvg() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "data/web/static/svg/arrow-thick-left.svg", size: 163, mode: os.FileMode(420), modTime: time.Unix(1457058732, 0)}
+	info := bindataFileInfo{name: "data/web/static/svg/arrow-thick-left.svg", size: 163, mode: os.FileMode(420), modTime: time.Unix(1463336120, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -861,7 +882,7 @@ func dataWebStaticSvgArrowThickRightSvg() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "data/web/static/svg/arrow-thick-right.svg", size: 159, mode: os.FileMode(420), modTime: time.Unix(1457058732, 0)}
+	info := bindataFileInfo{name: "data/web/static/svg/arrow-thick-right.svg", size: 159, mode: os.FileMode(420), modTime: time.Unix(1463336120, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -881,7 +902,7 @@ func dataWebStaticSvgArrowThickTopSvg() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "data/web/static/svg/arrow-thick-top.svg", size: 162, mode: os.FileMode(420), modTime: time.Unix(1457058732, 0)}
+	info := bindataFileInfo{name: "data/web/static/svg/arrow-thick-top.svg", size: 162, mode: os.FileMode(420), modTime: time.Unix(1463336120, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -901,7 +922,7 @@ func dataWebStaticSvgArrowTopSvg() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "data/web/static/svg/arrow-top.svg", size: 162, mode: os.FileMode(420), modTime: time.Unix(1457058732, 0)}
+	info := bindataFileInfo{name: "data/web/static/svg/arrow-top.svg", size: 162, mode: os.FileMode(420), modTime: time.Unix(1463336120, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -921,7 +942,7 @@ func dataWebStaticSvgAudioSpectrumSvg() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "data/web/static/svg/audio-spectrum.svg", size: 164, mode: os.FileMode(420), modTime: time.Unix(1457058732, 0)}
+	info := bindataFileInfo{name: "data/web/static/svg/audio-spectrum.svg", size: 164, mode: os.FileMode(420), modTime: time.Unix(1463336120, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -941,7 +962,7 @@ func dataWebStaticSvgAudioSvg() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "data/web/static/svg/audio.svg", size: 601, mode: os.FileMode(420), modTime: time.Unix(1457058732, 0)}
+	info := bindataFileInfo{name: "data/web/static/svg/audio.svg", size: 601, mode: os.FileMode(420), modTime: time.Unix(1463336120, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -961,7 +982,7 @@ func dataWebStaticSvgBadgeSvg() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "data/web/static/svg/badge.svg", size: 239, mode: os.FileMode(420), modTime: time.Unix(1457058732, 0)}
+	info := bindataFileInfo{name: "data/web/static/svg/badge.svg", size: 239, mode: os.FileMode(420), modTime: time.Unix(1463336120, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -981,7 +1002,7 @@ func dataWebStaticSvgBanSvg() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "data/web/static/svg/ban.svg", size: 323, mode: os.FileMode(420), modTime: time.Unix(1457058732, 0)}
+	info := bindataFileInfo{name: "data/web/static/svg/ban.svg", size: 323, mode: os.FileMode(420), modTime: time.Unix(1463336120, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -1001,7 +1022,7 @@ func dataWebStaticSvgBarChartSvg() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "data/web/static/svg/bar-chart.svg", size: 154, mode: os.FileMode(420), modTime: time.Unix(1457058732, 0)}
+	info := bindataFileInfo{name: "data/web/static/svg/bar-chart.svg", size: 154, mode: os.FileMode(420), modTime: time.Unix(1463336120, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -1021,7 +1042,7 @@ func dataWebStaticSvgBasketSvg() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "data/web/static/svg/basket.svg", size: 464, mode: os.FileMode(420), modTime: time.Unix(1457058732, 0)}
+	info := bindataFileInfo{name: "data/web/static/svg/basket.svg", size: 464, mode: os.FileMode(420), modTime: time.Unix(1463336120, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -1041,7 +1062,7 @@ func dataWebStaticSvgBatteryEmptySvg() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "data/web/static/svg/battery-empty.svg", size: 271, mode: os.FileMode(420), modTime: time.Unix(1457058732, 0)}
+	info := bindataFileInfo{name: "data/web/static/svg/battery-empty.svg", size: 271, mode: os.FileMode(420), modTime: time.Unix(1463336120, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -1061,7 +1082,7 @@ func dataWebStaticSvgBatteryFullSvg() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "data/web/static/svg/battery-full.svg", size: 254, mode: os.FileMode(420), modTime: time.Unix(1457058732, 0)}
+	info := bindataFileInfo{name: "data/web/static/svg/battery-full.svg", size: 254, mode: os.FileMode(420), modTime: time.Unix(1463336120, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -1081,7 +1102,7 @@ func dataWebStaticSvgBeakerSvg() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "data/web/static/svg/beaker.svg", size: 474, mode: os.FileMode(420), modTime: time.Unix(1457058732, 0)}
+	info := bindataFileInfo{name: "data/web/static/svg/beaker.svg", size: 474, mode: os.FileMode(420), modTime: time.Unix(1463336120, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -1101,7 +1122,7 @@ func dataWebStaticSvgBellSvg() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "data/web/static/svg/bell.svg", size: 273, mode: os.FileMode(420), modTime: time.Unix(1457058732, 0)}
+	info := bindataFileInfo{name: "data/web/static/svg/bell.svg", size: 273, mode: os.FileMode(420), modTime: time.Unix(1463336120, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -1121,7 +1142,7 @@ func dataWebStaticSvgBluetoothSvg() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "data/web/static/svg/bluetooth.svg", size: 272, mode: os.FileMode(420), modTime: time.Unix(1457058732, 0)}
+	info := bindataFileInfo{name: "data/web/static/svg/bluetooth.svg", size: 272, mode: os.FileMode(420), modTime: time.Unix(1463336120, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -1141,7 +1162,7 @@ func dataWebStaticSvgBoldSvg() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "data/web/static/svg/bold.svg", size: 332, mode: os.FileMode(420), modTime: time.Unix(1457058732, 0)}
+	info := bindataFileInfo{name: "data/web/static/svg/bold.svg", size: 332, mode: os.FileMode(420), modTime: time.Unix(1463336120, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -1161,7 +1182,7 @@ func dataWebStaticSvgBoltSvg() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "data/web/static/svg/bolt.svg", size: 151, mode: os.FileMode(420), modTime: time.Unix(1457058732, 0)}
+	info := bindataFileInfo{name: "data/web/static/svg/bolt.svg", size: 151, mode: os.FileMode(420), modTime: time.Unix(1463336120, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -1181,7 +1202,7 @@ func dataWebStaticSvgBookSvg() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "data/web/static/svg/book.svg", size: 287, mode: os.FileMode(420), modTime: time.Unix(1457058732, 0)}
+	info := bindataFileInfo{name: "data/web/static/svg/book.svg", size: 287, mode: os.FileMode(420), modTime: time.Unix(1463336120, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -1201,7 +1222,7 @@ func dataWebStaticSvgBookmarkSvg() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "data/web/static/svg/bookmark.svg", size: 148, mode: os.FileMode(420), modTime: time.Unix(1457058732, 0)}
+	info := bindataFileInfo{name: "data/web/static/svg/bookmark.svg", size: 148, mode: os.FileMode(420), modTime: time.Unix(1463336120, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -1221,7 +1242,7 @@ func dataWebStaticSvgBoxSvg() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "data/web/static/svg/box.svg", size: 203, mode: os.FileMode(420), modTime: time.Unix(1457058732, 0)}
+	info := bindataFileInfo{name: "data/web/static/svg/box.svg", size: 203, mode: os.FileMode(420), modTime: time.Unix(1463336120, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -1241,7 +1262,7 @@ func dataWebStaticSvgBriefcaseSvg() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "data/web/static/svg/briefcase.svg", size: 370, mode: os.FileMode(420), modTime: time.Unix(1457058732, 0)}
+	info := bindataFileInfo{name: "data/web/static/svg/briefcase.svg", size: 370, mode: os.FileMode(420), modTime: time.Unix(1463336120, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -1261,7 +1282,7 @@ func dataWebStaticSvgBritishPoundSvg() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "data/web/static/svg/british-pound.svg", size: 446, mode: os.FileMode(420), modTime: time.Unix(1457058732, 0)}
+	info := bindataFileInfo{name: "data/web/static/svg/british-pound.svg", size: 446, mode: os.FileMode(420), modTime: time.Unix(1463336120, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -1281,7 +1302,7 @@ func dataWebStaticSvgBrowserSvg() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "data/web/static/svg/browser.svg", size: 370, mode: os.FileMode(420), modTime: time.Unix(1457058732, 0)}
+	info := bindataFileInfo{name: "data/web/static/svg/browser.svg", size: 370, mode: os.FileMode(420), modTime: time.Unix(1463336120, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -1301,7 +1322,7 @@ func dataWebStaticSvgBrushSvg() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "data/web/static/svg/brush.svg", size: 426, mode: os.FileMode(420), modTime: time.Unix(1457058732, 0)}
+	info := bindataFileInfo{name: "data/web/static/svg/brush.svg", size: 426, mode: os.FileMode(420), modTime: time.Unix(1463336120, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -1321,7 +1342,7 @@ func dataWebStaticSvgBugSvg() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "data/web/static/svg/bug.svg", size: 746, mode: os.FileMode(420), modTime: time.Unix(1457058732, 0)}
+	info := bindataFileInfo{name: "data/web/static/svg/bug.svg", size: 746, mode: os.FileMode(420), modTime: time.Unix(1463336120, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -1341,7 +1362,7 @@ func dataWebStaticSvgBullhornSvg() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "data/web/static/svg/bullhorn.svg", size: 380, mode: os.FileMode(420), modTime: time.Unix(1457058732, 0)}
+	info := bindataFileInfo{name: "data/web/static/svg/bullhorn.svg", size: 380, mode: os.FileMode(420), modTime: time.Unix(1463336120, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -1361,7 +1382,7 @@ func dataWebStaticSvgCalculatorSvg() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "data/web/static/svg/calculator.svg", size: 306, mode: os.FileMode(420), modTime: time.Unix(1457058732, 0)}
+	info := bindataFileInfo{name: "data/web/static/svg/calculator.svg", size: 306, mode: os.FileMode(420), modTime: time.Unix(1463336120, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -1381,7 +1402,7 @@ func dataWebStaticSvgCalendarSvg() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "data/web/static/svg/calendar.svg", size: 256, mode: os.FileMode(420), modTime: time.Unix(1457058732, 0)}
+	info := bindataFileInfo{name: "data/web/static/svg/calendar.svg", size: 256, mode: os.FileMode(420), modTime: time.Unix(1463336120, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -1401,7 +1422,7 @@ func dataWebStaticSvgCameraSlrSvg() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "data/web/static/svg/camera-slr.svg", size: 500, mode: os.FileMode(420), modTime: time.Unix(1457058732, 0)}
+	info := bindataFileInfo{name: "data/web/static/svg/camera-slr.svg", size: 500, mode: os.FileMode(420), modTime: time.Unix(1463336120, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -1421,7 +1442,7 @@ func dataWebStaticSvgCaretBottomSvg() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "data/web/static/svg/caret-bottom.svg", size: 145, mode: os.FileMode(420), modTime: time.Unix(1457058732, 0)}
+	info := bindataFileInfo{name: "data/web/static/svg/caret-bottom.svg", size: 145, mode: os.FileMode(420), modTime: time.Unix(1463336120, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -1441,7 +1462,7 @@ func dataWebStaticSvgCaretLeftSvg() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "data/web/static/svg/caret-left.svg", size: 144, mode: os.FileMode(420), modTime: time.Unix(1457058732, 0)}
+	info := bindataFileInfo{name: "data/web/static/svg/caret-left.svg", size: 144, mode: os.FileMode(420), modTime: time.Unix(1463336120, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -1461,7 +1482,7 @@ func dataWebStaticSvgCaretRightSvg() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "data/web/static/svg/caret-right.svg", size: 142, mode: os.FileMode(420), modTime: time.Unix(1457058732, 0)}
+	info := bindataFileInfo{name: "data/web/static/svg/caret-right.svg", size: 142, mode: os.FileMode(420), modTime: time.Unix(1463336120, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -1481,7 +1502,7 @@ func dataWebStaticSvgCaretTopSvg() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "data/web/static/svg/caret-top.svg", size: 146, mode: os.FileMode(420), modTime: time.Unix(1457058732, 0)}
+	info := bindataFileInfo{name: "data/web/static/svg/caret-top.svg", size: 146, mode: os.FileMode(420), modTime: time.Unix(1463336120, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -1501,7 +1522,7 @@ func dataWebStaticSvgCartSvg() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "data/web/static/svg/cart.svg", size: 445, mode: os.FileMode(420), modTime: time.Unix(1457058732, 0)}
+	info := bindataFileInfo{name: "data/web/static/svg/cart.svg", size: 445, mode: os.FileMode(420), modTime: time.Unix(1463336120, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -1521,7 +1542,7 @@ func dataWebStaticSvgChatSvg() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "data/web/static/svg/chat.svg", size: 145, mode: os.FileMode(420), modTime: time.Unix(1457058732, 0)}
+	info := bindataFileInfo{name: "data/web/static/svg/chat.svg", size: 145, mode: os.FileMode(420), modTime: time.Unix(1463336120, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -1541,7 +1562,7 @@ func dataWebStaticSvgCheckSvg() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "data/web/static/svg/check.svg", size: 233, mode: os.FileMode(420), modTime: time.Unix(1457058732, 0)}
+	info := bindataFileInfo{name: "data/web/static/svg/check.svg", size: 233, mode: os.FileMode(420), modTime: time.Unix(1463336120, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -1561,7 +1582,7 @@ func dataWebStaticSvgChevronBottomSvg() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "data/web/static/svg/chevron-bottom.svg", size: 177, mode: os.FileMode(420), modTime: time.Unix(1457058732, 0)}
+	info := bindataFileInfo{name: "data/web/static/svg/chevron-bottom.svg", size: 177, mode: os.FileMode(420), modTime: time.Unix(1463336120, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -1581,7 +1602,7 @@ func dataWebStaticSvgChevronLeftSvg() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "data/web/static/svg/chevron-left.svg", size: 173, mode: os.FileMode(420), modTime: time.Unix(1457058732, 0)}
+	info := bindataFileInfo{name: "data/web/static/svg/chevron-left.svg", size: 173, mode: os.FileMode(420), modTime: time.Unix(1463336120, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -1601,7 +1622,7 @@ func dataWebStaticSvgChevronRightSvg() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "data/web/static/svg/chevron-right.svg", size: 175, mode: os.FileMode(420), modTime: time.Unix(1457058732, 0)}
+	info := bindataFileInfo{name: "data/web/static/svg/chevron-right.svg", size: 175, mode: os.FileMode(420), modTime: time.Unix(1463336120, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -1621,7 +1642,7 @@ func dataWebStaticSvgChevronTopSvg() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "data/web/static/svg/chevron-top.svg", size: 175, mode: os.FileMode(420), modTime: time.Unix(1457058732, 0)}
+	info := bindataFileInfo{name: "data/web/static/svg/chevron-top.svg", size: 175, mode: os.FileMode(420), modTime: time.Unix(1463336120, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -1641,7 +1662,7 @@ func dataWebStaticSvgCircleCheckSvg() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "data/web/static/svg/circle-check.svg", size: 213, mode: os.FileMode(420), modTime: time.Unix(1457058732, 0)}
+	info := bindataFileInfo{name: "data/web/static/svg/circle-check.svg", size: 213, mode: os.FileMode(420), modTime: time.Unix(1463336120, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -1661,7 +1682,7 @@ func dataWebStaticSvgCircleXSvg() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "data/web/static/svg/circle-x.svg", size: 262, mode: os.FileMode(420), modTime: time.Unix(1457058732, 0)}
+	info := bindataFileInfo{name: "data/web/static/svg/circle-x.svg", size: 262, mode: os.FileMode(420), modTime: time.Unix(1463336120, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -1681,7 +1702,7 @@ func dataWebStaticSvgClipboardSvg() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "data/web/static/svg/clipboard.svg", size: 339, mode: os.FileMode(420), modTime: time.Unix(1457058732, 0)}
+	info := bindataFileInfo{name: "data/web/static/svg/clipboard.svg", size: 339, mode: os.FileMode(420), modTime: time.Unix(1463336120, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -1701,7 +1722,7 @@ func dataWebStaticSvgClockSvg() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "data/web/static/svg/clock.svg", size: 272, mode: os.FileMode(420), modTime: time.Unix(1457058732, 0)}
+	info := bindataFileInfo{name: "data/web/static/svg/clock.svg", size: 272, mode: os.FileMode(420), modTime: time.Unix(1463336120, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -1721,7 +1742,7 @@ func dataWebStaticSvgCloudDownloadSvg() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "data/web/static/svg/cloud-download.svg", size: 374, mode: os.FileMode(420), modTime: time.Unix(1457058732, 0)}
+	info := bindataFileInfo{name: "data/web/static/svg/cloud-download.svg", size: 374, mode: os.FileMode(420), modTime: time.Unix(1463336120, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -1741,7 +1762,7 @@ func dataWebStaticSvgCloudUploadSvg() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "data/web/static/svg/cloud-upload.svg", size: 302, mode: os.FileMode(420), modTime: time.Unix(1457058732, 0)}
+	info := bindataFileInfo{name: "data/web/static/svg/cloud-upload.svg", size: 302, mode: os.FileMode(420), modTime: time.Unix(1463336120, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -1761,7 +1782,7 @@ func dataWebStaticSvgCloudSvg() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "data/web/static/svg/cloud.svg", size: 257, mode: os.FileMode(420), modTime: time.Unix(1457058732, 0)}
+	info := bindataFileInfo{name: "data/web/static/svg/cloud.svg", size: 257, mode: os.FileMode(420), modTime: time.Unix(1463336120, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -1781,7 +1802,7 @@ func dataWebStaticSvgCloudySvg() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "data/web/static/svg/cloudy.svg", size: 347, mode: os.FileMode(420), modTime: time.Unix(1457058732, 0)}
+	info := bindataFileInfo{name: "data/web/static/svg/cloudy.svg", size: 347, mode: os.FileMode(420), modTime: time.Unix(1463336120, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -1801,7 +1822,7 @@ func dataWebStaticSvgCodeSvg() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "data/web/static/svg/code.svg", size: 203, mode: os.FileMode(420), modTime: time.Unix(1457058732, 0)}
+	info := bindataFileInfo{name: "data/web/static/svg/code.svg", size: 203, mode: os.FileMode(420), modTime: time.Unix(1463336120, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -1821,7 +1842,7 @@ func dataWebStaticSvgCogSvg() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "data/web/static/svg/cog.svg", size: 528, mode: os.FileMode(420), modTime: time.Unix(1457058732, 0)}
+	info := bindataFileInfo{name: "data/web/static/svg/cog.svg", size: 528, mode: os.FileMode(420), modTime: time.Unix(1463336120, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -1841,7 +1862,7 @@ func dataWebStaticSvgCollapseDownSvg() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "data/web/static/svg/collapse-down.svg", size: 149, mode: os.FileMode(420), modTime: time.Unix(1457058732, 0)}
+	info := bindataFileInfo{name: "data/web/static/svg/collapse-down.svg", size: 149, mode: os.FileMode(420), modTime: time.Unix(1463336120, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -1861,7 +1882,7 @@ func dataWebStaticSvgCollapseLeftSvg() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "data/web/static/svg/collapse-left.svg", size: 150, mode: os.FileMode(420), modTime: time.Unix(1457058732, 0)}
+	info := bindataFileInfo{name: "data/web/static/svg/collapse-left.svg", size: 150, mode: os.FileMode(420), modTime: time.Unix(1463336120, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -1881,7 +1902,7 @@ func dataWebStaticSvgCollapseRightSvg() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "data/web/static/svg/collapse-right.svg", size: 148, mode: os.FileMode(420), modTime: time.Unix(1457058732, 0)}
+	info := bindataFileInfo{name: "data/web/static/svg/collapse-right.svg", size: 148, mode: os.FileMode(420), modTime: time.Unix(1463336120, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -1901,7 +1922,7 @@ func dataWebStaticSvgCollapseUpSvg() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "data/web/static/svg/collapse-up.svg", size: 150, mode: os.FileMode(420), modTime: time.Unix(1457058732, 0)}
+	info := bindataFileInfo{name: "data/web/static/svg/collapse-up.svg", size: 150, mode: os.FileMode(420), modTime: time.Unix(1463336120, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -1921,7 +1942,7 @@ func dataWebStaticSvgCommandSvg() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "data/web/static/svg/command.svg", size: 617, mode: os.FileMode(420), modTime: time.Unix(1457058732, 0)}
+	info := bindataFileInfo{name: "data/web/static/svg/command.svg", size: 617, mode: os.FileMode(420), modTime: time.Unix(1463336120, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -1941,7 +1962,7 @@ func dataWebStaticSvgCommentSquareSvg() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "data/web/static/svg/comment-square.svg", size: 196, mode: os.FileMode(420), modTime: time.Unix(1457058732, 0)}
+	info := bindataFileInfo{name: "data/web/static/svg/comment-square.svg", size: 196, mode: os.FileMode(420), modTime: time.Unix(1463336120, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -1961,7 +1982,7 @@ func dataWebStaticSvgCompassSvg() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "data/web/static/svg/compass.svg", size: 293, mode: os.FileMode(420), modTime: time.Unix(1457058732, 0)}
+	info := bindataFileInfo{name: "data/web/static/svg/compass.svg", size: 293, mode: os.FileMode(420), modTime: time.Unix(1463336120, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -1981,7 +2002,7 @@ func dataWebStaticSvgContrastSvg() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "data/web/static/svg/contrast.svg", size: 192, mode: os.FileMode(420), modTime: time.Unix(1457058732, 0)}
+	info := bindataFileInfo{name: "data/web/static/svg/contrast.svg", size: 192, mode: os.FileMode(420), modTime: time.Unix(1463336120, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -2001,7 +2022,7 @@ func dataWebStaticSvgCopywritingSvg() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "data/web/static/svg/copywriting.svg", size: 221, mode: os.FileMode(420), modTime: time.Unix(1457058732, 0)}
+	info := bindataFileInfo{name: "data/web/static/svg/copywriting.svg", size: 221, mode: os.FileMode(420), modTime: time.Unix(1463336120, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -2021,7 +2042,7 @@ func dataWebStaticSvgCreditCardSvg() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "data/web/static/svg/credit-card.svg", size: 290, mode: os.FileMode(420), modTime: time.Unix(1457058732, 0)}
+	info := bindataFileInfo{name: "data/web/static/svg/credit-card.svg", size: 290, mode: os.FileMode(420), modTime: time.Unix(1463336120, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -2041,7 +2062,7 @@ func dataWebStaticSvgCropSvg() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "data/web/static/svg/crop.svg", size: 211, mode: os.FileMode(420), modTime: time.Unix(1457058732, 0)}
+	info := bindataFileInfo{name: "data/web/static/svg/crop.svg", size: 211, mode: os.FileMode(420), modTime: time.Unix(1463336120, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -2061,7 +2082,7 @@ func dataWebStaticSvgDashboardSvg() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "data/web/static/svg/dashboard.svg", size: 486, mode: os.FileMode(420), modTime: time.Unix(1457058732, 0)}
+	info := bindataFileInfo{name: "data/web/static/svg/dashboard.svg", size: 486, mode: os.FileMode(420), modTime: time.Unix(1463336120, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -2081,7 +2102,7 @@ func dataWebStaticSvgDataTransferDownloadSvg() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "data/web/static/svg/data-transfer-download.svg", size: 145, mode: os.FileMode(420), modTime: time.Unix(1457058732, 0)}
+	info := bindataFileInfo{name: "data/web/static/svg/data-transfer-download.svg", size: 145, mode: os.FileMode(420), modTime: time.Unix(1463336120, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -2101,7 +2122,7 @@ func dataWebStaticSvgDataTransferUploadSvg() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "data/web/static/svg/data-transfer-upload.svg", size: 143, mode: os.FileMode(420), modTime: time.Unix(1457058732, 0)}
+	info := bindataFileInfo{name: "data/web/static/svg/data-transfer-upload.svg", size: 143, mode: os.FileMode(420), modTime: time.Unix(1463336120, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -2121,7 +2142,7 @@ func dataWebStaticSvgDeleteSvg() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "data/web/static/svg/delete.svg", size: 251, mode: os.FileMode(420), modTime: time.Unix(1457058732, 0)}
+	info := bindataFileInfo{name: "data/web/static/svg/delete.svg", size: 251, mode: os.FileMode(420), modTime: time.Unix(1463336120, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -2141,7 +2162,7 @@ func dataWebStaticSvgDialSvg() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "data/web/static/svg/dial.svg", size: 311, mode: os.FileMode(420), modTime: time.Unix(1457058732, 0)}
+	info := bindataFileInfo{name: "data/web/static/svg/dial.svg", size: 311, mode: os.FileMode(420), modTime: time.Unix(1463336120, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -2161,7 +2182,7 @@ func dataWebStaticSvgDocumentSvg() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "data/web/static/svg/document.svg", size: 183, mode: os.FileMode(420), modTime: time.Unix(1457058732, 0)}
+	info := bindataFileInfo{name: "data/web/static/svg/document.svg", size: 183, mode: os.FileMode(420), modTime: time.Unix(1463336120, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -2181,7 +2202,7 @@ func dataWebStaticSvgDollarSvg() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "data/web/static/svg/dollar.svg", size: 532, mode: os.FileMode(420), modTime: time.Unix(1457058732, 0)}
+	info := bindataFileInfo{name: "data/web/static/svg/dollar.svg", size: 532, mode: os.FileMode(420), modTime: time.Unix(1463336120, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -2201,7 +2222,7 @@ func dataWebStaticSvgDoubleQuoteSansLeftSvg() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "data/web/static/svg/double-quote-sans-left.svg", size: 163, mode: os.FileMode(420), modTime: time.Unix(1457058732, 0)}
+	info := bindataFileInfo{name: "data/web/static/svg/double-quote-sans-left.svg", size: 163, mode: os.FileMode(420), modTime: time.Unix(1463336120, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -2221,7 +2242,7 @@ func dataWebStaticSvgDoubleQuoteSansRightSvg() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "data/web/static/svg/double-quote-sans-right.svg", size: 163, mode: os.FileMode(420), modTime: time.Unix(1457058732, 0)}
+	info := bindataFileInfo{name: "data/web/static/svg/double-quote-sans-right.svg", size: 163, mode: os.FileMode(420), modTime: time.Unix(1463336120, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -2241,7 +2262,7 @@ func dataWebStaticSvgDoubleQuoteSerifLeftSvg() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "data/web/static/svg/double-quote-serif-left.svg", size: 235, mode: os.FileMode(420), modTime: time.Unix(1457058732, 0)}
+	info := bindataFileInfo{name: "data/web/static/svg/double-quote-serif-left.svg", size: 235, mode: os.FileMode(420), modTime: time.Unix(1463336120, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -2261,7 +2282,7 @@ func dataWebStaticSvgDoubleQuoteSerifRightSvg() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "data/web/static/svg/double-quote-serif-right.svg", size: 233, mode: os.FileMode(420), modTime: time.Unix(1457058732, 0)}
+	info := bindataFileInfo{name: "data/web/static/svg/double-quote-serif-right.svg", size: 233, mode: os.FileMode(420), modTime: time.Unix(1463336120, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -2281,7 +2302,7 @@ func dataWebStaticSvgDropletSvg() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "data/web/static/svg/droplet.svg", size: 336, mode: os.FileMode(420), modTime: time.Unix(1457058732, 0)}
+	info := bindataFileInfo{name: "data/web/static/svg/droplet.svg", size: 336, mode: os.FileMode(420), modTime: time.Unix(1463336120, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -2301,7 +2322,7 @@ func dataWebStaticSvgEjectSvg() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "data/web/static/svg/eject.svg", size: 135, mode: os.FileMode(420), modTime: time.Unix(1457058732, 0)}
+	info := bindataFileInfo{name: "data/web/static/svg/eject.svg", size: 135, mode: os.FileMode(420), modTime: time.Unix(1463336120, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -2321,7 +2342,7 @@ func dataWebStaticSvgElevatorSvg() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "data/web/static/svg/elevator.svg", size: 161, mode: os.FileMode(420), modTime: time.Unix(1457058732, 0)}
+	info := bindataFileInfo{name: "data/web/static/svg/elevator.svg", size: 161, mode: os.FileMode(420), modTime: time.Unix(1463336120, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -2341,7 +2362,7 @@ func dataWebStaticSvgEllipsesSvg() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "data/web/static/svg/ellipses.svg", size: 174, mode: os.FileMode(420), modTime: time.Unix(1457058732, 0)}
+	info := bindataFileInfo{name: "data/web/static/svg/ellipses.svg", size: 174, mode: os.FileMode(420), modTime: time.Unix(1463336120, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -2361,7 +2382,7 @@ func dataWebStaticSvgEnvelopeClosedSvg() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "data/web/static/svg/envelope-closed.svg", size: 171, mode: os.FileMode(420), modTime: time.Unix(1457058732, 0)}
+	info := bindataFileInfo{name: "data/web/static/svg/envelope-closed.svg", size: 171, mode: os.FileMode(420), modTime: time.Unix(1463336120, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -2381,7 +2402,7 @@ func dataWebStaticSvgEnvelopeOpenSvg() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "data/web/static/svg/envelope-open.svg", size: 193, mode: os.FileMode(420), modTime: time.Unix(1457058732, 0)}
+	info := bindataFileInfo{name: "data/web/static/svg/envelope-open.svg", size: 193, mode: os.FileMode(420), modTime: time.Unix(1463336120, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -2401,7 +2422,7 @@ func dataWebStaticSvgEuroSvg() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "data/web/static/svg/euro.svg", size: 441, mode: os.FileMode(420), modTime: time.Unix(1457058732, 0)}
+	info := bindataFileInfo{name: "data/web/static/svg/euro.svg", size: 441, mode: os.FileMode(420), modTime: time.Unix(1463336120, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -2421,7 +2442,7 @@ func dataWebStaticSvgExcerptSvg() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "data/web/static/svg/excerpt.svg", size: 192, mode: os.FileMode(420), modTime: time.Unix(1457058732, 0)}
+	info := bindataFileInfo{name: "data/web/static/svg/excerpt.svg", size: 192, mode: os.FileMode(420), modTime: time.Unix(1463336120, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -2441,7 +2462,7 @@ func dataWebStaticSvgExpandDownSvg() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "data/web/static/svg/expand-down.svg", size: 149, mode: os.FileMode(420), modTime: time.Unix(1457058732, 0)}
+	info := bindataFileInfo{name: "data/web/static/svg/expand-down.svg", size: 149, mode: os.FileMode(420), modTime: time.Unix(1463336120, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -2461,7 +2482,7 @@ func dataWebStaticSvgExpandLeftSvg() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "data/web/static/svg/expand-left.svg", size: 148, mode: os.FileMode(420), modTime: time.Unix(1457058732, 0)}
+	info := bindataFileInfo{name: "data/web/static/svg/expand-left.svg", size: 148, mode: os.FileMode(420), modTime: time.Unix(1463336120, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -2481,7 +2502,7 @@ func dataWebStaticSvgExpandRightSvg() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "data/web/static/svg/expand-right.svg", size: 150, mode: os.FileMode(420), modTime: time.Unix(1457058732, 0)}
+	info := bindataFileInfo{name: "data/web/static/svg/expand-right.svg", size: 150, mode: os.FileMode(420), modTime: time.Unix(1463336120, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -2501,7 +2522,7 @@ func dataWebStaticSvgExpandUpSvg() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "data/web/static/svg/expand-up.svg", size: 150, mode: os.FileMode(420), modTime: time.Unix(1457058732, 0)}
+	info := bindataFileInfo{name: "data/web/static/svg/expand-up.svg", size: 150, mode: os.FileMode(420), modTime: time.Unix(1463336120, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -2521,7 +2542,7 @@ func dataWebStaticSvgExternalLinkSvg() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "data/web/static/svg/external-link.svg", size: 180, mode: os.FileMode(420), modTime: time.Unix(1457058732, 0)}
+	info := bindataFileInfo{name: "data/web/static/svg/external-link.svg", size: 180, mode: os.FileMode(420), modTime: time.Unix(1463336120, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -2541,7 +2562,7 @@ func dataWebStaticSvgEyeSvg() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "data/web/static/svg/eye.svg", size: 426, mode: os.FileMode(420), modTime: time.Unix(1457058732, 0)}
+	info := bindataFileInfo{name: "data/web/static/svg/eye.svg", size: 426, mode: os.FileMode(420), modTime: time.Unix(1463336120, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -2561,7 +2582,7 @@ func dataWebStaticSvgEyedropperSvg() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "data/web/static/svg/eyedropper.svg", size: 386, mode: os.FileMode(420), modTime: time.Unix(1457058732, 0)}
+	info := bindataFileInfo{name: "data/web/static/svg/eyedropper.svg", size: 386, mode: os.FileMode(420), modTime: time.Unix(1463336120, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -2581,7 +2602,7 @@ func dataWebStaticSvgFileSvg() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "data/web/static/svg/file.svg", size: 137, mode: os.FileMode(420), modTime: time.Unix(1457058732, 0)}
+	info := bindataFileInfo{name: "data/web/static/svg/file.svg", size: 137, mode: os.FileMode(420), modTime: time.Unix(1463336120, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -2601,7 +2622,7 @@ func dataWebStaticSvgFireSvg() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "data/web/static/svg/fire.svg", size: 199, mode: os.FileMode(420), modTime: time.Unix(1457058732, 0)}
+	info := bindataFileInfo{name: "data/web/static/svg/fire.svg", size: 199, mode: os.FileMode(420), modTime: time.Unix(1463336120, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -2621,7 +2642,7 @@ func dataWebStaticSvgFlagSvg() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "data/web/static/svg/flag.svg", size: 154, mode: os.FileMode(420), modTime: time.Unix(1457058732, 0)}
+	info := bindataFileInfo{name: "data/web/static/svg/flag.svg", size: 154, mode: os.FileMode(420), modTime: time.Unix(1463336120, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -2641,7 +2662,7 @@ func dataWebStaticSvgFlashSvg() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "data/web/static/svg/flash.svg", size: 187, mode: os.FileMode(420), modTime: time.Unix(1457058732, 0)}
+	info := bindataFileInfo{name: "data/web/static/svg/flash.svg", size: 187, mode: os.FileMode(420), modTime: time.Unix(1463336120, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -2661,7 +2682,7 @@ func dataWebStaticSvgFolderSvg() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "data/web/static/svg/folder.svg", size: 175, mode: os.FileMode(420), modTime: time.Unix(1457058732, 0)}
+	info := bindataFileInfo{name: "data/web/static/svg/folder.svg", size: 175, mode: os.FileMode(420), modTime: time.Unix(1463336120, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -2681,7 +2702,7 @@ func dataWebStaticSvgForkSvg() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "data/web/static/svg/fork.svg", size: 457, mode: os.FileMode(420), modTime: time.Unix(1457058732, 0)}
+	info := bindataFileInfo{name: "data/web/static/svg/fork.svg", size: 457, mode: os.FileMode(420), modTime: time.Unix(1463336120, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -2701,7 +2722,7 @@ func dataWebStaticSvgFullscreenEnterSvg() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "data/web/static/svg/fullscreen-enter.svg", size: 196, mode: os.FileMode(420), modTime: time.Unix(1457058732, 0)}
+	info := bindataFileInfo{name: "data/web/static/svg/fullscreen-enter.svg", size: 196, mode: os.FileMode(420), modTime: time.Unix(1463336120, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -2721,7 +2742,7 @@ func dataWebStaticSvgFullscreenExitSvg() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "data/web/static/svg/fullscreen-exit.svg", size: 196, mode: os.FileMode(420), modTime: time.Unix(1457058732, 0)}
+	info := bindataFileInfo{name: "data/web/static/svg/fullscreen-exit.svg", size: 196, mode: os.FileMode(420), modTime: time.Unix(1463336120, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -2741,7 +2762,7 @@ func dataWebStaticSvgGlobeSvg() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "data/web/static/svg/globe.svg", size: 728, mode: os.FileMode(420), modTime: time.Unix(1457058732, 0)}
+	info := bindataFileInfo{name: "data/web/static/svg/globe.svg", size: 728, mode: os.FileMode(420), modTime: time.Unix(1463336120, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -2761,7 +2782,7 @@ func dataWebStaticSvgGraphSvg() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "data/web/static/svg/graph.svg", size: 173, mode: os.FileMode(420), modTime: time.Unix(1457058732, 0)}
+	info := bindataFileInfo{name: "data/web/static/svg/graph.svg", size: 173, mode: os.FileMode(420), modTime: time.Unix(1463336120, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -2781,7 +2802,7 @@ func dataWebStaticSvgGridFourUpSvg() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "data/web/static/svg/grid-four-up.svg", size: 347, mode: os.FileMode(420), modTime: time.Unix(1457058732, 0)}
+	info := bindataFileInfo{name: "data/web/static/svg/grid-four-up.svg", size: 347, mode: os.FileMode(420), modTime: time.Unix(1463336120, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -2801,7 +2822,7 @@ func dataWebStaticSvgGridThreeUpSvg() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "data/web/static/svg/grid-three-up.svg", size: 239, mode: os.FileMode(420), modTime: time.Unix(1457058732, 0)}
+	info := bindataFileInfo{name: "data/web/static/svg/grid-three-up.svg", size: 239, mode: os.FileMode(420), modTime: time.Unix(1463336120, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -2821,7 +2842,7 @@ func dataWebStaticSvgGridTwoUpSvg() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "data/web/static/svg/grid-two-up.svg", size: 163, mode: os.FileMode(420), modTime: time.Unix(1457058732, 0)}
+	info := bindataFileInfo{name: "data/web/static/svg/grid-two-up.svg", size: 163, mode: os.FileMode(420), modTime: time.Unix(1463336120, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -2841,7 +2862,7 @@ func dataWebStaticSvgHardDriveSvg() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "data/web/static/svg/hard-drive.svg", size: 380, mode: os.FileMode(420), modTime: time.Unix(1457058732, 0)}
+	info := bindataFileInfo{name: "data/web/static/svg/hard-drive.svg", size: 380, mode: os.FileMode(420), modTime: time.Unix(1463336120, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -2861,7 +2882,7 @@ func dataWebStaticSvgHeaderSvg() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "data/web/static/svg/header.svg", size: 333, mode: os.FileMode(420), modTime: time.Unix(1457058732, 0)}
+	info := bindataFileInfo{name: "data/web/static/svg/header.svg", size: 333, mode: os.FileMode(420), modTime: time.Unix(1463336120, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -2881,7 +2902,7 @@ func dataWebStaticSvgHeadphonesSvg() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "data/web/static/svg/headphones.svg", size: 307, mode: os.FileMode(420), modTime: time.Unix(1457058732, 0)}
+	info := bindataFileInfo{name: "data/web/static/svg/headphones.svg", size: 307, mode: os.FileMode(420), modTime: time.Unix(1463336120, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -2901,7 +2922,7 @@ func dataWebStaticSvgHeartSvg() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "data/web/static/svg/heart.svg", size: 390, mode: os.FileMode(420), modTime: time.Unix(1457058732, 0)}
+	info := bindataFileInfo{name: "data/web/static/svg/heart.svg", size: 390, mode: os.FileMode(420), modTime: time.Unix(1463336120, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -2921,7 +2942,7 @@ func dataWebStaticSvgHomeSvg() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "data/web/static/svg/home.svg", size: 143, mode: os.FileMode(420), modTime: time.Unix(1457058732, 0)}
+	info := bindataFileInfo{name: "data/web/static/svg/home.svg", size: 143, mode: os.FileMode(420), modTime: time.Unix(1463336120, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -2941,7 +2962,7 @@ func dataWebStaticSvgImageSvg() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "data/web/static/svg/image.svg", size: 156, mode: os.FileMode(420), modTime: time.Unix(1457058732, 0)}
+	info := bindataFileInfo{name: "data/web/static/svg/image.svg", size: 156, mode: os.FileMode(420), modTime: time.Unix(1463336120, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -2961,7 +2982,7 @@ func dataWebStaticSvgInboxSvg() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "data/web/static/svg/inbox.svg", size: 246, mode: os.FileMode(420), modTime: time.Unix(1457058732, 0)}
+	info := bindataFileInfo{name: "data/web/static/svg/inbox.svg", size: 246, mode: os.FileMode(420), modTime: time.Unix(1463336120, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -2981,7 +3002,7 @@ func dataWebStaticSvgInfinitySvg() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "data/web/static/svg/infinity.svg", size: 440, mode: os.FileMode(420), modTime: time.Unix(1457058732, 0)}
+	info := bindataFileInfo{name: "data/web/static/svg/infinity.svg", size: 440, mode: os.FileMode(420), modTime: time.Unix(1463336120, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -3001,7 +3022,7 @@ func dataWebStaticSvgInfoSvg() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "data/web/static/svg/info.svg", size: 367, mode: os.FileMode(420), modTime: time.Unix(1457058732, 0)}
+	info := bindataFileInfo{name: "data/web/static/svg/info.svg", size: 367, mode: os.FileMode(420), modTime: time.Unix(1463336120, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -3021,7 +3042,7 @@ func dataWebStaticSvgItalicSvg() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "data/web/static/svg/italic.svg", size: 183, mode: os.FileMode(420), modTime: time.Unix(1457058732, 0)}
+	info := bindataFileInfo{name: "data/web/static/svg/italic.svg", size: 183, mode: os.FileMode(420), modTime: time.Unix(1463336120, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -3041,7 +3062,7 @@ func dataWebStaticSvgJustifyCenterSvg() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "data/web/static/svg/justify-center.svg", size: 162, mode: os.FileMode(420), modTime: time.Unix(1457058732, 0)}
+	info := bindataFileInfo{name: "data/web/static/svg/justify-center.svg", size: 162, mode: os.FileMode(420), modTime: time.Unix(1463336120, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -3061,7 +3082,7 @@ func dataWebStaticSvgJustifyLeftSvg() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "data/web/static/svg/justify-left.svg", size: 162, mode: os.FileMode(420), modTime: time.Unix(1457058732, 0)}
+	info := bindataFileInfo{name: "data/web/static/svg/justify-left.svg", size: 162, mode: os.FileMode(420), modTime: time.Unix(1463336120, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -3081,7 +3102,7 @@ func dataWebStaticSvgJustifyRightSvg() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "data/web/static/svg/justify-right.svg", size: 162, mode: os.FileMode(420), modTime: time.Unix(1457058732, 0)}
+	info := bindataFileInfo{name: "data/web/static/svg/justify-right.svg", size: 162, mode: os.FileMode(420), modTime: time.Unix(1463336120, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -3101,7 +3122,7 @@ func dataWebStaticSvgKeySvg() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "data/web/static/svg/key.svg", size: 297, mode: os.FileMode(420), modTime: time.Unix(1457058732, 0)}
+	info := bindataFileInfo{name: "data/web/static/svg/key.svg", size: 297, mode: os.FileMode(420), modTime: time.Unix(1463336120, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -3121,7 +3142,7 @@ func dataWebStaticSvgLaptopSvg() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "data/web/static/svg/laptop.svg", size: 311, mode: os.FileMode(420), modTime: time.Unix(1457058732, 0)}
+	info := bindataFileInfo{name: "data/web/static/svg/laptop.svg", size: 311, mode: os.FileMode(420), modTime: time.Unix(1463336120, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -3141,7 +3162,7 @@ func dataWebStaticSvgLayersSvg() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "data/web/static/svg/layers.svg", size: 157, mode: os.FileMode(420), modTime: time.Unix(1457058732, 0)}
+	info := bindataFileInfo{name: "data/web/static/svg/layers.svg", size: 157, mode: os.FileMode(420), modTime: time.Unix(1463336120, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -3161,7 +3182,7 @@ func dataWebStaticSvgLightbulbSvg() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "data/web/static/svg/lightbulb.svg", size: 453, mode: os.FileMode(420), modTime: time.Unix(1457058732, 0)}
+	info := bindataFileInfo{name: "data/web/static/svg/lightbulb.svg", size: 453, mode: os.FileMode(420), modTime: time.Unix(1463336120, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -3181,7 +3202,7 @@ func dataWebStaticSvgLinkBrokenSvg() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "data/web/static/svg/link-broken.svg", size: 658, mode: os.FileMode(420), modTime: time.Unix(1457058732, 0)}
+	info := bindataFileInfo{name: "data/web/static/svg/link-broken.svg", size: 658, mode: os.FileMode(420), modTime: time.Unix(1463336120, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -3201,7 +3222,7 @@ func dataWebStaticSvgLinkIntactSvg() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "data/web/static/svg/link-intact.svg", size: 704, mode: os.FileMode(420), modTime: time.Unix(1457058732, 0)}
+	info := bindataFileInfo{name: "data/web/static/svg/link-intact.svg", size: 704, mode: os.FileMode(420), modTime: time.Unix(1463336120, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -3221,7 +3242,7 @@ func dataWebStaticSvgListRichSvg() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "data/web/static/svg/list-rich.svg", size: 193, mode: os.FileMode(420), modTime: time.Unix(1457058732, 0)}
+	info := bindataFileInfo{name: "data/web/static/svg/list-rich.svg", size: 193, mode: os.FileMode(420), modTime: time.Unix(1463336120, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -3241,7 +3262,7 @@ func dataWebStaticSvgListSvg() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "data/web/static/svg/list.svg", size: 410, mode: os.FileMode(420), modTime: time.Unix(1457058732, 0)}
+	info := bindataFileInfo{name: "data/web/static/svg/list.svg", size: 410, mode: os.FileMode(420), modTime: time.Unix(1463336120, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -3261,7 +3282,7 @@ func dataWebStaticSvgLocationSvg() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "data/web/static/svg/location.svg", size: 124, mode: os.FileMode(420), modTime: time.Unix(1457058732, 0)}
+	info := bindataFileInfo{name: "data/web/static/svg/location.svg", size: 124, mode: os.FileMode(420), modTime: time.Unix(1463336120, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -3281,7 +3302,7 @@ func dataWebStaticSvgLockLockedSvg() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "data/web/static/svg/lock-locked.svg", size: 225, mode: os.FileMode(420), modTime: time.Unix(1457058732, 0)}
+	info := bindataFileInfo{name: "data/web/static/svg/lock-locked.svg", size: 225, mode: os.FileMode(420), modTime: time.Unix(1463336120, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -3301,7 +3322,7 @@ func dataWebStaticSvgLockUnlockedSvg() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "data/web/static/svg/lock-unlocked.svg", size: 208, mode: os.FileMode(420), modTime: time.Unix(1457058732, 0)}
+	info := bindataFileInfo{name: "data/web/static/svg/lock-unlocked.svg", size: 208, mode: os.FileMode(420), modTime: time.Unix(1463336120, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -3321,7 +3342,7 @@ func dataWebStaticSvgLoopCircularSvg() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "data/web/static/svg/loop-circular.svg", size: 252, mode: os.FileMode(420), modTime: time.Unix(1457058732, 0)}
+	info := bindataFileInfo{name: "data/web/static/svg/loop-circular.svg", size: 252, mode: os.FileMode(420), modTime: time.Unix(1463336120, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -3341,7 +3362,7 @@ func dataWebStaticSvgLoopSquareSvg() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "data/web/static/svg/loop-square.svg", size: 194, mode: os.FileMode(420), modTime: time.Unix(1457058732, 0)}
+	info := bindataFileInfo{name: "data/web/static/svg/loop-square.svg", size: 194, mode: os.FileMode(420), modTime: time.Unix(1463336120, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -3361,7 +3382,7 @@ func dataWebStaticSvgLoopSvg() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "data/web/static/svg/loop.svg", size: 206, mode: os.FileMode(420), modTime: time.Unix(1457058732, 0)}
+	info := bindataFileInfo{name: "data/web/static/svg/loop.svg", size: 206, mode: os.FileMode(420), modTime: time.Unix(1463336120, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -3381,7 +3402,7 @@ func dataWebStaticSvgMagnifyingGlassSvg() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "data/web/static/svg/magnifying-glass.svg", size: 450, mode: os.FileMode(420), modTime: time.Unix(1457058732, 0)}
+	info := bindataFileInfo{name: "data/web/static/svg/magnifying-glass.svg", size: 450, mode: os.FileMode(420), modTime: time.Unix(1463336120, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -3401,7 +3422,7 @@ func dataWebStaticSvgMapMarkerSvg() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "data/web/static/svg/map-marker.svg", size: 257, mode: os.FileMode(420), modTime: time.Unix(1457058732, 0)}
+	info := bindataFileInfo{name: "data/web/static/svg/map-marker.svg", size: 257, mode: os.FileMode(420), modTime: time.Unix(1463336120, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -3421,7 +3442,7 @@ func dataWebStaticSvgMapSvg() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "data/web/static/svg/map.svg", size: 349, mode: os.FileMode(420), modTime: time.Unix(1457058732, 0)}
+	info := bindataFileInfo{name: "data/web/static/svg/map.svg", size: 349, mode: os.FileMode(420), modTime: time.Unix(1463336120, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -3441,7 +3462,7 @@ func dataWebStaticSvgMediaPauseSvg() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "data/web/static/svg/media-pause.svg", size: 159, mode: os.FileMode(420), modTime: time.Unix(1457058732, 0)}
+	info := bindataFileInfo{name: "data/web/static/svg/media-pause.svg", size: 159, mode: os.FileMode(420), modTime: time.Unix(1463336120, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -3461,7 +3482,7 @@ func dataWebStaticSvgMediaPlaySvg() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "data/web/static/svg/media-play.svg", size: 144, mode: os.FileMode(420), modTime: time.Unix(1457058732, 0)}
+	info := bindataFileInfo{name: "data/web/static/svg/media-play.svg", size: 144, mode: os.FileMode(420), modTime: time.Unix(1463336120, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -3481,7 +3502,7 @@ func dataWebStaticSvgMediaRecordSvg() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "data/web/static/svg/media-record.svg", size: 186, mode: os.FileMode(420), modTime: time.Unix(1457058732, 0)}
+	info := bindataFileInfo{name: "data/web/static/svg/media-record.svg", size: 186, mode: os.FileMode(420), modTime: time.Unix(1463336120, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -3501,7 +3522,7 @@ func dataWebStaticSvgMediaSkipBackwardSvg() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "data/web/static/svg/media-skip-backward.svg", size: 163, mode: os.FileMode(420), modTime: time.Unix(1457058732, 0)}
+	info := bindataFileInfo{name: "data/web/static/svg/media-skip-backward.svg", size: 163, mode: os.FileMode(420), modTime: time.Unix(1463336120, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -3521,7 +3542,7 @@ func dataWebStaticSvgMediaSkipForwardSvg() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "data/web/static/svg/media-skip-forward.svg", size: 161, mode: os.FileMode(420), modTime: time.Unix(1457058732, 0)}
+	info := bindataFileInfo{name: "data/web/static/svg/media-skip-forward.svg", size: 161, mode: os.FileMode(420), modTime: time.Unix(1463336120, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -3541,7 +3562,7 @@ func dataWebStaticSvgMediaStepBackwardSvg() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "data/web/static/svg/media-step-backward.svg", size: 161, mode: os.FileMode(420), modTime: time.Unix(1457058732, 0)}
+	info := bindataFileInfo{name: "data/web/static/svg/media-step-backward.svg", size: 161, mode: os.FileMode(420), modTime: time.Unix(1463336120, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -3561,7 +3582,7 @@ func dataWebStaticSvgMediaStepForwardSvg() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "data/web/static/svg/media-step-forward.svg", size: 161, mode: os.FileMode(420), modTime: time.Unix(1457058732, 0)}
+	info := bindataFileInfo{name: "data/web/static/svg/media-step-forward.svg", size: 161, mode: os.FileMode(420), modTime: time.Unix(1463336120, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -3581,7 +3602,7 @@ func dataWebStaticSvgMediaStopSvg() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "data/web/static/svg/media-stop.svg", size: 144, mode: os.FileMode(420), modTime: time.Unix(1457058732, 0)}
+	info := bindataFileInfo{name: "data/web/static/svg/media-stop.svg", size: 144, mode: os.FileMode(420), modTime: time.Unix(1463336120, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -3601,7 +3622,7 @@ func dataWebStaticSvgMedicalCrossSvg() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "data/web/static/svg/medical-cross.svg", size: 137, mode: os.FileMode(420), modTime: time.Unix(1457058732, 0)}
+	info := bindataFileInfo{name: "data/web/static/svg/medical-cross.svg", size: 137, mode: os.FileMode(420), modTime: time.Unix(1463336120, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -3621,7 +3642,7 @@ func dataWebStaticSvgMenuSvg() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "data/web/static/svg/menu.svg", size: 177, mode: os.FileMode(420), modTime: time.Unix(1457058732, 0)}
+	info := bindataFileInfo{name: "data/web/static/svg/menu.svg", size: 177, mode: os.FileMode(420), modTime: time.Unix(1463336120, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -3641,7 +3662,7 @@ func dataWebStaticSvgMicrophoneSvg() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "data/web/static/svg/microphone.svg", size: 447, mode: os.FileMode(420), modTime: time.Unix(1457058732, 0)}
+	info := bindataFileInfo{name: "data/web/static/svg/microphone.svg", size: 447, mode: os.FileMode(420), modTime: time.Unix(1463336120, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -3661,7 +3682,7 @@ func dataWebStaticSvgMinusSvg() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "data/web/static/svg/minus.svg", size: 144, mode: os.FileMode(420), modTime: time.Unix(1457058732, 0)}
+	info := bindataFileInfo{name: "data/web/static/svg/minus.svg", size: 144, mode: os.FileMode(420), modTime: time.Unix(1463336120, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -3681,7 +3702,7 @@ func dataWebStaticSvgMonitorSvg() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "data/web/static/svg/monitor.svg", size: 289, mode: os.FileMode(420), modTime: time.Unix(1457058732, 0)}
+	info := bindataFileInfo{name: "data/web/static/svg/monitor.svg", size: 289, mode: os.FileMode(420), modTime: time.Unix(1463336120, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -3701,7 +3722,7 @@ func dataWebStaticSvgMoonSvg() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "data/web/static/svg/moon.svg", size: 244, mode: os.FileMode(420), modTime: time.Unix(1457058732, 0)}
+	info := bindataFileInfo{name: "data/web/static/svg/moon.svg", size: 244, mode: os.FileMode(420), modTime: time.Unix(1463336120, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -3721,7 +3742,7 @@ func dataWebStaticSvgMoveSvg() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "data/web/static/svg/move.svg", size: 232, mode: os.FileMode(420), modTime: time.Unix(1457058732, 0)}
+	info := bindataFileInfo{name: "data/web/static/svg/move.svg", size: 232, mode: os.FileMode(420), modTime: time.Unix(1463336120, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -3741,7 +3762,7 @@ func dataWebStaticSvgMusicalNoteSvg() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "data/web/static/svg/musical-note.svg", size: 317, mode: os.FileMode(420), modTime: time.Unix(1457058732, 0)}
+	info := bindataFileInfo{name: "data/web/static/svg/musical-note.svg", size: 317, mode: os.FileMode(420), modTime: time.Unix(1463336120, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -3761,7 +3782,7 @@ func dataWebStaticSvgPaperclipSvg() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "data/web/static/svg/paperclip.svg", size: 506, mode: os.FileMode(420), modTime: time.Unix(1457058732, 0)}
+	info := bindataFileInfo{name: "data/web/static/svg/paperclip.svg", size: 506, mode: os.FileMode(420), modTime: time.Unix(1463336120, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -3781,7 +3802,7 @@ func dataWebStaticSvgPencilSvg() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "data/web/static/svg/pencil.svg", size: 147, mode: os.FileMode(420), modTime: time.Unix(1457058732, 0)}
+	info := bindataFileInfo{name: "data/web/static/svg/pencil.svg", size: 147, mode: os.FileMode(420), modTime: time.Unix(1463336120, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -3801,7 +3822,7 @@ func dataWebStaticSvgPeopleSvg() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "data/web/static/svg/people.svg", size: 485, mode: os.FileMode(420), modTime: time.Unix(1457058732, 0)}
+	info := bindataFileInfo{name: "data/web/static/svg/people.svg", size: 485, mode: os.FileMode(420), modTime: time.Unix(1463336120, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -3821,7 +3842,7 @@ func dataWebStaticSvgPersonSvg() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "data/web/static/svg/person.svg", size: 272, mode: os.FileMode(420), modTime: time.Unix(1457058732, 0)}
+	info := bindataFileInfo{name: "data/web/static/svg/person.svg", size: 272, mode: os.FileMode(420), modTime: time.Unix(1463336120, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -3841,7 +3862,7 @@ func dataWebStaticSvgPhoneSvg() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "data/web/static/svg/phone.svg", size: 316, mode: os.FileMode(420), modTime: time.Unix(1457058732, 0)}
+	info := bindataFileInfo{name: "data/web/static/svg/phone.svg", size: 316, mode: os.FileMode(420), modTime: time.Unix(1463336120, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -3861,7 +3882,7 @@ func dataWebStaticSvgPieChartSvg() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "data/web/static/svg/pie-chart.svg", size: 353, mode: os.FileMode(420), modTime: time.Unix(1457058732, 0)}
+	info := bindataFileInfo{name: "data/web/static/svg/pie-chart.svg", size: 353, mode: os.FileMode(420), modTime: time.Unix(1463336120, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -3881,7 +3902,7 @@ func dataWebStaticSvgPinSvg() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "data/web/static/svg/pin.svg", size: 250, mode: os.FileMode(420), modTime: time.Unix(1457058732, 0)}
+	info := bindataFileInfo{name: "data/web/static/svg/pin.svg", size: 250, mode: os.FileMode(420), modTime: time.Unix(1463336120, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -3901,7 +3922,7 @@ func dataWebStaticSvgPlayCircleSvg() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "data/web/static/svg/play-circle.svg", size: 176, mode: os.FileMode(420), modTime: time.Unix(1457058732, 0)}
+	info := bindataFileInfo{name: "data/web/static/svg/play-circle.svg", size: 176, mode: os.FileMode(420), modTime: time.Unix(1463336120, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -3921,7 +3942,7 @@ func dataWebStaticSvgPlusSvg() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "data/web/static/svg/plus.svg", size: 137, mode: os.FileMode(420), modTime: time.Unix(1457058732, 0)}
+	info := bindataFileInfo{name: "data/web/static/svg/plus.svg", size: 137, mode: os.FileMode(420), modTime: time.Unix(1463336120, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -3941,7 +3962,7 @@ func dataWebStaticSvgPowerStandbySvg() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "data/web/static/svg/power-standby.svg", size: 358, mode: os.FileMode(420), modTime: time.Unix(1457058732, 0)}
+	info := bindataFileInfo{name: "data/web/static/svg/power-standby.svg", size: 358, mode: os.FileMode(420), modTime: time.Unix(1463336120, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -3961,7 +3982,7 @@ func dataWebStaticSvgPrintSvg() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "data/web/static/svg/print.svg", size: 258, mode: os.FileMode(420), modTime: time.Unix(1457058732, 0)}
+	info := bindataFileInfo{name: "data/web/static/svg/print.svg", size: 258, mode: os.FileMode(420), modTime: time.Unix(1463336120, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -3981,7 +4002,7 @@ func dataWebStaticSvgProjectSvg() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "data/web/static/svg/project.svg", size: 178, mode: os.FileMode(420), modTime: time.Unix(1457058732, 0)}
+	info := bindataFileInfo{name: "data/web/static/svg/project.svg", size: 178, mode: os.FileMode(420), modTime: time.Unix(1463336120, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -4001,7 +4022,7 @@ func dataWebStaticSvgPulseSvg() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "data/web/static/svg/pulse.svg", size: 306, mode: os.FileMode(420), modTime: time.Unix(1457058732, 0)}
+	info := bindataFileInfo{name: "data/web/static/svg/pulse.svg", size: 306, mode: os.FileMode(420), modTime: time.Unix(1463336120, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -4021,7 +4042,7 @@ func dataWebStaticSvgPuzzlePieceSvg() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "data/web/static/svg/puzzle-piece.svg", size: 630, mode: os.FileMode(420), modTime: time.Unix(1457058732, 0)}
+	info := bindataFileInfo{name: "data/web/static/svg/puzzle-piece.svg", size: 630, mode: os.FileMode(420), modTime: time.Unix(1463336120, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -4041,7 +4062,7 @@ func dataWebStaticSvgQuestionMarkSvg() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "data/web/static/svg/question-mark.svg", size: 441, mode: os.FileMode(420), modTime: time.Unix(1457058732, 0)}
+	info := bindataFileInfo{name: "data/web/static/svg/question-mark.svg", size: 441, mode: os.FileMode(420), modTime: time.Unix(1463336120, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -4061,7 +4082,7 @@ func dataWebStaticSvgRainSvg() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "data/web/static/svg/rain.svg", size: 602, mode: os.FileMode(420), modTime: time.Unix(1457058732, 0)}
+	info := bindataFileInfo{name: "data/web/static/svg/rain.svg", size: 602, mode: os.FileMode(420), modTime: time.Unix(1463336120, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -4081,7 +4102,7 @@ func dataWebStaticSvgRandomSvg() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "data/web/static/svg/random.svg", size: 382, mode: os.FileMode(420), modTime: time.Unix(1457058732, 0)}
+	info := bindataFileInfo{name: "data/web/static/svg/random.svg", size: 382, mode: os.FileMode(420), modTime: time.Unix(1463336120, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -4101,7 +4122,7 @@ func dataWebStaticSvgReloadSvg() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "data/web/static/svg/reload.svg", size: 299, mode: os.FileMode(420), modTime: time.Unix(1457058732, 0)}
+	info := bindataFileInfo{name: "data/web/static/svg/reload.svg", size: 299, mode: os.FileMode(420), modTime: time.Unix(1463336120, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -4121,7 +4142,7 @@ func dataWebStaticSvgResizeBothSvg() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "data/web/static/svg/resize-both.svg", size: 166, mode: os.FileMode(420), modTime: time.Unix(1457058732, 0)}
+	info := bindataFileInfo{name: "data/web/static/svg/resize-both.svg", size: 166, mode: os.FileMode(420), modTime: time.Unix(1463336120, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -4141,7 +4162,7 @@ func dataWebStaticSvgResizeHeightSvg() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "data/web/static/svg/resize-height.svg", size: 175, mode: os.FileMode(420), modTime: time.Unix(1457058732, 0)}
+	info := bindataFileInfo{name: "data/web/static/svg/resize-height.svg", size: 175, mode: os.FileMode(420), modTime: time.Unix(1463336120, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -4161,7 +4182,7 @@ func dataWebStaticSvgResizeWidthSvg() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "data/web/static/svg/resize-width.svg", size: 174, mode: os.FileMode(420), modTime: time.Unix(1457058732, 0)}
+	info := bindataFileInfo{name: "data/web/static/svg/resize-width.svg", size: 174, mode: os.FileMode(420), modTime: time.Unix(1463336120, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -4181,7 +4202,7 @@ func dataWebStaticSvgRssAltSvg() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "data/web/static/svg/rss-alt.svg", size: 217, mode: os.FileMode(420), modTime: time.Unix(1457058732, 0)}
+	info := bindataFileInfo{name: "data/web/static/svg/rss-alt.svg", size: 217, mode: os.FileMode(420), modTime: time.Unix(1463336120, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -4201,7 +4222,7 @@ func dataWebStaticSvgRssSvg() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "data/web/static/svg/rss.svg", size: 288, mode: os.FileMode(420), modTime: time.Unix(1457058732, 0)}
+	info := bindataFileInfo{name: "data/web/static/svg/rss.svg", size: 288, mode: os.FileMode(420), modTime: time.Unix(1463336120, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -4221,7 +4242,7 @@ func dataWebStaticSvgScriptSvg() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "data/web/static/svg/script.svg", size: 268, mode: os.FileMode(420), modTime: time.Unix(1457058732, 0)}
+	info := bindataFileInfo{name: "data/web/static/svg/script.svg", size: 268, mode: os.FileMode(420), modTime: time.Unix(1463336120, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -4241,7 +4262,7 @@ func dataWebStaticSvgShareBoxedSvg() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "data/web/static/svg/share-boxed.svg", size: 279, mode: os.FileMode(420), modTime: time.Unix(1457058732, 0)}
+	info := bindataFileInfo{name: "data/web/static/svg/share-boxed.svg", size: 279, mode: os.FileMode(420), modTime: time.Unix(1463336120, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -4261,7 +4282,7 @@ func dataWebStaticSvgShareSvg() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "data/web/static/svg/share.svg", size: 160, mode: os.FileMode(420), modTime: time.Unix(1457058732, 0)}
+	info := bindataFileInfo{name: "data/web/static/svg/share.svg", size: 160, mode: os.FileMode(420), modTime: time.Unix(1463336120, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -4281,7 +4302,7 @@ func dataWebStaticSvgShieldSvg() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "data/web/static/svg/shield.svg", size: 401, mode: os.FileMode(420), modTime: time.Unix(1457058732, 0)}
+	info := bindataFileInfo{name: "data/web/static/svg/shield.svg", size: 401, mode: os.FileMode(420), modTime: time.Unix(1463336120, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -4301,7 +4322,7 @@ func dataWebStaticSvgSignalSvg() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "data/web/static/svg/signal.svg", size: 165, mode: os.FileMode(420), modTime: time.Unix(1457058732, 0)}
+	info := bindataFileInfo{name: "data/web/static/svg/signal.svg", size: 165, mode: os.FileMode(420), modTime: time.Unix(1463336120, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -4321,7 +4342,7 @@ func dataWebStaticSvgSignpostSvg() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "data/web/static/svg/signpost.svg", size: 149, mode: os.FileMode(420), modTime: time.Unix(1457058732, 0)}
+	info := bindataFileInfo{name: "data/web/static/svg/signpost.svg", size: 149, mode: os.FileMode(420), modTime: time.Unix(1463336120, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -4341,7 +4362,7 @@ func dataWebStaticSvgSortAscendingSvg() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "data/web/static/svg/sort-ascending.svg", size: 178, mode: os.FileMode(420), modTime: time.Unix(1457058732, 0)}
+	info := bindataFileInfo{name: "data/web/static/svg/sort-ascending.svg", size: 178, mode: os.FileMode(420), modTime: time.Unix(1463336120, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -4361,7 +4382,7 @@ func dataWebStaticSvgSortDescendingSvg() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "data/web/static/svg/sort-descending.svg", size: 178, mode: os.FileMode(420), modTime: time.Unix(1457058732, 0)}
+	info := bindataFileInfo{name: "data/web/static/svg/sort-descending.svg", size: 178, mode: os.FileMode(420), modTime: time.Unix(1463336120, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -4381,7 +4402,7 @@ func dataWebStaticSvgSpreadsheetSvg() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "data/web/static/svg/spreadsheet.svg", size: 303, mode: os.FileMode(420), modTime: time.Unix(1457058732, 0)}
+	info := bindataFileInfo{name: "data/web/static/svg/spreadsheet.svg", size: 303, mode: os.FileMode(420), modTime: time.Unix(1463336120, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -4401,7 +4422,7 @@ func dataWebStaticSvgStarSvg() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "data/web/static/svg/star.svg", size: 155, mode: os.FileMode(420), modTime: time.Unix(1457058732, 0)}
+	info := bindataFileInfo{name: "data/web/static/svg/star.svg", size: 155, mode: os.FileMode(420), modTime: time.Unix(1463336120, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -4421,7 +4442,7 @@ func dataWebStaticSvgSunSvg() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "data/web/static/svg/sun.svg", size: 625, mode: os.FileMode(420), modTime: time.Unix(1457058732, 0)}
+	info := bindataFileInfo{name: "data/web/static/svg/sun.svg", size: 625, mode: os.FileMode(420), modTime: time.Unix(1463336120, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -4441,7 +4462,7 @@ func dataWebStaticSvgTabletSvg() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "data/web/static/svg/tablet.svg", size: 295, mode: os.FileMode(420), modTime: time.Unix(1457058732, 0)}
+	info := bindataFileInfo{name: "data/web/static/svg/tablet.svg", size: 295, mode: os.FileMode(420), modTime: time.Unix(1463336120, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -4461,7 +4482,7 @@ func dataWebStaticSvgTagSvg() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "data/web/static/svg/tag.svg", size: 176, mode: os.FileMode(420), modTime: time.Unix(1457058732, 0)}
+	info := bindataFileInfo{name: "data/web/static/svg/tag.svg", size: 176, mode: os.FileMode(420), modTime: time.Unix(1463336120, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -4481,7 +4502,7 @@ func dataWebStaticSvgTagsSvg() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "data/web/static/svg/tags.svg", size: 267, mode: os.FileMode(420), modTime: time.Unix(1457058732, 0)}
+	info := bindataFileInfo{name: "data/web/static/svg/tags.svg", size: 267, mode: os.FileMode(420), modTime: time.Unix(1463336120, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -4501,7 +4522,7 @@ func dataWebStaticSvgTargetSvg() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "data/web/static/svg/target.svg", size: 311, mode: os.FileMode(420), modTime: time.Unix(1457058732, 0)}
+	info := bindataFileInfo{name: "data/web/static/svg/target.svg", size: 311, mode: os.FileMode(420), modTime: time.Unix(1463336120, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -4521,7 +4542,7 @@ func dataWebStaticSvgTaskSvg() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "data/web/static/svg/task.svg", size: 178, mode: os.FileMode(420), modTime: time.Unix(1457058732, 0)}
+	info := bindataFileInfo{name: "data/web/static/svg/task.svg", size: 178, mode: os.FileMode(420), modTime: time.Unix(1463336120, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -4541,7 +4562,7 @@ func dataWebStaticSvgTerminalSvg() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "data/web/static/svg/terminal.svg", size: 286, mode: os.FileMode(420), modTime: time.Unix(1457058732, 0)}
+	info := bindataFileInfo{name: "data/web/static/svg/terminal.svg", size: 286, mode: os.FileMode(420), modTime: time.Unix(1463336120, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -4561,7 +4582,7 @@ func dataWebStaticSvgTextSvg() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "data/web/static/svg/text.svg", size: 221, mode: os.FileMode(420), modTime: time.Unix(1457058732, 0)}
+	info := bindataFileInfo{name: "data/web/static/svg/text.svg", size: 221, mode: os.FileMode(420), modTime: time.Unix(1463336120, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -4581,7 +4602,7 @@ func dataWebStaticSvgThumbDownSvg() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "data/web/static/svg/thumb-down.svg", size: 318, mode: os.FileMode(420), modTime: time.Unix(1457058732, 0)}
+	info := bindataFileInfo{name: "data/web/static/svg/thumb-down.svg", size: 318, mode: os.FileMode(420), modTime: time.Unix(1463336120, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -4601,7 +4622,7 @@ func dataWebStaticSvgThumbUpSvg() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "data/web/static/svg/thumb-up.svg", size: 361, mode: os.FileMode(420), modTime: time.Unix(1457058732, 0)}
+	info := bindataFileInfo{name: "data/web/static/svg/thumb-up.svg", size: 361, mode: os.FileMode(420), modTime: time.Unix(1463336120, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -4621,7 +4642,7 @@ func dataWebStaticSvgTimerSvg() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "data/web/static/svg/timer.svg", size: 439, mode: os.FileMode(420), modTime: time.Unix(1457058732, 0)}
+	info := bindataFileInfo{name: "data/web/static/svg/timer.svg", size: 439, mode: os.FileMode(420), modTime: time.Unix(1463336120, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -4641,7 +4662,7 @@ func dataWebStaticSvgTransferSvg() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "data/web/static/svg/transfer.svg", size: 163, mode: os.FileMode(420), modTime: time.Unix(1457058732, 0)}
+	info := bindataFileInfo{name: "data/web/static/svg/transfer.svg", size: 163, mode: os.FileMode(420), modTime: time.Unix(1463336120, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -4661,7 +4682,7 @@ func dataWebStaticSvgTrashSvg() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "data/web/static/svg/trash.svg", size: 334, mode: os.FileMode(420), modTime: time.Unix(1457058732, 0)}
+	info := bindataFileInfo{name: "data/web/static/svg/trash.svg", size: 334, mode: os.FileMode(420), modTime: time.Unix(1463336120, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -4681,7 +4702,7 @@ func dataWebStaticSvgUnderlineSvg() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "data/web/static/svg/underline.svg", size: 203, mode: os.FileMode(420), modTime: time.Unix(1457058732, 0)}
+	info := bindataFileInfo{name: "data/web/static/svg/underline.svg", size: 203, mode: os.FileMode(420), modTime: time.Unix(1463336120, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -4701,7 +4722,7 @@ func dataWebStaticSvgVerticalAlignBottomSvg() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "data/web/static/svg/vertical-align-bottom.svg", size: 453, mode: os.FileMode(420), modTime: time.Unix(1457058732, 0)}
+	info := bindataFileInfo{name: "data/web/static/svg/vertical-align-bottom.svg", size: 453, mode: os.FileMode(420), modTime: time.Unix(1463336120, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -4721,7 +4742,7 @@ func dataWebStaticSvgVerticalAlignCenterSvg() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "data/web/static/svg/vertical-align-center.svg", size: 512, mode: os.FileMode(420), modTime: time.Unix(1457058732, 0)}
+	info := bindataFileInfo{name: "data/web/static/svg/vertical-align-center.svg", size: 512, mode: os.FileMode(420), modTime: time.Unix(1463336120, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -4741,7 +4762,7 @@ func dataWebStaticSvgVerticalAlignTopSvg() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "data/web/static/svg/vertical-align-top.svg", size: 448, mode: os.FileMode(420), modTime: time.Unix(1457058732, 0)}
+	info := bindataFileInfo{name: "data/web/static/svg/vertical-align-top.svg", size: 448, mode: os.FileMode(420), modTime: time.Unix(1463336120, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -4761,7 +4782,7 @@ func dataWebStaticSvgVideoSvg() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "data/web/static/svg/video.svg", size: 239, mode: os.FileMode(420), modTime: time.Unix(1457058732, 0)}
+	info := bindataFileInfo{name: "data/web/static/svg/video.svg", size: 239, mode: os.FileMode(420), modTime: time.Unix(1463336120, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -4781,7 +4802,7 @@ func dataWebStaticSvgVolumeHighSvg() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "data/web/static/svg/volume-high.svg", size: 434, mode: os.FileMode(420), modTime: time.Unix(1457058732, 0)}
+	info := bindataFileInfo{name: "data/web/static/svg/volume-high.svg", size: 434, mode: os.FileMode(420), modTime: time.Unix(1463336120, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -4801,7 +4822,7 @@ func dataWebStaticSvgVolumeLowSvg() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "data/web/static/svg/volume-low.svg", size: 267, mode: os.FileMode(420), modTime: time.Unix(1457058732, 0)}
+	info := bindataFileInfo{name: "data/web/static/svg/volume-low.svg", size: 267, mode: os.FileMode(420), modTime: time.Unix(1463336120, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -4821,7 +4842,7 @@ func dataWebStaticSvgVolumeOffSvg() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "data/web/static/svg/volume-off.svg", size: 169, mode: os.FileMode(420), modTime: time.Unix(1457058732, 0)}
+	info := bindataFileInfo{name: "data/web/static/svg/volume-off.svg", size: 169, mode: os.FileMode(420), modTime: time.Unix(1463336120, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -4841,7 +4862,7 @@ func dataWebStaticSvgWarningSvg() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "data/web/static/svg/warning.svg", size: 312, mode: os.FileMode(420), modTime: time.Unix(1457058732, 0)}
+	info := bindataFileInfo{name: "data/web/static/svg/warning.svg", size: 312, mode: os.FileMode(420), modTime: time.Unix(1463336120, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -4861,7 +4882,7 @@ func dataWebStaticSvgWifiSvg() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "data/web/static/svg/wifi.svg", size: 392, mode: os.FileMode(420), modTime: time.Unix(1457058732, 0)}
+	info := bindataFileInfo{name: "data/web/static/svg/wifi.svg", size: 392, mode: os.FileMode(420), modTime: time.Unix(1463336120, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -4881,7 +4902,7 @@ func dataWebStaticSvgWrenchSvg() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "data/web/static/svg/wrench.svg", size: 407, mode: os.FileMode(420), modTime: time.Unix(1457058732, 0)}
+	info := bindataFileInfo{name: "data/web/static/svg/wrench.svg", size: 407, mode: os.FileMode(420), modTime: time.Unix(1463336120, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -4901,7 +4922,7 @@ func dataWebStaticSvgXSvg() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "data/web/static/svg/x.svg", size: 287, mode: os.FileMode(420), modTime: time.Unix(1457058732, 0)}
+	info := bindataFileInfo{name: "data/web/static/svg/x.svg", size: 287, mode: os.FileMode(420), modTime: time.Unix(1463336120, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -4921,7 +4942,7 @@ func dataWebStaticSvgYenSvg() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "data/web/static/svg/yen.svg", size: 196, mode: os.FileMode(420), modTime: time.Unix(1457058732, 0)}
+	info := bindataFileInfo{name: "data/web/static/svg/yen.svg", size: 196, mode: os.FileMode(420), modTime: time.Unix(1463336120, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -4941,7 +4962,7 @@ func dataWebStaticSvgZoomInSvg() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "data/web/static/svg/zoom-in.svg", size: 509, mode: os.FileMode(420), modTime: time.Unix(1457058732, 0)}
+	info := bindataFileInfo{name: "data/web/static/svg/zoom-in.svg", size: 509, mode: os.FileMode(420), modTime: time.Unix(1463336120, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -4961,7 +4982,7 @@ func dataWebStaticSvgZoomOutSvg() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "data/web/static/svg/zoom-out.svg", size: 490, mode: os.FileMode(420), modTime: time.Unix(1457058732, 0)}
+	info := bindataFileInfo{name: "data/web/static/svg/zoom-out.svg", size: 490, mode: os.FileMode(420), modTime: time.Unix(1463336120, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -4981,12 +5002,12 @@ func dataWebTemplates403Tpl() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "data/web/templates/403.tpl", size: 48, mode: os.FileMode(420), modTime: time.Unix(1457058732, 0)}
+	info := bindataFileInfo{name: "data/web/templates/403.tpl", size: 48, mode: os.FileMode(420), modTime: time.Unix(1463336120, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
 
-var _dataWebTemplatesLayoutTpl = "\x1f\x8b\x08\x00\x00\x09\x6e\x88\x00\xff\x84\x53\xc1\x92\x9b\x30\x0c\x3d\x2f\x5f\xe1\xfa\x0e\xfe\x01\x43\x0f\xe9\xce\xb6\x33\x3b\x6d\x0e\xe9\xa1\x47\x07\x04\x78\xd6\xd8\x14\x0b\x66\x33\x1e\xff\x7b\x05\x4e\x52\x7a\xd8\xf4\x82\x25\x59\x4f\x7a\x92\x1f\xf2\xd3\x97\x1f\x87\xd3\xaf\xe3\x33\xeb\x71\x30\x55\x26\x6f\x07\xa8\xa6\xca\x32\x69\xb4\x7d\x63\x13\x98\x92\xeb\xda\x59\xce\xfa\x09\xda\x92\x8b\x56\x2d\xab\x5f\xd0\x87\x33\xbc\x8c\x40\xf7\x83\xea\x40\xbc\xe7\x5b\x5e\xb5\x47\x7a\xbc\x18\xf0\x3d\x00\xde\xf1\xb5\xf7\xe2\x6f\xb8\x20\x77\x85\xa0\x46\x03\x55\x08\xac\x38\xad\x16\x8b\x51\x8a\x14\x23\x26\x22\x51\x92\x67\xd7\x5c\xc8\x0f\xa1\x81\x56\x5b\x60\xfc\x1b\xc2\xf0\x95\xca\xf2\x18\xb3\xa7\x10\x72\xa6\x5b\x56\xc4\x98\x3a\x85\x50\x1c\x15\xf6\x31\x7e\x36\xca\x76\x25\xb9\xaf\x74\xce\x44\xb5\x78\x31\x07\xd7\x40\x8c\x3c\xa1\xc0\x78\x72\x1a\xed\xd5\xd9\x40\x13\x02\xd8\x86\xe5\x54\x72\xb3\xe8\xcc\x64\xa3\x17\x56\x1b\xe5\x7d\xc9\xd1\x39\x73\x56\x13\x91\x7e\x92\xea\x16\x3c\xcf\x88\xeb\x8e\x74\x53\xf2\x71\x82\x45\xbb\xd9\x73\x16\x02\xf1\x1b\x8d\xc2\x3d\x55\x56\xac\x66\x71\xbc\x66\xc5\x48\x85\x9e\xa4\x1e\x3a\xe6\xa7\x9a\xf6\xe3\x97\x4e\xd4\x3d\x2c\x93\xb3\xb9\x81\x16\x0b\x0a\x70\xa6\x0c\x96\xfc\x86\xd9\x7a\x0b\xf5\x21\x83\x79\x24\xe4\x02\xe6\x3f\x0c\xd4\x04\x16\x1f\xf6\x47\x37\xee\xda\xff\x1c\x77\x8d\x5b\x37\x0d\x4c\xd5\xa8\x9d\x25\x90\x71\xee\x6d\x1e\x39\x1b\x00\x7b\x47\x0c\x5e\x9e\x4f\x3c\xd5\xb5\xe3\x8c\x57\x99\x20\xbc\x93\x0c\xac\x1a\xc8\xfe\x9d\xae\x13\xeb\xea\x75\x83\x4b\x71\x75\xd7\x26\x6b\xfd\x0f\x07\xb4\x5b\xa5\x47\xc3\x7d\xa7\x8c\x87\xa3\x4d\xba\xeb\xf7\xbb\x5d\x01\xf7\xf1\xa4\xa0\x07\xaf\xfe\x7d\xf7\x41\x69\x9b\x93\xc0\x91\x96\x46\x89\xab\x54\x0f\xc9\xdb\xb4\x72\x87\x88\xa4\x52\x12\xed\xf6\x3b\xfd\x09\x00\x00\xff\xff\xa8\x23\x08\x67\x66\x03\x00\x00"
+var _dataWebTemplatesLayoutTpl = "\x1f\x8b\x08\x00\x00\x09\x6e\x88\x00\xff\x84\x53\xc1\x92\xdb\x20\x0c\x3d\xc7\x5f\x41\xb9\xc7\xfc\x00\x76\x0f\xe9\xce\xb6\x33\x3b\x6d\x0e\xe9\xa1\x47\x62\xcb\x31\xbb\x18\x5c\x50\x32\x9b\x61\xf8\xf7\x0a\x93\xa4\xe9\x61\xd3\x8b\x91\x84\x9e\xde\x93\x90\xe5\xa7\x2f\x3f\x36\xbb\x5f\xdb\x27\x36\xe2\x64\xda\x4a\x5e\x0f\x50\x7d\x5b\x55\xd2\x68\xfb\xc6\x3c\x98\x86\xeb\xce\x59\xce\x46\x0f\x43\xc3\xc5\xa0\x4e\xd9\xaf\xe9\xc3\x19\x9e\x67\xa0\xfb\x49\x1d\x40\xbc\xaf\x97\xbc\xf6\x1e\x19\xf0\x6c\x20\x8c\x00\x78\xc3\x77\x21\x88\xbf\xe1\x9a\xdc\x0c\x41\x8d\x06\xda\x18\x59\xbd\xcb\x16\x4b\x49\x8a\x12\x23\x25\xa2\x48\x92\x7b\xd7\x9f\xc9\x8f\xb1\x87\x41\x5b\x60\xfc\x1b\xc2\xf4\x95\xca\xf2\x94\xaa\x55\x8c\x6b\xa6\x07\x56\xa7\x54\x98\x62\xac\xb7\x0a\xc7\x94\x3e\x1b\x65\x0f\x0d\xb9\x2f\x74\x1e\x49\x6a\xfd\x6c\x36\xae\x87\x94\x78\x41\x81\x09\xe4\xf4\x3a\xa8\xbd\x81\x3e\x46\xb0\x3d\x5b\x53\xc9\xc5\xa2\xb3\x92\xbd\x3e\xb1\xce\xa8\x10\x1a\x8e\xce\x99\xbd\xf2\x24\x7a\x25\xd5\x35\xb8\x3f\x22\xe6\x19\xe9\xbe\xe1\xb3\x87\x93\x76\xc7\xc0\x59\x8c\xa4\x6f\x36\x0a\xef\xa5\xb2\x3a\x9b\xf5\xf6\x92\x95\x12\x15\x5a\x49\x3d\x1d\x58\xf0\x1d\xcd\x27\x9c\x0e\xa2\x1b\xe1\xe4\x9d\x5d\x1b\x18\xb0\xa6\x00\x67\xca\x60\xc3\xaf\x98\x85\x5b\xa8\x8f\x15\x28\x0f\x16\xff\xc3\xbf\xe4\x3c\x64\x47\x37\xdf\x91\xff\x9c\xef\x68\x07\xe7\x27\xa6\x3a\xd4\xce\x12\xc8\x38\xf7\x76\x9c\x39\x9b\x00\x47\x47\xfc\xcf\x4f\x3b\x5e\xea\xda\xf9\x88\x97\x25\x41\x78\x27\x49\x56\x4d\x64\xff\x2e\xd7\x45\x73\xfb\xb2\xc0\xa5\xb8\xb8\x99\x24\xd7\xff\xb0\x3d\xbb\x54\x7a\xd4\xdc\x77\xca\x78\xd8\x9a\xd7\x87\xf1\x7e\xb2\x19\x70\x6b\x4f\x0a\x7a\xee\xf6\xdf\x57\x9f\x94\xb6\x6b\x5a\x6f\xcc\x83\x6d\xab\xbc\xa8\x9b\xe2\x2d\x9b\x72\x83\x84\xce\xeb\x19\x2f\x8c\xaf\x41\x98\x3e\x84\xfa\x95\x5e\x4c\x8a\x72\x95\xcb\x97\x3d\xa6\xb5\x5e\x7e\xb8\x3f\x01\x00\x00\xff\xff\x1b\x3a\xc1\x0f\x88\x03\x00\x00"
 
 func dataWebTemplatesLayoutTplBytes() ([]byte, error) {
 	return bindataRead(
@@ -5001,7 +5022,7 @@ func dataWebTemplatesLayoutTpl() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "data/web/templates/layout.tpl", size: 870, mode: os.FileMode(420), modTime: time.Unix(1457058732, 0)}
+	info := bindataFileInfo{name: "data/web/templates/layout.tpl", size: 904, mode: os.FileMode(420), modTime: time.Unix(1463336120, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -5021,7 +5042,7 @@ func dataWebTemplatesNodeChildrenTpl() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "data/web/templates/node-children.tpl", size: 211, mode: os.FileMode(420), modTime: time.Unix(1457058732, 0)}
+	info := bindataFileInfo{name: "data/web/templates/node-children.tpl", size: 211, mode: os.FileMode(420), modTime: time.Unix(1463336120, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -5041,7 +5062,7 @@ func dataWebTemplatesNodeContentTpl() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "data/web/templates/node-content.tpl", size: 41, mode: os.FileMode(420), modTime: time.Unix(1457058732, 0)}
+	info := bindataFileInfo{name: "data/web/templates/node-content.tpl", size: 41, mode: os.FileMode(420), modTime: time.Unix(1463336120, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -5106,6 +5127,7 @@ var _bindata = map[string]func() (*asset, error){
 	"data/reference/example":                           dataReferenceExample,
 	"data/web/static/css/stylesheet.css":               dataWebStaticCssStylesheetCss,
 	"data/web/static/favicon.ico":                      dataWebStaticFaviconIco,
+	"data/web/static/js/ldss.js":                       dataWebStaticJsLdssJs,
 	"data/web/static/svg/ICON-LICENSE":                 dataWebStaticSvgIconLicense,
 	"data/web/static/svg/README.md":                    dataWebStaticSvgReadmeMd,
 	"data/web/static/svg/account-login.svg":            dataWebStaticSvgAccountLoginSvg,
@@ -5395,6 +5417,9 @@ var _bintree = &bintree{nil, map[string]*bintree{
 					"stylesheet.css": &bintree{dataWebStaticCssStylesheetCss, map[string]*bintree{}},
 				}},
 				"favicon.ico": &bintree{dataWebStaticFaviconIco, map[string]*bintree{}},
+				"js": &bintree{nil, map[string]*bintree{
+					"ldss.js": &bintree{dataWebStaticJsLdssJs, map[string]*bintree{}},
+				}},
 				"svg": &bintree{nil, map[string]*bintree{
 					"ICON-LICENSE":                 &bintree{dataWebStaticSvgIconLicense, map[string]*bintree{}},
 					"README.md":                    &bintree{dataWebStaticSvgReadmeMd, map[string]*bintree{}},

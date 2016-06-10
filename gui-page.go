@@ -1,4 +1,4 @@
-// +build !nogui
+// +build !gui
 
 package main
 
@@ -11,19 +11,25 @@ import (
 )
 
 type guiPage struct {
-	app                                                                     *gui
-	item                                                                    lib.Item
-	lang                                                                    *lib.Language
-	box, toolbar                                                            *ui.Box
-	contents                                                                *uidoc.UIDoc
-	address                                                                 *ui.Entry
-	title, status                                                           *ui.Label
-	btnUp, btnNext, btnPrevious, btnNewTab, btnCloseTab                     *ui.Button
+	app  *gui
+	item lib.Item
+	lang *lib.Language
+
+	box, toolbar  *ui.Box
+	contents      *uidoc.UIDoc
+	address       *ui.Entry
+	title, status *ui.Label
+	languages     *ui.Combobox
+
+	btnUp, btnNext, btnPrevious, btnNewTab, btnCloseTab *ui.Button
+
 	titleFont, subtitleFont, summaryFont, verseFont, contentFont, errorFont *ui.Font
 }
 
-func newGuiPage(lang *lib.Language) *guiPage {
+func newGuiPage(parentApp *gui) *guiPage {
 	p := &guiPage{}
+	p.app = parentApp
+	p.lang = p.app.lang
 
 	//p.childMap = make(map[uintptr]string)
 
@@ -46,18 +52,29 @@ func newGuiPage(lang *lib.Language) *guiPage {
 	p.btnNewTab = ui.NewButton("")
 	p.btnCloseTab = ui.NewButton("")
 
-	p.lang = lang
-
 	p.title = ui.NewLabel("LDS Scriptures")
 	p.status = ui.NewLabel("")
 	p.address = ui.NewEntry()
 
 	p.address.OnChanged(p.onPathChanged)
 
+	p.languages = ui.NewCombobox()
+	for i, l := range p.app.languages {
+		p.languages.Append(l.String())
+		if l == p.lang {
+			p.languages.SetSelected(i)
+		}
+	}
+	p.languages.OnSelected(func(*ui.Combobox) {
+		p.lang = p.app.languages[p.languages.Selected()]
+		p.onPathChanged(p.address)
+	})
+
 	p.toolbar.Append(p.btnPrevious, false)
 	p.toolbar.Append(p.btnUp, false)
 	p.toolbar.Append(p.address, true)
 	p.toolbar.Append(p.btnNext, false)
+	p.toolbar.Append(p.languages, false)
 	p.toolbar.Append(p.btnNewTab, false)
 	p.toolbar.Append(p.btnCloseTab, false)
 	p.box.Append(p.title, false)

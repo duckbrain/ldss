@@ -4,6 +4,7 @@ import (
 	"compress/zlib"
 	"fmt"
 	"io"
+	"net/http"
 	"os"
 )
 
@@ -14,11 +15,12 @@ var DownloadLimit int = 6
 func downloadFile(get string, save string, zlibDecompress bool) (err error) {
 	var input io.Reader
 
-	body, err := os.Open(get)
+	response, err := http.Get(get)
 	if err != nil {
 		return
 	}
-	defer body.Close()
+	body := response.Body
+	defer response.Body.Close()
 
 	if zlibDecompress {
 		input, err = zlib.NewReader(body)
