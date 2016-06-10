@@ -43,7 +43,7 @@ func (app gui) run() {
 }
 
 func (app *gui) addPage(path string) {
-	page := newGuiPage()
+	page := newGuiPage(app.lang)
 	app.pages = append(app.pages, page)
 	app.tab.Append(fmt.Sprintf("Tab %v", app.tab.NumPages()+1), page.box)
 	page.btnNewTab.OnClicked(func(btn *ui.Button) {

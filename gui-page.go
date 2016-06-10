@@ -22,7 +22,7 @@ type guiPage struct {
 	titleFont, subtitleFont, summaryFont, verseFont, contentFont, errorFont *ui.Font
 }
 
-func newGuiPage() *guiPage {
+func newGuiPage(lang *lib.Language) *guiPage {
 	p := &guiPage{}
 
 	//p.childMap = make(map[uintptr]string)
@@ -46,7 +46,7 @@ func newGuiPage() *guiPage {
 	p.btnNewTab = ui.NewButton("")
 	p.btnCloseTab = ui.NewButton("")
 
-	p.lang = p.app.lang
+	p.lang = lang
 
 	p.title = ui.NewLabel("LDS Scriptures")
 	p.status = ui.NewLabel("")
