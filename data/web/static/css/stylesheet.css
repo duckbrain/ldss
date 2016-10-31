@@ -2,12 +2,16 @@
 	display: flex;
 	justify-content: space-between;
 	align-items: center;
-	background-color: #aaa;
+	background-color: #3c4d71;
 	position: fixed;
 	top: 0;
 	left: 0;
 	right: 0;
 	height: 32px;
+}
+
+.toolbar a {
+	text-decoration: none;
 }
 
 .button {
@@ -32,5 +36,38 @@
 }
 
 .main-content {
-	margin-top: 45px;
+	font-size: 18px;
+	font-family: Palatino,"Palatino Linotype",Pahoran,Georgia,"Times New Roman",serif;
+	margin: 45px auto 25%;
+	max-width: 470px;
+}
+
+.main-content h1 {
+	display: block;
+	font-weight: 200;
+    font-style: normal;
+    font-size: 52px;
+    line-height: 55px;
+    letter-spacing: -1px;
+    margin-left: 0;
+    padding: 0 0 2px;
+    margin-top: 5px;
+    font-family: Palatino,"Palatino Linotype",Pahoran,Georgia,"Times New Roman",serif;
+}
+
+.main-content a {
+	color: #0091bc;
+	text-decoration: none;
+}
+
+.titleNumber, 
+.subtitle {
+	font: 24px/26px "Helam Slab","Roboto Slab",Calibri,Helvetica,Arial,sans-serif;
+	font-family: Palatino,"Palatino Linotype",Pahoran,Georgia,"Times New Roman",serif;
+}
+
+.studySummary {
+	font-family: Palatino,"Palatino Linotype",Pahoran,Georgia,"Times New Roman",serif;
+    font-style: italic;
+    line-height: 140%;
 }

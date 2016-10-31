@@ -29,7 +29,6 @@ function onStateChange(e) {
 }
 
 function setNavigationButton(element, item) {
-	element.title = item ? "enabled" : "disabled";
 	if (item) {
 		element.removeAttribute('disabled');
 		element.href = item.path;
@@ -56,7 +55,11 @@ function setItem(item) {
 	setNavigationButton(parentBtn, item.parent);
 
 	if (item.content)
-		contentEle.innerHTML = item.content;
+		if (item.content.indexOf('</h1>') != -1) {
+			contentEle.innerHTML = item.content;
+		} else {
+			contentEle.innerHTML = "<h1>" + item.name + "</h1>" + item.content;
+		}
 	else {
 		contentEle.innerHTML = '';
 		var header = document.createElement('h1');

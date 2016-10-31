@@ -1,9 +1,9 @@
 Your config file is generally in ~/.ldss/config.json
 
 The following are properties you can set:
-   Language              <lang> to use as when none is specified
-   WebPort               Integer to host the ldss web server on
+   Language            LANG to use if not specified
+   WebPort             TCP port for ldss web server
 
 The following are switches you can use to temporarily override certain properties:
-   -l <lang>             Language
-   -p <integer>          WebPort
+   -l LANG             Language
+   -p NUMBER           WebPort

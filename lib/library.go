@@ -59,22 +59,40 @@ func genericNextPrevious(item Item, direction int) Item {
 	}
 	siblings, err := parent.Children()
 	if err != nil {
+		panic(err)
+	}
+
+	getSideSibs := func() []Item {
+		parentSibling := genericNextPrevious(parent, direction)
+		if parentSibling == nil {
+			return nil
+		}
+		if sideSibs, err := parentSibling.Children(); err == nil && len(sideSibs) > 0 {
+			return sideSibs
+		}
 		return nil
 	}
+
 	for i, sibling := range siblings {
-		if sibling == item {
+		if sibling.Path() == item.Path() {
 			if i+direction < 0 {
-				//TODO get last child of parent's sibling
+				//Get last child of parent's sibling
+				if sideSibs := getSideSibs(); sideSibs != nil {
+					return sideSibs[len(sideSibs)-1]
+				}
 				return nil
 			}
 			if i+direction >= len(siblings) {
-				//TODO get first child of parent's sibling
+				//Get first child of parent's sibling
+				if sideSibs := getSideSibs(); sideSibs != nil {
+					return sideSibs[0]
+				}
 				return nil
 			}
 			return siblings[i+direction]
 		}
 	}
-	return nil
+	panic("Item not found as child's parent.")
 }
 
 // Uses AutoDownload to lookup a string. Uses reference lookups or paths

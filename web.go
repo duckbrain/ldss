@@ -12,6 +12,7 @@ import (
 	"net/http"
 	"path"
 	"strconv"
+	"strings"
 )
 
 type web struct {
@@ -133,7 +134,7 @@ func (app *web) itemsRelativesPath(item lib.Item) interface{} {
 }
 
 func (app *web) handleJSON(w http.ResponseWriter, r *http.Request) {
-	defer app.handleError(w, r)
+	//defer app.handleError(w, r)
 
 	lang := app.language(r)
 	catalog, err := lang.Catalog()
@@ -175,6 +176,12 @@ func (app *web) handleJSON(w http.ResponseWriter, r *http.Request) {
 		data["children"] = children
 	}
 
+	breadcrumbs := make([]lib.Item, 0)
+	for p := item; p != nil; p = p.Parent() {
+		breadcrumbs = append([]lib.Item{p}, breadcrumbs...)
+	}
+	data["breadcrumbs"] = breadcrumbs
+
 	json, err := json.Marshal(data)
 	if err != nil {
 		panic(err)
@@ -206,19 +213,32 @@ func (app *web) handler(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		panic(err)
 	}
+	if children, err := item.Children(); err == nil {
+		if len(children) == 1 {
+			http.Redirect(w, r, children[0].Path(), 301)
+			return
+		}
+	}
 	app.print(buff, r, item)
 
 	layout := struct {
-		Title   string
-		Content template.HTML
-		Lang    *lib.Language
-		Item    lib.Item
+		Title       string
+		Content     template.HTML
+		Lang        *lib.Language
+		Item        lib.Item
+		Breadcrumbs []lib.Item
 	}{
-		Title:   "LDS Scriptures",
-		Content: template.HTML(buff.String()),
-		Lang:    lang,
-		Item:    item,
+		Title:       "LDS Scriptures",
+		Content:     template.HTML(buff.String()),
+		Lang:        lang,
+		Item:        item,
+		Breadcrumbs: make([]lib.Item, 0),
 	}
+
+	for p := item; p != nil; p = p.Parent() {
+		layout.Breadcrumbs = append([]lib.Item{p}, layout.Breadcrumbs...)
+	}
+
 	app.templates.layout.Execute(w, layout)
 }
 
@@ -229,6 +249,7 @@ func (app *web) print(w io.Writer, r *http.Request, item lib.Item) {
 		Content  template.HTML
 		Children []lib.Item
 		LangCode string
+		HasTitle bool
 	}{
 		Item:     item,
 		LangCode: item.Language().GlCode,
@@ -242,6 +263,7 @@ func (app *web) print(w io.Writer, r *http.Request, item lib.Item) {
 	case *lib.Node:
 		if content, err := item.(*lib.Node).Content(); err == nil {
 			data.Content = template.HTML(content)
+			data.HasTitle = strings.Contains(string(content), "</h1>")
 			err = app.templates.nodeContent.Execute(w, data)
 		} else {
 			err = app.templates.nodeChildren.Execute(w, data)

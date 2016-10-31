@@ -1,19 +1,20 @@
-usage: ldss <command> [<arguments>]
+usage: ldss COMMAND [ARGS]...
 
 The following are available as commands:
-   help [command name]           Print these instructions or get more detailed information on a command
-   download lang|<lang>|<book>   Download the catalog or book for offline use
-   languages                     List all available languages
-   read <ref>                    Open up a scripture reference to read
-   index <ref>                   List the child nodes of the speficied reference
-   print <ref>                   Print out the contents of the scripture reference given without the default reader or HTML parsing
-   lookup <ref>                  Perform a lookup on the scripture reference to determine if it is valid
-   <ref>                         Shorthand for "ldss read <ref>"
+   help COMMAND|TOPIC  Print these instructions or help on a given command
+   dl lang|LANG|BOOK   Download the catalog or book for offline use
+   languages           List all available languages
+   read REF            Open up a scripture reference to read
+   index REF           List the child nodes of the speficied reference
+   print REF           Print contents of the scripture reference as raw HTML
+   lookup REF          Lookup scripture reference to determine if valid
+   REF                 Shorthand for "ldss read <ref>"
 
 What to fill in the <blanks>:
-   <lang>                        Information on providing languages
-   <ref>                         catalog|<folder>|<book>|<node>
-   <folder>                      ID number of a folder or special name; eg: "scriptures"
+   LANG                Information on providing languages
+   REF                 catalog|<folder>|<book>|<node>
+   FOLDER              IDnumber of a folder or special name; eg: "scriptures"
 
 Other topics to get help on:
-   config                        Information on the configuration file and its settings
+   config              Information on the configuration file and its settings
+  
