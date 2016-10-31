@@ -71,6 +71,7 @@ func (app *web) handleError(w http.ResponseWriter, r *http.Request) {
 }
 
 func (app *web) handleLookup(w http.ResponseWriter, r *http.Request) {
+	defer r.Body.Close()
 	path, err := app.language(r).Reference(r.URL.Query().Get("q"))
 	if err != nil {
 		panic(err)
@@ -80,6 +81,7 @@ func (app *web) handleLookup(w http.ResponseWriter, r *http.Request) {
 
 func (app *web) handleStatic(w http.ResponseWriter, r *http.Request) {
 	defer app.handleError(w, r)
+	defer r.Body.Close()
 	if err := app.static(w, r); err != nil {
 		panic(err)
 	}
@@ -135,6 +137,7 @@ func (app *web) itemsRelativesPath(item lib.Item) interface{} {
 
 func (app *web) handleJSON(w http.ResponseWriter, r *http.Request) {
 	//defer app.handleError(w, r)
+	defer r.Body.Close()
 
 	lang := app.language(r)
 	catalog, err := lang.Catalog()
@@ -194,6 +197,7 @@ func (app *web) handleJSON(w http.ResponseWriter, r *http.Request) {
 
 func (app *web) handler(w http.ResponseWriter, r *http.Request) {
 	defer app.handleError(w, r)
+	defer r.Body.Close()
 
 	if app.static(w, r) == nil {
 		return
