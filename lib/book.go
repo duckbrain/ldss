@@ -185,19 +185,6 @@ func (b *Book) nodeChildren(parent *Node) ([]*Node, error) {
 	return nodes, nil
 }
 
-func (b *Book) lookupPath(uri string) (*Node, error) {
-	node := &Node{Book: b}
-	l, err := b.db()
-	if err != nil {
-		return node, err
-	}
-	err = l.stmtUri.QueryRow(uri).Scan(&node.id, &node.name, &node.path, &node.parentId, &node.hasContent, &node.childCount)
-	if err != nil {
-		return nil, fmt.Errorf("Path %v not found", uri)
-	}
-	return node, err
-}
-
 func (b *Book) lookupId(id int) (*Node, error) {
 	node := &Node{Book: b}
 	l, err := b.db()

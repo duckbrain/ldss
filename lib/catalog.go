@@ -127,31 +127,3 @@ func (catalog *Catalog) addBooks(jBooks []*jsonBook, parent Item) []*Book {
 	}
 	return books
 }
-
-// Finds an Item by it's path. Expects a fully qualified path. An empty string
-// or "/" will return this catalog. Will return an error if there is an error
-// loading the item or it is not downloaded.
-func (c *Catalog) LookupPath(path string) (Item, error) {
-	path = strings.TrimSpace(path)
-	if path == "" || path == "/" {
-		return c, nil
-	}
-	path = strings.TrimRight(path, "/ ")
-	if folder, ok := c.foldersByPath[path]; ok {
-		return folder, nil
-	}
-	sections := strings.Split(path, "/")
-	if sections[0] != "" {
-		return nil, fmt.Errorf("Invalid path \"%v\", must start with '/'", path)
-	}
-	for i := 2; i <= len(sections); i++ {
-		temppath := strings.Join(sections[0:i], "/")
-		if book, ok := c.booksByPath[temppath]; ok {
-			if path == book.Path() {
-				return book, nil
-			}
-			return book.lookupPath(path)
-		}
-	}
-	return nil, fmt.Errorf("Path \"%v\" not found", path)
-}
