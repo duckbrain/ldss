@@ -14,7 +14,58 @@
 	text-decoration: none;
 }
 
+.breadcrumbs {
+	display: flex;
+	white-space:nowrap;
+	overflow: hidden;
+	flex-shrink: 1;
+}
+
+.breadcrumbs>* {
+	flex-shrink: 100;
+	text-overflow: ellipsis;
+	white-space:nowrap;
+	overflow: hidden;
+}
+
+.breadcrumbs>*:first-child,
+.breadcrumbs>*:last-child {
+	flex-shrink: 0;
+}
+
+.lookup {
+	margin: 3px 5px 5px auto;
+	display: flex;
+}
+
+.lookup input {
+	width: 30px;
+	height: 20px;
+	cursor: pointer;
+	color: transparent;
+	padding: 4px;
+	margin: 1px 0 0 5px;
+	transition: width .2s, color .2s, background-color .2s ease-out;
+	border: solid 1px #777;
+	background-color: #ccc;
+	background-image: url('/svg/magnifying-glass.svg');
+	background-repeat: no-repeat;
+	background-position: right 15px center;
+}
+
+.lookup input:focus {
+	width: 200px;
+	cursor: text;
+	color: #000;
+	background-color: #fff;
+}
+
+.navButtons {
+	display: flex;
+}
+
 .button {
+	color: #000;
 	background-color: #ccc;
 	cursor: pointer;
 	padding: 5px 15px;
@@ -29,10 +80,6 @@
 .button[disabled] {
 	background-color: #999;
 	cursor: default;
-}
-
-.toolbar .button {
-	margin: 0 0 9px;
 }
 
 .main-content {
@@ -70,4 +117,20 @@
 	font-family: Palatino,"Palatino Linotype",Pahoran,Georgia,"Times New Roman",serif;
     font-style: italic;
     line-height: 140%;
+}
+
+.clarityWord {
+	font-style: italic;
+}
+
+.smallCaps {
+	font-variant: small-caps;
+}
+
+.video canvas {
+	display: none;
+}
+
+.video video {
+	width: 100%;
 }

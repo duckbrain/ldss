@@ -176,17 +176,17 @@ func (app *web) handleJSON(w http.ResponseWriter, r *http.Request) {
 		data["children"] = children
 	}
 
-	breadcrumbs := make([]lib.Item, 0)
+	breadcrumbs := make([]interface{}, 0)
 	for p := item; p != nil; p = p.Parent() {
-		breadcrumbs = append([]lib.Item{p}, breadcrumbs...)
+		breadcrumbs = append([]interface{}{app.itemsRelativesPath(p)}, breadcrumbs...)
 	}
 	data["breadcrumbs"] = breadcrumbs
 
-	json, err := json.Marshal(data)
+	j, err := json.Marshal(data)
 	if err != nil {
 		panic(err)
 	}
-	_, err = w.Write(json)
+	_, err = w.Write(j)
 	if err != nil {
 		panic(err)
 	}

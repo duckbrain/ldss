@@ -1,9 +1,11 @@
+'use strict';
+
 function log(e) { console.log(e); return e; }
 
 var contentEle = document.querySelector('.main-content');
 var previousBtn = document.getElementById('previous');
 var nextBtn = document.getElementById('next');
-var parentBtn = document.getElementById('parent');
+var breadcrumbs = document.querySelector('.breadcrumbs');
 var state = { item: null };
 
 function interceptClickEvent(e) {
@@ -11,10 +13,14 @@ function interceptClickEvent(e) {
     var target = e.target || e.srcElement;
     if (target.tagName === 'A' && !target.attributes.getNamedItem('disabled')) {
 		href = target.getAttribute('href');
-        loadItem(target.pathname)
-        .then(function(item) {
-			history.pushState(state, '', item.path);
-		});
+		if (href.indexOf('f_') == 0) {
+			console.log("Footnote: " + href.substring(2));
+		} else {
+	        loadItem(target.pathname)
+	        .then(function(item) {
+				history.pushState(state, '', item.path);
+			});
+		}
 
 	   e.preventDefault();
     }
@@ -52,7 +58,22 @@ function setState(state) {
 function setItem(item) {
 	setNavigationButton(previousBtn, item.previous);
 	setNavigationButton(nextBtn, item.next);
-	setNavigationButton(parentBtn, item.parent);
+	
+	breadcrumbs.innerHTML = '';
+	item.breadcrumbs.forEach(function(crumb) {
+		var content, a = document.createElement('a');
+		a.classList.add('button');
+		setNavigationButton(a, crumb);
+		if (crumb.path == '/') {
+			content = document.createElement('img');
+			content.src = '/svg/home.svg';
+			content.alt = "Library";
+		} else {
+			content = document.createTextNode(crumb.name)
+		}
+		a.appendChild(content);
+		breadcrumbs.appendChild(a);
+	})
 
 	if (item.content)
 		if (item.content.indexOf('</h1>') != -1) {

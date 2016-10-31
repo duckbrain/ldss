@@ -6,6 +6,8 @@
 <link rel="stylesheet" href="/css/stylesheet.css">
 <title>{{ .Title }}</title>
 
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
 </head>
 <body>
 
@@ -27,16 +29,12 @@
 		</a>
 	{{ end }}
 	</div>
-	<form action="/lookup" method="GET">
+	<form class="lookup lookup-form" action="/lookup" method="GET">
 		<input type="text" name="q">
-		<button>Lookup</button>
 	</form>
 	<div class="navButtons">
 		<a class="button" id="previous" {{template "ItemHref" .Item.Previous}}>
 			<img src="/svg/chevron-left.svg" alt="Previous">
-		</a>
-		<a class="button" id="parent" {{template "ItemHref" .Item.Parent}}>
-			<img src="/svg/chevron-top.svg" alt="Up">
 		</a>
 		<a class="button" id="next" {{template "ItemHref" .Item.Next}}>
 			<img src="/svg/chevron-right.svg" alt="Next">
