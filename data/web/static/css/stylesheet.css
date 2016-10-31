@@ -2,7 +2,7 @@
 	display: flex;
 	justify-content: space-between;
 	align-items: center;
-	background-color: #aaa;
+	background-color: #3c4d71;
 	position: fixed;
 	top: 0;
 	left: 0;
@@ -10,7 +10,62 @@
 	height: 32px;
 }
 
+.toolbar a {
+	text-decoration: none;
+}
+
+.breadcrumbs {
+	display: flex;
+	white-space:nowrap;
+	overflow: hidden;
+	flex-shrink: 1;
+}
+
+.breadcrumbs>* {
+	flex-shrink: 100;
+	text-overflow: ellipsis;
+	white-space:nowrap;
+	overflow: hidden;
+}
+
+.breadcrumbs>*:first-child,
+.breadcrumbs>*:last-child {
+	flex-shrink: 0;
+}
+
+.lookup {
+	margin: 3px 5px 5px auto;
+	display: flex;
+}
+
+.lookup input {
+	width: 30px;
+	height: 20px;
+	cursor: pointer;
+	color: transparent;
+	padding: 4px;
+	margin: 1px 0 0 5px;
+	transition: width .2s, color .2s, background-color .2s ease-out;
+	border: solid 1px #777;
+	background-color: #ccc;
+	background-image: url('/svg/magnifying-glass.svg');
+	background-repeat: no-repeat;
+	background-position: right 15px center;
+}
+
+.lookup input:focus {
+	width: 200px;
+	cursor: text;
+	color: #000;
+	background-color: #fff;
+}
+
+.navButtons {
+	display: flex;
+}
+
 .button {
+	color: #000;
 	background-color: #ccc;
 	cursor: pointer;
 	padding: 5px 15px;
@@ -27,10 +82,55 @@
 	cursor: default;
 }
 
-.toolbar .button {
-	margin: 0 0 9px;
+.main-content {
+	font-size: 18px;
+	font-family: Palatino,"Palatino Linotype",Pahoran,Georgia,"Times New Roman",serif;
+	margin: 45px auto 25%;
+	max-width: 470px;
 }
 
-.main-content {
-	margin-top: 45px;
+.main-content h1 {
+	display: block;
+	font-weight: 200;
+    font-style: normal;
+    font-size: 52px;
+    line-height: 55px;
+    letter-spacing: -1px;
+    margin-left: 0;
+    padding: 0 0 2px;
+    margin-top: 5px;
+    font-family: Palatino,"Palatino Linotype",Pahoran,Georgia,"Times New Roman",serif;
+}
+
+.main-content a {
+	color: #0091bc;
+	text-decoration: none;
+}
+
+.titleNumber, 
+.subtitle {
+	font: 24px/26px "Helam Slab","Roboto Slab",Calibri,Helvetica,Arial,sans-serif;
+	font-family: Palatino,"Palatino Linotype",Pahoran,Georgia,"Times New Roman",serif;
+}
+
+.studySummary {
+	font-family: Palatino,"Palatino Linotype",Pahoran,Georgia,"Times New Roman",serif;
+    font-style: italic;
+    line-height: 140%;
+}
+
+.clarityWord {
+	font-style: italic;
+}
+
+.smallCaps {
+	font-variant: small-caps;
+}
+
+.video canvas {
+	display: none;
+}
+
+.video video {
+	width: 100%;
 }

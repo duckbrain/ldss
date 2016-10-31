@@ -1,4 +1,4 @@
-// +build !gui
+// +build gui
 
 package main
 
@@ -108,7 +108,7 @@ func newGuiPage(parentApp *gui) *guiPage {
 }
 
 func (p *guiPage) Lookup(s string) {
-	p.handleMessages(lib.Lookup(p.lang, s), true)
+	p.handlePage(s, true)
 }
 
 func toggleBtn(btn *ui.Button, item interface{}) {
@@ -137,62 +137,59 @@ func (p *guiPage) SetItem(item lib.Item, setText bool) {
 
 		root := uidoc.NewGroup(make([]uidoc.Element, 0))
 
-		defer func() {
+		/*defer func() {
 			r := recover()
 			if err, ok := r.(error); ok {
 				root.Append(uidoc.NewText(err.Error(), p.errorFont))
 			}
-		}()
+		}()*/
 
 		root.Append(uidoc.NewText(item.Name(), p.titleFont))
 
-		if children, err := item.Children(); err == nil {
-			//TODO Add children
-			for _, child := range children {
-				func(child lib.Item) {
-					text := uidoc.NewText(child.Name(), p.contentFont)
-					text.PaddingLeft = 5
-					text.PaddingRight = 5
-					text.PaddingTop = 5
-					text.PaddingBottom = 5
-					text.MarginTop = 3
-					text.MarginRight = 3
-					text.MarginBottom = 3
-					text.MarginLeft = 3
-					text.LayoutMode = uidoc.LayoutInline
-					text.Wrap = false
-					button := uidoc.NewButton(text, func() {
-						p.SetItem(child, true)
-					})
-					root.Append(button)
-				}(child)
-			}
+		children := p.handleMessages(lib.AutoDownload(func() (interface{}, error) {
+			return item.Children()
+		})).([]lib.Item)
+
+		for _, child := range children {
+			func(child lib.Item) {
+				text := uidoc.NewText(child.Name(), p.contentFont)
+				text.SetPadding(5)
+				text.SetMargins(3)
+				text.LayoutMode = uidoc.LayoutInline
+				text.Wrap = false
+				button := uidoc.NewButton(text, func() {
+					p.handlePage(child.Path(), true)
+				})
+				root.Append(button)
+			}(child)
 		}
 
 		if node, ok := item.(*lib.Node); ok {
-			if content, err := node.Content(); err == nil {
-				if page, err := content.Page(); err == nil {
-					if len(page.Subtitle) > 0 {
-						root.Append(uidoc.NewText(page.Subtitle, p.subtitleFont))
-					}
-					if len(page.Summary) > 0 {
-						root.Append(uidoc.NewText(page.Summary, p.summaryFont))
-					}
-					for _, v := range page.Verses {
-						verse := uidoc.NewText(fmt.Sprintf("%v", v.Number), p.verseFont)
-						verse.LayoutMode = uidoc.LayoutInline
-						verse.MarginRight = 5
-						root.Append(verse)
-						root.Append(uidoc.NewText(v.Text, p.contentFont))
-					}
+
+			content := p.handleMessages(lib.AutoDownload(func() (interface{}, error) {
+				return node.Content()
+			})).(lib.Content)
+
+			if page, err := content.Page(); err == nil {
+				if len(page.Subtitle) > 0 {
+					root.Append(uidoc.NewText(page.Subtitle, p.subtitleFont))
+				}
+				if len(page.Summary) > 0 {
+					root.Append(uidoc.NewText(page.Summary, p.summaryFont))
+				}
+				for _, v := range page.Verses {
+					verse := uidoc.NewText(fmt.Sprintf("%v", v.Number), p.verseFont)
+					verse.LayoutMode = uidoc.LayoutInline
+					verse.MarginRight = 5
+					root.Append(verse)
+					root.Append(uidoc.NewText(v.Text, p.contentFont))
 				}
 			}
 		}
 
-		root.MarginTop = 20
-		root.MarginLeft = 20
-		root.MarginRight = 20
+		root.SetMargins(20)
 		root.MarginBottom = 100
+		root.Background = &ui.Brush{A: 1, R: 1, G: 1, B: 1};
 
 		p.contents.SetDocument(root)
 	}
@@ -204,21 +201,37 @@ func (p *guiPage) ShowError(err error) {
 	p.status.SetText(err.Error())
 }
 
-func (p *guiPage) handleMessages(c <-chan lib.Message, setText bool) {
+func (p *guiPage) handleMessages(c <-chan lib.Message) interface{} {
 	for m := range c {
 		switch m.(type) {
 		case lib.MessageDone:
-			item := m.(lib.MessageDone).Item().(lib.Item)
-			p.SetItem(item, setText)
 			p.status.Hide()
+			return m.(lib.MessageDone).Item()
+		case lib.MessageError:
+			ui.QueueMain(func() {
+				p.status.SetText(m.String())
+				p.status.Show()
+			})
+			panic(m)
 		default:
-			p.status.Show()
-			p.status.SetText(m.String())
+			ui.QueueMain(func() {
+				p.status.SetText(m.String())
+				p.status.Show()
+			})
 		}
 	}
+	panic(fmt.Errorf("Channel completed prematurely\n"))
+}
 
+func (p *guiPage) handlePage(path string, setText bool) {
+	go func() {
+		item := p.handleMessages(lib.Lookup(p.lang, path)).(lib.Item)
+		ui.QueueMain(func() {
+			p.SetItem(item, setText)
+		})
+	}()
 }
 
 func (p *guiPage) onPathChanged(sender *ui.Entry) {
-	p.handleMessages(lib.Lookup(p.lang, sender.Text()), false)
+	p.handlePage(sender.Text(), false)
 }

@@ -120,7 +120,11 @@ func (b *Book) Children() ([]Item, error) {
 	}
 	items := make([]Item, len(nodes))
 	for i, n := range nodes {
-		items[i] = n
+		if subnodes, err := n.Children(); err == nil && len(subnodes) == 1 {
+			items[i] = subnodes[0]
+		} else {
+			items[i] = n
+		}
 	}
 	return items, nil
 }

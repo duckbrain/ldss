@@ -27,14 +27,7 @@ func main() {
 	args := config.Args()
 
 	if len(args) == 0 {
-		var ok bool
-		var app app
-		if app, ok = apps["gui"]; !ok {
-			PrintInstructions()
-			return
-		}
-		app.setInfo(config, args)
-		app.run()
+		PrintInstructions()
 	} else {
 		switch args[0] {
 		case "help":

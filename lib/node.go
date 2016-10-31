@@ -43,7 +43,11 @@ func (n *Node) Children() ([]Item, error) {
 	}
 	items := make([]Item, len(nodes))
 	for i, n := range nodes {
-		items[i] = n
+		if subnodes, err := n.Children(); err == nil && len(subnodes) == 1 {
+			items[i] = subnodes[0]
+		} else {
+			items[i] = n
+		}
 	}
 	return items, nil
 }
@@ -55,13 +59,17 @@ func (n *Node) Content() (Content, error) {
 }
 
 // Parent node or book
-func (n *Node) Parent() Item {
+func (n *Node) Parent() (parent Item) {
 	if n.parentId == 0 {
-		return n.Book
+		parent = n.Book
 	} else {
 		node, _ := n.Book.lookupId(n.parentId)
-		return node
+		parent = node
 	}
+	if siblings, err := parent.Children(); err == nil && len(siblings) == 1 {
+		parent = parent.Parent()
+	}
+	return
 }
 
 // Next sibling node
