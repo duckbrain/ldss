@@ -25,6 +25,8 @@ func init() {
 	apps["gui"] = &app
 }
 
+func (app gui) register(*Configuration) {}
+
 func (app *gui) run() {
 	if langs, err := lib.Languages(); err == nil {
 		app.languages = langs

@@ -18,6 +18,8 @@ func init() {
 	apps["shell"] = &shell{}
 }
 
+func (app shell) register(*Configuration) {}
+
 func (app *shell) run() {
 	fmt.Printf("Welcome to the LDS Scriptures interactive shell.\n")
 	cin := bufio.NewReader(os.Stdin)

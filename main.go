@@ -7,14 +7,16 @@ import (
 
 func main() {
 
-	Config().RegisterOption(ConfigOption{
+	config := newConfiguration()
+
+	config.RegisterOption(ConfigOption{
 		Name:     "Language",
 		Default:  "eng",
 		ShortArg: 'l',
 		LongArg:  "lang",
 	})
 
-	if err := Config().Init(); err != nil {
+	if err := config.Init(); err != nil {
 		panic(err)
 	}
 
@@ -22,7 +24,7 @@ func main() {
 		return Asset("data/reference/" + lang.GlCode)
 	})
 
-	args := Config().Args()
+	args := config.Args()
 
 	if len(args) == 0 {
 		var ok bool
@@ -31,7 +33,7 @@ func main() {
 			PrintInstructions()
 			return
 		}
-		app.setInfo(args)
+		app.setInfo(config, args)
 		app.run()
 	} else {
 		switch args[0] {
@@ -44,14 +46,15 @@ func main() {
 				}
 			}
 		case "config":
-			fmt.Print(Config().String())
+			fmt.Print(config.String())
 		default:
 			var ok bool
 			var app app
 			if app, ok = apps[args[0]]; !ok {
 				app = &cmd{}
 			}
-			app.setInfo(args)
+			app.register(config)
+			app.setInfo(config, args)
 			app.run()
 		}
 	}

@@ -11,13 +11,6 @@ import (
 	"unicode/utf8"
 )
 
-var c *Configuration
-
-// Gets the singleton Configuration for the application.
-func Config() *Configuration {
-	return c
-}
-
 // Represents the configuration options, flags, and values provided to direct
 // operation.
 type Configuration struct {
@@ -76,10 +69,6 @@ func (o ConfigFlag) needValue() bool {
 
 func (o ConfigFlag) handleValue(s string, c *Configuration) error {
 	return o.Action(c)
-}
-
-func init() {
-	c = newConfiguration()
 }
 
 func newConfiguration() *Configuration {

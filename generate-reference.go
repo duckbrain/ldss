@@ -20,6 +20,8 @@ func init() {
 	addApp("generate-reference", &generateReference{})
 }
 
+func (app generateReference) register(*Configuration) {}
+
 func (app *generateReference) lookup(path string) lib.Item {
 	item, err := app.cat.LookupPath(path)
 	if err != nil {

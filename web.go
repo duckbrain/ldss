@@ -21,7 +21,10 @@ type web struct {
 
 func init() {
 	apps["web"] = &web{}
-	Config().RegisterOption(ConfigOption{
+}
+
+func (app web) register(config *Configuration) {
+	config.RegisterOption(ConfigOption{
 		Name:     "WebPort",
 		Default:  1830,
 		ShortArg: 'p',
@@ -29,10 +32,11 @@ func init() {
 			return strconv.Atoi(arg)
 		},
 	})
-	Config().RegisterOption(ConfigOption{
+	config.RegisterOption(ConfigOption{
 		Name:    "WebTemplatePath",
 		Default: "",
 	})
+	app.config = config
 }
 
 func (app web) run() {
@@ -42,7 +46,7 @@ func (app web) run() {
 	http.HandleFunc("/favicon.ico", app.handleStatic)
 	http.HandleFunc("/css", app.handleStatic)
 
-	port := Config().Get("WebPort").(int)
+	port := app.config.Get("WebPort").(int)
 	app.initTemplates()
 	app.efmt.Printf("Listening on port: %v\n", port)
 	http.ListenAndServe(fmt.Sprintf(":%v", port), nil)

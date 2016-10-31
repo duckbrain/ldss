@@ -56,6 +56,8 @@ func (app *cmd) dl(open func() (interface{}, error)) interface{} {
 	return app.item(lib.AutoDownload(open))
 }
 
+func (app cmd) register(*Configuration) {}
+
 func (app *cmd) run() {
 	args := app.args
 	efmt := log.New(os.Stderr, "", 0)
