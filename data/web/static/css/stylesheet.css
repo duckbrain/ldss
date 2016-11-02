@@ -60,6 +60,15 @@
 	background-color: #fff;
 }
 
+@media (min-width: 750px) {
+	.lookup input {
+		width: 200px;
+		cursor: text;
+		color: #000;
+		background-color: #fff;
+	}
+}
+
 .navButtons {
 	display: flex;
 }
