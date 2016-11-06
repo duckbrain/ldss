@@ -16,7 +16,7 @@
 	{{- else}}disabled{{end -}}
 {{end}}
 
-<div class="toolbar">
+<header class="toolbar">
 	
 	<div class="breadcrumbs">
 	{{ range .Breadcrumbs }}
@@ -41,11 +41,15 @@
 		</a>
 	</div>
 	
-</div>
+</header>
 
-<div class="main-content">
+<article class="main-content">
 {{ .Content -}}
-</div>
+</article>
+
+<aside class="footnotes">
+{{- .Footnotes -}}
+</aside>
 
 <script src="/js/ldss.js"></script>
 </body>

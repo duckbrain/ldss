@@ -19,8 +19,8 @@ type Book struct {
 }
 
 type bookDBConnection struct {
-	db                                         *sql.DB
-	stmtChildren, stmtUri, stmtId, stmtContent *sql.Stmt
+	db                                                        *sql.DB
+	stmtChildren, stmtUri, stmtId, stmtContent, stmtFootnotes *sql.Stmt
 }
 
 const sqlQueryNode = `
@@ -32,6 +32,16 @@ const sqlQueryNode = `
 		CASE WHEN node.content IS NULL THEN 0 ELSE 1 END,
 		(SELECT COUNT(*) FROM node subnode WHERE subnode.id = node.id) node_count
 	FROM node
+`
+
+const sqlQueryRef = `
+	SELECT
+		ref.ref_name,
+		ref.link_name,
+		ref.uri
+	FROM ref
+	WHERE
+		ref.node_id = ?
 `
 
 func newBook(base *jsonBook, catalog *Catalog, parent Item) *Book {
@@ -73,6 +83,10 @@ func newBook(base *jsonBook, catalog *Catalog, parent Item) *Book {
 			return nil, err
 		}
 		l.stmtContent, err = db.Prepare("SELECT content FROM node WHERE id = ?")
+		if err != nil {
+			return nil, err
+		}
+		l.stmtFootnotes, err = db.Prepare(sqlQueryRef)
 		if err != nil {
 			return nil, err
 		}
@@ -217,4 +231,8 @@ func (b *Book) nodeContent(node *Node) (string, error) {
 	var content string
 	err = l.stmtContent.QueryRow(node.id).Scan(&content)
 	return content, err
+}
+
+func (b *Book) nodeFootnotes(node *Node) (string, error) {
+	panic("Need references before footnotes")
 }

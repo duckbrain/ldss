@@ -217,6 +217,7 @@ func (app *web) handler(w http.ResponseWriter, r *http.Request) {
 		panic(err)
 	}
 
+	// Get Content into buffer
 	item, err := catalog.LookupPath(r.URL.Path)
 	if err != nil {
 		panic(err)
@@ -229,15 +230,26 @@ func (app *web) handler(w http.ResponseWriter, r *http.Request) {
 	}
 	app.print(buff, r, item)
 
+	// Get the footnote content
+	footnotes := ""
+	//TODO Get footnotes
+	/*if n, ok := item.(*lib.Node); ok {
+		if c, err = := n.Content(); err == nil {
+
+		}
+	}*/
+
 	layout := struct {
 		Title       string
 		Content     template.HTML
+		Footnotes   template.HTML
 		Lang        *lib.Language
 		Item        lib.Item
 		Breadcrumbs []lib.Item
 	}{
 		Title:       "LDS Scriptures",
 		Content:     template.HTML(buff.String()),
+		Footnotes:   template.HTML(footnotes),
 		Lang:        lang,
 		Item:        item,
 		Breadcrumbs: make([]lib.Item, 0),
