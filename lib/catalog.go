@@ -123,7 +123,9 @@ func (catalog *Catalog) addBooks(jBooks []*jsonBook, parent Item) []*Book {
 		b := newBook(base, catalog, parent)
 		books[i] = b
 		catalog.booksById[base.ID] = b
-		catalog.booksByPath[base.GlURI] = b
+		if _, ok := catalog.booksByPath[base.GlURI]; !ok {
+			catalog.booksByPath[base.GlURI] = b
+		}
 	}
 	return books
 }
