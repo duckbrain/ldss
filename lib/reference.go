@@ -13,6 +13,17 @@ type Reference struct {
 	Name, LinkName, Content string
 }
 
+func (r Reference) URL() string {
+	p := r.GlPath
+	if r.VersesHighlighted != nil {
+		//TODO Add verses
+	}
+	if r.Language != nil {
+		p = fmt.Sprintf("%v?lang=%v", p, r.Language.GlCode)
+	}
+	return p
+}
+
 func (r Reference) Check() error {
 	if r.Language == nil {
 		panic(fmt.Errorf("Language not set on reference"))
