@@ -18,7 +18,7 @@ func init() {
 // open function repeatedly until it gets no download errors (or repeated
 // ones). It provides information about these downloads and the final
 // result through a series of messages from the returned channel.
-func AutoDownload(open func() (Item, error)) (Item, errror) {
+func AutoDownload(open func() (Item, error)) (Item, error) {
 	item, err := open()
 	var dlErr, preDlErr NotDownloadedErr
 	dlErr, ok := err.(NotDownloadedErr)

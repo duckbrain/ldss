@@ -44,7 +44,7 @@ func newBook(base *jsonBook, catalog *Catalog, parent Item) *Book {
 		var l bookDBConnection
 		path := bookPath(b)
 		if _, err := os.Stat(path); os.IsNotExist(err) {
-			dlErr := NotDownloadedBookErr{book: b}
+			dlErr := notDownloadedBookErr{book: b}
 			dlErr.err = err
 			return nil, dlErr
 		}
@@ -55,7 +55,7 @@ func newBook(base *jsonBook, catalog *Catalog, parent Item) *Book {
 		var count int
 		err = db.QueryRow("SELECT COUNT(*) FROM node;").Scan(&count)
 		if err != nil {
-			dlErr := NotDownloadedBookErr{book: b}
+			dlErr := notDownloadedBookErr{book: b}
 			dlErr.err = err
 			return nil, dlErr
 		}
@@ -194,6 +194,19 @@ func (b *Book) lookupId(id int) (*Node, error) {
 	err = l.stmtId.QueryRow(id).Scan(&node.id, &node.name, &node.path, &node.parentId, &node.hasContent, &node.childCount)
 	return node, err
 
+}
+
+func (b *Book) lookupPath(uri string) (*Node, error) {
+	node := &Node{Book: b}
+	l, err := b.db()
+	if err != nil {
+		return node, err
+	}
+	err = l.stmtUri.QueryRow(uri).Scan(&node.id, &node.name, &node.path, &node.parentId, &node.hasContent, &node.childCount)
+	if err != nil {
+		return nil, fmt.Errorf("Path %v not found", uri)
+	}
+	return node, err
 }
 
 func (b *Book) nodeContent(node *Node) (string, error) {

@@ -59,7 +59,7 @@ func newCatalog(lang *Language) (*Catalog, error) {
 	}
 	file, err := os.Open(catalogPath(lang))
 	if err != nil {
-		dlErr := NotDownloadedCatalogErr{lang: lang}
+		dlErr := notDownloadedCatalogErr{lang: lang}
 		dlErr.err = err
 		return nil, dlErr
 	}
