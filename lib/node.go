@@ -52,6 +52,10 @@ func (n *Node) Children() ([]Item, error) {
 	return items, nil
 }
 
+func (n *Node) Footnotes() ([]Footnote, error) {
+	return n.Book.nodeFootnotes(n)
+}
+
 // Returns the content of the Node, to use as HTML or Parse
 func (n *Node) Content() (Content, error) {
 	rawContent, err := n.Book.nodeContent(n)

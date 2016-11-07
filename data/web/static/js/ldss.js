@@ -6,6 +6,7 @@ var contentEle = document.querySelector('.main-content');
 var previousBtn = document.getElementById('previous');
 var nextBtn = document.getElementById('next');
 var breadcrumbs = document.querySelector('.breadcrumbs');
+var footnotes = document.querySelector('.footnotes');
 var state = { item: null };
 
 function interceptClickEvent(e) {
@@ -75,13 +76,13 @@ function setItem(item) {
 		breadcrumbs.appendChild(a);
 	})
 
-	if (item.content)
+	if (item.content) {
 		if (item.content.indexOf('</h1>') != -1) {
 			contentEle.innerHTML = item.content;
 		} else {
 			contentEle.innerHTML = "<h1>" + item.name + "</h1>" + item.content;
 		}
-	else {
+	} else {
 		contentEle.innerHTML = '';
 		var header = document.createElement('h1');
 		var children = document.createElement('ul');
@@ -105,6 +106,15 @@ function setItem(item) {
 		contentEle.appendChild(children);
 
 	}
+	
+	footnotes.innerHTML = '';
+	item.footnotes.forEach(function(footnote) {
+		var li = document.createElement('li');
+		li.textContent = footnote.name + ' - ' + footnote.linkName;
+		li.innerHTML += '<div>' + footnote.content + '</div>';
+		footnotes.appendChild(li);
+	});
+	
 	state.item = item;
 	return item;
 }

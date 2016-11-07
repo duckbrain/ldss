@@ -3,6 +3,7 @@ package lib
 import (
 	"database/sql"
 	"fmt"
+	"html/template"
 	"os"
 
 	_ "github.com/mattn/go-sqlite3"
@@ -38,7 +39,7 @@ const sqlQueryRef = `
 	SELECT
 		ref.ref_name,
 		ref.link_name,
-		ref.uri
+		ref.ref
 	FROM ref
 	WHERE
 		ref.node_id = ?
@@ -233,6 +234,28 @@ func (b *Book) nodeContent(node *Node) (string, error) {
 	return content, err
 }
 
-func (b *Book) nodeFootnotes(node *Node) (string, error) {
-	panic("Need references before footnotes")
+func (b *Book) nodeFootnotes(node *Node) ([]Footnote, error) {
+	l, err := b.db()
+	if err != nil {
+		return nil, err
+	}
+	if node == nil {
+		return nil, fmt.Errorf("Cannot use nil Node in nodeFootnotes()")
+	}
+	rows, err := l.stmtFootnotes.Query(node.id)
+	if err != nil {
+		return nil, err
+	}
+	refs := make([]Footnote, 0)
+	for rows.Next() {
+		ref := Footnote{}
+		var content string
+		err = rows.Scan(&ref.Name, &ref.LinkName, &content)
+		ref.Content = template.HTML(content)
+		if err != nil {
+			return nil, err
+		}
+		refs = append(refs, ref)
+	}
+	return refs, nil
 }

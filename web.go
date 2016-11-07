@@ -189,6 +189,15 @@ func (app *web) handleJSON(w http.ResponseWriter, r *http.Request) {
 	}
 	data["breadcrumbs"] = breadcrumbs
 
+	if n, ok := item.(*lib.Node); ok {
+		data["footnotes"], err = n.Footnotes()
+		if err != nil {
+			panic(err)
+		}
+	} else {
+		data["footnotes"] = []interface{}{}
+	}
+
 	j, err := json.Marshal(data)
 	if err != nil {
 		panic(err)
@@ -228,31 +237,30 @@ func (app *web) handler(w http.ResponseWriter, r *http.Request) {
 	}
 	app.print(buff, r, item)
 
-	// Get the footnote content
-	footnotes := ""
-	//TODO Get footnotes
-	/*if n, ok := item.(*lib.Node); ok {
-		if c, err = := n.Content(); err == nil {
-
-		}
-	}*/
-
 	layout := struct {
 		Title       string
 		Content     template.HTML
-		Footnotes   template.HTML
+		Footnotes   []lib.Footnote
 		Lang        *lib.Language
 		Item        lib.Item
 		Breadcrumbs []lib.Item
 	}{
 		Title:       "LDS Scriptures",
 		Content:     template.HTML(buff.String()),
-		Footnotes:   template.HTML(footnotes),
 		Lang:        lang,
 		Item:        item,
 		Breadcrumbs: make([]lib.Item, 0),
 	}
 
+	// Get the footnote content
+	if n, ok := item.(*lib.Node); ok {
+		layout.Footnotes, err = n.Footnotes()
+		if err != nil {
+			panic(err)
+		}
+	}
+
+	// Generate breadcrumbs
 	for p := item; p != nil; p = p.Parent() {
 		layout.Breadcrumbs = append([]lib.Item{p}, layout.Breadcrumbs...)
 	}
