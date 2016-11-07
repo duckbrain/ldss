@@ -1,6 +1,7 @@
 // Generates reference files for a given language
 
 // +build !release
+// +build exclude
 
 package main
 

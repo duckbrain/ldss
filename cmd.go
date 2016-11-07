@@ -15,6 +15,8 @@ type cmd struct {
 	colors cmdcolors
 }
 
+func (app *cmd) register(config *Configuration) {}
+
 type cmdcolors struct {
 	title, subtitle, summary, verse, content, message *color.Color
 }
@@ -31,33 +33,6 @@ func colors(enabled bool) *cmdcolors {
 	return &c
 }
 
-func item(c <-chan lib.Message) interface{} {
-	for m := range c {
-		switch m.(type) {
-		case lib.MessageDone:
-			return m.(lib.MessageDone).Item()
-		case lib.MessageError:
-			panic(m)
-		default:
-			if m == nil {
-				return nil
-			}
-			fmt.Printf("%v\n", m)
-		}
-	}
-	panic(fmt.Errorf("Channel completed prematurely\n"))
-}
-
-func (app *cmd) item(c <-chan lib.Message) interface{} {
-	return item(c)
-}
-
-func (app *cmd) dl(open func() (interface{}, error)) interface{} {
-	return app.item(lib.AutoDownload(open))
-}
-
-func (app cmd) register(*Configuration) {}
-
 func (app *cmd) run() {
 	args := app.args
 	efmt := log.New(os.Stderr, "", 0)
@@ -66,7 +41,14 @@ func (app *cmd) run() {
 	switch args[0] {
 	case "lookup":
 		lookupString := strings.Join(args[1:], " ")
-		item := app.item(lib.Lookup(lang, lookupString)).(lib.Item)
+		ref, err := lib.Parse(lang, lookupString)
+		if err != nil {
+			panic(err)
+		}
+		item, err := ref.Lookup()
+		if err != nil {
+			panic(err)
+		}
 
 		if node, ok := item.(*lib.Node); ok {
 			if content, err := node.Content(); err == nil {
@@ -90,9 +72,11 @@ func (app *cmd) run() {
 			}
 		}
 
-		children := app.dl(func() (interface{}, error) {
-			return item.Children()
-		}).([]lib.Item)
+		children, err := item.Children()
+		if err != nil {
+			panic(err)
+		}
+
 		fmt.Println(item)
 		for _, child := range children {
 			fmt.Printf("- %v\n", child)
@@ -123,12 +107,15 @@ func (app *cmd) run() {
 				fmt.Println(l.String())
 			}
 		} else {
-			catalog := app.item(lib.Lookup(lang, "/")).(*lib.Catalog)
+			catalog, err := lang.Catalog()
+			if err != nil {
+				panic(err)
+			}
 			fmt.Println(catalog.String())
 		}
 	case "download", "dl":
 		if len(args) == 1 {
-			app.item(lib.DownloadAll(lang, false))
+			lib.DownloadAll(lang, false)
 			return
 		}
 		switch args[1] {
@@ -138,14 +125,24 @@ func (app *cmd) run() {
 				panic(err)
 			}
 		case "all":
-			app.item(lib.DownloadAll(lang, true))
+			lib.DownloadAll(lang, true)
 		case "missing":
-			app.item(lib.DownloadAll(lang, false))
+			lib.DownloadAll(lang, false)
 		case "cat", "catalog":
 			efmt.Println("Downloading \"" + lang.Name + "\" language catalog")
 			lib.DownloadCatalog(lang)
 		default:
-			item := app.item(lib.Lookup(lang, args[1]))
+			item, err := lib.AutoDownload(func() (lib.Item, error) {
+				ref, err := lib.Parse(lang, args[1])
+				if err != nil {
+					return nil, err
+				} else {
+					return ref.Lookup()
+				}
+			})
+			if err != nil {
+				panic(err)
+			}
 			if book, ok := item.(*lib.Book); ok {
 				efmt.Printf("Downloading book \"%v\"\n", book.Name())
 				lib.DownloadBook(book)

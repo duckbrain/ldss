@@ -15,7 +15,7 @@ type shell struct {
 }
 
 func init() {
-	apps["shell"] = &shell{}
+	addApp("shell", &shell{})
 }
 
 func (app shell) register(*Configuration) {}

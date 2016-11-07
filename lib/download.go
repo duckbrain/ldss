@@ -57,7 +57,7 @@ func DownloadBook(book *Book) error {
 }
 
 // Recursively downloads all children of the passed Catalog or Folder.
-func DownloadChildren(item Item, force bool) <-chan Message {
+func DownloadChildren(item Item, force bool) {
 	// Find the catalog
 	var catalog *Catalog
 	parent := item
@@ -70,7 +70,6 @@ func DownloadChildren(item Item, force bool) <-chan Message {
 	}
 
 	// Open a channel and start searching
-	c := make(chan Message)
 	go func() {
 		lock := make(chan interface{})
 		limit := make(chan interface{}, DownloadLimit)
@@ -92,9 +91,17 @@ func DownloadChildren(item Item, force bool) <-chan Message {
 						}
 					}
 
-					c <- MessageDownload{NotDownloadedBookErr{notDownloadedErr{}, book}}
+					downloadUpdate <- DownloadInfo{
+						Item:     book,
+						Language: book.Language(),
+					}
 					if err := DownloadBook(book); err != nil {
 						//TODO Send warning message of error
+					}
+					downloadUpdate <- DownloadInfo{
+						Item:     book,
+						Language: book.Language(),
+						Progress: 1,
 					}
 				}
 			}(book)
@@ -102,34 +109,23 @@ func DownloadChildren(item Item, force bool) <-chan Message {
 		for _ = range catalog.booksById {
 			<-lock
 		}
-		//TODO Keep track of stats and send a message before closing
-		c <- MessageDone{catalog}
-		close(c)
 	}()
-	return c
 }
 
 // Downloads the catalog and all books for a language. If force is true, it will
 // download these items even if they are already downloaded, replacing them.
-func DownloadAll(lang *Language, force bool) <-chan Message {
-	c := make(chan Message)
-	go func() {
-		if force || !fileExist(catalogPath(lang)) {
-			c <- MessageDownload{NotDownloadedCatalogErr{notDownloadedErr{}, lang}}
-			DownloadCatalog(lang)
-		}
+func DownloadAll(lang *Language, force bool) error {
+	if force || !fileExist(catalogPath(lang)) {
+		downloadUpdate <- DownloadInfo{Language: lang}
+		DownloadCatalog(lang)
+		downloadUpdate <- DownloadInfo{Language: lang, Progress: 1}
+	}
 
-		catalog, err := lang.Catalog()
-		if err != nil {
-			c <- MessageError{err}
-			close(c)
-			return
-		}
+	catalog, err := lang.Catalog()
+	if err != nil {
+		return err
+	}
 
-		for m := range DownloadChildren(catalog, force) {
-			c <- m
-		}
-		close(c)
-	}()
-	return c
+	DownloadChildren(catalog, force)
+	return nil
 }

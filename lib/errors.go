@@ -23,61 +23,61 @@ func (err notDownloadedErr) InternalError() error {
 }
 
 // An error that a book needs to be downloaded
-type NotDownloadedBookErr struct {
+type notDownloadedBookErr struct {
 	notDownloadedErr
 	book *Book
 }
 
 // An error that a language's catalog needs to be downloaded
-type NotDownloadedCatalogErr struct {
+type notDownloadedCatalogErr struct {
 	notDownloadedErr
 	lang *Language
 }
 
 // An Error that the language list has not been downloaded
-type NotDownloadedLanguageErr notDownloadedErr
+type notDownloadedLanguageErr notDownloadedErr
 
 // Error book is not downloaded
-func (err NotDownloadedBookErr) Error() string {
+func (err notDownloadedBookErr) Error() string {
 	return fmt.Sprintf("Book \"%v\" is not downloaded", err.book)
 }
 
 // Get the string representation of the Book
-func (err NotDownloadedBookErr) String() string {
+func (err notDownloadedBookErr) String() string {
 	return err.book.String()
 }
 
 // Download the missing book
-func (err NotDownloadedBookErr) Download() error {
+func (err notDownloadedBookErr) Download() error {
 	return DownloadBook(err.book)
 }
 
 // Error catalog is not downloaded
-func (err NotDownloadedCatalogErr) Error() string {
+func (err notDownloadedCatalogErr) Error() string {
 	return fmt.Sprintf("Catalog for language \"%v\" is not downloaded", err.lang)
 }
 
 // Get the string representation of the language of the missing catalog
-func (err NotDownloadedCatalogErr) String() string {
+func (err notDownloadedCatalogErr) String() string {
 	return err.lang.String()
 }
 
 // Download the missing catalog
-func (err NotDownloadedCatalogErr) Download() error {
+func (err notDownloadedCatalogErr) Download() error {
 	return DownloadCatalog(err.lang)
 }
 
 // Error languages are not downloaded
-func (err NotDownloadedLanguageErr) Error() string {
+func (err notDownloadedLanguageErr) Error() string {
 	return "The language list is not downloaded"
 }
 
 // Get the string representation of the language list, returns "Languages"
-func (err NotDownloadedLanguageErr) String() string {
+func (err notDownloadedLanguageErr) String() string {
 	return "Languages"
 }
 
 // Download the language list
-func (err NotDownloadedLanguageErr) Download() error {
+func (err notDownloadedLanguageErr) Download() error {
 	return DownloadLanguages()
 }

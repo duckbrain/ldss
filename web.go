@@ -76,11 +76,11 @@ func (app *web) handleError(w http.ResponseWriter, r *http.Request) {
 
 func (app *web) handleLookup(w http.ResponseWriter, r *http.Request) {
 	defer r.Body.Close()
-	path, err := app.language(r).Reference(r.URL.Query().Get("q"))
+	path, err := lib.Parse(app.language(r), r.URL.Query().Get("q"))
 	if err != nil {
 		panic(err)
 	}
-	http.Redirect(w, r, path, http.StatusFound)
+	http.Redirect(w, r, path.URL(), http.StatusFound)
 }
 
 func (app *web) handleStatic(w http.ResponseWriter, r *http.Request) {
@@ -144,12 +144,12 @@ func (app *web) handleJSON(w http.ResponseWriter, r *http.Request) {
 	defer r.Body.Close()
 
 	lang := app.language(r)
-	catalog, err := lang.Catalog()
+	path := r.URL.Path[len("/api"):]
+	ref, err := lib.ParsePath(lang, path)
 	if err != nil {
 		panic(err)
 	}
-	path := r.URL.Path[len("/api"):]
-	item, err := catalog.LookupPath(path)
+	item, err := ref.Lookup()
 	if err != nil {
 		panic(err)
 	}
@@ -212,13 +212,11 @@ func (app *web) handler(w http.ResponseWriter, r *http.Request) {
 	//TODO Remove for production
 	app.initTemplates()
 
-	catalog, err := lang.Catalog()
+	ref, err := lib.ParsePath(lang, r.URL.Path)
 	if err != nil {
 		panic(err)
 	}
-
-	// Get Content into buffer
-	item, err := catalog.LookupPath(r.URL.Path)
+	item, err := ref.Lookup()
 	if err != nil {
 		panic(err)
 	}

@@ -18,35 +18,23 @@ func init() {
 // open function repeatedly until it gets no download errors (or repeated
 // ones). It provides information about these downloads and the final
 // result through a series of messages from the returned channel.
-func AutoDownload(open func() (interface{}, error)) <-chan Message {
-	c := make(chan Message)
-	go func() {
-		item, err := open()
-		defer close(c)
-		var dlErr, preDlErr NotDownloadedErr
-		dlErr, ok := err.(NotDownloadedErr)
-		for ok {
-			if dlErr == preDlErr {
-				return
-			}
-			c <- MessageDownload{dlErr}
-			err = dlErr.Download()
-			if err != nil {
-				c <- MessageError{err}
-				return
-			}
-			item, err = open()
-			preDlErr = dlErr
-			dlErr, ok = err.(NotDownloadedErr)
+func AutoDownload(open func() (Item, error)) (Item, error) {
+	item, err := open()
+	var dlErr, preDlErr NotDownloadedErr
+	dlErr, ok := err.(NotDownloadedErr)
+	for ok {
+		if dlErr == preDlErr {
+			return nil, dlErr
 		}
-
-		if err == nil {
-			c <- MessageDone{item}
-		} else {
-			c <- MessageError{err}
+		err = dlErr.Download()
+		if err != nil {
+			return nil, err
 		}
-	}()
-	return c
+		item, err = open()
+		preDlErr = dlErr
+		dlErr, ok = err.(NotDownloadedErr)
+	}
+	return item, nil
 }
 
 // Gets the next or previous sibling of an item using it's
@@ -93,27 +81,4 @@ func genericNextPrevious(item Item, direction int) Item {
 		}
 	}
 	panic("Item not found as child's parent.")
-}
-
-// Uses AutoDownload to lookup a string. Uses reference lookups or paths
-// to find the item.
-func Lookup(lang *Language, q string) <-chan Message {
-	return AutoDownload(func() (interface{}, error) {
-		ref, err := lang.ref()
-		if err == nil {
-			q, err = ref.lookup(q)
-			if err != nil {
-				return nil, err
-			}
-		}
-		catalog, err := lang.Catalog()
-		if err != nil {
-			return nil, err
-		}
-		item, err := catalog.LookupPath(q)
-		if err != nil {
-			return nil, err
-		}
-		return item, nil
-	})
 }

@@ -13,12 +13,12 @@ type app interface {
 }
 
 type appinfo struct {
-	args  []string
+	args   []string
 	config *Configuration
-	fmt   *log.Logger
-	efmt  *log.Logger
-	debug *log.Logger
-	lang  *lib.Language
+	fmt    *log.Logger
+	efmt   *log.Logger
+	debug  *log.Logger
+	lang   *lib.Language
 }
 
 func (a *appinfo) setInfo(config *Configuration, args []string) {

@@ -189,7 +189,7 @@ func (p *guiPage) SetItem(item lib.Item, setText bool) {
 
 		root.SetMargins(20)
 		root.MarginBottom = 100
-		root.Background = &ui.Brush{A: 1, R: 1, G: 1, B: 1};
+		root.Background = &ui.Brush{A: 1, R: 1, G: 1, B: 1}
 
 		p.contents.SetDocument(root)
 	}

@@ -1,165 +1,75 @@
 package lib
 
 import (
-	"bufio"
-	"bytes"
-	"errors"
 	"fmt"
-	"regexp"
-	"strconv"
 	"strings"
 )
 
-// Sets a function that will be called to get the ldss reference language file
-// for a passed language. This will likely be from a file, but could be from
-// another source, such as an embedded resource.
-func SetReferenceParseReader(open func(lang *Language) ([]byte, error)) {
-	langs, err := Languages()
-	if err != nil {
-		panic(err)
+type Reference struct {
+	GlPath                  string
+	Language                *Language
+	VerseSelected           int
+	VersesHighlighted       []int
+	Name, LinkName, Content string
+}
+
+func (r Reference) URL() string {
+	p := r.GlPath
+	if r.VersesHighlighted != nil {
+		//TODO Add verses
 	}
-	for _, lang := range langs {
-		func(l *Language) {
-			l.reference.construct = func() (interface{}, error) {
-				file, err := open(l)
-				if err != nil {
-					return nil, err
-				}
-				return newRefParser(file), nil
-			}
-		}(lang)
-	}
-
-}
-
-type reference struct {
-	bookName          string
-	glPath            string
-	item              Item
-	chapter           int
-	verseSelected     int
-	versesHighlighted []int
-}
-
-func (ref reference) String() string {
-	return fmt.Sprintf("%v %v:%v", ref.bookName, ref.chapter, ref.verseSelected)
-}
-
-type refParser struct {
-	matchString map[string]string
-	matchRegexp map[*regexp.Regexp]string
-	matchFolder map[int]string
-	parseClean  *regexp.Regexp
-}
-
-func newRefParser(file []byte) *refParser {
-	p := &refParser{
-		matchFolder: make(map[int]string),
-		matchString: make(map[string]string),
-		matchRegexp: make(map[*regexp.Regexp]string),
-		parseClean:  regexp.MustCompile("( |:)+"),
-	}
-	s := bufio.NewScanner(bytes.NewReader(file))
-	isRegex := regexp.MustCompile("^\\/.*\\/$")
-	for s.Scan() {
-		line := s.Text()
-		if len(line) == 0 || strings.IndexRune(line, '#') == 0 {
-			continue
-		}
-		tokens := strings.Split(line, ":")
-		path := tokens[len(tokens)-1]
-		tokens = tokens[:len(tokens)-1]
-		if id, err := strconv.Atoi(tokens[0]); err == nil {
-			if v, ok := p.matchFolder[id]; ok {
-				panic(fmt.Errorf("Token %v already used for %v", id, v))
-			}
-			p.matchFolder[id] = path
-			tokens = tokens[1:]
-		} else if len(tokens) == 1 && isRegex.MatchString(tokens[0]) {
-			exp := "^" + tokens[0][1:len(tokens[0])-1] + " "
-			r, err := regexp.Compile(exp)
-			if err == nil {
-				r.Longest()
-				p.matchRegexp[r] = path
-				continue
-			}
-		}
-		for _, t := range tokens {
-			t = strings.ToLower(t) + " "
-			if v, ok := p.matchString[t]; ok {
-				panic(fmt.Errorf("Token %v already used for %v", t, v))
-			}
-			p.matchString[t] = path
-		}
+	if r.Language != nil {
+		p = fmt.Sprintf("%v?lang=%v", p, r.Language.GlCode)
 	}
 	return p
 }
 
-func (p *refParser) lookup(q string) (string, error) {
-	// Clean q
-	q = strings.TrimSpace(q)
-	q = strings.ToLower(q) + " "
-
-	if strings.IndexRune(q, '/') == 0 {
-		return q, nil
+func (r Reference) Check() error {
+	if r.Language == nil {
+		panic(fmt.Errorf("Language not set on reference"))
 	}
-
-	q = p.parseClean.ReplaceAllString(q, " ")
-
-	// Parse from the match maps
-	base, remainder, err := p.lookupBase(q)
-	if err != nil {
-		return "", err
-	}
-
-	if i := strings.LastIndex(base, "#"); i != -1 {
-		directive := string(base[i:])
-		base = string(base[:i])
-		if len(remainder) == 0 {
-			return base, nil
-		}
-		// Parse remainder for chapter, verse, etc
-		tokens := strings.Split(strings.TrimRight(remainder, " "), " ")
-		switch directive {
-		case "#":
-			i, err := strconv.Atoi(tokens[0])
-			if err != nil {
-				return "", err
-			}
-			base = fmt.Sprintf("%v/%v", base, i)
-		default:
-			return "", fmt.Errorf("Unknown directive %v", directive)
-		}
-		return base, nil
-	} else {
-		if len(remainder) == 0 {
-			return base, nil
-		}
-		//TODO Handle remainder
-	}
-
-	return base, nil
+	return nil
 }
 
-func (p *refParser) lookupBase(q string) (path, rem string, err error) {
-	for s, r := range p.matchString {
-		if strings.Index(q, s) == 0 && (len(rem) == 0 || len(rem) > len(q)-len(s)) {
-			path = r
-			rem = q[len(s):]
-		}
+// Finds an Item by it's path. Expects a fully qualified path. An empty string
+// or "/" will return this catalog. Will return an error if there is an error
+// loading the item or it is not downloaded.
+func (r Reference) Lookup() (Item, error) {
+	c, err := r.Language.Catalog()
+	if err != nil {
+		return nil, err
 	}
-	for s, r := range p.matchRegexp {
-		if i := s.FindSubmatchIndex([]byte(q)); i != nil {
-			remTemp := s.ReplaceAllString(q, "")
-			if len(rem) == 0 || len(rem) > len(remTemp) {
-				rem = remTemp
-				b := []byte{}
-				path = string(s.ExpandString(b, r, q, i))
+	r.GlPath = strings.TrimSpace(r.GlPath)
+	if r.GlPath == "" || r.GlPath == "/" {
+		return c, nil
+	}
+	r.GlPath = strings.TrimRight(r.GlPath, "/ ")
+	if folder, ok := c.foldersByPath[r.GlPath]; ok {
+		return folder, nil
+	}
+	sections := strings.Split(r.GlPath, "/")
+	if sections[0] != "" {
+		return nil, fmt.Errorf("Invalid path \"%v\", must start with '/'", r.GlPath)
+	}
+	for i := 2; i <= len(sections); i++ {
+		temppath := strings.Join(sections[0:i], "/")
+		if book, ok := c.booksByPath[temppath]; ok {
+			if r.GlPath == book.Path() {
+				return book, nil
 			}
+			node := &Node{Book: book}
+			db, err := book.db()
+			if err != nil {
+				return nil, err
+			}
+			err = db.stmtUri.QueryRow(r.GlPath).Scan(&node.id, &node.name, &node.path, &node.parentId, &node.hasContent, &node.childCount)
+			if err != nil {
+				return nil, fmt.Errorf("Path %v not found", r.GlPath)
+			}
+			return node, err
+
+			return book.lookupPath(r.GlPath)
 		}
 	}
-	if path == "" {
-		err = errors.New("Query \"" + q + "\" not found")
-	}
-	return
+	return nil, fmt.Errorf("Path \"%v\" not found", r.GlPath)
 }
