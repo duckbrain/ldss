@@ -47,14 +47,18 @@
 {{ .Content -}}
 </article>
 
-<aside class="footnotes">
+<aside class="footnotes-container">
+<div class="footnotes-header">
+Footnotes
+</div>
+<div class="footnotes">
 {{- range $key, $ref := .Footnotes }}
    <li><a>{{ $ref.Name }}</a> - {{$ref.LinkName}}
       <div>{{ $ref.Content }}</div>
    </li>
 {{- end }}
 </ul>
-
+</div>
 </aside>
 
 <script src="/js/ldss.js"></script>

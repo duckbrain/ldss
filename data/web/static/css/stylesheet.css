@@ -143,3 +143,29 @@
 .video video {
 	width: 100%;
 }
+
+.footnotes-container {
+	flex-direction: column;
+	position: fixed;
+	height: 25%;
+	bottom: 0;
+	left: 0;
+	right: 0;
+	background-color: #FBF9F2;
+	display: none;
+}
+
+.show-footnotes .footnotes-container {
+	display: flex;
+}
+
+.footnotes-header {
+	padding: 15px;
+	background-color: #4B4B48;
+	color: #fff;
+}
+
+.footnotes {
+	padding: 15px 30px;
+	overflow-y: auto;
+}

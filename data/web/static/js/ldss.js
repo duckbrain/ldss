@@ -7,23 +7,25 @@ var previousBtn = document.getElementById('previous');
 var nextBtn = document.getElementById('next');
 var breadcrumbs = document.querySelector('.breadcrumbs');
 var footnotes = document.querySelector('.footnotes');
-var state = { item: null };
+var state = { item: null, footnotesOpen: false };
 
 function interceptClickEvent(e) {
     var href;
     var target = e.target || e.srcElement;
     if (target.tagName === 'A' && !target.attributes.getNamedItem('disabled')) {
+		e.preventDefault();
+		
 		href = target.getAttribute('href');
 		if (href.indexOf('f_') == 0) {
+			setFootnotesOpen(true);
 			console.log("Footnote: " + href.substring(2));
 		} else {
 	        loadItem(target.pathname)
 	        .then(function(item) {
+				setFootnotesOpen(false);
 				history.pushState(state, '', item.path);
 			});
 		}
-
-	   e.preventDefault();
     }
 }
 
@@ -54,6 +56,17 @@ function loadItem(pathname) {
 
 function setState(state) {
 	setItem(state.item);
+	setFootnotesOpen(state.footnotesOpen);
+}
+
+function restoreState() {
+	setFootnotesOpen(state.footnotesOpen);
+}
+
+function setFootnotesOpen(b) {
+	document.body.classList.toggle('show-footnotes', b);
+	state.footnotesOpen = b;
+	history.replaceState(state, '', location.href);
 }
 
 function setItem(item) {
@@ -122,3 +135,5 @@ function setItem(item) {
 
 document.addEventListener('click', interceptClickEvent);
 window.addEventListener('popstate', onStateChange);
+
+restoreState();
