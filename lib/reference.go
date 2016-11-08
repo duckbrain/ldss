@@ -13,13 +13,55 @@ type Reference struct {
 	Name, LinkName, Content string
 }
 
+func Parse(lang *Language, q string) (r Reference, err error) {
+	var ref *refParser
+	r, err = ParsePath(lang, q)
+	if err == nil {
+		return
+	}
+	ref, err = lang.ref()
+	if err == nil {
+		r, err = ref.lookup(q)
+		r.Language = lang
+		return
+	}
+	return
+}
+
+func ParsePath(lang *Language, p string) (Reference, error) {
+	return Reference{
+		Language: lang,
+		GlPath:   p,
+	}, nil
+}
+
 func (r Reference) URL() string {
 	p := r.GlPath
 	if r.VersesHighlighted != nil {
 		//TODO Add verses
+		var previousVerse, spanStart, verse int
+		for _, verse = range r.VersesHighlighted {
+			if previousVerse == 0 {
+				p = fmt.Sprintf("%v.%v", p, verse)
+				spanStart = verse
+				previousVerse = verse
+			} else if previousVerse == verse-1 {
+				previousVerse = verse
+			} else {
+				p = fmt.Sprintf("%v-%v,%v", p, previousVerse, verse)
+				spanStart = verse
+				previousVerse = verse
+			}
+		}
+		if verse != spanStart {
+			p = fmt.Sprintf("%v-%v", p, verse)
+		}
 	}
 	if r.Language != nil {
 		p = fmt.Sprintf("%v?lang=%v", p, r.Language.GlCode)
+	}
+	if r.VerseSelected > 0 {
+		p = fmt.Sprintf("%v#%v", p, r.VerseSelected)
 	}
 	return p
 }
