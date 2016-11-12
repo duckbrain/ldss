@@ -7,7 +7,7 @@ var previousBtn = document.getElementById('previous');
 var nextBtn = document.getElementById('next');
 var breadcrumbs = document.querySelector('.breadcrumbs');
 var footnotes = document.querySelector('.footnotes');
-var state = { item: null, footnotesOpen: false };
+var state = { item: null };
 
 function interceptClickEvent(e) {
     var href;
@@ -56,17 +56,10 @@ function loadItem(pathname) {
 
 function setState(state) {
 	setItem(state.item);
-	setFootnotesOpen(state.footnotesOpen);
-}
-
-function restoreState() {
-	setFootnotesOpen(state.footnotesOpen);
 }
 
 function setFootnotesOpen(b) {
 	document.body.classList.toggle('show-footnotes', b);
-	state.footnotesOpen = b;
-	history.replaceState(state, '', location.href);
 }
 
 function setItem(item) {
@@ -137,5 +130,3 @@ function setItem(item) {
 
 document.addEventListener('click', interceptClickEvent);
 window.addEventListener('popstate', onStateChange);
-
-restoreState();

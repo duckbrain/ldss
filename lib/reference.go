@@ -19,6 +19,9 @@ type Reference struct {
 func Parse(lang *Language, q string) (r Reference, err error) {
 	var rp *refParser
 	r = ParsePath(lang, q)
+	if r.Check() == nil {
+		return r, nil
+	}
 	rp, err = lang.ref()
 	if err == nil {
 		r, err = rp.lookup(q)
@@ -140,7 +143,10 @@ func stringifyVerse(verses []int) string {
 
 func (r Reference) Check() error {
 	if r.Language == nil {
-		panic(fmt.Errorf("Language not set on reference"))
+		return fmt.Errorf("Language not set on reference")
+	}
+	if len(r.Path) == 0 || r.Path[0] != '/' {
+		return fmt.Errorf("Path \"%v\" must start with '/'", r.Path)
 	}
 
 	return nil
@@ -150,6 +156,10 @@ func (r Reference) Check() error {
 // return the catalog. Will return an error if there is an error
 // loading the item or it is not downloaded.
 func (r Reference) Lookup() (Item, error) {
+	if err := r.Check(); err != nil {
+		return nil, err
+	}
+
 	c, err := r.Language.Catalog()
 	if err != nil {
 		return nil, err

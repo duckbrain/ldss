@@ -123,7 +123,7 @@ func (app *web) itemsRelativesPath(item, parent lib.Item) interface{} {
 		}{item.Name(), "", item.Path()}
 
 		if parent != nil {
-			data.Name = strings.TrimPrefix(data.Name, parent.Name())
+			//data.Name = strings.TrimPrefix(data.Name, parent.Name())
 		}
 
 		switch item.(type) {
