@@ -90,14 +90,14 @@ func (p *refParser) lookup(q string) (ref Reference, err error) {
 
 	// Parse from the match maps
 	var remainder string
-	ref.GlPath, remainder, err = p.lookupBase(q)
+	ref.Path, remainder, err = p.lookupBase(q)
 	if err != nil {
 		return ref, err
 	}
 
-	if i := strings.LastIndex(ref.GlPath, "#"); i != -1 {
-		directive := string(ref.GlPath[i:])
-		ref.GlPath = string(ref.GlPath[:i])
+	if i := strings.LastIndex(ref.Path, "#"); i != -1 {
+		directive := string(ref.Path[i:])
+		ref.Path = string(ref.Path[:i])
 		if len(remainder) == 0 {
 			return
 		}
@@ -110,7 +110,7 @@ func (p *refParser) lookup(q string) (ref Reference, err error) {
 			if err != nil {
 				return
 			} else {
-				ref.GlPath = fmt.Sprintf("%v/%v", ref.GlPath, i)
+				ref.Path = fmt.Sprintf("%v/%v", ref.Path, i)
 			}
 		default:
 			err = fmt.Errorf("Unknown directive %v", directive)

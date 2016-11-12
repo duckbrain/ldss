@@ -68,7 +68,7 @@ func (app *web) handleError(w http.ResponseWriter, r *http.Request) {
 		case error:
 			err = rec.(error)
 		default:
-			err = fmt.Errorf("%v", rec)
+			err = fmt.Errorf("%", rec)
 		}
 		app.templates.err.Execute(w, err)
 	}
@@ -114,13 +114,17 @@ func (app *web) static(w http.ResponseWriter, r *http.Request) error {
 	return nil
 }
 
-func (app *web) itemsRelativesPath(item lib.Item) interface{} {
+func (app *web) itemsRelativesPath(item, parent lib.Item) interface{} {
 	if item != nil {
 		data := struct {
 			Name string `json:"name"`
 			Type string `json:"type"`
 			Path string `json:"path"`
 		}{item.Name(), "", item.Path()}
+
+		if parent != nil {
+			data.Name = strings.TrimPrefix(data.Name, parent.Name())
+		}
 
 		switch item.(type) {
 		case *lib.Catalog:
@@ -145,11 +149,7 @@ func (app *web) handleJSON(w http.ResponseWriter, r *http.Request) {
 
 	lang := app.language(r)
 	path := r.URL.Path[len("/api"):]
-	ref, err := lib.ParsePath(lang, path)
-	if err != nil {
-		panic(err)
-	}
-	item, err := ref.Lookup()
+	item, err := lib.ParsePath(lang, path).Lookup()
 	if err != nil {
 		panic(err)
 	}
@@ -159,9 +159,9 @@ func (app *web) handleJSON(w http.ResponseWriter, r *http.Request) {
 	data["name"] = item.Name()
 	data["path"] = item.Path()
 	data["language"] = item.Language().GlCode
-	data["parent"] = app.itemsRelativesPath(item.Parent())
-	data["next"] = app.itemsRelativesPath(item.Next())
-	data["previous"] = app.itemsRelativesPath(item.Previous())
+	data["parent"] = app.itemsRelativesPath(item.Parent(), nil)
+	data["next"] = app.itemsRelativesPath(item.Next(), nil)
+	data["previous"] = app.itemsRelativesPath(item.Previous(), nil)
 
 	switch item := item.(type) {
 	case *lib.Catalog:
@@ -173,30 +173,38 @@ func (app *web) handleJSON(w http.ResponseWriter, r *http.Request) {
 	case *lib.Node:
 		data["type"] = "node"
 		data["content"], _ = item.Content()
+		data["footnotes"], _ = item.Footnotes()
+		fns := make([]interface{}, 0)
+		if footnotes, err := item.Footnotes(); err == nil {
+			for _, fn := range footnotes {
+				fns = append(fns, struct {
+					Name, LinkName string
+					Refs           []lib.Reference
+				}{
+					Name:     fn.Name,
+					LinkName: fn.LinkName,
+					Refs:     fn.References(),
+				})
+			}
+		}
+		data["footnotes_debug"] = fns
 	}
 
 	if childItems, err := item.Children(); err == nil {
 		children := make([]interface{}, len(childItems))
 		for i, child := range childItems {
-			children[i] = app.itemsRelativesPath(child)
+			children[i] = app.itemsRelativesPath(child, item)
 		}
 		data["children"] = children
 	}
 
 	breadcrumbs := make([]interface{}, 0)
-	for p := item; p != nil; p = p.Parent() {
-		breadcrumbs = append([]interface{}{app.itemsRelativesPath(p)}, breadcrumbs...)
+	for p := item; p != nil; {
+		parent := p.Parent()
+		breadcrumbs = append([]interface{}{app.itemsRelativesPath(p, parent)}, breadcrumbs...)
+		p = parent
 	}
 	data["breadcrumbs"] = breadcrumbs
-
-	if n, ok := item.(*lib.Node); ok {
-		data["footnotes"], err = n.Footnotes()
-		if err != nil {
-			panic(err)
-		}
-	} else {
-		data["footnotes"] = []interface{}{}
-	}
 
 	j, err := json.Marshal(data)
 	if err != nil {
@@ -221,11 +229,7 @@ func (app *web) handler(w http.ResponseWriter, r *http.Request) {
 	//TODO Remove for production
 	app.initTemplates()
 
-	ref, err := lib.ParsePath(lang, r.URL.Path)
-	if err != nil {
-		panic(err)
-	}
-	item, err := ref.Lookup()
+	item, err := lib.ParsePath(lang, r.URL.Path).Lookup()
 	if err != nil {
 		panic(err)
 	}

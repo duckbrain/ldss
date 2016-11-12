@@ -121,12 +121,14 @@ function setItem(item) {
 	}
 	
 	footnotes.innerHTML = '';
-	item.footnotes.forEach(function(footnote) {
-		var li = document.createElement('li');
-		li.textContent = footnote.name + ' - ' + footnote.linkName;
-		li.innerHTML += '<div>' + footnote.content + '</div>';
-		footnotes.appendChild(li);
-	});
+	if (item.footnotes) {
+		item.footnotes.forEach(function(footnote) {
+			var li = document.createElement('li');
+			li.textContent = footnote.name + ' - ' + footnote.linkName;
+			li.innerHTML += '<div>' + footnote.content + '</div>';
+			footnotes.appendChild(li);
+		});
+	}	
 	
 	state.item = item;
 	return item;

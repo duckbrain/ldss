@@ -1,62 +1,88 @@
 package lib
 
 import (
+	"encoding/json"
 	"fmt"
+	"strconv"
 	"strings"
 )
 
 type Reference struct {
-	GlPath                  string
-	Language                *Language
-	VerseSelected           int
-	VersesHighlighted       []int
-	Name, LinkName, Content string
+	Path              string
+	Language          *Language
+	VerseSelected     int
+	VersesHighlighted []int
+	VersesExtra       []int
+	Small, Content    string
 }
 
 func Parse(lang *Language, q string) (r Reference, err error) {
-	var ref *refParser
-	r, err = ParsePath(lang, q)
+	var rp *refParser
+	r = ParsePath(lang, q)
+	rp, err = lang.ref()
 	if err == nil {
-		return
-	}
-	ref, err = lang.ref()
-	if err == nil {
-		r, err = ref.lookup(q)
+		r, err = rp.lookup(q)
 		r.Language = lang
 		return
 	}
 	return
 }
 
-func ParsePath(lang *Language, p string) (Reference, error) {
-	return Reference{
+func ParsePath(lang *Language, p string) Reference {
+	r := Reference{
 		Language: lang,
-		GlPath:   p,
-	}, nil
+		Path:     p,
+	}
+
+	r.Path = strings.TrimSpace(r.Path)
+	r.Path = strings.TrimRight(r.Path, "/ ")
+	if r.Path == "" {
+		r.Path = "/"
+	}
+
+	if index := strings.IndexRune(r.Path, '.'); index != -1 {
+		verseString := r.Path[index+1:]
+		r.Path = r.Path[:index]
+
+		if extraIndex := strings.IndexRune(verseString, '.'); extraIndex != -1 {
+			r.VersesHighlighted = parseVerses(verseString[:extraIndex])
+			r.VersesExtra = parseVerses(verseString[extraIndex+1:])
+		} else {
+			r.VersesHighlighted = parseVerses(verseString)
+		}
+
+		if len(r.VersesHighlighted) > 0 {
+			r.VerseSelected = r.VersesHighlighted[0]
+		}
+	}
+
+	return r
+}
+
+func (r Reference) MarshalJSON() ([]byte, error) {
+	return json.Marshal(struct {
+		Path              string
+		Language          *Language
+		VerseSelected     int
+		VersesHighlighted []int
+		VersesExtra       []int
+		Small, Content    string
+		URL               string
+	}{
+		Path:              r.Path,
+		Language:          r.Language,
+		VerseSelected:     r.VerseSelected,
+		VersesHighlighted: r.VersesHighlighted,
+		VersesExtra:       r.VersesExtra,
+		Small:             r.Small,
+		Content:           r.Content,
+		URL:               r.URL(),
+	})
 }
 
 func (r Reference) URL() string {
-	p := r.GlPath
-	if r.VersesHighlighted != nil {
-		//TODO Add verses
-		var previousVerse, spanStart, verse int
-		for _, verse = range r.VersesHighlighted {
-			if previousVerse == 0 {
-				p = fmt.Sprintf("%v.%v", p, verse)
-				spanStart = verse
-				previousVerse = verse
-			} else if previousVerse == verse-1 {
-				previousVerse = verse
-			} else {
-				p = fmt.Sprintf("%v-%v,%v", p, previousVerse, verse)
-				spanStart = verse
-				previousVerse = verse
-			}
-		}
-		if verse != spanStart {
-			p = fmt.Sprintf("%v-%v", p, verse)
-		}
-	}
+	p := r.Path
+	p = fmt.Sprintf("%v%v%v", p, stringifyVerse(r.VersesHighlighted), stringifyVerse(r.VersesExtra))
 	if r.Language != nil {
 		p = fmt.Sprintf("%v?lang=%v", p, r.Language.GlCode)
 	}
@@ -66,37 +92,82 @@ func (r Reference) URL() string {
 	return p
 }
 
+func parseVerses(s string) []int {
+	verses := make([]int, 0)
+	for _, span := range strings.Split(s, ",") {
+		if verse, err := strconv.Atoi(span); err == nil {
+			verses = append(verses, verse)
+		} else {
+			p := strings.Split(span, "-")
+			if len(p) == 2 {
+				vstart, estart := strconv.Atoi(p[0])
+				vend, eend := strconv.Atoi(p[1])
+				if estart == nil && eend == nil {
+					for v := vstart; v <= vend; v++ {
+						verses = append(verses, v)
+					}
+				}
+			}
+		}
+	}
+	return verses
+}
+
+func stringifyVerse(verses []int) string {
+	if verses == nil {
+		return ""
+	}
+	p := ""
+	var previousVerse, spanStart, verse int
+	for _, verse = range verses {
+		if previousVerse == 0 {
+			p = fmt.Sprintf("%v.%v", p, verse)
+			spanStart = verse
+			previousVerse = verse
+		} else if previousVerse == verse-1 {
+			previousVerse = verse
+		} else {
+			p = fmt.Sprintf("%v-%v,%v", p, previousVerse, verse)
+			spanStart = verse
+			previousVerse = verse
+		}
+	}
+	if verse != spanStart {
+		p = fmt.Sprintf("%v-%v", p, verse)
+	}
+	return p
+}
+
 func (r Reference) Check() error {
 	if r.Language == nil {
 		panic(fmt.Errorf("Language not set on reference"))
 	}
+
 	return nil
 }
 
-// Finds an Item by it's path. Expects a fully qualified path. An empty string
-// or "/" will return this catalog. Will return an error if there is an error
+// Finds an Item by it's path. Expects a fully qualified path. "/" will
+// return the catalog. Will return an error if there is an error
 // loading the item or it is not downloaded.
 func (r Reference) Lookup() (Item, error) {
 	c, err := r.Language.Catalog()
 	if err != nil {
 		return nil, err
 	}
-	r.GlPath = strings.TrimSpace(r.GlPath)
-	if r.GlPath == "" || r.GlPath == "/" {
+	if r.Path == "/" {
 		return c, nil
 	}
-	r.GlPath = strings.TrimRight(r.GlPath, "/ ")
-	if folder, ok := c.foldersByPath[r.GlPath]; ok {
+	if folder, ok := c.foldersByPath[r.Path]; ok {
 		return folder, nil
 	}
-	sections := strings.Split(r.GlPath, "/")
+	sections := strings.Split(r.Path, "/")
 	if sections[0] != "" {
-		return nil, fmt.Errorf("Invalid path \"%v\", must start with '/'", r.GlPath)
+		return nil, fmt.Errorf("Invalid path \"%v\", must start with '/'", r.Path)
 	}
 	for i := 2; i <= len(sections); i++ {
 		temppath := strings.Join(sections[0:i], "/")
 		if book, ok := c.booksByPath[temppath]; ok {
-			if r.GlPath == book.Path() {
+			if r.Path == book.Path() {
 				return book, nil
 			}
 			node := &Node{Book: book}
@@ -104,14 +175,14 @@ func (r Reference) Lookup() (Item, error) {
 			if err != nil {
 				return nil, err
 			}
-			err = db.stmtUri.QueryRow(r.GlPath).Scan(&node.id, &node.name, &node.path, &node.parentId, &node.hasContent, &node.childCount)
+			err = db.stmtUri.QueryRow(r.Path).Scan(&node.id, &node.name, &node.path, &node.parentId, &node.hasContent, &node.childCount)
 			if err != nil {
-				return nil, fmt.Errorf("Path %v not found", r.GlPath)
+				return nil, fmt.Errorf("Path %v not found", r.Path)
 			}
 			return node, err
 
-			return book.lookupPath(r.GlPath)
+			return book.lookupPath(r.Path)
 		}
 	}
-	return nil, fmt.Errorf("Path \"%v\" not found", r.GlPath)
+	return nil, fmt.Errorf("Path \"%v\" not found", r.Path)
 }
