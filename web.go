@@ -114,17 +114,13 @@ func (app *web) static(w http.ResponseWriter, r *http.Request) error {
 	return nil
 }
 
-func (app *web) itemsRelativesPath(item, parent lib.Item) interface{} {
+func (app *web) itemsRelativesPath(item lib.Item) interface{} {
 	if item != nil {
 		data := struct {
 			Name string `json:"name"`
 			Type string `json:"type"`
 			Path string `json:"path"`
 		}{item.Name(), "", item.Path()}
-
-		if parent != nil {
-			//data.Name = strings.TrimPrefix(data.Name, parent.Name())
-		}
 
 		switch item.(type) {
 		case *lib.Catalog:
@@ -159,9 +155,9 @@ func (app *web) handleJSON(w http.ResponseWriter, r *http.Request) {
 	data["name"] = item.Name()
 	data["path"] = item.Path()
 	data["language"] = item.Language().GlCode
-	data["parent"] = app.itemsRelativesPath(item.Parent(), nil)
-	data["next"] = app.itemsRelativesPath(item.Next(), nil)
-	data["previous"] = app.itemsRelativesPath(item.Previous(), nil)
+	data["parent"] = app.itemsRelativesPath(item.Parent())
+	data["next"] = app.itemsRelativesPath(item.Next())
+	data["previous"] = app.itemsRelativesPath(item.Previous())
 
 	switch item := item.(type) {
 	case *lib.Catalog:
@@ -193,7 +189,7 @@ func (app *web) handleJSON(w http.ResponseWriter, r *http.Request) {
 	if childItems, err := item.Children(); err == nil {
 		children := make([]interface{}, len(childItems))
 		for i, child := range childItems {
-			children[i] = app.itemsRelativesPath(child, item)
+			children[i] = app.itemsRelativesPath(child)
 		}
 		data["children"] = children
 	}
@@ -201,7 +197,7 @@ func (app *web) handleJSON(w http.ResponseWriter, r *http.Request) {
 	breadcrumbs := make([]interface{}, 0)
 	for p := item; p != nil; {
 		parent := p.Parent()
-		breadcrumbs = append([]interface{}{app.itemsRelativesPath(p, parent)}, breadcrumbs...)
+		breadcrumbs = append([]interface{}{app.itemsRelativesPath(p)}, breadcrumbs...)
 		p = parent
 	}
 	data["breadcrumbs"] = breadcrumbs

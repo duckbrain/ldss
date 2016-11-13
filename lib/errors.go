@@ -13,29 +13,29 @@ type notDownloadedErr interface {
 }
 
 // Base commonality for the NotDownloadedErr interface
-type notDownloadedErr struct {
+type notDownloadedErrBase struct {
 	err error
 }
 
 // The error of the wrapped error
-func (err notDownloadedErr) InternalError() error {
+func (err notDownloadedErrBase) InternalError() error {
 	return err.err
 }
 
 // An error that a book needs to be downloaded
 type notDownloadedBookErr struct {
-	notDownloadedErr
+	notDownloadedErrBase
 	book *Book
 }
 
 // An error that a language's catalog needs to be downloaded
 type notDownloadedCatalogErr struct {
-	notDownloadedErr
+	notDownloadedErrBase
 	lang *Language
 }
 
 // An Error that the language list has not been downloaded
-type notDownloadedLanguageErr notDownloadedErr
+type notDownloadedLanguageErr notDownloadedErrBase
 
 // Error book is not downloaded
 func (err notDownloadedBookErr) Error() string {

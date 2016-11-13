@@ -115,9 +115,12 @@ function setItem(item) {
 	
 	footnotes.innerHTML = '';
 	if (item.footnotes) {
-		item.footnotes.forEach(function(footnote) {
+		item.footnotes.forEach(function(i, footnote) {
 			var li = document.createElement('li');
 			li.textContent = footnote.name + ' - ' + footnote.linkName;
+			if (i > 0 && footnote.name.indexOf(item.footnotes[i-1].name + " ") == 0) {
+				footnote.name = footnote.name.substring(item.footnotes[i-1].name.length + 1);
+			}
 			li.innerHTML += '<div>' + footnote.content + '</div>';
 			footnotes.appendChild(li);
 		});
