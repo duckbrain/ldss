@@ -3,6 +3,7 @@ package lib
 import (
 	"encoding/json"
 	"fmt"
+	"sort"
 	"strconv"
 	"strings"
 )
@@ -37,12 +38,6 @@ func ParsePath(lang *Language, p string) Reference {
 		Path:     p,
 	}
 
-	r.Path = strings.TrimSpace(r.Path)
-	r.Path = strings.TrimRight(r.Path, "/ ")
-	if r.Path == "" {
-		r.Path = "/"
-	}
-
 	if index := strings.IndexRune(r.Path, '.'); index != -1 {
 		verseString := r.Path[index+1:]
 		r.Path = r.Path[:index]
@@ -53,10 +48,12 @@ func ParsePath(lang *Language, p string) Reference {
 		} else {
 			r.VersesHighlighted = parseVerses(verseString)
 		}
+	}
 
-		if len(r.VersesHighlighted) > 0 {
-			r.VerseSelected = r.VersesHighlighted[0]
-		}
+	r.Clean()
+
+	if len(r.VersesHighlighted) > 0 {
+		r.VerseSelected = r.VersesHighlighted[0]
 	}
 
 	return r
@@ -83,9 +80,20 @@ func (r Reference) MarshalJSON() ([]byte, error) {
 	})
 }
 
+func (r *Reference) Clean() {
+	r.Path = strings.TrimSpace(r.Path)
+	r.Path = strings.TrimRight(r.Path, "/ ")
+	if r.Path == "" {
+		r.Path = "/"
+	}
+
+	r.VersesHighlighted = cleanVerses(r.VersesHighlighted)
+	r.VersesExtra = cleanVerses(r.VersesExtra)
+}
+
 func (r Reference) URL() string {
 	p := r.Path
-	p = fmt.Sprintf("%v%v%v", p, stringifyVerse(r.VersesHighlighted), stringifyVerse(r.VersesExtra))
+	p = fmt.Sprintf("%v%v%v", p, stringifyVerses(r.VersesHighlighted), stringifyVerses(r.VersesExtra))
 	if r.Language != nil {
 		p = fmt.Sprintf("%v?lang=%v", p, r.Language.GlCode)
 	}
@@ -116,7 +124,7 @@ func parseVerses(s string) []int {
 	return verses
 }
 
-func stringifyVerse(verses []int) string {
+func stringifyVerses(verses []int) string {
 	if verses == nil {
 		return ""
 	}
@@ -139,6 +147,20 @@ func stringifyVerse(verses []int) string {
 		p = fmt.Sprintf("%v-%v", p, verse)
 	}
 	return p
+}
+
+func cleanVerses(a []int) []int {
+	sort.Sort(sort.IntSlice(a))
+
+	l := 0
+	for i := 0; i < len(a); i++ {
+		v := a[i]
+		if v <= l {
+			a = append(a[:i], a[i+1:]...)
+		}
+		l = v
+	}
+	return a
 }
 
 func (r Reference) Check() error {

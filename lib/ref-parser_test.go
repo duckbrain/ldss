@@ -55,19 +55,7 @@ func TestReferenceParseDuplicate(t *testing.T) {
 func TestReferenceLookup(t *testing.T) {
 	p := newRefParser([]byte(file))
 
-	testVerses := func(a, b []int) {
-		if len(a) != len(b) {
-			t.Errorf("    Verse range %v is not the same length as %v", a, b)
-		} else {
-			for i, x := range a {
-				if b[i] != x {
-					t.Errorf("    Verse at index %v->%v does not match  %v", i, x, b[i])
-				}
-			}
-		}
-	}
-
-	testReference := func(in string, r Reference, shouldError bool) {
+	testQuery := func(in string, r Reference, shouldError bool) {
 		t.Logf("Testing string \"%v\" for match %v", in, r.URL())
 		p, err := p.lookup(in)
 
@@ -78,21 +66,12 @@ func TestReferenceLookup(t *testing.T) {
 			return
 		}
 
-		if p.Path != r.Path {
-			t.Error("Paths don't match %v != %v", p.Path, r.Path)
-		}
-
-		testVerses(p.VersesHighlighted, r.VersesHighlighted)
-		testVerses(p.VersesExtra, r.VersesExtra)
-
-		if p.VerseSelected != r.VerseSelected {
-			t.Error("VerseSelected doesn't match %v != %v", p.VerseSelected, r.VerseSelected)
-		}
+		testReference(t, p, r)
 	}
 
 	test := func(in, out string, verses ...int) {
-		testReference(in, Reference{
-			Path: out,
+		testQuery(in, Reference{
+			Path:              out,
 			VersesHighlighted: verses,
 		}, false)
 	}
@@ -103,10 +82,10 @@ func TestReferenceLookup(t *testing.T) {
 	test("1ne 3:4-6", "/scriptures/bofm/1-ne/3", 4, 5, 6)
 	test("1ne 3:4,6", "/scriptures/bofm/1-ne/3", 4, 6)
 	test("1ne 3:4-6,6", "/scriptures/bofm/1-ne/3", 4, 5, 6)
-	test("1ne 3:4-6,6-8, 2", "/scriptures/bofm/1-ne/3", 2, 4, 5, 6, 8)
-	testReference("1ne 3:4 (2-6)", Reference{
-		Path: "/scriptures/bofm/1-ne/3",
+	test("1ne 3:4-6,6-8, 2", "/scriptures/bofm/1-ne/3", 2, 4, 5, 6, 7, 8)
+	testQuery("1ne 3:4 (2-6)", Reference{
+		Path:              "/scriptures/bofm/1-ne/3",
 		VersesHighlighted: []int{4},
-		VersesExtra: []int{2, 3, 4, 5, 6},
+		VersesExtra:       []int{2, 3, 4, 5, 6},
 	}, false)
 }
