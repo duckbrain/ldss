@@ -20,8 +20,8 @@ func init() {
 // result through a series of messages from the returned channel.
 func AutoDownload(open func() (Item, error)) (Item, error) {
 	item, err := open()
-	var dlErr, preDlErr NotDownloadedErr
-	dlErr, ok := err.(NotDownloadedErr)
+	var dlErr, preDlErr notDownloadedErr
+	dlErr, ok := err.(notDownloadedErr)
 	for ok {
 		if dlErr == preDlErr {
 			return nil, dlErr
@@ -32,7 +32,7 @@ func AutoDownload(open func() (Item, error)) (Item, error) {
 		}
 		item, err = open()
 		preDlErr = dlErr
-		dlErr, ok = err.(NotDownloadedErr)
+		dlErr, ok = err.(notDownloadedErr)
 	}
 	return item, nil
 }

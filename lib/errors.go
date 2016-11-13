@@ -5,7 +5,7 @@ import (
 )
 
 // An error that a resouce has not been downloaded
-type NotDownloadedErr interface {
+type notDownloadedErr interface {
 	error
 	fmt.Stringer
 	InternalError() error
