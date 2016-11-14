@@ -19,6 +19,16 @@ const file = `
 42762:/music
 `
 
+func testReferences(t *testing.T, a []Reference, b ...Reference) {
+	if len(a) != len(b) {
+		t.Errorf("Number of references differs between sets %v and %v", a, b)
+	} else {
+		for i, x := range a {
+			testReference(t, x, b[i])
+		}
+	}
+}
+
 func TestReferenceParseBasic(t *testing.T) {
 	p := newRefParser([]byte(file))
 	if p.matchFolder[42762] != "/music" {
@@ -55,25 +65,23 @@ func TestReferenceParseDuplicate(t *testing.T) {
 func TestReferenceLookup(t *testing.T) {
 	p := newRefParser([]byte(file))
 
-	testQuery := func(in string, r Reference, shouldError bool) {
-		t.Logf("Testing string \"%v\" for match %v", in, r.URL())
-		p, err := p.lookup(in)
+	testQuery := func(in string, r ...Reference) {
+		t.Logf("Testing string \"%v\" for match %v", in, r)
+		p := p.lookup(in)
 
-		if err != nil {
-			if !shouldError {
-				t.Errorf("    Unexpected error \"%v\"", err)
-			}
-			return
-		}
-
-		testReference(t, p, r)
+		testReferences(t, p, r...)
 	}
 
 	test := func(in, out string, verses ...int) {
+		s := 0
+		if len(verses) > 0 {
+			s = verses[0]
+		}
 		testQuery(in, Reference{
 			Path:              out,
 			VersesHighlighted: verses,
-		}, false)
+			VerseSelected:     s,
+		})
 	}
 
 	test("1ne 3", "/scriptures/bofm/1-ne/3")
@@ -85,7 +93,8 @@ func TestReferenceLookup(t *testing.T) {
 	test("1ne 3:4-6,6-8, 2", "/scriptures/bofm/1-ne/3", 2, 4, 5, 6, 7, 8)
 	testQuery("1ne 3:4 (2-6)", Reference{
 		Path:              "/scriptures/bofm/1-ne/3",
+		VerseSelected:     4,
 		VersesHighlighted: []int{4},
 		VersesExtra:       []int{2, 3, 4, 5, 6},
-	}, false)
+	})
 }

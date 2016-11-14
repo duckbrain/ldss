@@ -31,15 +31,16 @@ type Page struct {
 
 // Parse the content for a page. The page contains an structured representation
 // of the content that can be displayed programattically in a variety of ways.
-func (c Content) Page() (*Page, error) {
+func (c Content) Page() *Page {
+	page := new(Page)
 	reader := strings.NewReader(string(c))
+
 	doc, err := html.Parse(reader)
 	if err != nil {
-		return nil, err
+		return page
 	}
 
 	mode := parseTitleMode
-	page := new(Page)
 	var verse struct {
 		Number int
 		Text   string
@@ -92,5 +93,5 @@ func (c Content) Page() (*Page, error) {
 	if verse.Number > 0 {
 		page.Verses = append(page.Verses, verse)
 	}
-	return page, nil
+	return page
 }

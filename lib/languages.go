@@ -32,7 +32,6 @@ type Language struct {
 	GlCode string `json:"code_three"`
 
 	catalogCache cache
-	reference    cache
 }
 
 // Returns a human readable version of the language that is appropriate to
@@ -68,14 +67,6 @@ func (l *Language) Catalog() (*Catalog, error) {
 		return nil, err
 	}
 	return c.(*Catalog), err
-}
-
-func (l *Language) ref() (*refParser, error) {
-	ref, err := l.reference.get()
-	if err != nil {
-		return nil, err
-	}
-	return ref.(*refParser), nil
 }
 
 func init() {

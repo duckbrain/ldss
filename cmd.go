@@ -41,11 +41,11 @@ func (app *cmd) run() {
 	switch args[0] {
 	case "lookup":
 		lookupString := strings.Join(args[1:], " ")
-		ref, err := lib.Parse(lang, lookupString)
-		if err != nil {
-			panic(err)
+		refs := lib.Parse(lang, lookupString)
+		if len(refs) != 1 {
+			panic(fmt.Errorf("Multiple references not implemented"))
 		}
-		item, err := ref.Lookup()
+		item, err := refs[0].Lookup()
 		if err != nil {
 			panic(err)
 		}
@@ -53,10 +53,7 @@ func (app *cmd) run() {
 		if node, ok := item.(*lib.Node); ok {
 			if content, err := node.Content(); err == nil {
 				c := colors(true)
-				page, err := content.Page()
-				if err != nil {
-					panic(err)
-				}
+				page := content.Page()
 				c.title.Printf("   %v   \n", page.Title)
 				if len(page.Subtitle) > 0 {
 					c.subtitle.Println(page.Subtitle)
@@ -133,11 +130,11 @@ func (app *cmd) run() {
 			lib.DownloadCatalog(lang)
 		default:
 			item, err := lib.AutoDownload(func() (lib.Item, error) {
-				ref, err := lib.Parse(lang, args[1])
-				if err != nil {
-					return nil, err
+				refs := lib.Parse(lang, args[1])
+				if len(refs) != 1 {
+					return nil, fmt.Errorf("Cannot yet handle multiple references")
 				} else {
-					return ref.Lookup()
+					return refs[0].Lookup()
 				}
 			})
 			if err != nil {

@@ -76,11 +76,11 @@ func (app *web) handleError(w http.ResponseWriter, r *http.Request) {
 
 func (app *web) handleLookup(w http.ResponseWriter, r *http.Request) {
 	defer r.Body.Close()
-	path, err := lib.Parse(app.language(r), r.URL.Query().Get("q"))
-	if err != nil {
-		panic(err)
+	refs := lib.Parse(app.language(r), r.URL.Query().Get("q"))
+	if len(refs) != 1 {
+		panic(fmt.Errorf("Web lookup cannot handle multiple refs"))
 	}
-	http.Redirect(w, r, path.URL(), http.StatusFound)
+	http.Redirect(w, r, refs[0].URL(), http.StatusFound)
 }
 
 func (app *web) handleStatic(w http.ResponseWriter, r *http.Request) {

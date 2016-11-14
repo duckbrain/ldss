@@ -3,33 +3,37 @@ package lib
 import (
 	"bufio"
 	"bytes"
-	"errors"
 	"fmt"
 	"regexp"
 	"strconv"
 	"strings"
 )
 
+type ReferenceFileFunc func(lang *Language) ([]byte, error)
+
+var refParserFileLoader ReferenceFileFunc
+var refParsers map[*Language]*refParser
+
+func referenceParser(l *Language) (*refParser, error) {
+	if refParsers == nil {
+		refParsers = make(map[*Language]*refParser)
+	}
+	if parser, ok := refParsers[l]; ok {
+		return parser, nil
+	}
+	file, err := refParserFileLoader(l)
+	if err != nil {
+		return nil, err
+	}
+	return newRefParser(file), nil
+}
+
 // Sets a function that will be called to get the ldss reference language file
 // for a passed language. This will likely be from a file, but could be from
-// another source, such as an embedded resource.
-func SetReferenceParseReader(open func(lang *Language) ([]byte, error)) {
-	langs, err := Languages()
-	if err != nil {
-		panic(err)
-	}
-	for _, lang := range langs {
-		func(l *Language) {
-			l.reference.construct = func() (interface{}, error) {
-				file, err := open(l)
-				if err != nil {
-					return nil, err
-				}
-				return newRefParser(file), nil
-			}
-		}(lang)
-	}
-
+// another source, such as an embedded resource. This should not be set after
+// the first call to Lookup()
+func SetReferenceParseReader(open ReferenceFileFunc) {
+	refParserFileLoader = open
 }
 
 type refParser struct {
@@ -82,7 +86,11 @@ func newRefParser(file []byte) *refParser {
 	return p
 }
 
-func (p *refParser) lookup(q string) (ref Reference, err error) {
+func (p *refParser) lookup(q string) []Reference {
+	//refs := make([]Reference, 0)
+	ref := Reference{}
+	var err error
+
 	// Clean q
 	q = strings.TrimSpace(q)
 	q = strings.ToLower(q) + " "
@@ -90,16 +98,13 @@ func (p *refParser) lookup(q string) (ref Reference, err error) {
 
 	// Parse from the match maps
 	var remainder string
-	ref.Path, remainder, err = p.lookupBase(q)
-	if err != nil {
-		return ref, err
-	}
+	ref.Path, remainder = p.lookupBase(q)
 
 	if i := strings.LastIndex(ref.Path, "#"); i != -1 {
 		directive := string(ref.Path[i:])
 		ref.Path = string(ref.Path[:i])
 		if len(remainder) == 0 {
-			return
+			return []Reference{ref}
 		}
 		// Parse remainder for chapter, verse, etc
 		tokens := strings.Split(strings.TrimRight(remainder, " "), " ")
@@ -108,7 +113,7 @@ func (p *refParser) lookup(q string) (ref Reference, err error) {
 			var i int
 			i, err = strconv.Atoi(tokens[0])
 			if err != nil {
-				return
+				return []Reference{ref}
 			} else {
 				ref.Path = fmt.Sprintf("%v/%v", ref.Path, i)
 			}
@@ -117,14 +122,14 @@ func (p *refParser) lookup(q string) (ref Reference, err error) {
 		}
 	} else {
 		if len(remainder) == 0 {
-			return
+			return []Reference{ref}
 		}
 		err = fmt.Errorf("Unknown extra characters %v", remainder)
 	}
-	return
+	return []Reference{ref}
 }
 
-func (p *refParser) lookupBase(q string) (path, rem string, err error) {
+func (p *refParser) lookupBase(q string) (path, rem string) {
 	for s, r := range p.matchString {
 		if strings.Index(q, s) == 0 && (len(rem) == 0 || len(rem) > len(q)-len(s)) {
 			path = r
@@ -140,9 +145,6 @@ func (p *refParser) lookupBase(q string) (path, rem string, err error) {
 				path = string(s.ExpandString(b, r, q, i))
 			}
 		}
-	}
-	if path == "" {
-		err = errors.New("Query \"" + q + "\" not found")
 	}
 	return
 }

@@ -17,19 +17,15 @@ type Reference struct {
 	Small, Content    string
 }
 
-func Parse(lang *Language, q string) (r Reference, err error) {
-	var rp *refParser
-	r = ParsePath(lang, q)
-	if r.Check() == nil {
-		return r, nil
+func Parse(lang *Language, q string) []Reference {
+	ref := ParsePath(lang, q)
+	if ref.Check() == nil {
+		return []Reference{ref}
 	}
-	rp, err = lang.ref()
-	if err == nil {
-		r, err = rp.lookup(q)
-		r.Language = lang
-		return
+	if rp, err := referenceParser(lang); err == nil {
+		return rp.lookup(q)
 	}
-	return
+	return []Reference{}
 }
 
 func ParsePath(lang *Language, p string) Reference {
