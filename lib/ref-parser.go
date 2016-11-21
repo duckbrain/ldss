@@ -7,9 +7,52 @@ import (
 	"regexp"
 	"strconv"
 	"strings"
+	"unicode"
+	"unicode/utf8"
 )
 
 type ReferenceFileFunc func(lang *Language) ([]byte, error)
+type tokenType int
+type refParseMode int
+
+func (tt tokenType) String() string {
+	switch tt {
+	case tokenRef:
+		return "ref"
+	case tokenWord:
+		return "word"
+	case tokenChar:
+		return "char"
+	}
+	return "Unkown token type"
+}
+
+func (m refParseMode) String() string {
+	switch m {
+	case parseModeRef:
+		return "ref"
+	case parseModeChapter:
+		return "chapter"
+	case parseModeVerse:
+		return "verse"
+	case parseModeVerseRange:
+		return "verseRange"
+	}
+	return "Unkown parse type"
+}
+
+const (
+	tokenRef tokenType = iota
+	tokenWord
+	tokenChar
+)
+
+const (
+	parseModeRef refParseMode = iota
+	parseModeChapter
+	parseModeVerse
+	parseModeVerseRange
+)
 
 var refParserFileLoader ReferenceFileFunc
 var refParsers map[*Language]*refParser
@@ -87,62 +130,146 @@ func newRefParser(file []byte) *refParser {
 }
 
 func (p *refParser) lookup(q string) []Reference {
-	//refs := make([]Reference, 0)
+	refs := make([]Reference, 0)
 	ref := Reference{}
-	var err error
+	var tt tokenType
 
-	// Clean q
-	q = strings.TrimSpace(q)
-	q = strings.ToLower(q) + " "
-	q = p.parseClean.ReplaceAllString(q, " ")
-
-	// Parse from the match maps
-	var remainder string
-	ref.Path, remainder = p.lookupBase(q)
-
-	if i := strings.LastIndex(ref.Path, "#"); i != -1 {
-		directive := string(ref.Path[i:])
-		ref.Path = string(ref.Path[:i])
-		if len(remainder) == 0 {
-			return []Reference{ref}
-		}
-		// Parse remainder for chapter, verse, etc
-		tokens := strings.Split(strings.TrimRight(remainder, " "), " ")
-		switch directive {
-		case "#":
-			var i int
-			i, err = strconv.Atoi(tokens[0])
-			if err != nil {
-				return []Reference{ref}
-			} else {
-				ref.Path = fmt.Sprintf("%v/%v", ref.Path, i)
+	scanner := bufio.NewScanner(strings.NewReader(q))
+	scanner.Split(func(data []byte, atEOF bool) (advance int, token []byte, err error) {
+		// Skip leading spaces.
+		start := 0
+		for width := 0; start < len(data); start += width {
+			var r rune
+			r, width = utf8.DecodeRune(data[start:])
+			if !unicode.IsSpace(r) {
+				break
 			}
-		default:
-			err = fmt.Errorf("Unknown directive %v", directive)
 		}
-	} else {
-		if len(remainder) == 0 {
-			return []Reference{ref}
+		// Find a reference
+		adv, path := p.lookupBase(data[start:])
+		if adv > 0 {
+			advance = start + adv
+			tt = tokenRef
+			ref.Path = path
+			return advance, data[start:advance], nil
 		}
-		err = fmt.Errorf("Unknown extra characters %v", remainder)
+		// Scan until space or other token, marking end of word.
+		for width, i := 0, start; i < len(data); i += width {
+			var r rune
+			r, width = utf8.DecodeRune(data[i:])
+			if unicode.IsSpace(r) {
+				tt = tokenWord
+				return i + width, data[start:i], nil
+			}
+			switch r {
+			case ':', ',', ';', '-', '(', ')':
+				if i == start {
+					// This is the first character, return it as a token
+					tt = tokenChar
+					return width, data[start : start+width], nil
+				} else {
+					// Return the word before the character
+					tt = tokenWord
+					return i, data[start:i], nil
+				}
+			}
+		}
+		// If we're at EOF, we have a final, non-empty, non-terminated word. Return it.
+		if atEOF && len(data) > start {
+			tt = tokenWord
+			return len(data), data[start:], nil
+		}
+		// Request more data.
+		return start, nil, nil
+	})
+
+	var parseMode refParseMode
+	var inParenths bool
+	var verseRangeStart int
+
+	for scanner.Scan() {
+		text := scanner.Text()
+		switch tt {
+		case tokenChar:
+			switch text {
+			case ":":
+				parseMode = parseModeVerse
+			case ",":
+				parseMode = parseModeVerse
+			case ";":
+				refs = append(refs, ref)
+			case "-":
+				parseMode = parseModeVerseRange
+			case "(":
+				inParenths = true
+			case ")":
+				inParenths = false
+			}
+		case tokenRef:
+			if i := strings.LastIndex(ref.Path, "#"); i != -1 {
+				ref.Path = string(ref.Path[:i])
+			}
+			parseMode = parseModeChapter
+		case tokenWord:
+			if num, err := strconv.Atoi(text); err == nil {
+				switch parseMode {
+				case parseModeChapter:
+					ref.Path = fmt.Sprintf("%v/%v", ref.Path, num)
+					parseMode = parseModeVerse
+				case parseModeVerse:
+					var v *[]int
+					if !inParenths {
+						v = &ref.VersesHighlighted
+					} else {
+						v = &ref.VersesExtra
+					}
+					verseRangeStart = num
+					if *v == nil {
+						*v = []int{num}
+					} else {
+						*v = append(*v, num)
+					}
+				case parseModeVerseRange:
+					var v *[]int
+					if !inParenths {
+						v = &ref.VersesHighlighted
+					} else {
+						v = &ref.VersesExtra
+					}
+					for i := verseRangeStart; i <= num; i++ {
+						*v = append(*v, i)
+					}
+				}
+			}
+		}
 	}
-	return []Reference{ref}
+
+	ref.Clean()
+
+	refs = append(refs, ref)
+
+	return refs
 }
 
-func (p *refParser) lookupBase(q string) (path, rem string) {
+func (p *refParser) lookupBase(q []byte) (advance int, path string) {
+	qlen := len(q)
+	qstring := string(q)
 	for s, r := range p.matchString {
-		if strings.Index(q, s) == 0 && (len(rem) == 0 || len(rem) > len(q)-len(s)) {
+		slen := len(s)
+		if advance < slen && strings.Index(qstring, s) == 0 {
 			path = r
-			rem = q[len(s):]
+			advance = slen
+			return
 		}
 	}
 	for s, r := range p.matchRegexp {
-		if i := s.FindSubmatchIndex([]byte(q)); i != nil {
-			remTemp := s.ReplaceAllString(q, "")
-			if len(rem) == 0 || len(rem) > len(remTemp) {
-				rem = remTemp
+		if i := s.FindSubmatchIndex(q); i != nil {
+			remTemp := s.ReplaceAllString(qstring, "")
+			adv := qlen - len(remTemp)
+			if advance < adv {
 				b := []byte{}
-				path = string(s.ExpandString(b, r, q, i))
+				path = string(s.ExpandString(b, r, qstring, i))
+				advance = adv
 			}
 		}
 	}

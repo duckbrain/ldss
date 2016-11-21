@@ -48,10 +48,6 @@ func ParsePath(lang *Language, p string) Reference {
 
 	r.Clean()
 
-	if len(r.VersesHighlighted) > 0 {
-		r.VerseSelected = r.VersesHighlighted[0]
-	}
-
 	return r
 }
 
@@ -85,6 +81,10 @@ func (r *Reference) Clean() {
 
 	r.VersesHighlighted = cleanVerses(r.VersesHighlighted)
 	r.VersesExtra = cleanVerses(r.VersesExtra)
+
+	if r.VerseSelected == 0 && len(r.VersesHighlighted) > 0 {
+		r.VerseSelected = r.VersesHighlighted[0] - 1
+	}
 }
 
 func (r Reference) URL() string {

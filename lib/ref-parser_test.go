@@ -73,14 +73,9 @@ func TestReferenceLookup(t *testing.T) {
 	}
 
 	test := func(in, out string, verses ...int) {
-		s := 0
-		if len(verses) > 0 {
-			s = verses[0]
-		}
 		testQuery(in, Reference{
 			Path:              out,
 			VersesHighlighted: verses,
-			VerseSelected:     s,
 		})
 	}
 
@@ -93,7 +88,6 @@ func TestReferenceLookup(t *testing.T) {
 	test("1ne 3:4-6,6-8, 2", "/scriptures/bofm/1-ne/3", 2, 4, 5, 6, 7, 8)
 	testQuery("1ne 3:4 (2-6)", Reference{
 		Path:              "/scriptures/bofm/1-ne/3",
-		VerseSelected:     4,
 		VersesHighlighted: []int{4},
 		VersesExtra:       []int{2, 3, 4, 5, 6},
 	})

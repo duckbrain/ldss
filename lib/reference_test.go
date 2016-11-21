@@ -17,6 +17,9 @@ func testVerses(t *testing.T, a, b []int) {
 }
 
 func testReference(t *testing.T, p, r Reference) {
+	p.Clean()
+	r.Clean()
+
 	if p.Path != r.Path {
 		t.Errorf("    Paths don't match %v != %v", p.Path, r.Path)
 	}
@@ -36,14 +39,9 @@ func TestParsePath(t *testing.T) {
 	}
 
 	test := func(in, out string, verses ...int) {
-		s := 0
-		if len(verses) > 0 {
-			s = verses[0]
-		}
 		testParse(in, Reference{
 			Path:              out,
 			VersesHighlighted: verses,
-			VerseSelected:     s,
 		})
 	}
 
@@ -56,7 +54,6 @@ func TestParsePath(t *testing.T) {
 	test("/scriptures/bofm/1-ne/3.4-6,6-8,2", "/scriptures/bofm/1-ne/3", 2, 4, 5, 6, 7, 8)
 	testParse("/scriptures/bofm/1-ne/3.4.2-6", Reference{
 		Path:              "/scriptures/bofm/1-ne/3",
-		VerseSelected:     4,
 		VersesHighlighted: []int{4},
 		VersesExtra:       []int{2, 3, 4, 5, 6},
 	})
