@@ -86,9 +86,18 @@ func TestReferenceLookup(t *testing.T) {
 	test("1ne 3:4,6", "/scriptures/bofm/1-ne/3", 4, 6)
 	test("1ne 3:4-6,6", "/scriptures/bofm/1-ne/3", 4, 5, 6)
 	test("1ne 3:4-6,6-8, 2", "/scriptures/bofm/1-ne/3", 2, 4, 5, 6, 7, 8)
+	test("1 nephi 3:4-6,6-8, 2", "/scriptures/bofm/1-ne/3", 2, 4, 5, 6, 7, 8)
 	testQuery("1ne 3:4 (2-6)", Reference{
 		Path:              "/scriptures/bofm/1-ne/3",
 		VersesHighlighted: []int{4},
 		VersesExtra:       []int{2, 3, 4, 5, 6},
+	})
+	testQuery("1ne 3:4 (2-6); 4:5", Reference{
+		Path:              "/scriptures/bofm/1-ne/3",
+		VersesHighlighted: []int{4},
+		VersesExtra:       []int{2, 3, 4, 5, 6},
+	}, Reference{
+		Path:              "/scriptures/bofm/1-ne/4",
+		VersesHighlighted: []int{5},
 	})
 }
