@@ -10,7 +10,7 @@ import (
 )
 
 type Footnote struct {
-	item     *Node
+	item     Item
 	Name     string        `json:"name"`
 	LinkName string        `json:"linkName"`
 	Content  template.HTML `json:"content"`

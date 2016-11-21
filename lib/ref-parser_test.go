@@ -1,8 +1,6 @@
 package lib
 
-import (
-	"testing"
-)
+import "testing"
 
 const file = `
 # This file describes the format for reference files

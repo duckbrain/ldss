@@ -1,8 +1,6 @@
 package lib
 
-import (
-	"testing"
-)
+import "testing"
 
 func TestParsePath(t *testing.T) {
 	testParse := func(in string, r Reference) {
@@ -28,6 +26,14 @@ func TestParsePath(t *testing.T) {
 		Path:              "/scriptures/bofm/1-ne/3",
 		VersesHighlighted: []int{4},
 		VersesExtra:       []int{2, 3, 4, 5, 6},
+	})
+}
+
+func TestReferenceClean(t *testing.T) {
+	testReference(t, Reference{
+		VersesHighlighted: []int{1, 3, 4, 6, 7},
+	}, Reference{
+		VersesHighlighted: []int{1, 1, 3, 4, 1, 7, 6},
 	})
 }
 
