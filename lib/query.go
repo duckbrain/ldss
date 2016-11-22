@@ -68,7 +68,7 @@ func languageQueryParser(l *Language) (*queryParser, error) {
 	if err != nil {
 		return nil, err
 	}
-	return newQueryParser(file), nil
+	return newQueryParser(l, file), nil
 }
 
 // Sets a function that will be called to get the ldss reference language file
@@ -84,14 +84,16 @@ type queryParser struct {
 	matchRegexp map[*regexp.Regexp]string
 	matchFolder map[int]string
 	parseClean  *regexp.Regexp
+	lang        *Language
 }
 
-func newQueryParser(file []byte) *queryParser {
+func newQueryParser(lang *Language, file []byte) *queryParser {
 	p := &queryParser{
 		matchFolder: make(map[int]string),
 		matchString: make(map[string]string),
 		matchRegexp: make(map[*regexp.Regexp]string),
 		parseClean:  regexp.MustCompile("( |:)+"),
+		lang:        lang,
 	}
 	s := bufio.NewScanner(bytes.NewReader(file))
 	isRegex := regexp.MustCompile("^\\/.*\\/$")
@@ -131,7 +133,7 @@ func newQueryParser(file []byte) *queryParser {
 
 func (p *queryParser) lookup(q string) []Reference {
 	refs := make([]Reference, 0)
-	ref := Reference{}
+	ref := Reference{Language: p.lang}
 	var tt queryTokenType
 
 	scanner := bufio.NewScanner(strings.NewReader(q))
@@ -186,6 +188,25 @@ func (p *queryParser) lookup(q string) []Reference {
 	var parseMode queryParseMode
 	var inParenths bool
 	var verseRangeStart int
+	var chapter int
+
+	finishReference := func() {
+		path := ref.Path
+		if chapter > 0 {
+			ref.Path = fmt.Sprintf("%v/%v", ref.Path, chapter)
+		}
+		ref.Clean()
+		refs = append(refs, ref)
+
+		ref = Reference{
+			Language: p.lang,
+			Path: path,
+		}
+		verseRangeStart = 0
+		chapter = 0
+		inParenths = false
+		parseMode = parseModeChapter
+	}
 
 	for scanner.Scan() {
 		text := scanner.Text()
@@ -197,7 +218,7 @@ func (p *queryParser) lookup(q string) []Reference {
 			case ",":
 				parseMode = parseModeVerse
 			case ";":
-				refs = append(refs, ref)
+				finishReference()
 			case "-":
 				parseMode = parseModeVerseRange
 			case "(":
@@ -214,7 +235,7 @@ func (p *queryParser) lookup(q string) []Reference {
 			if num, err := strconv.Atoi(text); err == nil {
 				switch parseMode {
 				case parseModeChapter:
-					ref.Path = fmt.Sprintf("%v/%v", ref.Path, num)
+					chapter = num
 					parseMode = parseModeVerse
 				case parseModeVerse:
 					var v *[]int
@@ -244,9 +265,7 @@ func (p *queryParser) lookup(q string) []Reference {
 		}
 	}
 
-	ref.Clean()
-
-	refs = append(refs, ref)
+	finishReference()
 
 	return refs
 }
