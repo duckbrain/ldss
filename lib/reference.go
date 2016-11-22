@@ -22,7 +22,7 @@ func Parse(lang *Language, q string) []Reference {
 	if ref.Check() == nil {
 		return []Reference{ref}
 	}
-	if rp, err := referenceParser(lang); err == nil {
+	if rp, err := languageQueryParser(lang); err == nil {
 		return rp.lookup(q)
 	}
 	return []Reference{}

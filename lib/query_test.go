@@ -28,7 +28,7 @@ func testReferences(t *testing.T, a []Reference, b ...Reference) {
 }
 
 func TestReferenceParseBasic(t *testing.T) {
-	p := newRefParser([]byte(file))
+	p := newQueryParser([]byte(file))
 	if p.matchFolder[42762] != "/music" {
 		t.Fail()
 	}
@@ -47,7 +47,7 @@ func TestReferenceParseDuplicate(t *testing.T) {
 				t.Fail()
 			}
 		}()
-		newRefParser([]byte(code))
+		newQueryParser([]byte(code))
 	}
 	test(`
 # Lookup mapping (has two "1ne")
@@ -61,7 +61,7 @@ func TestReferenceParseDuplicate(t *testing.T) {
 }
 
 func TestReferenceLookup(t *testing.T) {
-	p := newRefParser([]byte(file))
+	p := newQueryParser([]byte(file))
 
 	testQuery := func(in string, r ...Reference) {
 		t.Logf("Testing string \"%v\" for match %v", in, r)

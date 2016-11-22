@@ -65,7 +65,7 @@ func (f *Folder) Path() string {
 	var path []string
 	var search func(folder *Folder)
 
-	if p, err := referenceParser(f.Language()); err == nil {
+	if p, err := languageQueryParser(f.Language()); err == nil {
 		if path, ok := p.matchFolder[f.ID()]; ok {
 			return path
 		}

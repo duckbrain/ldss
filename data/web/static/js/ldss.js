@@ -115,7 +115,7 @@ function setItem(item) {
 	
 	footnotes.innerHTML = '';
 	if (item.footnotes) {
-		item.footnotes.forEach(function(i, footnote) {
+		item.footnotes.forEach(function(footnote, i) {
 			var li = document.createElement('li');
 			li.textContent = footnote.name + ' - ' + footnote.linkName;
 			if (i > 0 && footnote.name.indexOf(item.footnotes[i-1].name + " ") == 0) {

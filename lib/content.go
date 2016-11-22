@@ -11,10 +11,10 @@ import (
 // formatted as HTML
 type Content string
 
-type parseMode int
+type contentParseMode int
 
 const (
-	parseTitleMode parseMode = iota
+	parseTitleMode contentParseMode = iota
 	parseSubtitleMode
 	parseSummaryMode
 	parseVerseMode

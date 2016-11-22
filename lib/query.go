@@ -11,11 +11,11 @@ import (
 	"unicode/utf8"
 )
 
-type ReferenceFileFunc func(lang *Language) ([]byte, error)
-type tokenType int
-type refParseMode int
+type QueryFileFunc func(lang *Language) ([]byte, error)
+type queryTokenType int
+type queryParseMode int
 
-func (tt tokenType) String() string {
+func (tt queryTokenType) String() string {
 	switch tt {
 	case tokenRef:
 		return "ref"
@@ -27,7 +27,7 @@ func (tt tokenType) String() string {
 	return "Unkown token type"
 }
 
-func (m refParseMode) String() string {
+func (m queryParseMode) String() string {
 	switch m {
 	case parseModeRef:
 		return "ref"
@@ -42,52 +42,52 @@ func (m refParseMode) String() string {
 }
 
 const (
-	tokenRef tokenType = iota
+	tokenRef queryTokenType = iota
 	tokenWord
 	tokenChar
 )
 
 const (
-	parseModeRef refParseMode = iota
+	parseModeRef queryParseMode = iota
 	parseModeChapter
 	parseModeVerse
 	parseModeVerseRange
 )
 
-var refParserFileLoader ReferenceFileFunc
-var refParsers map[*Language]*refParser
+var queryFileLoader QueryFileFunc
+var queryParsers map[*Language]*queryParser
 
-func referenceParser(l *Language) (*refParser, error) {
-	if refParsers == nil {
-		refParsers = make(map[*Language]*refParser)
+func languageQueryParser(l *Language) (*queryParser, error) {
+	if queryParsers == nil {
+		queryParsers = make(map[*Language]*queryParser)
 	}
-	if parser, ok := refParsers[l]; ok {
+	if parser, ok := queryParsers[l]; ok {
 		return parser, nil
 	}
-	file, err := refParserFileLoader(l)
+	file, err := queryFileLoader(l)
 	if err != nil {
 		return nil, err
 	}
-	return newRefParser(file), nil
+	return newQueryParser(file), nil
 }
 
 // Sets a function that will be called to get the ldss reference language file
 // for a passed language. This will likely be from a file, but could be from
 // another source, such as an embedded resource. This should not be set after
 // the first call to Lookup()
-func SetReferenceParseReader(open ReferenceFileFunc) {
-	refParserFileLoader = open
+func SetReferenceParseReader(open QueryFileFunc) {
+	queryFileLoader = open
 }
 
-type refParser struct {
+type queryParser struct {
 	matchString map[string]string
 	matchRegexp map[*regexp.Regexp]string
 	matchFolder map[int]string
 	parseClean  *regexp.Regexp
 }
 
-func newRefParser(file []byte) *refParser {
-	p := &refParser{
+func newQueryParser(file []byte) *queryParser {
+	p := &queryParser{
 		matchFolder: make(map[int]string),
 		matchString: make(map[string]string),
 		matchRegexp: make(map[*regexp.Regexp]string),
@@ -129,10 +129,10 @@ func newRefParser(file []byte) *refParser {
 	return p
 }
 
-func (p *refParser) lookup(q string) []Reference {
+func (p *queryParser) lookup(q string) []Reference {
 	refs := make([]Reference, 0)
 	ref := Reference{}
-	var tt tokenType
+	var tt queryTokenType
 
 	scanner := bufio.NewScanner(strings.NewReader(q))
 	scanner.Split(func(data []byte, atEOF bool) (advance int, token []byte, err error) {
@@ -183,7 +183,7 @@ func (p *refParser) lookup(q string) []Reference {
 		return start, nil, nil
 	})
 
-	var parseMode refParseMode
+	var parseMode queryParseMode
 	var inParenths bool
 	var verseRangeStart int
 
@@ -251,7 +251,7 @@ func (p *refParser) lookup(q string) []Reference {
 	return refs
 }
 
-func (p *refParser) lookupBase(q []byte) (advance int, path string) {
+func (p *queryParser) lookupBase(q []byte) (advance int, path string) {
 	qlen := len(q)
 	qstring := string(q)
 	for s, r := range p.matchString {
