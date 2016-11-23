@@ -159,6 +159,10 @@ func (b *Book) Previous() Item {
 	return genericNextPrevious(b, -1)
 }
 
+func (b *Book) Search(c <-chan Reference, ref Reference) {
+	genericSearch(b, c, ref)
+}
+
 // The SQLite database connector with some prepared statements. Cached for subsequent uses.
 func (b *Book) db() (*bookDBConnection, error) {
 	db, err := b.dbCache.get()

@@ -85,3 +85,7 @@ func (n *Node) Next() Item {
 func (n *Node) Previous() Item {
 	return genericNextPrevious(n, -1)
 }
+
+func (n *Node) Search(c <-chan Reference, ref Reference) {
+
+}

@@ -15,6 +15,7 @@ type Reference struct {
 	VersesHighlighted []int
 	VersesExtra       []int
 	Small, Content    string
+	Keywords          []string
 }
 
 func Parse(lang *Language, q string) []Reference {

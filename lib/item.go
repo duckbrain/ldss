@@ -14,5 +14,6 @@ type Item interface {
 	Parent() Item
 	Next() Item
 	Previous() Item
+	Search(<-chan Reference, Reference)
 	fmt.Stringer
 }

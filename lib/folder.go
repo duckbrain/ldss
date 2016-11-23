@@ -46,6 +46,10 @@ func (f *folderBase) Name() string {
 	return f.base.Name
 }
 
+func (f *Folder) Search(c <-chan Reference, ref Reference) {
+	genericSearch(f, c, ref)
+}
+
 // An ID that is unique to this Folder within it's language
 func (f *Folder) ID() int {
 	return f.base.ID

@@ -261,6 +261,8 @@ func (p *queryParser) lookup(q string) []Reference {
 						*v = append(*v, i)
 					}
 				}
+			} else {
+				ref.Keywords = append(ref.Keywords, text)
 			}
 		}
 	}

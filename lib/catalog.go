@@ -51,6 +51,10 @@ func (c *Catalog) Language() *Language {
 	return c.language
 }
 
+func (f *Catalog) Search(c <-chan Reference, ref Reference) {
+	genericSearch(f, c, ref)
+}
+
 // Creates a catalog object and populates it with it's Folders and Books
 func newCatalog(lang *Language) (*Catalog, error) {
 	var desc struct {
