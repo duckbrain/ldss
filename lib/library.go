@@ -82,11 +82,3 @@ func genericNextPrevious(item Item, direction int) Item {
 	}
 	panic("Item not found as child's parent.")
 }
-
-func genericSearch(i Item, c <-chan Reference, ref Reference) {
-	if children, err := i.Children(); err == nil {
-		for _, child := range children {
-			go child.Search(c, ref)
-		}
-	}
-}
