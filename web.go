@@ -85,6 +85,8 @@ func (app *web) handleError(w io.Writer, r *http.Request) {
 }
 
 func (app *web) handleSearch(w http.ResponseWriter, r *http.Request) {
+	app.initTemplates()
+
 	defer r.Body.Close()
 	lang := app.language(r)
 	query := r.URL.Query().Get("q")
@@ -120,17 +122,25 @@ func (app *web) handleSearch(w http.ResponseWriter, r *http.Request) {
 
 			}()
 		} else {
-			c := make(chan lib.SearchResult)
-			err := ref.Search(c)
+			results, err := ref.SearchSort()
 			if err != nil {
 				func() {
 					defer app.handleError(buff, r)
 					panic(err)
 				}()
 			} else {
-				//for r := range c {
-				//TODO Print results
-				//}
+				item, _ := ref.Lookup()
+				app.templates.searchResults.Execute(buff, struct {
+					Item          lib.Item
+					Keywords      []string
+					SearchString  string
+					SearchResults []lib.SearchResult
+				}{
+					Item:          item,
+					Keywords:      ref.Keywords,
+					SearchString:  strings.Join(ref.Keywords, " "),
+					SearchResults: results,
+				})
 			}
 		}
 
@@ -349,7 +359,7 @@ func (app *web) print(w io.Writer, r *http.Request, ref lib.Reference, item lib.
 }
 
 type webtemplates struct {
-	nodeChildren, nodeContent, layout, err *template.Template
+	nodeChildren, nodeContent, searchResults, layout, err *template.Template
 }
 
 func (app *web) initTemplates() {
@@ -357,6 +367,7 @@ func (app *web) initTemplates() {
 	app.templates.layout = app.loadTemplate("layout.tpl")
 	app.templates.nodeContent = app.loadTemplate("node-content.tpl")
 	app.templates.nodeChildren = app.loadTemplate("node-children.tpl")
+	app.templates.searchResults = app.loadTemplate("search-results.tpl")
 	app.templates.err = app.loadTemplate("403.tpl")
 }
 

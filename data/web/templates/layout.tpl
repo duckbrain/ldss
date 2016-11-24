@@ -32,16 +32,14 @@
 	<form class="lookup lookup-form" action="/search" method="GET">
 		<input type="text" name="q" value="{{ .Query }}">
 	</form>
-	{{ if .Item }}
 	<div class="navButtons">
-		<a class="button" id="previous" {{template "ItemHref" .Item.Previous}}>
+		<a class="button" id="previous" {{if .Item}}{{template "ItemHref" .Item.Previous}}{{end}}>
 			<img src="/svg/chevron-left.svg" alt="Previous">
 		</a>
-		<a class="button" id="next" {{template "ItemHref" .Item.Next}}>
+		<a class="button" id="next" {{if .Item}}{{template "ItemHref" .Item.Next}}{{end}}>
 			<img src="/svg/chevron-right.svg" alt="Next">
 		</a>
 	</div>
-	{{ end }}
 	
 </header>
 
