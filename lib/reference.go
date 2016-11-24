@@ -131,14 +131,15 @@ func stringifyVerses(verses []int) string {
 		if previousVerse == 0 {
 			p = fmt.Sprintf("%v.%v", p, verse)
 			spanStart = verse
-			previousVerse = verse
 		} else if previousVerse == verse-1 {
-			previousVerse = verse
-		} else {
+		} else if previousVerse != spanStart {
 			p = fmt.Sprintf("%v-%v,%v", p, previousVerse, verse)
 			spanStart = verse
-			previousVerse = verse
+		} else {
+			p = fmt.Sprintf("%v,%v", p, verse)
+			spanStart = verse
 		}
+		previousVerse = verse
 	}
 	if verse != spanStart {
 		p = fmt.Sprintf("%v-%v", p, verse)
@@ -154,6 +155,7 @@ func cleanVerses(a []int) []int {
 		v := a[i]
 		if v <= l {
 			a = append(a[:i], a[i+1:]...)
+			i--
 		}
 		l = v
 	}
