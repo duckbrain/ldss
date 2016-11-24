@@ -15,6 +15,7 @@ type Reference struct {
 	VersesHighlighted []int
 	VersesExtra       []int
 	Small, Content    string
+	Keywords          []string
 }
 
 func Parse(lang *Language, q string) []Reference {
@@ -89,7 +90,12 @@ func (r *Reference) Clean() {
 
 func (r Reference) URL() string {
 	p := r.Path
-	p = fmt.Sprintf("%v%v%v", p, stringifyVerses(r.VersesHighlighted), stringifyVerses(r.VersesExtra))
+	if r.VersesHighlighted != nil {
+		p = fmt.Sprintf("%v.%v", p, stringifyVerses(r.VersesHighlighted))
+	}
+	if r.VersesExtra != nil {
+		p = fmt.Sprintf("%v.%v", p, stringifyVerses(r.VersesExtra))
+	}
 	if r.Language != nil {
 		p = fmt.Sprintf("%v?lang=%v", p, r.Language.GlCode)
 	}
@@ -97,6 +103,20 @@ func (r Reference) URL() string {
 		p = fmt.Sprintf("%v#%v", p, r.VerseSelected)
 	}
 	return p
+}
+
+func (r Reference) String() string {
+	s := r.Path
+	if item, err := r.Lookup(); err == nil {
+		s = item.Name()
+	}
+	if r.VersesHighlighted != nil {
+		s = fmt.Sprintf("%v:%v", s, stringifyVerses(r.VersesHighlighted))
+	}
+	if r.VersesExtra != nil {
+		s = fmt.Sprintf("%v (%v)", s, stringifyVerses(r.VersesHighlighted))
+	}
+	return s
 }
 
 func parseVerses(s string) []int {
@@ -128,16 +148,17 @@ func stringifyVerses(verses []int) string {
 	var previousVerse, spanStart, verse int
 	for _, verse = range verses {
 		if previousVerse == 0 {
-			p = fmt.Sprintf("%v.%v", p, verse)
+			p = fmt.Sprintf("%v", verse)
 			spanStart = verse
-			previousVerse = verse
 		} else if previousVerse == verse-1 {
-			previousVerse = verse
-		} else {
+		} else if previousVerse != spanStart {
 			p = fmt.Sprintf("%v-%v,%v", p, previousVerse, verse)
 			spanStart = verse
-			previousVerse = verse
+		} else {
+			p = fmt.Sprintf("%v,%v", p, verse)
+			spanStart = verse
 		}
+		previousVerse = verse
 	}
 	if verse != spanStart {
 		p = fmt.Sprintf("%v-%v", p, verse)
@@ -153,6 +174,7 @@ func cleanVerses(a []int) []int {
 		v := a[i]
 		if v <= l {
 			a = append(a[:i], a[i+1:]...)
+			i--
 		}
 		l = v
 	}

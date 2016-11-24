@@ -20,6 +20,16 @@ type web struct {
 	templates *webtemplates
 }
 
+type webLayout struct {
+	Title       string
+	Content     template.HTML
+	Footnotes   []lib.Footnote
+	Lang        *lib.Language
+	Item        lib.Item
+	Breadcrumbs []lib.Item
+	Query       string
+}
+
 func init() {
 	apps["web"] = &web{}
 }
@@ -43,7 +53,7 @@ func (app web) register(config *Configuration) {
 func (app web) run() {
 	http.HandleFunc("/", app.handler)
 	http.HandleFunc("/api/", app.handleJSON)
-	http.HandleFunc("/lookup", app.handleLookup)
+	http.HandleFunc("/search", app.handleSearch)
 	http.HandleFunc("/favicon.ico", app.handleStatic)
 	http.HandleFunc("/css", app.handleStatic)
 
@@ -61,7 +71,7 @@ func (app *web) language(r *http.Request) *lib.Language {
 	return lang
 }
 
-func (app *web) handleError(w http.ResponseWriter, r *http.Request) {
+func (app *web) handleError(w io.Writer, r *http.Request) {
 	if rec := recover(); rec != nil {
 		var err error
 		switch rec.(type) {
@@ -74,13 +84,71 @@ func (app *web) handleError(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func (app *web) handleLookup(w http.ResponseWriter, r *http.Request) {
+func (app *web) handleSearch(w http.ResponseWriter, r *http.Request) {
+	app.initTemplates()
+
 	defer r.Body.Close()
-	refs := lib.Parse(app.language(r), r.URL.Query().Get("q"))
-	if len(refs) != 1 {
-		panic(fmt.Errorf("Web lookup cannot handle multiple refs"))
+	lang := app.language(r)
+	query := r.URL.Query().Get("q")
+	refs := lib.Parse(lang, query)
+	if len(refs) == 1 && len(refs[0].Keywords) == 0 {
+		http.Redirect(w, r, refs[0].URL(), http.StatusFound)
+		return
 	}
-	http.Redirect(w, r, refs[0].URL(), http.StatusFound)
+
+	layout := webLayout{
+		Title: "LDS Scriptures",
+		Lang:  lang,
+		Query: query,
+	}
+	buff := new(bytes.Buffer)
+	for _, ref := range refs {
+
+		if len(ref.Keywords) == 0 {
+			func() {
+				defer app.handleError(buff, r)
+				item, err := ref.Lookup()
+				if err != nil {
+					panic(err)
+				}
+				app.print(buff, r, ref, item, true)
+
+				if node, ok := item.(*lib.Node); ok {
+					footnotes, err := node.Footnotes(ref.VersesHighlighted)
+					if err == nil {
+						layout.Footnotes = append(layout.Footnotes, footnotes...)
+					}
+				}
+
+			}()
+		} else {
+			results, err := ref.SearchSort()
+			if err != nil {
+				func() {
+					defer app.handleError(buff, r)
+					panic(err)
+				}()
+			} else {
+				item, _ := ref.Lookup()
+				app.templates.searchResults.Execute(buff, struct {
+					Item          lib.Item
+					Keywords      []string
+					SearchString  string
+					SearchResults []lib.SearchResult
+				}{
+					Item:          item,
+					Keywords:      ref.Keywords,
+					SearchString:  strings.Join(ref.Keywords, " "),
+					SearchResults: results,
+				})
+			}
+		}
+
+		//results = append(results, template.HTML(buff.String()))
+	}
+	layout.Content = template.HTML(buff.String())
+
+	app.templates.layout.Execute(w, layout)
 }
 
 func (app *web) handleStatic(w http.ResponseWriter, r *http.Request) {
@@ -145,7 +213,8 @@ func (app *web) handleJSON(w http.ResponseWriter, r *http.Request) {
 
 	lang := app.language(r)
 	path := r.URL.Path[len("/api"):]
-	item, err := lib.ParsePath(lang, path).Lookup()
+	ref := lib.ParsePath(lang, path)
+	item, err := ref.Lookup()
 	if err != nil {
 		panic(err)
 	}
@@ -169,21 +238,7 @@ func (app *web) handleJSON(w http.ResponseWriter, r *http.Request) {
 	case *lib.Node:
 		data["type"] = "node"
 		data["content"], _ = item.Content()
-		data["footnotes"], _ = item.Footnotes()
-		fns := make([]interface{}, 0)
-		if footnotes, err := item.Footnotes(); err == nil {
-			for _, fn := range footnotes {
-				fns = append(fns, struct {
-					Name, LinkName string
-					Refs           []lib.Reference
-				}{
-					Name:     fn.Name,
-					LinkName: fn.LinkName,
-					Refs:     fn.References(),
-				})
-			}
-		}
-		data["footnotes_debug"] = fns
+		data["footnotes"], _ = item.Footnotes(ref.VersesHighlighted)
 	}
 
 	if childItems, err := item.Children(); err == nil {
@@ -222,10 +277,12 @@ func (app *web) handler(w http.ResponseWriter, r *http.Request) {
 
 	lang := app.language(r)
 	buff := new(bytes.Buffer)
+
 	//TODO Remove for production
 	app.initTemplates()
 
-	item, err := lib.ParsePath(lang, r.URL.Path).Lookup()
+	ref := lib.ParsePath(lang, r.URL.Path)
+	item, err := ref.Lookup()
 	if err != nil {
 		panic(err)
 	}
@@ -235,16 +292,9 @@ func (app *web) handler(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 	}
-	app.print(buff, r, item)
+	app.print(buff, r, ref, item, false)
 
-	layout := struct {
-		Title       string
-		Content     template.HTML
-		Footnotes   []lib.Footnote
-		Lang        *lib.Language
-		Item        lib.Item
-		Breadcrumbs []lib.Item
-	}{
+	layout := webLayout{
 		Title:       "LDS Scriptures",
 		Content:     template.HTML(buff.String()),
 		Lang:        lang,
@@ -254,7 +304,7 @@ func (app *web) handler(w http.ResponseWriter, r *http.Request) {
 
 	// Get the footnote content
 	if n, ok := item.(*lib.Node); ok {
-		layout.Footnotes, err = n.Footnotes()
+		layout.Footnotes, err = n.Footnotes(ref.VersesHighlighted)
 		if err != nil {
 			panic(err)
 		}
@@ -268,7 +318,7 @@ func (app *web) handler(w http.ResponseWriter, r *http.Request) {
 	app.templates.layout.Execute(w, layout)
 }
 
-func (app *web) print(w io.Writer, r *http.Request, item lib.Item) {
+func (app *web) print(w io.Writer, r *http.Request, ref lib.Reference, item lib.Item, filter bool) {
 	var err error
 	data := struct {
 		Item     lib.Item
@@ -288,8 +338,13 @@ func (app *web) print(w io.Writer, r *http.Request, item lib.Item) {
 	switch item.(type) {
 	case *lib.Node:
 		if content, err := item.(*lib.Node).Content(); err == nil {
-			data.Content = template.HTML(content)
-			data.HasTitle = strings.Contains(string(content), "</h1>")
+			if filter {
+				data.Content = template.HTML(content.Filter(ref.VersesHighlighted))
+				data.HasTitle = false
+			} else {
+				data.Content = template.HTML(content)
+				data.HasTitle = strings.Contains(string(content), "</h1>")
+			}
 			err = app.templates.nodeContent.Execute(w, data)
 		} else {
 			err = app.templates.nodeChildren.Execute(w, data)
@@ -304,7 +359,7 @@ func (app *web) print(w io.Writer, r *http.Request, item lib.Item) {
 }
 
 type webtemplates struct {
-	nodeChildren, nodeContent, layout, err *template.Template
+	nodeChildren, nodeContent, searchResults, layout, err *template.Template
 }
 
 func (app *web) initTemplates() {
@@ -312,6 +367,7 @@ func (app *web) initTemplates() {
 	app.templates.layout = app.loadTemplate("layout.tpl")
 	app.templates.nodeContent = app.loadTemplate("node-content.tpl")
 	app.templates.nodeChildren = app.loadTemplate("node-children.tpl")
+	app.templates.searchResults = app.loadTemplate("search-results.tpl")
 	app.templates.err = app.loadTemplate("403.tpl")
 }
 

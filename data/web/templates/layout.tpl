@@ -29,14 +29,14 @@
 		</a>
 	{{ end }}
 	</div>
-	<form class="lookup lookup-form" action="/lookup" method="GET">
-		<input type="text" name="q">
+	<form class="lookup lookup-form" action="/search" method="GET">
+		<input type="text" name="q" value="{{ .Query }}">
 	</form>
 	<div class="navButtons">
-		<a class="button" id="previous" {{template "ItemHref" .Item.Previous}}>
+		<a class="button" id="previous" {{if .Item}}{{template "ItemHref" .Item.Previous}}{{else}}disabled{{end}}>
 			<img src="/svg/chevron-left.svg" alt="Previous">
 		</a>
-		<a class="button" id="next" {{template "ItemHref" .Item.Next}}>
+		<a class="button" id="next" {{if .Item}}{{template "ItemHref" .Item.Next}}{{else}}disabled{{end}}>
 			<img src="/svg/chevron-right.svg" alt="Next">
 		</a>
 	</div>
