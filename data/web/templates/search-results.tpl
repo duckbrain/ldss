@@ -6,7 +6,7 @@
 {{- range $key, $child := .SearchResults }}
 	<li>
 		{{ $child.Weight }}
-		<a href="{{ $child.URL }}">{{ $child.URL }}</a>
+		<a href="{{ $child.URL }}">{{ $child }}</a>
 	</li>
 {{- end }}
 </ul>

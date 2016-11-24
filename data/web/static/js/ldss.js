@@ -12,21 +12,25 @@ var state = { item: null };
 function interceptClickEvent(e) {
     var href;
     var target = e.target || e.srcElement;
-    if (target.tagName === 'A' && !target.attributes.getNamedItem('disabled')) {
+    if (target.tagName !== 'A' || 
+		target.attributes.getNamedItem('disabled') ||
+		e.ctrlKey || e.button !== 0){
+			return;
+	}
+	
+	href = target.getAttribute('href');
+	if (href.indexOf('f_') == 0) {
 		e.preventDefault();
-		
-		href = target.getAttribute('href');
-		if (href.indexOf('f_') == 0) {
-			setFootnotesOpen(true);
-			console.log("Footnote: " + href.substring(2));
-		} else {
-	        loadItem(target.pathname)
-	        .then(function(item) {
-				setFootnotesOpen(false);
-				history.pushState(state, '', item.path);
-			});
-		}
-    }
+		setFootnotesOpen(true);
+		console.log("Footnote: " + href.substring(2));
+	} else {
+		return;
+        loadItem(target.pathname)
+        .then(function(item) {
+			setFootnotesOpen(false);
+			history.pushState(state, '', item.path);
+		});
+	}
 }
 
 function onStateChange(e) {
@@ -129,7 +133,6 @@ function setItem(item) {
 	state.item = item;
 	return item;
 }
-
 
 document.addEventListener('click', interceptClickEvent);
 window.addEventListener('popstate', onStateChange);

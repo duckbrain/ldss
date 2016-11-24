@@ -74,6 +74,7 @@ func (r Reference) searchItem(item Item, c chan<- SearchResult, waitGroup *sync.
 				if result.Weight > 0 {
 					result.Language = node.Language()
 					result.Path = node.Path()
+					result.Clean()
 					c <- result
 				}
 			}
