@@ -93,16 +93,31 @@ func (app *web) handleSearch(w http.ResponseWriter, r *http.Request) {
 		http.Redirect(w, r, refs[0].URL(), http.StatusFound)
 		return
 	}
-	fmt.Println(refs)
-	// TODO Create an interface for the 3 potential contents
-	//results := []template.HTML{}
+
+	layout := webLayout{
+		Title: "LDS Scriptures",
+		Lang:  lang,
+		Query: query,
+	}
 	buff := new(bytes.Buffer)
 	for _, ref := range refs {
 
 		if len(ref.Keywords) == 0 {
 			func() {
 				defer app.handleError(buff, r)
-				app.print(buff, r, ref, true)
+				item, err := ref.Lookup()
+				if err != nil {
+					panic(err)
+				}
+				app.print(buff, r, ref, item, true)
+
+				if node, ok := item.(*lib.Node); ok {
+					footnotes, err := node.Footnotes(ref.VersesHighlighted)
+					if err == nil {
+						layout.Footnotes = append(layout.Footnotes, footnotes...)
+					}
+				}
+
 			}()
 		} else {
 			c := make(chan lib.SearchResult)
@@ -121,13 +136,7 @@ func (app *web) handleSearch(w http.ResponseWriter, r *http.Request) {
 
 		//results = append(results, template.HTML(buff.String()))
 	}
-	//TODO Output the search results
-	layout := webLayout{
-		Title:   "LDS Scriptures",
-		Content: template.HTML(buff.String()),
-		Lang:    lang,
-		Query:   query,
-	}
+	layout.Content = template.HTML(buff.String())
 
 	app.templates.layout.Execute(w, layout)
 }
@@ -194,7 +203,8 @@ func (app *web) handleJSON(w http.ResponseWriter, r *http.Request) {
 
 	lang := app.language(r)
 	path := r.URL.Path[len("/api"):]
-	item, err := lib.ParsePath(lang, path).Lookup()
+	ref := lib.ParsePath(lang, path)
+	item, err := ref.Lookup()
 	if err != nil {
 		panic(err)
 	}
@@ -218,21 +228,7 @@ func (app *web) handleJSON(w http.ResponseWriter, r *http.Request) {
 	case *lib.Node:
 		data["type"] = "node"
 		data["content"], _ = item.Content()
-		data["footnotes"], _ = item.Footnotes()
-		fns := make([]interface{}, 0)
-		if footnotes, err := item.Footnotes(); err == nil {
-			for _, fn := range footnotes {
-				fns = append(fns, struct {
-					Name, LinkName string
-					Refs           []lib.Reference
-				}{
-					Name:     fn.Name,
-					LinkName: fn.LinkName,
-					Refs:     fn.References(),
-				})
-			}
-		}
-		data["footnotes_debug"] = fns
+		data["footnotes"], _ = item.Footnotes(ref.VersesHighlighted)
 	}
 
 	if childItems, err := item.Children(); err == nil {
@@ -286,7 +282,7 @@ func (app *web) handler(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 	}
-	app.print(buff, r, ref, false)
+	app.print(buff, r, ref, item, false)
 
 	layout := webLayout{
 		Title:       "LDS Scriptures",
@@ -298,7 +294,7 @@ func (app *web) handler(w http.ResponseWriter, r *http.Request) {
 
 	// Get the footnote content
 	if n, ok := item.(*lib.Node); ok {
-		layout.Footnotes, err = n.Footnotes()
+		layout.Footnotes, err = n.Footnotes(ref.VersesHighlighted)
 		if err != nil {
 			panic(err)
 		}
@@ -312,11 +308,8 @@ func (app *web) handler(w http.ResponseWriter, r *http.Request) {
 	app.templates.layout.Execute(w, layout)
 }
 
-func (app *web) print(w io.Writer, r *http.Request, ref lib.Reference, filter bool) {
-	item, err := ref.Lookup()
-	if err != nil {
-		panic(err)
-	}
+func (app *web) print(w io.Writer, r *http.Request, ref lib.Reference, item lib.Item, filter bool) {
+	var err error
 	data := struct {
 		Item     lib.Item
 		Content  template.HTML

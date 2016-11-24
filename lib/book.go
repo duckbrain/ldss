@@ -5,6 +5,10 @@ import (
 	"fmt"
 	"html/template"
 	"os"
+	"sort"
+	"strconv"
+	"unicode"
+	"unicode/utf8"
 
 	_ "github.com/mattn/go-sqlite3"
 )
@@ -234,7 +238,7 @@ func (b *Book) nodeContent(node *Node) (string, error) {
 	return content, err
 }
 
-func (b *Book) nodeFootnotes(node *Node) ([]Footnote, error) {
+func (b *Book) nodeFootnotes(node *Node, verses []int) ([]Footnote, error) {
 	l, err := b.db()
 	if err != nil {
 		return nil, err
@@ -256,7 +260,19 @@ func (b *Book) nodeFootnotes(node *Node) ([]Footnote, error) {
 		if err != nil {
 			return nil, err
 		}
-		refs = append(refs, ref)
+		if len(verses) > 0 {
+			verseNumString := ref.Name
+			if char, length := utf8.DecodeLastRuneInString(verseNumString); unicode.IsDigit(char) {
+				verseNumString = verseNumString[:len(verseNumString)-length-1]
+			}
+			if verseNum, err := strconv.Atoi(verseNumString); err != nil {
+				if sort.SearchInts(verses, verseNum) > -1 {
+					refs = append(refs, ref)
+				}
+			}
+		} else {
+			refs = append(refs, ref)
+		}
 	}
 	return refs, nil
 }
