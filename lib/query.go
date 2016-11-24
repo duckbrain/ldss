@@ -132,6 +132,7 @@ func newQueryParser(lang *Language, file []byte) *queryParser {
 }
 
 func (p *queryParser) lookup(q string) []Reference {
+	q = strings.ToLower(q)
 	refs := make([]Reference, 0)
 	ref := Reference{Language: p.lang}
 	var tt queryTokenType
@@ -200,7 +201,7 @@ func (p *queryParser) lookup(q string) []Reference {
 
 		ref = Reference{
 			Language: p.lang,
-			Path: path,
+			Path:     path,
 		}
 		verseRangeStart = 0
 		chapter = 0
@@ -229,8 +230,10 @@ func (p *queryParser) lookup(q string) []Reference {
 		case tokenRef:
 			if i := strings.LastIndex(ref.Path, "#"); i != -1 {
 				ref.Path = string(ref.Path[:i])
+				parseMode = parseModeChapter
+			} else {
+				parseMode = parseModeVerse
 			}
-			parseMode = parseModeChapter
 		case tokenWord:
 			if num, err := strconv.Atoi(text); err == nil {
 				switch parseMode {

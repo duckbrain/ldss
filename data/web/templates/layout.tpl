@@ -29,9 +29,10 @@
 		</a>
 	{{ end }}
 	</div>
-	<form class="lookup lookup-form" action="/lookup" method="GET">
-		<input type="text" name="q">
+	<form class="lookup lookup-form" action="/search" method="GET">
+		<input type="text" name="q" value="{{ .Query }}">
 	</form>
+	{{ if .Item }}
 	<div class="navButtons">
 		<a class="button" id="previous" {{template "ItemHref" .Item.Previous}}>
 			<img src="/svg/chevron-left.svg" alt="Previous">
@@ -40,6 +41,7 @@
 			<img src="/svg/chevron-right.svg" alt="Next">
 		</a>
 	</div>
+	{{ end }}
 	
 </header>
 

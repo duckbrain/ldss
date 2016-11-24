@@ -20,6 +20,16 @@ type web struct {
 	templates *webtemplates
 }
 
+type webLayout struct {
+	Title       string
+	Content     template.HTML
+	Footnotes   []lib.Footnote
+	Lang        *lib.Language
+	Item        lib.Item
+	Breadcrumbs []lib.Item
+	Query       string
+}
+
 func init() {
 	apps["web"] = &web{}
 }
@@ -43,7 +53,7 @@ func (app web) register(config *Configuration) {
 func (app web) run() {
 	http.HandleFunc("/", app.handler)
 	http.HandleFunc("/api/", app.handleJSON)
-	http.HandleFunc("/lookup", app.handleLookup)
+	http.HandleFunc("/search", app.handleSearch)
 	http.HandleFunc("/favicon.ico", app.handleStatic)
 	http.HandleFunc("/css", app.handleStatic)
 
@@ -61,7 +71,7 @@ func (app *web) language(r *http.Request) *lib.Language {
 	return lang
 }
 
-func (app *web) handleError(w http.ResponseWriter, r *http.Request) {
+func (app *web) handleError(w io.Writer, r *http.Request) {
 	if rec := recover(); rec != nil {
 		var err error
 		switch rec.(type) {
@@ -74,13 +84,52 @@ func (app *web) handleError(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func (app *web) handleLookup(w http.ResponseWriter, r *http.Request) {
+func (app *web) handleSearch(w http.ResponseWriter, r *http.Request) {
 	defer r.Body.Close()
-	refs := lib.Parse(app.language(r), r.URL.Query().Get("q"))
-	if len(refs) != 1 {
-		panic(fmt.Errorf("Web lookup cannot handle multiple refs"))
+	lang := app.language(r)
+	query := r.URL.Query().Get("q")
+	refs := lib.Parse(lang, query)
+	if len(refs) == 1 && len(refs[0].Keywords) == 0 {
+		http.Redirect(w, r, refs[0].URL(), http.StatusFound)
+		return
 	}
-	http.Redirect(w, r, refs[0].URL(), http.StatusFound)
+	fmt.Println(refs)
+	// TODO Create an interface for the 3 potential contents
+	//results := []template.HTML{}
+	buff := new(bytes.Buffer)
+	for _, ref := range refs {
+
+		if len(ref.Keywords) == 0 {
+			func() {
+				defer app.handleError(buff, r)
+				app.print(buff, r, ref, true)
+			}()
+		} else {
+			c := make(chan lib.SearchResult)
+			err := ref.Search(c)
+			if err != nil {
+				func() {
+					defer app.handleError(buff, r)
+					panic(err)
+				}()
+			} else {
+				//for r := range c {
+				//TODO Print results
+				//}
+			}
+		}
+
+		//results = append(results, template.HTML(buff.String()))
+	}
+	//TODO Output the search results
+	layout := webLayout{
+		Title:   "LDS Scriptures",
+		Content: template.HTML(buff.String()),
+		Lang:    lang,
+		Query:   query,
+	}
+
+	app.templates.layout.Execute(w, layout)
 }
 
 func (app *web) handleStatic(w http.ResponseWriter, r *http.Request) {
@@ -222,10 +271,12 @@ func (app *web) handler(w http.ResponseWriter, r *http.Request) {
 
 	lang := app.language(r)
 	buff := new(bytes.Buffer)
+
 	//TODO Remove for production
 	app.initTemplates()
 
-	item, err := lib.ParsePath(lang, r.URL.Path).Lookup()
+	ref := lib.ParsePath(lang, r.URL.Path)
+	item, err := ref.Lookup()
 	if err != nil {
 		panic(err)
 	}
@@ -235,16 +286,9 @@ func (app *web) handler(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 	}
-	app.print(buff, r, item)
+	app.print(buff, r, ref, false)
 
-	layout := struct {
-		Title       string
-		Content     template.HTML
-		Footnotes   []lib.Footnote
-		Lang        *lib.Language
-		Item        lib.Item
-		Breadcrumbs []lib.Item
-	}{
+	layout := webLayout{
 		Title:       "LDS Scriptures",
 		Content:     template.HTML(buff.String()),
 		Lang:        lang,
@@ -268,8 +312,11 @@ func (app *web) handler(w http.ResponseWriter, r *http.Request) {
 	app.templates.layout.Execute(w, layout)
 }
 
-func (app *web) print(w io.Writer, r *http.Request, item lib.Item) {
-	var err error
+func (app *web) print(w io.Writer, r *http.Request, ref lib.Reference, filter bool) {
+	item, err := ref.Lookup()
+	if err != nil {
+		panic(err)
+	}
 	data := struct {
 		Item     lib.Item
 		Content  template.HTML
@@ -288,8 +335,13 @@ func (app *web) print(w io.Writer, r *http.Request, item lib.Item) {
 	switch item.(type) {
 	case *lib.Node:
 		if content, err := item.(*lib.Node).Content(); err == nil {
-			data.Content = template.HTML(content)
-			data.HasTitle = strings.Contains(string(content), "</h1>")
+			if filter {
+				data.Content = template.HTML(content.Filter(ref.VersesHighlighted))
+				data.HasTitle = false
+			} else {
+				data.Content = template.HTML(content)
+				data.HasTitle = strings.Contains(string(content), "</h1>")
+			}
 			err = app.templates.nodeContent.Execute(w, data)
 		} else {
 			err = app.templates.nodeChildren.Execute(w, data)

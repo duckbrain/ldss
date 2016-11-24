@@ -238,6 +238,7 @@
 // data/web/templates/layout.tpl
 // data/web/templates/node-children.tpl
 // data/web/templates/node-content.tpl
+// data/web/templates/search-results.tpl
 // DO NOT EDIT!
 
 // +build !release
@@ -4550,6 +4551,24 @@ func dataWebTemplatesNodeContentTpl() (*asset, error) {
 	return a, err
 }
 
+// dataWebTemplatesSearchResultsTpl reads file data from disk. It returns an error on failure.
+func dataWebTemplatesSearchResultsTpl() (*asset, error) {
+	path := "/home/jonathan/workspace/golang/src/ldss/data/web/templates/search-results.tpl"
+	name := "data/web/templates/search-results.tpl"
+	bytes, err := bindataRead(path, name)
+	if err != nil {
+		return nil, err
+	}
+
+	fi, err := os.Stat(path)
+	if err != nil {
+		err = fmt.Errorf("Error reading asset info %s at %s: %v", name, path, err)
+	}
+
+	a := &asset{bytes: bytes, info: fi}
+	return a, err
+}
+
 // Asset loads and returns the asset for the given name.
 // It returns an error if the asset could not be found or
 // could not be loaded.
@@ -4840,6 +4859,7 @@ var _bindata = map[string]func() (*asset, error){
 	"data/web/templates/layout.tpl":                    dataWebTemplatesLayoutTpl,
 	"data/web/templates/node-children.tpl":             dataWebTemplatesNodeChildrenTpl,
 	"data/web/templates/node-content.tpl":              dataWebTemplatesNodeContentTpl,
+	"data/web/templates/search-results.tpl":            dataWebTemplatesSearchResultsTpl,
 }
 
 // AssetDir returns the file names below a certain
@@ -5132,10 +5152,11 @@ var _bintree = &bintree{nil, map[string]*bintree{
 				}},
 			}},
 			"templates": &bintree{nil, map[string]*bintree{
-				"403.tpl":           &bintree{dataWebTemplates403Tpl, map[string]*bintree{}},
-				"layout.tpl":        &bintree{dataWebTemplatesLayoutTpl, map[string]*bintree{}},
-				"node-children.tpl": &bintree{dataWebTemplatesNodeChildrenTpl, map[string]*bintree{}},
-				"node-content.tpl":  &bintree{dataWebTemplatesNodeContentTpl, map[string]*bintree{}},
+				"403.tpl":            &bintree{dataWebTemplates403Tpl, map[string]*bintree{}},
+				"layout.tpl":         &bintree{dataWebTemplatesLayoutTpl, map[string]*bintree{}},
+				"node-children.tpl":  &bintree{dataWebTemplatesNodeChildrenTpl, map[string]*bintree{}},
+				"node-content.tpl":   &bintree{dataWebTemplatesNodeContentTpl, map[string]*bintree{}},
+				"search-results.tpl": &bintree{dataWebTemplatesSearchResultsTpl, map[string]*bintree{}},
 			}},
 		}},
 	}},
