@@ -52,19 +52,8 @@ func (app *cmd) run() {
 
 		if node, ok := item.(*lib.Node); ok {
 			if content, err := node.Content(); err == nil {
-				c := colors(true)
-				page := content.Page()
-				c.title.Printf("   %v   \n", page.Title)
-				if len(page.Subtitle) > 0 {
-					c.subtitle.Println(page.Subtitle)
-				}
-				if len(page.Summary) > 0 {
-					c.summary.Println(page.Summary)
-				}
-				for _, verse := range page.Verses {
-					c.verse.Printf("%v ", verse.Number)
-					c.content.Println(verse.Text)
-				}
+				_ = content
+				panic(fmt.Errorf("Content printing is broken"))
 				break
 			}
 		}
@@ -73,7 +62,6 @@ func (app *cmd) run() {
 		if err != nil {
 			panic(err)
 		}
-
 		fmt.Println(item)
 		for _, child := range children {
 			fmt.Printf("- %v\n", child)

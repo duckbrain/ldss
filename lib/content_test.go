@@ -19,8 +19,59 @@ func testSearchResult(t *testing.T, p, r SearchResult) {
 	}
 }
 
-func TestContentPage(t *testing.T) {
-	//TODO: Test Content.Page() for correctness
+func TestContentParse(t *testing.T) {
+	t.Log("Parsing content")
+	c := Content(testContent)
+	c = c.Filter([]int{0, 1})
+	z := c.Parse()
+
+	testParagraph := func(style ParagraphStyle, verse int) {
+		if !z.NextParagraph() {
+			t.Error("    Parse ended too quickly")
+		}
+		if z.ParagraphStyle() != style {
+			t.Error("    Wrong paragraph style")
+		}
+		if z.ParagraphVerse() != verse {
+			t.Error("    Incorrectly assigned verse")
+		}
+	}
+	testText := func(style TextStyle, text string) {
+		if !z.NextText() {
+			t.Error("    Paragraph ended too quickly")
+		}
+		if z.TextStyle() != style {
+			t.Error("    Wrong text style")
+		}
+		if z.Text() != text {
+			t.Error("    Wrong text content")
+		}
+	}
+	testTextEnd := func() {
+		if z.NextText() {
+			t.Error("    Paragraph extended too far")
+		}
+	}
+
+	testParagraph(ParagraphStyleTitle, 0)
+	testText(TextStyleNormal, "The Gospel According to ")
+	testText(TextStyleLink, "St Mark")
+	testTextEnd()
+	testParagraph(ParagraphStyleChapter, 0)
+	testText(TextStyleNormal, "Chapter 1")
+	testTextEnd()
+	testParagraph(ParagraphStyleSummary, 0)
+	testText(TextStyleNormal, "Jesus is baptized by John—He preaches the gospel, calls disciples, casts out devils, heals the sick, and cleanses a leper.")
+	testTextEnd()
+	testParagraph(ParagraphStyleNormal, 1)
+	testText(TextStyleNormal, "The beginning of the ")
+	testText(TextStyleFootnote, "a")
+	testText(TextStyleLink, "gospel")
+	testText(TextStyleNormal, " of Jesus Christ, the Son of God;")
+	testTextEnd()
+	if z.NextParagraph() {
+		t.Error("    Parse extended too far")
+	}
 }
 
 func TestContentSearch(t *testing.T) {

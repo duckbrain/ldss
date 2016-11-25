@@ -12,25 +12,61 @@ import (
 // Content pulled from a node in the SQlite database. Is the content of the node
 // formatted as HTML
 type Content string
+type ContentParser struct {
+	content Content
+	z       *html.Tokenizer
 
-type contentParseMode int
+	// Paragraph info
+	paragraphStyle ParagraphStyle
+	verse          int
+
+	// Text info
+	textStyle TextStyle
+}
+type ParagraphStyle int
+type TextStyle int
 
 const (
-	parseTitleMode contentParseMode = iota
-	parseSubtitleMode
-	parseSummaryMode
-	parseVerseMode
+	ParagraphStyleNormal ParagraphStyle = iota
+	ParagraphStyleTitle
+	ParagraphStyleChapter
+	ParagraphStyleSummary
 )
 
-// A page parsed from a node's Content
-type Page struct {
-	Title, Subtitle, Summary string
-	Verses                   []struct {
-		Number int
-		Text   string
-	}
+const (
+	TextStyleNormal TextStyle = iota
+	TextStyleLink
+	TextStyleFootnote
+)
+
+func (c Content) Parse() *ContentParser {
+	return &ContentParser{content: c}
 }
 
+func (c *ContentParser) NextParagraph() bool {
+	if c.z == nil {
+		c.z = html.NewTokenizerFragment(strings.NewReader(string(c.content)), "div")
+	}
+	return false
+}
+func (c *ContentParser) ParagraphStyle() ParagraphStyle {
+	return c.paragraphStyle
+}
+func (c *ContentParser) ParagraphVerse() int {
+	return c.verse
+}
+
+func (c *ContentParser) NextText() bool {
+	return false
+}
+func (c *ContentParser) TextStyle() TextStyle {
+	return c.textStyle
+}
+func (c *ContentParser) Text() string {
+	return ""
+}
+
+/*
 // Parse the content for a page. The page contains an structured representation
 // of the content that can be displayed programattically in a variety of ways.
 func (c Content) Page() *Page {
@@ -97,6 +133,7 @@ func (c Content) Page() *Page {
 	}
 	return page
 }
+*/
 
 func (content Content) Filter(verses []int) Content {
 	if len(verses) == 0 {
