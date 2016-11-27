@@ -321,14 +321,17 @@ func (app *web) handler(w http.ResponseWriter, r *http.Request) {
 func (app *web) print(w io.Writer, r *http.Request, ref lib.Reference, item lib.Item, filter bool) {
 	var err error
 	data := struct {
-		Item     lib.Item
-		Content  template.HTML
-		Children []lib.Item
-		LangCode string
-		HasTitle bool
+		Item      lib.Item
+		Reference lib.Reference
+		Content   template.HTML
+		Children  []lib.Item
+		LangCode  string
+		HasTitle  bool
+		Filtered  bool
 	}{
-		Item:     item,
-		LangCode: item.Language().GlCode,
+		Item:      item,
+		Reference: ref,
+		LangCode:  item.Language().GlCode,
 	}
 	data.Children, err = item.Children()
 	if err != nil {
@@ -341,6 +344,7 @@ func (app *web) print(w io.Writer, r *http.Request, ref lib.Reference, item lib.
 			if filter {
 				data.Content = template.HTML(content.Filter(ref.VersesHighlighted))
 				data.HasTitle = false
+				data.Filtered = true
 			} else {
 				data.Content = template.HTML(content)
 				data.HasTitle = strings.Contains(string(content), "</h1>")
