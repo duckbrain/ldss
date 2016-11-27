@@ -2,7 +2,9 @@ package lib
 
 import (
 	"bytes"
+	"log"
 	"math"
+	"sort"
 	"strconv"
 	"strings"
 
@@ -17,11 +19,18 @@ type ContentParser struct {
 	z       *html.Tokenizer
 
 	// Paragraph info
-	paragraphStyle ParagraphStyle
-	verse          int
+	paragraphStyle     ParagraphStyle
+	verse              int
+	justFoundParagraph bool
+
+	// For determining if you are done with a paragraph
+	paragraphTag string
+	depth        int
 
 	// Text info
-	textStyle TextStyle
+	textContent string
+	textStyle   TextStyle
+	href        string
 }
 type ParagraphStyle int
 type TextStyle int
@@ -33,11 +42,37 @@ const (
 	ParagraphStyleSummary
 )
 
+func (p ParagraphStyle) String() string {
+	switch p {
+	case ParagraphStyleNormal:
+		return "Normal"
+	case ParagraphStyleTitle:
+		return "Title"
+	case ParagraphStyleChapter:
+		return "Chapter"
+	case ParagraphStyleSummary:
+		return "Summary"
+	}
+	return ""
+}
+
 const (
 	TextStyleNormal TextStyle = iota
 	TextStyleLink
 	TextStyleFootnote
 )
+
+func (t TextStyle) String() string {
+	switch t {
+	case TextStyleNormal:
+		return "Normal"
+	case TextStyleLink:
+		return "Link"
+	case TextStyleFootnote:
+		return "Footnote"
+	}
+	return ""
+}
 
 func (c Content) Parse() *ContentParser {
 	return &ContentParser{content: c}
@@ -46,6 +81,55 @@ func (c Content) Parse() *ContentParser {
 func (c *ContentParser) NextParagraph() bool {
 	if c.z == nil {
 		c.z = html.NewTokenizerFragment(strings.NewReader(string(c.content)), "div")
+	}
+	log.Println("Reading next paragraph")
+	for {
+		switch c.z.Next() {
+		case html.ErrorToken:
+			log.Println(c.z.Err())
+			return false
+		case html.TextToken:
+			log.Printf("Paragraph found %v %v\n", c.paragraphStyle, c.verse)
+			c.depth = 1
+			c.textStyle = TextStyleNormal
+			c.justFoundParagraph = true
+			return true
+		case html.StartTagToken:
+			var key, val []byte
+			tag, hasAttr := c.z.TagName()
+			c.verse = 0
+			log.Printf("Paragraph tag found %v\n", string(tag))
+			switch string(tag) {
+			case "h1":
+				c.paragraphStyle = ParagraphStyleTitle
+			case "p":
+				c.paragraphStyle = ParagraphStyleNormal
+				for hasAttr {
+					key, val, hasAttr = c.z.TagAttr()
+					switch string(key) {
+					case "class":
+						switch string(val) {
+						case "titleNumber":
+							c.paragraphStyle = ParagraphStyleChapter
+						case "studySummary":
+							c.paragraphStyle = ParagraphStyleSummary
+						}
+					case "id":
+						if verse, err := strconv.Atoi(string(val)); err == nil {
+							log.Println("Setting verse ", verse)
+							c.verse = verse
+						}
+					}
+				}
+			case "video":
+				//TODO
+			}
+			c.paragraphTag = string(tag)
+		case html.EndTagToken:
+		case html.SelfClosingTagToken:
+		case html.CommentToken:
+		case html.DoctypeToken:
+		}
 	}
 	return false
 }
@@ -57,13 +141,59 @@ func (c *ContentParser) ParagraphVerse() int {
 }
 
 func (c *ContentParser) NextText() bool {
-	return false
+	if c.justFoundParagraph {
+		c.justFoundParagraph = false
+		return true
+	}
+	for {
+		switch c.z.Next() {
+		case html.ErrorToken:
+			return false
+		case html.TextToken:
+			return true
+		case html.StartTagToken:
+			var key, val []byte
+			tag, hasAttr := c.z.TagName()
+			switch string(tag) {
+			case c.paragraphTag:
+				c.depth++
+			case "sup":
+				c.textStyle = TextStyleFootnote
+			case "a":
+				c.textStyle = TextStyleLink
+				for hasAttr {
+					key, val, hasAttr = c.z.TagAttr()
+					switch string(key) {
+					case "href":
+						c.href = string(val)
+					}
+				}
+			}
+		case html.EndTagToken:
+			tag, _ := c.z.TagName()
+			switch string(tag) {
+			case c.paragraphTag:
+				c.depth--
+				if c.depth == 0 {
+					return false
+				}
+			case "sup":
+				c.textStyle = TextStyleNormal
+			case "a":
+				c.textStyle = TextStyleLink
+			}
+		case html.SelfClosingTagToken:
+		case html.CommentToken:
+		case html.DoctypeToken:
+		}
+	}
 }
 func (c *ContentParser) TextStyle() TextStyle {
 	return c.textStyle
 }
 func (c *ContentParser) Text() string {
-	return ""
+	text := string(c.z.Text())
+	return text
 }
 
 /*
@@ -140,6 +270,8 @@ func (content Content) Filter(verses []int) Content {
 		return content
 	}
 
+	hasZero := sort.SearchInts(verses, 0) != -1
+
 	z := html.NewTokenizerFragment(strings.NewReader(string(content)), "div")
 	verse := 0
 	buffer := new(bytes.Buffer)
@@ -152,7 +284,6 @@ func (content Content) Filter(verses []int) Content {
 		case html.ErrorToken:
 			return Content(buffer.Bytes())
 		case html.StartTagToken:
-			raw := z.Raw()
 			_, hasAttr := z.TagName()
 			var key, val []byte
 			for hasAttr {
@@ -169,11 +300,9 @@ func (content Content) Filter(verses []int) Content {
 					}
 				}
 			}
-			if verse == nextAllowed {
-				_, _ = buffer.Write(raw)
-			}
+			continue
 		default:
-			if verse == nextAllowed {
+			if verse == nextAllowed || hasZero && verse == 0 {
 				_, _ = buffer.Write(z.Raw())
 			}
 		}

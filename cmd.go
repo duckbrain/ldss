@@ -37,6 +37,7 @@ func (app *cmd) run() {
 	args := app.args
 	efmt := log.New(os.Stderr, "", 0)
 	lang := app.lang
+	colors := colors(true)
 
 	switch args[0] {
 	case "lookup":
@@ -52,8 +53,28 @@ func (app *cmd) run() {
 
 		if node, ok := item.(*lib.Node); ok {
 			if content, err := node.Content(); err == nil {
-				_ = content
-				panic(fmt.Errorf("Content printing is broken"))
+				z := content.Parse()
+				for z.NextParagraph() {
+					color := colors.content
+					switch z.ParagraphStyle() {
+					case lib.ParagraphStyleTitle:
+						color = colors.title
+					case lib.ParagraphStyleSummary:
+						color = colors.summary
+					case lib.ParagraphStyleChapter:
+						color = colors.subtitle
+					}
+					if z.ParagraphVerse() > 0 {
+						app.colors.verse.Print(z.ParagraphVerse())
+					}
+					for z.NextText() {
+						if z.TextStyle() == lib.TextStyleFootnote {
+							continue
+						}
+						color.Print(z.Text())
+					}
+					color.Println("")
+				}
 				break
 			}
 		}
