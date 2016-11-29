@@ -27,48 +27,48 @@ func testSearchResult(t *testing.T, p, r SearchResult) {
 	}
 }
 
+func testParagraph(t *testing.T, z *ContentParser, style ParagraphStyle, verse int) {
+	if !z.NextParagraph() {
+		t.Error("    Parse ended too quickly for %v %v", style, verse)
+	}
+	if z.ParagraphStyle() != style {
+		t.Errorf("    Wrong paragraph style %v vs. %v", z.ParagraphStyle(), style)
+	}
+	if z.ParagraphVerse() != verse {
+		t.Errorf("    Incorrectly assigned verse %v vs. %v", z.ParagraphVerse(), verse)
+	}
+}
+func testText(t *testing.T, z *ContentParser, style TextStyle, text string) {
+	if !z.NextText() {
+		t.Errorf("    Paragraph ended too quickly for %v \"%v\"", style, text)
+	}
+	zstyle := z.TextStyle()
+	if zstyle != style {
+		t.Errorf("    Wrong text style %v vs. %v", zstyle, style)
+	}
+	ztext := z.Text()
+	if ztext != text {
+		t.Errorf("    Wrong text content \"%v\" vs. \"%v\"", ztext, text)
+	}
+}
+func testTextEnd(t *testing.T, z *ContentParser) {
+	if z.NextText() {
+		t.Error("    Paragraph extended too far")
+	}
+}
+
 func TestContentParse1(t *testing.T) {
 	t.Log("Parsing content")
 	c := Content(testContent)
 	c = c.Filter([]int{1})
 	z := c.Parse()
 
-	testParagraph := func(style ParagraphStyle, verse int) {
-		if !z.NextParagraph() {
-			t.Error("    Parse ended too quickly for %v %v", style, verse)
-		}
-		if z.ParagraphStyle() != style {
-			t.Errorf("    Wrong paragraph style %v vs. %v", z.ParagraphStyle(), style)
-		}
-		if z.ParagraphVerse() != verse {
-			t.Errorf("    Incorrectly assigned verse %v vs. %v", z.ParagraphVerse(), verse)
-		}
-	}
-	testText := func(style TextStyle, text string) {
-		if !z.NextText() {
-			t.Errorf("    Paragraph ended too quickly for %v \"%v\"", style, text)
-		}
-		zstyle := z.TextStyle()
-		if zstyle != style {
-			t.Errorf("    Wrong text style %v vs. %v", zstyle, style)
-		}
-		ztext := z.Text()
-		if ztext != text {
-			t.Errorf("    Wrong text content \"%v\" vs. \"%v\"", ztext, text)
-		}
-	}
-	testTextEnd := func() {
-		if z.NextText() {
-			t.Error("    Paragraph extended too far")
-		}
-	}
-
-	testParagraph(ParagraphStyleNormal, 1)
-	testText(TextStyleNormal, "The beginning of the ")
-	testText(TextStyleFootnote, "a")
-	testText(TextStyleLink, "gospel")
-	testText(TextStyleNormal, " of Jesus Christ, the Son of God;")
-	testTextEnd()
+	testParagraph(t, z, ParagraphStyleNormal, 1)
+	testText(t, z, TextStyleNormal, "1 The beginning of the ")
+	testText(t, z, TextStyleFootnote, "a")
+	testText(t, z, TextStyleLink, "gospel")
+	testText(t, z, TextStyleNormal, " of Jesus Christ, the Son of God;")
+	testTextEnd(t, z)
 	if z.NextParagraph() {
 		t.Error("    Parse extended too far")
 	}
@@ -80,52 +80,22 @@ func TestContentParse(t *testing.T) {
 	c = c.Filter([]int{0, 1})
 	z := c.Parse()
 
-	testParagraph := func(style ParagraphStyle, verse int) {
-		if !z.NextParagraph() {
-			t.Error("    Parse ended too quickly for %v %v", style, verse)
-		}
-		if z.ParagraphStyle() != style {
-			t.Errorf("    Wrong paragraph style %v vs. %v", z.ParagraphStyle(), style)
-		}
-		if z.ParagraphVerse() != verse {
-			t.Errorf("    Incorrectly assigned verse %v vs. %v", z.ParagraphVerse(), verse)
-		}
-	}
-	testText := func(style TextStyle, text string) {
-		if !z.NextText() {
-			t.Errorf("    Paragraph ended too quickly for %v \"%v\"", style, text)
-		}
-		zstyle := z.TextStyle()
-		if zstyle != style {
-			t.Errorf("    Wrong text style %v vs. %v", zstyle, style)
-		}
-		ztext := z.Text()
-		if ztext != text {
-			t.Errorf("    Wrong text content \"%v\" vs. \"%v\"", ztext, text)
-		}
-	}
-	testTextEnd := func() {
-		if z.NextText() {
-			t.Error("    Paragraph extended too far")
-		}
-	}
-
-	testParagraph(ParagraphStyleTitle, 0)
-	testText(TextStyleNormal, "The Gospel According to ")
-	testText(TextStyleLink, "St Mark")
-	testTextEnd()
-	testParagraph(ParagraphStyleChapter, 0)
-	testText(TextStyleNormal, "Chapter 1")
-	testTextEnd()
-	testParagraph(ParagraphStyleSummary, 0)
-	testText(TextStyleNormal, "Jesus is baptized by John—He preaches the gospel, calls disciples, casts out devils, heals the sick, and cleanses a leper.")
-	testTextEnd()
-	testParagraph(ParagraphStyleNormal, 1)
-	testText(TextStyleNormal, "The beginning of the ")
-	testText(TextStyleFootnote, "a")
-	testText(TextStyleLink, "gospel")
-	testText(TextStyleNormal, " of Jesus Christ, the Son of God;")
-	testTextEnd()
+	testParagraph(t, z, ParagraphStyleTitle, 0)
+	testText(t, z, TextStyleNormal, "The Gospel According to ")
+	testText(t, z, TextStyleLink, "St Mark")
+	testTextEnd(t, z)
+	testParagraph(t, z, ParagraphStyleChapter, 0)
+	testText(t, z, TextStyleNormal, "Chapter 1")
+	testTextEnd(t, z)
+	testParagraph(t, z, ParagraphStyleSummary, 0)
+	testText(t, z, TextStyleNormal, "Jesus is baptized by John—He preaches the gospel, calls disciples, casts out devils, heals the sick, and cleanses a leper.")
+	testTextEnd(t, z)
+	testParagraph(t, z, ParagraphStyleNormal, 1)
+	testText(t, z, TextStyleNormal, "The beginning of the ")
+	testText(t, z, TextStyleFootnote, "a")
+	testText(t, z, TextStyleLink, "gospel")
+	testText(t, z, TextStyleNormal, " of Jesus Christ, the Son of God;")
+	testTextEnd(t, z)
 	if z.NextParagraph() {
 		t.Error("    Parse extended too far")
 	}
