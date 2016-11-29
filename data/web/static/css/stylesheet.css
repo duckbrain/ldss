@@ -116,6 +116,20 @@
 	text-decoration: none;
 }
 
+.main-content sup {
+	vertical-align: super;
+	font-size: 10px;
+	line-height: 1;
+}
+
+.main-content p {
+	margin-bottom: 26px;
+}
+
+.verse {
+	line-height: 140%;
+}
+
 .titleNumber, 
 .subtitle {
 	font: 24px/26px "Helam Slab","Roboto Slab",Calibri,Helvetica,Arial,sans-serif;
@@ -142,6 +156,10 @@
 
 .video video {
 	width: 100%;
+}
+
+.highlight {
+	background-color: #fefbbf;
 }
 
 .footnotes-container {

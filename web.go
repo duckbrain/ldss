@@ -342,10 +342,13 @@ func (app *web) print(w io.Writer, r *http.Request, ref lib.Reference, item lib.
 	case *lib.Node:
 		if content, err := item.(*lib.Node).Content(); err == nil {
 			if filter {
-				data.Content = template.HTML(content.Filter(ref.VersesHighlighted))
+				content = content.Filter(ref.VersesHighlighted)
+				data.Content = template.HTML(content)
 				data.HasTitle = false
 				data.Filtered = true
 			} else {
+				content = content.Highlight(ref.VersesHighlighted, "highlight")
+				content = content.Highlight(ref.VersesExtra, "highlight")
 				data.Content = template.HTML(content)
 				data.HasTitle = strings.Contains(string(content), "</h1>")
 			}

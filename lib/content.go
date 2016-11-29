@@ -2,9 +2,9 @@ package lib
 
 import (
 	"bytes"
+	"fmt"
 	"log"
 	"math"
-	"sort"
 	"strconv"
 	"strings"
 
@@ -270,7 +270,55 @@ func (content Content) Filter(verses []int) Content {
 		return content
 	}
 
-	hasZero := sort.SearchInts(verses, 0) != -1
+	z := html.NewTokenizerFragment(strings.NewReader(string(content)), "div")
+	verse := 0
+	buffer := new(bytes.Buffer)
+	verses = cleanVerses(verses)
+	nextAllowedIndex := 0
+	nextAllowed := verses[0]
+	hasZero := verses[0] == 0
+
+	for {
+		var raw []byte
+		switch z.Next() {
+		case html.ErrorToken:
+			return Content(buffer.Bytes())
+		case html.StartTagToken:
+			raw = z.Raw()
+			_, hasAttr := z.TagName()
+			var key, val []byte
+			for hasAttr {
+				key, val, hasAttr = z.TagAttr()
+				if string(key) == "id" {
+					var err error
+					verse, err = strconv.Atoi(string(val))
+					if err != nil {
+						verse = 0
+					} else if verse > nextAllowed {
+						nextAllowedIndex++
+						if nextAllowedIndex == len(verses) {
+							nextAllowed = math.MaxInt32
+						} else {
+							nextAllowed = verses[nextAllowedIndex]
+						}
+					}
+					break
+				}
+			}
+		default:
+			raw = z.Raw()
+		}
+		if raw != nil && (verse == nextAllowed || (hasZero && verse == 0)) {
+			_, _ = buffer.Write(raw)
+		}
+	}
+	return Content(buffer.Bytes())
+}
+
+func (content Content) Highlight(verses []int, class string) Content {
+	if len(verses) == 0 {
+		return content
+	}
 
 	z := html.NewTokenizerFragment(strings.NewReader(string(content)), "div")
 	verse := 0
@@ -284,13 +332,23 @@ func (content Content) Filter(verses []int) Content {
 		case html.ErrorToken:
 			return Content(buffer.Bytes())
 		case html.StartTagToken:
-			_, hasAttr := z.TagName()
-			var key, val []byte
+			tag, hasAttr := z.TagName()
+			_, _ = buffer.WriteRune('<')
+			_, _ = buffer.Write(tag)
+			classFound := false
 			for hasAttr {
-				key, val, hasAttr = z.TagAttr()
-				if string(key) == "id" {
-					verse, _ = strconv.Atoi(string(val))
-					if verse > nextAllowed {
+				var bkey, bval []byte
+				bkey, bval, hasAttr = z.TagAttr()
+				key := string(bkey)
+				val := string(bval)
+
+				switch key {
+				case "id":
+					var err error
+					verse, err = strconv.Atoi(val)
+					if err != nil {
+						verse = 0
+					} else if verse > nextAllowed {
 						nextAllowedIndex++
 						if nextAllowedIndex == len(verses) {
 							nextAllowed = math.MaxInt32
@@ -298,13 +356,25 @@ func (content Content) Filter(verses []int) Content {
 							nextAllowed = verses[nextAllowedIndex]
 						}
 					}
+					_, _ = buffer.WriteString(fmt.Sprintf(" id=\"%v\"", val))
+				case "class":
+					classFound = true
+					if verse == nextAllowed {
+						_, _ = buffer.WriteString(fmt.Sprintf(" class=\"%v %v\"", val, class))
+					} else {
+						_, _ = buffer.WriteString(fmt.Sprintf(" class=\"%v\"", val))
+					}
+				default:
+					_, _ = buffer.WriteString(fmt.Sprintf(" %v=\"%v\"", key, val))
 				}
 			}
-			continue
-		default:
-			if verse == nextAllowed || hasZero && verse == 0 {
-				_, _ = buffer.Write(z.Raw())
+			if !classFound && verse == nextAllowed {
+				_, _ = buffer.WriteString(fmt.Sprintf(" class=\"%v\"", class))
 			}
+			_, _ = buffer.WriteRune('>')
+
+		default:
+			_, _ = buffer.Write(z.Raw())
 		}
 	}
 	return Content(buffer.Bytes())
