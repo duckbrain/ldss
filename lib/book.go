@@ -4,9 +4,11 @@ import (
 	"database/sql"
 	"fmt"
 	"html/template"
+	"log"
 	"os"
 	"sort"
 	"strconv"
+	"sync"
 	"unicode"
 	"unicode/utf8"
 
@@ -26,6 +28,40 @@ type Book struct {
 type bookDBConnection struct {
 	db                                                        *sql.DB
 	stmtChildren, stmtUri, stmtId, stmtContent, stmtFootnotes *sql.Stmt
+}
+
+var BookConnectionLimit = 10
+var bookConnectionLock sync.Mutex
+var bookConnections []*Book
+
+func connectBookDB(book *Book) {
+	bookConnectionLock.Lock()
+	defer bookConnectionLock.Unlock()
+
+	if bookConnections == nil {
+		bookConnections = make([]*Book, BookConnectionLimit)
+	}
+	for _, x := range bookConnections {
+		if x == book {
+			return
+		}
+	}
+	log.Print(len(bookConnections), cap(bookConnections))
+	if len(bookConnections) < cap(bookConnections) {
+		log.Println("added", book.Name())
+		bookConnections[len(bookConnections)] = book
+	} else {
+		log.Println("replaced", book.Name())
+		x := bookConnections[0]
+		if x != nil {
+			log.Println("closed", x.Name())
+			x.dbCache.Close()
+		}
+		bookConnections[0] = book
+		if x == book {
+			return
+		}
+	}
 }
 
 const sqlQueryNode = `
@@ -165,6 +201,8 @@ func (b *Book) Previous() Item {
 
 // The SQLite database connector with some prepared statements. Cached for subsequent uses.
 func (b *Book) db() (*bookDBConnection, error) {
+	connectBookDB(b)
+
 	db, err := b.dbCache.get()
 	if err != nil {
 		return nil, err

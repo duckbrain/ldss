@@ -1,6 +1,7 @@
 package lib
 
 import (
+	"io"
 	"sync"
 )
 
@@ -27,4 +28,24 @@ func (c *cache) get() (interface{}, error) {
 	}
 	c.val = val
 	return val, nil
+}
+
+func (c *cache) Close() (err error) {
+	if c.val == nil {
+		return
+	}
+
+	c.lock.Lock()
+	defer c.lock.Unlock()
+
+	if c.val == nil {
+		return
+	}
+
+	if closer, ok := c.val.(io.Closer); ok {
+		err = closer.Close()
+	}
+
+	c.val = nil
+	return
 }
