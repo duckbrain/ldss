@@ -54,19 +54,24 @@ func (r Reference) Search(c chan<- SearchResult) error {
 	}
 
 	waitGroup := new(sync.WaitGroup)
+	resultSet := make(map[string]bool)
 
-	err = r.searchItem(item, c, waitGroup)
+	r.searchItem(item, c, waitGroup, resultSet)
 
 	go func() {
 		waitGroup.Wait()
 		close(c)
 	}()
 
-	return err
+	return nil
 }
 
-func (r Reference) searchItem(item Item, c chan<- SearchResult, waitGroup *sync.WaitGroup) error {
+func (r Reference) searchItem(item Item, c chan<- SearchResult, waitGroup *sync.WaitGroup, resultSet map[string]bool) {
 	if node, ok := item.(*Node); ok {
+		if resultSet[node.Path()] {
+			return
+		}
+		resultSet[node.Path()] = true
 		waitGroup.Add(1)
 		go func(node *Node) {
 			if content, err := node.Content(); err == nil {
@@ -81,15 +86,11 @@ func (r Reference) searchItem(item Item, c chan<- SearchResult, waitGroup *sync.
 			waitGroup.Done()
 		}(node)
 	}
-	children, err := item.Children()
-	if err != nil {
-		return err
-	}
-	for _, child := range children {
-		err = r.searchItem(child, c, waitGroup)
-		if err != nil {
-			return err
+
+	if children, err := item.Children(); err == nil {
+		for _, child := range children {
+			r.searchItem(child, c, waitGroup, resultSet)
 		}
 	}
-	return nil
+	return
 }
