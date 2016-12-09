@@ -14,7 +14,7 @@ type Reference struct {
 	VerseSelected     int
 	VersesHighlighted []int
 	VersesExtra       []int
-	Small, Content    string
+	Small, Name       string
 	Keywords          []string
 }
 
@@ -68,7 +68,7 @@ func (r Reference) MarshalJSON() ([]byte, error) {
 		VersesHighlighted: r.VersesHighlighted,
 		VersesExtra:       r.VersesExtra,
 		Small:             r.Small,
-		Content:           r.Content,
+		Content:           r.Name,
 		URL:               r.URL(),
 	})
 }

@@ -24,14 +24,14 @@ func (f *Footnote) References() (refs []Reference) {
 	for {
 		ref := Reference{
 			Language: lang,
-			Content:  "",
+			Name:  "",
 		}
 
 		switch z.Next() {
 		case html.ErrorToken, html.EndTagToken:
 			return
 		case html.TextToken:
-			ref.Content = string(z.Text())
+			ref.Name = string(z.Text())
 		case html.SelfClosingTagToken:
 
 		case html.StartTagToken:
@@ -71,7 +71,7 @@ func (f *Footnote) References() (refs []Reference) {
 				case html.ErrorToken:
 					return
 				case html.TextToken:
-					ref.Content = fmt.Sprintf("%v%v", ref.Content, string(z.Text()))
+					ref.Name = fmt.Sprintf("%v%v", ref.Name, string(z.Text()))
 				case html.StartTagToken:
 					if startTag, _ := z.TagName(); bytes.Equal(startTag, tag) {
 						depth++

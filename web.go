@@ -26,7 +26,7 @@ type webLayout struct {
 	Footnotes   []lib.Footnote
 	Lang        *lib.Language
 	Item        lib.Item
-	Breadcrumbs []lib.Item
+	Breadcrumbs []lib.Reference
 	Query       string
 }
 
@@ -100,6 +100,12 @@ func (app *web) handleSearch(w http.ResponseWriter, r *http.Request) {
 		Title: "LDS Scriptures",
 		Lang:  lang,
 		Query: query,
+		Breadcrumbs: []lib.Reference{
+			lib.Reference{
+				Language: lang,
+				Path:     "/",
+			},
+		},
 	}
 	buff := new(bytes.Buffer)
 	for _, ref := range refs {
@@ -112,6 +118,8 @@ func (app *web) handleSearch(w http.ResponseWriter, r *http.Request) {
 					panic(err)
 				}
 				app.print(buff, r, ref, item, true)
+				ref.Name = item.Name()
+				layout.Breadcrumbs = append(layout.Breadcrumbs, ref)
 
 				if node, ok := item.(*lib.Node); ok {
 					footnotes, err := node.Footnotes(ref.VersesHighlighted)
@@ -130,6 +138,8 @@ func (app *web) handleSearch(w http.ResponseWriter, r *http.Request) {
 				}()
 			} else {
 				item, _ := ref.Lookup()
+				ref.Name = item.Name()
+				layout.Breadcrumbs = append(layout.Breadcrumbs, ref)
 				app.templates.searchResults.Execute(buff, struct {
 					Item          lib.Item
 					Keywords      []string
@@ -299,7 +309,7 @@ func (app *web) handler(w http.ResponseWriter, r *http.Request) {
 		Content:     template.HTML(buff.String()),
 		Lang:        lang,
 		Item:        item,
-		Breadcrumbs: make([]lib.Item, 0),
+		Breadcrumbs: make([]lib.Reference, 0),
 	}
 
 	// Get the footnote content
@@ -312,7 +322,11 @@ func (app *web) handler(w http.ResponseWriter, r *http.Request) {
 
 	// Generate breadcrumbs
 	for p := item; p != nil; p = p.Parent() {
-		layout.Breadcrumbs = append([]lib.Item{p}, layout.Breadcrumbs...)
+		layout.Breadcrumbs = append([]lib.Reference{lib.Reference{
+			Path:     p.Path(),
+			Name:     p.Name(),
+			Language: p.Language(),
+		}}, layout.Breadcrumbs...)
 	}
 
 	app.templates.layout.Execute(w, layout)
