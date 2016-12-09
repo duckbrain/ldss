@@ -130,15 +130,15 @@ func (app *web) handleSearch(w http.ResponseWriter, r *http.Request) {
 
 			}()
 		} else {
-			results, err := ref.SearchSort()
+			item, err := ref.Lookup()
 			if err != nil {
 				func() {
 					defer app.handleError(buff, r)
 					panic(err)
 				}()
 			} else {
-				item, _ := ref.Lookup()
 				ref.Name = item.Name()
+				results := lib.SearchSort(item, ref.Keywords)
 				layout.Breadcrumbs = append(layout.Breadcrumbs, ref)
 				app.templates.searchResults.Execute(buff, struct {
 					Item          lib.Item
