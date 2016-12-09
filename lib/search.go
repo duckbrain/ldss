@@ -33,40 +33,30 @@ func (r SearchResults) Swap(i, j int) {
 	rs[j] = t
 }
 
-func (r Reference) SearchSort() ([]SearchResult, error) {
+func SearchSort(item Item, keywords []string) []SearchResult {
 	c := make(chan SearchResult)
-	err := r.Search(c)
-	if err != nil {
-		return nil, err
-	}
+	Search(item, keywords, c)
 	results := []SearchResult{}
 	for result := range c {
 		results = append(results, result)
 	}
 	sort.Sort(SearchResults(results))
-	return results, nil
+	return results
 }
 
-func (r Reference) Search(c chan<- SearchResult) error {
-	item, err := r.Lookup()
-	if err != nil {
-		return nil
-	}
-
+func Search(item Item, keywords []string, c chan<- SearchResult) {
 	waitGroup := new(sync.WaitGroup)
 	resultSet := make(map[string]bool)
 
-	r.searchItem(item, c, waitGroup, resultSet)
+	searchItem(item, keywords, c, waitGroup, resultSet)
 
 	go func() {
 		waitGroup.Wait()
 		close(c)
 	}()
-
-	return nil
 }
 
-func (r Reference) searchItem(item Item, c chan<- SearchResult, waitGroup *sync.WaitGroup, resultSet map[string]bool) {
+func searchItem(item Item, keywords []string, c chan<- SearchResult, waitGroup *sync.WaitGroup, resultSet map[string]bool) {
 	if node, ok := item.(*Node); ok {
 		if resultSet[node.Path()] {
 			return
@@ -75,7 +65,7 @@ func (r Reference) searchItem(item Item, c chan<- SearchResult, waitGroup *sync.
 		waitGroup.Add(1)
 		go func(node *Node) {
 			if content, err := node.Content(); err == nil {
-				result := content.Search(r.Keywords)
+				result := content.Search(keywords)
 				if result.Weight > 0 {
 					result.Language = node.Language()
 					result.Path = node.Path()
@@ -89,7 +79,7 @@ func (r Reference) searchItem(item Item, c chan<- SearchResult, waitGroup *sync.
 
 	if children, err := item.Children(); err == nil {
 		for _, child := range children {
-			r.searchItem(child, c, waitGroup, resultSet)
+			searchItem(child, keywords, c, waitGroup, resultSet)
 		}
 	}
 	return
