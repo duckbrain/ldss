@@ -28,6 +28,47 @@ type bookDBConnection struct {
 	stmtChildren, stmtUri, stmtId, stmtContent, stmtFootnotes *sql.Stmt
 }
 
+func (c bookDBConnection) Close() error {
+	return c.db.Close()
+}
+
+func init() {
+	var a []*Book
+	bookOpened = make(chan *Book)
+	go func() {
+	WAIT:
+		for book := range bookOpened {
+			if a == nil {
+				a = make([]*Book, 0, BookConnectionLimit)
+			}
+
+			for i, x := range a {
+				if x == book {
+					for j := i; j > 0; j-- {
+						a[j] = a[j-1]
+					}
+					a[0] = x
+					continue WAIT
+				}
+			}
+
+			if len(a) < cap(a) {
+				a = append(a, book)
+			} else {
+				x := a[len(a)-1]
+				for i := len(a) - 1; i > 0; i-- {
+					a[i] = a[i-1]
+				}
+				a[0] = book
+				x.dbCache.Close()
+			}
+		}
+	}()
+}
+
+var BookConnectionLimit = 20
+var bookOpened chan *Book
+
 const sqlQueryNode = `
 	SELECT
 		node.id,
@@ -169,6 +210,7 @@ func (b *Book) db() (*bookDBConnection, error) {
 	if err != nil {
 		return nil, err
 	}
+	bookOpened <- b
 	return db.(*bookDBConnection), nil
 }
 
