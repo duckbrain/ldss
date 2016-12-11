@@ -116,6 +116,9 @@ func (r Reference) String() string {
 	if r.VersesExtra != nil {
 		s = fmt.Sprintf("%v (%v)", s, stringifyVerses(r.VersesHighlighted))
 	}
+	if len(s) == 0 {
+		s = fmt.Sprintf("\"%v\"", r.Name)
+	}
 	return s
 }
 

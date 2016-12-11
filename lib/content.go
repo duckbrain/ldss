@@ -273,10 +273,12 @@ func (content Content) Filter(verses []int) Content {
 	z := html.NewTokenizerFragment(strings.NewReader(string(content)), "div")
 	verse := 0
 	buffer := new(bytes.Buffer)
+	hasZero := verses[0] == 0
 	verses = cleanVerses(verses)
 	nextAllowedIndex := 0
 	nextAllowed := verses[0]
-	hasZero := verses[0] == 0
+	var verseTag string
+	var verseDepth = 0
 
 	for {
 		var raw []byte
@@ -285,7 +287,7 @@ func (content Content) Filter(verses []int) Content {
 			return Content(buffer.Bytes())
 		case html.StartTagToken:
 			raw = z.Raw()
-			_, hasAttr := z.TagName()
+			tag, hasAttr := z.TagName()
 			var key, val []byte
 			for hasAttr {
 				key, val, hasAttr = z.TagAttr()
@@ -294,22 +296,39 @@ func (content Content) Filter(verses []int) Content {
 					verse, err = strconv.Atoi(string(val))
 					if err != nil {
 						verse = 0
-					} else if verse > nextAllowed {
-						nextAllowedIndex++
-						if nextAllowedIndex == len(verses) {
-							nextAllowed = math.MaxInt32
-						} else {
-							nextAllowed = verses[nextAllowedIndex]
+						verseTag = ""
+						verseDepth = 0
+					} else {
+						verseTag = string(tag)
+						verseDepth = 1
+						if verse > nextAllowed {
+							nextAllowedIndex++
+							if nextAllowedIndex == len(verses) {
+								nextAllowed = math.MaxInt32
+							} else {
+								nextAllowed = verses[nextAllowedIndex]
+							}
 						}
 					}
 					break
 				}
+			}
+		case html.EndTagToken:
+			raw = z.Raw()
+			tag, _ := z.TagName()
+			if verseTag == string(tag) {
+				verseDepth--
 			}
 		default:
 			raw = z.Raw()
 		}
 		if raw != nil && (verse == nextAllowed || (hasZero && verse == 0)) {
 			_, _ = buffer.Write(raw)
+		}
+
+		if verseDepth == 0 {
+			verse = 0
+			verseTag = ""
 		}
 	}
 	return Content(buffer.Bytes())

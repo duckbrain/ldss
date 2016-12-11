@@ -16,20 +16,21 @@ type Footnote struct {
 	Content  template.HTML `json:"content"`
 }
 
-func (f *Footnote) References() (refs []Reference) {
+func (f *Footnote) References() []Reference {
 	z := html.NewTokenizerFragment(strings.NewReader(string(f.Content)), "div")
-	refs = make([]Reference, 0)
+	refs := make([]Reference, 0)
 	lang := f.item.Language()
 
+loop:
 	for {
 		ref := Reference{
 			Language: lang,
-			Name:  "",
+			Name:     "",
 		}
 
 		switch z.Next() {
 		case html.ErrorToken, html.EndTagToken:
-			return
+			break loop
 		case html.TextToken:
 			ref.Name = string(z.Text())
 		case html.SelfClosingTagToken:
@@ -69,7 +70,7 @@ func (f *Footnote) References() (refs []Reference) {
 			for depth > 0 {
 				switch z.Next() {
 				case html.ErrorToken:
-					return
+					break loop
 				case html.TextToken:
 					ref.Name = fmt.Sprintf("%v%v", ref.Name, string(z.Text()))
 				case html.StartTagToken:
@@ -89,6 +90,20 @@ func (f *Footnote) References() (refs []Reference) {
 
 		refs = append(refs, ref)
 	}
+
+	cleanRefs := []Reference{}
+	oldRef := refs[0]
+	oldRef.Name = ""
+	for _, ref := range refs {
+		if oldRef.Path == ref.Path && oldRef.VerseSelected == ref.VerseSelected && oldRef.Small == ref.Small {
+			oldRef.Name += ref.Name
+		} else {
+			cleanRefs = append(cleanRefs, oldRef)
+			oldRef = ref
+		}
+	}
+	cleanRefs = append(cleanRefs, oldRef)
+	return cleanRefs
 }
 
 // Parses the rest of the small tag, assuming the head has already been parsed

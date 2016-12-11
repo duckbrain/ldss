@@ -1,6 +1,7 @@
 package lib
 
 import (
+	"strings"
 	"testing"
 )
 
@@ -17,8 +18,10 @@ const testContentFiltered01 = `
 <div id="/scriptures/nt/mark/1" uri="/scriptures/nt/mark/1" hash="xBLIpA" class="chapter">
 <div id="head" uri="/scriptures/nt/mark/1.head" class="heading">
 <h1 pid="8zs4R2CyGU-3otWsmfUnhA" hash="mjRioQ">The Gospel According to <br/><span class="dominant"><a href="f_note">St Mark</a></span></h1><p pid="ijnWfv_220Koq-6wR1uwIQ" hash="A_bhkw" class="titleNumber">Chapter 1</p><p pid="sdmjnXqj20an7M0pddkcgw" hash="u6cp3Q" class="studySummary">Jesus is baptized by John—He preaches the gospel, calls disciples, casts out devils, heals the sick, and cleanses a leper.</p></div>
-<div class="bodyBlock"> <p id="1" uri="/scriptures/nt/mark/1.1" pid="kq-BAmvcsUWpiuiFEKd3xQ" hash="-Nx6tg" class="verse">1 The beginning of the <sup>a</sup><a href="f_1a">gospel</a> of Jesus Christ, the Son of God;</p> </div></div></div></div>
+<div class="bodyBlock"> <p id="1" uri="/scriptures/nt/mark/1.1" pid="kq-BAmvcsUWpiuiFEKd3xQ" hash="-Nx6tg" class="verse">1 The beginning of the <sup>a</sup><a href="f_1a">gospel</a> of Jesus Christ, the Son of God;</p>                         <span class="pageBreak" page-number="1243"></span>                     </div></div></div></div>
 `
+
+const testContentFiltered1 = `<p id="1" uri="/scriptures/nt/mark/1.1" pid="kq-BAmvcsUWpiuiFEKd3xQ" hash="-Nx6tg" class="verse">1 The beginning of the <sup>a</sup><a href="f_1a">gospel</a> of Jesus Christ, the Son of God;</p>`
 
 func testSearchResult(t *testing.T, p, r SearchResult) {
 	testReference(t, p.Reference, r.Reference)
@@ -54,6 +57,18 @@ func testText(t *testing.T, z *ContentParser, style TextStyle, text string) {
 func testTextEnd(t *testing.T, z *ContentParser) {
 	if z.NextText() {
 		t.Error("    Paragraph extended too far")
+	}
+}
+
+func TestContentFilter(t *testing.T) {
+	c := Content(testContent)
+	c01 := string(c.Filter([]int{0, 1}))
+	if strings.TrimSpace(c01) != strings.TrimSpace(testContentFiltered01) {
+		t.Errorf("Filter test failed c01 between:\n%v\n and \n%v", c01, testContentFiltered01)
+	}
+	c1 := string(c.Filter([]int{1}))
+	if strings.TrimSpace(c1) != strings.TrimSpace(testContentFiltered1) {
+		t.Errorf("Filter test failed c1 between:\n%v\n and \n%v", c1, testContentFiltered1)
 	}
 }
 
