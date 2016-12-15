@@ -7,17 +7,17 @@ all: $(BINARY) bindata_debug.go bindata_release.go
 
 ifeq ($(DEBUG), 1)
 $(BINARY): $(DEPENDS) bindata_debug.go
-	go install .
+	go install --tags debug .
 else
 $(BINARY): $(DEPENDS) bindata_release.go
-	go install --tags release .
+	go install .
 endif
 
 bindata_debug.go: $(BINDATA) $(shell find data -print)
-	$(BINDATA) -nomemcopy -debug -tags "!release" -o "$@" data/...
+	$(BINDATA) -prefix ${PWD} -nomemcopy -debug -tags "debug" -o "$@" data/...
 	gofmt -w "$@"
 bindata_release.go: $(BINDATA) $(shell find data -print)
-	$(BINDATA) -nomemcopy -tags "release" -o "$@" data/...
+	$(BINDATA) -prefix ${PWD} -nomemcopy -tags "!debug" -o "$@" data/...
 	gofmt -w "$@"
 
 $(BINDATA):
