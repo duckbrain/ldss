@@ -90,7 +90,7 @@ dc od:d&c od:doctrine and covenants official declaration:/scriptures/dc
 # General Conference
 42677:General Conference:/general-conference
 /(general conference|gc)( )?(april|apr|4|04)( )?([0-9]+)/:/general-conference/${5}/04
-/(general conference|gc)( )?(october|oct|10)( )?([0-9]+)/:/general-conference/${5}/04
+/(general conference|gc)( )?(october|oct|10)( )?([0-9]+)/:/general-conference/${5}/10
 
 
 
