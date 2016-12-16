@@ -5,7 +5,6 @@ package main
 import (
 	"io/ioutil"
 	"log"
-	"os"
 )
 
 func (a *appinfo) getDebug() *log.Logger {

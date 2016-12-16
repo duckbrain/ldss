@@ -233,8 +233,6 @@ func (r Reference) Lookup() (Item, error) {
 				return nil, fmt.Errorf("Path %v not found", r.Path)
 			}
 			return node, err
-
-			return book.lookupPath(r.Path)
 		}
 	}
 	return nil, fmt.Errorf("Path \"%v\" not found", r.Path)

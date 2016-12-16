@@ -131,7 +131,6 @@ func (c *ContentParser) NextParagraph() bool {
 		case html.DoctypeToken:
 		}
 	}
-	return false
 }
 func (c *ContentParser) ParagraphStyle() ParagraphStyle {
 	return c.paragraphStyle
@@ -331,7 +330,6 @@ func (content Content) Filter(verses []int) Content {
 			verseTag = ""
 		}
 	}
-	return Content(buffer.Bytes())
 }
 
 func (content Content) Highlight(verses []int, class string) Content {
@@ -396,7 +394,6 @@ func (content Content) Highlight(verses []int, class string) Content {
 			_, _ = buffer.Write(z.Raw())
 		}
 	}
-	return Content(buffer.Bytes())
 }
 
 // Search the content for the given keywords and return a search result containing
@@ -410,6 +407,7 @@ func (content Content) Search(keywords []string) SearchResult {
 	for {
 		switch z.Next() {
 		case html.ErrorToken:
+			r.Clean()
 			return r
 		case html.TextToken:
 			text := strings.ToLower(string(z.Text()))
@@ -431,8 +429,4 @@ func (content Content) Search(keywords []string) SearchResult {
 			}
 		}
 	}
-
-	r.Clean()
-
-	return r
 }

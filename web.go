@@ -78,7 +78,7 @@ func (app *web) handleError(w io.Writer, r *http.Request) {
 		case error:
 			err = rec.(error)
 		default:
-			err = fmt.Errorf("%", rec)
+			err = fmt.Errorf("%v", rec)
 		}
 		app.templates.err.Execute(w, err)
 	}
