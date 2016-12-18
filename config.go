@@ -132,7 +132,7 @@ func (c *Configuration) String() string {
 	buffer := new(bytes.Buffer)
 	nameLen := 0
 
-	for key, _ := range c.values {
+	for key := range c.values {
 		if len(key) > nameLen {
 			nameLen = len(key)
 		}

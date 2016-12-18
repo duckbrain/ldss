@@ -106,7 +106,7 @@ func DownloadChildren(item Item, force bool) {
 				}
 			}(book)
 		}
-		for _ = range catalog.booksById {
+		for range catalog.booksById {
 			<-lock
 		}
 	}()

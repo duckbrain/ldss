@@ -101,7 +101,7 @@ func (app *web) handleSearch(w http.ResponseWriter, r *http.Request) {
 		Lang:  lang,
 		Query: query,
 		Breadcrumbs: []lib.Reference{
-			lib.Reference{
+			{
 				Language: lang,
 				Path:     "/",
 			},
@@ -322,7 +322,7 @@ func (app *web) handler(w http.ResponseWriter, r *http.Request) {
 
 	// Generate breadcrumbs
 	for p := item; p != nil; p = p.Parent() {
-		layout.Breadcrumbs = append([]lib.Reference{lib.Reference{
+		layout.Breadcrumbs = append([]lib.Reference{{
 			Path:     p.Path(),
 			Name:     p.Name(),
 			Language: p.Language(),
