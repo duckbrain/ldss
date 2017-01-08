@@ -32,7 +32,7 @@ func testSearchResult(t *testing.T, p, r SearchResult) {
 
 func testParagraph(t *testing.T, z *ContentParser, style ParagraphStyle, verse int) {
 	if !z.NextParagraph() {
-		t.Error("     Parse ended too quickly for %v %v", style.String(), verse)
+		t.Errorf("     Parse ended too quickly for style %v, verse %v", style, verse)
 	}
 	if z.ParagraphStyle() != style {
 		t.Errorf("    Wrong paragraph style %v vs. %v", z.ParagraphStyle(), style)

@@ -18,7 +18,8 @@ projects:
   build: false
   fmt: true
   test: false
-  params: []
+  params:
+  - web
   watcher:
     before: []
     after: []

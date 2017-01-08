@@ -28,6 +28,14 @@ func main() {
 
 	if len(args) == 0 {
 		PrintInstructions()
+		var ok bool
+		var app app
+		if app, ok = apps["web"]; !ok {
+			app = &cmd{}
+		}
+		app.register(config)
+		app.setInfo(config, args)
+		app.run()
 	} else {
 		switch args[0] {
 		case "help":
