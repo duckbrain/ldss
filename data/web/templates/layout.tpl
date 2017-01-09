@@ -53,8 +53,7 @@ Footnotes
 </div>
 <div class="footnotes">
 {{- range $key, $ref := .Footnotes }}
-   <li><a>{{ $ref.Name }}</a> - {{$ref.LinkName}}
-      <div>{{ $ref.Content }}</div>
+   <li id="ref-{{ $ref.Name }}"><a>{{ $ref.Name }}</a> {{$ref.LinkName}} - {{ $ref.Content }}
    </li>
 {{- end }}
 </ul>

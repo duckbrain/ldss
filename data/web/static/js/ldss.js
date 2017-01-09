@@ -3,11 +3,18 @@
 function log(e) { console.log(e); return e; }
 
 var contentEle = document.querySelector('.main-content');
+var toolbar = document.querySelector('.toolbar');
 var previousBtn = document.getElementById('previous');
 var nextBtn = document.getElementById('next');
 var breadcrumbs = document.querySelector('.breadcrumbs');
 var footnotes = document.querySelector('.footnotes');
+var footnotesHeader = document.querySelector('.footnotes-header');
 var state = { item: null };
+
+var scrolledVerse = null;
+var scrolledVerseNumber = 0;
+var lastScrollPosition = 0;
+var scrollTimeout = null;
 
 function interceptClickEvent(e) {
     var href;
@@ -22,6 +29,7 @@ function interceptClickEvent(e) {
 	if (href.indexOf('f_') == 0) {
 		e.preventDefault();
 		setFootnotesOpen(true);
+		setFootnote(href.substring(2));
 		console.log("Footnote: " + href.substring(2));
 	} else {
 		return;
@@ -64,6 +72,73 @@ function setState(state) {
 
 function setFootnotesOpen(b) {
 	document.body.classList.toggle('show-footnotes', b);
+}
+
+function setFootnote(ref) {
+	var element = document.getElementById('ref-' + ref);
+	if (element == null) {
+		return;
+	}
+	//footnotes.scrollTop = element.offsetTop - footnotesHeader.clientHeight;
+	scrollTo(footnotes, element.offsetTop - footnotesHeader.clientHeight, 200);
+}
+
+function scrollTo(element, to, duration) {
+    if (duration <= 0) return;
+    var difference = to - element.scrollTop;
+    var perTick = difference / duration * 10;
+
+    setTimeout(function() {
+        element.scrollTop = element.scrollTop + perTick;
+        if (element.scrollTop === to) return;
+        scrollTo(element, to, duration - 10);
+    }, 10);
+}
+
+function onScroll() {
+	var s = window.scrollY;
+	if (lastScrollPosition == s || (scrolledVerse != null && isScrolledOnto(scrolledVerse))) {
+		return
+	}
+	
+	if (lastScrollPosition < s) {
+		do {
+			scrolledVerseNumber++;
+			scrolledVerse = document.getElementById(scrolledVerseNumber);
+			if (!scrolledVerse) {
+				scrolledVerseNumber = 0;
+				lastScrollPosition = 0;
+				return
+			}
+		} while (!isScrolledOnto(scrolledVerse));
+		lastScrollPosition = s;
+	} else {
+		do {
+			scrolledVerseNumber--;
+			scrolledVerse = document.getElementById(scrolledVerseNumber);
+			if (!scrolledVerse) {
+				scrolledVerseNumber = 0;
+				lastScrollPosition = 0;
+				return
+			}
+		} while (!isScrolledOnto(scrolledVerse));
+		
+		lastScrollPosition = s;
+	}
+	setFootnote(scrolledVerseNumber + 'a');
+}
+
+function isScrolledOnto(elem) {	
+	var y = elem.offsetTop;
+    var height = elem.offsetHeight;
+
+    while ( elem = elem.offsetParent )
+        y += elem.offsetTop;
+	y -= toolbar.clientHeight;
+
+    var maxHeight = y + height;
+    var isVisible = ( y < ( window.pageYOffset) ) && ( maxHeight >= window.pageYOffset );
+    return isVisible; 
 }
 
 function setItem(item) {
@@ -136,3 +211,7 @@ function setItem(item) {
 
 document.addEventListener('click', interceptClickEvent);
 window.addEventListener('popstate', onStateChange);
+window.addEventListener('scroll', function() {
+	clearTimeout(scrollTimeout);
+	scrollTimeout = setTimeout(onScroll, 100);
+});

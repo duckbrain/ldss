@@ -17,7 +17,7 @@ projects:
   generate: false
   build: false
   fmt: true
-  test: false
+  test: true
   params:
   - web
   watcher:

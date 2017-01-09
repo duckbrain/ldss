@@ -187,3 +187,20 @@
 	padding: 15px 30px;
 	overflow-y: auto;
 }
+
+@media (min-width: 1000px) {
+	.show-footnotes .main-content {
+		padding-right: 450px;
+	}
+	.footnotes-container {
+		height: auto;
+		width: 450px;
+		top: 32px;
+		left: auto;
+		border-left: 1px #bbb solid;
+		
+	}
+	.footnotes-header {
+		display: none;
+	}
+}
