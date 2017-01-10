@@ -94,7 +94,7 @@
 .main-content {
 	font-size: 18px;
 	font-family: Palatino,"Palatino Linotype",Pahoran,Georgia,"Times New Roman",serif;
-	margin: 45px auto 25%;
+	margin: 45px auto calc(25% + 1.5em);
 	max-width: 470px;
 }
 
