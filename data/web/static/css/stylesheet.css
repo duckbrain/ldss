@@ -171,6 +171,10 @@
 	right: 0;
 	background-color: #FBF9F2;
 	display: none;
+	
+	line-height: 170%;
+	font: 6px/22px Palatino,"Palatino Linotype",Pahoran,Georgia,"Times New Roman",serif;
+    font-size: 18px;
 }
 
 .show-footnotes .footnotes-container {
@@ -188,6 +192,18 @@
 	overflow-y: auto;
 }
 
+.footnotes-footnote {
+	display: block;
+	list-style: none;
+	padding-left: 2em;
+	text-indent: -2em;
+	margin: 12px 0;
+}
+
+.footnotes-footnote-linkName {
+	font-style: italic;
+}
+
 @media (min-width: 1000px) {
 	.show-footnotes .main-content {
 		padding-right: 450px;
@@ -201,6 +217,5 @@
 		
 	}
 	.footnotes-header {
-		display: none;
 	}
 }
