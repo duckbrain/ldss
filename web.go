@@ -55,6 +55,7 @@ func (app web) run() {
 	http.HandleFunc("/api/", app.handleJSON)
 	http.HandleFunc("/search", app.handleSearch)
 	http.HandleFunc("/favicon.ico", app.handleStatic)
+	http.HandleFunc("/manifest.webmanifest", app.handleStatic)
 	http.HandleFunc("/css", app.handleStatic)
 
 	port := app.config.Get("WebPort").(int)

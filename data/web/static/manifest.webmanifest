@@ -1,0 +1,11 @@
+{
+  "name": "LDS Scriptures",
+  "short_name": "LDS Scriptures",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#fff",
+  "description": "A Gospel Library replacement for quick reading",
+  "icons": [{
+    "src": "favicon.ico",
+  }]
+}
