@@ -276,23 +276,20 @@ func (p *queryParser) lookup(q string) []Reference {
 }
 
 func (p *queryParser) lookupBase(q []byte) (advance int, path string) {
-	qlen := len(q)
-	qstring := string(q)
 	for s, r := range p.matchString {
 		slen := len(s)
-		if advance < slen && strings.Index(qstring, s) == 0 {
+		if advance < slen && strings.Index(string(q), s) == 0 {
 			path = r
 			advance = slen
-			return
 		}
 	}
 	for s, r := range p.matchRegexp {
 		if i := s.FindSubmatchIndex(q); i != nil {
-			remTemp := s.ReplaceAllString(qstring, "")
-			adv := qlen - len(remTemp)
+			remTemp := s.ReplaceAll(q, []byte{})
+			adv := len(q) - len(remTemp)
 			if advance < adv {
 				b := []byte{}
-				path = string(s.ExpandString(b, r, qstring, i))
+				path = string(s.Expand(b, []byte(r), q, i))
 				advance = adv
 			}
 		}

@@ -4,9 +4,9 @@
 bofm:bom:book of mormon:/scriptures/bofm
 /([1-4])( |-)?ne(phi)?/:/scriptures/bofm/${1}-ne#
 jacob:/scriptures/bofm/jacob#
-enos 1:enos:/scriptures/bofm/enos/1
-jarom 1:jarom:jar:/scriptures/bofm/jarom/1
-omni 1:omni:/scriptures/bofm/omni/1
+enos:/scriptures/bofm/enos#1
+jarom:jar:/scriptures/bofm/jarom#1
+omni:/scriptures/bofm/omni#1
 /w(ords)?( |-)?o(f)?( |-)?m(or(m(on)?)?)?/:/scriptures/bofm/w-of-m/1
 mosiah:mos:/scriptures/bofm/mosiah#
 alma:/scriptures/bofm/alma#
@@ -39,7 +39,7 @@ james:/scriptures/nt/james#
 /([1-2])( |-)?(pet(er)?)/:/scriptures/nt/${1}-pet#
 /([1-2])( |-)?(tim(othy)?)/:/scriptures/nt/${1}-tim#
 /([1-3])( |-)?(john|jn|jon)/:/scriptures/nt/${1}-jn#
-jude 1:jude:/scriptures/nt/jude/1
+jude:/scriptures/nt/jude#1
 revelation:rev:/scriptures/nt/rev#
 
 # Old Testament
@@ -51,7 +51,7 @@ leviticus:lev:/scriptures/ot/lev#
 numbers:num:/scriptures/ot/num#
 deuteronomy:deut:/scriptures/ot/deut#
 joshua:josh:/scriptures/ot/josh#
-judges:judg:/scriptures/ot/judg
+judges:judg:/scriptures/ot/judg#
 ruth:/scriptures/ot/ruth#
 /([1-2])( |-)?(sam(uel)?)/:/scriptures/ot/${1}-sam#
 /([1-2])( |-)?(kgs|kings)/:/scriptures/ot/${1}-kgs#
@@ -72,7 +72,7 @@ daniel:dan:/scriptures/ot/dan#
 hosea:/scriptures/ot/hosea#
 joel:/scriptures/ot/joel#
 amos:/scriptures/ot/amos#
-obadiah:obadiah 1:obad:obad 1:/scriptures/ot/obad/1
+obadiah:obad:/scriptures/ot/obad#1
 jonah:/scriptures/ot/jonah#
 micah:/scriptures/ot/micah#
 nahum:/scriptures/ot/nahum#
@@ -82,10 +82,20 @@ haggai:hag:/scriptures/ot/hag#
 zechariah:zech:/scriptures/ot/zech#
 malachi:mal:/scriptures/ot/mal#
 
-
 # D&C
 dc:d&c:doctrine and covenants:/scriptures/dc-testament/dc#
 dc od:d&c od:doctrine and covenants official declaration:/scriptures/dc
+
+# Pearl of Great Price
+pearl of great price:pgp:/scriptures/pgp
+pearl of great price title:pgp title:/scriptures/pgp/introduction
+moses:mose:/scriptures/pgp/moses#
+abraham:abr:/scriptures/pgp/abr#
+/(joseph smith|js)( |-)?m(atthew|att)/:/scriptures/pgp/js-m#1
+/(joseph smith|js)( |-)?h(istory)?/:/scriptures/pgp/js-h#1
+
+# Institute Manuels
+
 
 # General Conference
 42677:General Conference:/general-conference
