@@ -6,7 +6,7 @@
 package main
 
 import (
-	"ldss/lib"
+	"github.com/duckbrain/ldss/lib"
 	"strconv"
 	"strings"
 )

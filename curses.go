@@ -3,7 +3,7 @@
 package main
 
 import (
-	"ldss/lib"
+	"github.com/duckbrain/ldss/lib"
 	"log"
 
 	"github.com/rthornton128/goncurses"

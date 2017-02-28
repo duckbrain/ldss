@@ -4,7 +4,7 @@ package main
 
 import (
 	"fmt"
-	"ldss/lib"
+	"github.com/duckbrain/ldss/lib"
 
 	"github.com/andlabs/ui"
 )

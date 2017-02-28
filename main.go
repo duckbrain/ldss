@@ -2,7 +2,7 @@ package main
 
 import (
 	"fmt"
-	"ldss/lib"
+	"github.com/duckbrain/ldss/lib"
 )
 
 func main() {

@@ -8,7 +8,7 @@ import (
 	"fmt"
 	"html/template"
 	"io"
-	"ldss/lib"
+	"github.com/duckbrain/ldss/lib"
 	"net/http"
 	"path"
 	"strconv"
