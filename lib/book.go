@@ -167,7 +167,7 @@ func (b *Book) Path() string {
 }
 
 // The language this book is in
-func (b *Book) Language() *Language {
+func (b *Book) Language() *Lang {
 	return b.catalog.language
 }
 

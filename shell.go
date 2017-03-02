@@ -1,4 +1,4 @@
-// +build !noshell
+// +build exclude
 
 package main
 

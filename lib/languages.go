@@ -9,13 +9,13 @@ import (
 
 var languages cache
 
-type glLanguageDescription struct {
-	Languages []*Language `json:"languages"`
-	Success   bool        `json:"success"`
+type glLangDesc struct {
+	Languages []*Lang `json:"languages"`
+	Success   bool    `json:"success"`
 }
 
-// Defines a language as from the server. The fields should not be modified.
-type Language struct {
+// Lang defines a language as from the server. The fields should not be modified.
+type Lang struct {
 	// The Gospel Library ID for the language. Used for downloads.
 	ID int `json:"id"`
 
@@ -39,7 +39,7 @@ type Language struct {
 // representation as well as the English representation. It will also show
 // the standard internationalization code as well as the Gospel Library
 // language code.
-func (l *Language) String() string {
+func (l *Lang) String() string {
 	var id, name, code string
 
 	id = fmt.Sprintf("%v: ", l.ID)
@@ -58,7 +58,7 @@ func (l *Language) String() string {
 }
 
 // Gets the catalog for this language. If cached, it will return the cached version.
-func (l *Language) Catalog() (*Catalog, error) {
+func (l *Lang) Catalog() (*Catalog, error) {
 	l.catalogCache.construct = func() (interface{}, error) {
 		return newCatalog(l)
 	}
@@ -71,7 +71,7 @@ func (l *Language) Catalog() (*Catalog, error) {
 
 func init() {
 	languages.construct = func() (interface{}, error) {
-		var description glLanguageDescription
+		var description glLangDesc
 		file, err := os.Open(languagesPath())
 		if err != nil {
 			return nil, &notDownloadedLanguageErr{err}
@@ -82,7 +82,7 @@ func init() {
 }
 
 // Returns a list of all languages available. Downloads the languages if not already downloaded first.
-func Languages() ([]*Language, error) {
+func Languages() ([]*Lang, error) {
 	if !fileExist(languagesPath()) {
 		if err := DownloadLanguages(); err != nil {
 			return nil, err
@@ -92,11 +92,11 @@ func Languages() ([]*Language, error) {
 	if err != nil {
 		return nil, err
 	}
-	return langs.([]*Language), err
+	return langs.([]*Lang), err
 }
 
 // Finds a language by any of the accepted methods, compares ID, Code, and GlCode
-func LookupLanguage(id string) (*Language, error) {
+func LookupLanguage(id string) (*Lang, error) {
 	langs, err := Languages()
 	if err != nil {
 		return nil, err

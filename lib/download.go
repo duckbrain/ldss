@@ -46,7 +46,7 @@ func DownloadLanguages() error {
 }
 
 // Downloads the catalog for the passed language
-func DownloadCatalog(language *Language) error {
+func DownloadCatalog(language *Lang) error {
 	path := getServerAction(fmt.Sprintf("catalog.query&languageid=%v&platformid=%v", language.ID, platformID))
 	return downloadFile(path, catalogPath(language), false)
 }
@@ -114,7 +114,7 @@ func DownloadChildren(item Item, force bool) {
 
 // Downloads the catalog and all books for a language. If force is true, it will
 // download these items even if they are already downloaded, replacing them.
-func DownloadAll(lang *Language, force bool) error {
+func DownloadAll(lang *Lang, force bool) error {
 	if force || !fileExist(catalogPath(lang)) {
 		downloadUpdate <- DownloadInfo{Language: lang}
 		DownloadCatalog(lang)

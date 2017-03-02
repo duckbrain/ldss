@@ -31,7 +31,7 @@ type notDownloadedBookErr struct {
 // An error that a language's catalog needs to be downloaded
 type notDownloadedCatalogErr struct {
 	notDownloadedErrBase
-	lang *Language
+	lang *Lang
 }
 
 // An Error that the language list has not been downloaded

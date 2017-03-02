@@ -3,7 +3,7 @@ package lib
 type DownloadInfo struct {
 	err      error
 	Item     Item
-	Language *Language
+	Language *Lang
 	Started  bool
 	Progress float64
 }

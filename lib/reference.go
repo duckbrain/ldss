@@ -10,7 +10,7 @@ import (
 
 type Reference struct {
 	Path              string
-	Language          *Language
+	Language          *Lang
 	VerseSelected     int
 	VersesHighlighted []int
 	VersesExtra       []int
@@ -18,7 +18,7 @@ type Reference struct {
 	Keywords          []string
 }
 
-func Parse(lang *Language, q string) []Reference {
+func Parse(lang *Lang, q string) []Reference {
 	ref := ParsePath(lang, q)
 	if ref.Check() == nil {
 		return []Reference{ref}
@@ -29,7 +29,7 @@ func Parse(lang *Language, q string) []Reference {
 	return []Reference{}
 }
 
-func ParsePath(lang *Language, p string) Reference {
+func ParsePath(lang *Lang, p string) Reference {
 	r := Reference{
 		Language: lang,
 		Path:     p,
@@ -55,7 +55,7 @@ func ParsePath(lang *Language, p string) Reference {
 func (r Reference) MarshalJSON() ([]byte, error) {
 	return json.Marshal(struct {
 		Path              string
-		Language          *Language
+		Language          *Lang
 		VerseSelected     int
 		VersesHighlighted []int
 		VersesExtra       []int

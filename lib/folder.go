@@ -103,7 +103,7 @@ func (f *Folder) Path() string {
 }
 
 // Language of this folder
-func (f *Folder) Language() *Language {
+func (f *Folder) Language() *Lang {
 	return f.catalog.language
 }
 

@@ -244,7 +244,7 @@
 
 // +build !debug
 
-package main
+package assets
 
 import (
 	"bytes"

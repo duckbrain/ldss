@@ -31,7 +31,7 @@ func (n *Node) Path() string {
 }
 
 // The language the node is in.
-func (n *Node) Language() *Language {
+func (n *Node) Language() *Lang {
 	return n.Book.Language()
 }
 

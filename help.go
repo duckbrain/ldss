@@ -1,9 +1,13 @@
 package main
 
-import "fmt"
+import (
+	"fmt"
+
+	"github.com/duckbrain/ldss/assets"
+)
 
 func printAsset(path string) {
-	data, err := Asset(path)
+	data, err := assets.Asset(path)
 	if err != nil {
 		panic(err)
 	}
@@ -15,7 +19,7 @@ func PrintInstructions() {
 }
 
 func PrintCommandInstructions(command string) {
-	data, err := Asset("data/help/" + command)
+	data, err := assets.Asset("data/help/" + command)
 	if err != nil {
 		fmt.Printf("Command \"%s\" is not recognized or no extra help is available.\n", command)
 		return

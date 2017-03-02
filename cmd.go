@@ -1,11 +1,13 @@
+//+build exclude
 package main
 
 import (
 	"fmt"
-	"github.com/duckbrain/ldss/lib"
 	"log"
 	"os"
 	"strings"
+
+	"github.com/duckbrain/ldss/lib"
 
 	"github.com/fatih/color"
 )
@@ -142,9 +144,8 @@ func (app *cmd) run() {
 				refs := lib.Parse(lang, args[1])
 				if len(refs) != 1 {
 					return nil, fmt.Errorf("Cannot yet handle multiple references")
-				} else {
-					return refs[0].Lookup()
 				}
+				return refs[0].Lookup()
 			})
 			if err != nil {
 				panic(err)

@@ -10,7 +10,7 @@ type Item interface {
 	Name() string
 	Children() ([]Item, error)
 	Path() string
-	Language() *Language
+	Language() *Lang
 	Parent() Item
 	Next() Item
 	Previous() Item

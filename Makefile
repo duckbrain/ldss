@@ -3,21 +3,21 @@ BINARY = ${GOPATH}/bin/ldss
 BINDATA = ${GOPATH}/bin/go-bindata
 DEPENDS = .depends *.go lib/*.go
 
-all: $(BINARY) bindata_debug.go bindata_release.go
+all: $(BINARY) assets/bindata_debug.go assets/bindata_release.go
 
 ifeq ($(DEBUG), 1)
-$(BINARY): $(DEPENDS) bindata_debug.go
+$(BINARY): $(DEPENDS) assets/bindata_debug.go
 	go install --tags debug .
 else
-$(BINARY): $(DEPENDS) bindata_release.go
+$(BINARY): $(DEPENDS) assets/bindata_release.go
 	go install .
 endif
 
-bindata_debug.go: $(BINDATA) $(shell find data -print)
-	$(BINDATA) -prefix ${PWD} -nomemcopy -debug -tags "debug" -o "$@" data/...
+assets/bindata_debug.go: $(BINDATA) $(shell find data -print)
+	$(BINDATA) -prefix ${PWD} -pkg assets -nomemcopy -debug -tags "debug" -o "$@" data/...
 	gofmt -w "$@"
-bindata_release.go: $(BINDATA) $(shell find data -print)
-	$(BINDATA) -prefix ${PWD} -nomemcopy -tags "!debug" -o "$@" data/...
+assets/bindata_release.go: $(BINDATA) $(shell find data -print)
+	$(BINDATA) -prefix ${PWD} -pkg assets -nomemcopy -tags "!debug" -o "$@" data/...
 	gofmt -w "$@"
 
 $(BINDATA):

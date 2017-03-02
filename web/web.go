@@ -1,6 +1,4 @@
-// +build !noweb
-
-package main
+package web
 
 import (
 	"bytes"
@@ -8,71 +6,52 @@ import (
 	"fmt"
 	"html/template"
 	"io"
-	"github.com/duckbrain/ldss/lib"
+	"log"
 	"net/http"
 	"path"
-	"strconv"
 	"strings"
+
+	"github.com/duckbrain/ldss/assets"
+	"github.com/duckbrain/ldss/lib"
 )
 
-type web struct {
-	appinfo
-	templates *webtemplates
-}
+var defaultLanguage *lib.Lang
 
 type webLayout struct {
 	Title       string
 	Content     template.HTML
 	Footnotes   []lib.Footnote
-	Lang        *lib.Language
+	Lang        *lib.Lang
 	Item        lib.Item
 	Breadcrumbs []lib.Reference
 	Query       string
 }
 
-func init() {
-	apps["web"] = &web{}
-}
+// Run starts listening on the given port
+func Run(port int, lang *lib.Lang) {
+	defaultLanguage = lang
 
-func (app web) register(config *Configuration) {
-	config.RegisterOption(ConfigOption{
-		Name:     "WebPort",
-		Default:  1830,
-		ShortArg: 'p',
-		Parse: func(arg string) (interface{}, error) {
-			return strconv.Atoi(arg)
-		},
-	})
-	config.RegisterOption(ConfigOption{
-		Name:    "WebTemplatePath",
-		Default: "",
-	})
-	app.config = config
-}
+	http.HandleFunc("/", handler)
+	http.HandleFunc("/api/", handleJSON)
+	http.HandleFunc("/search", handleSearch)
+	http.HandleFunc("/favicon.ico", handleStatic)
+	http.HandleFunc("/manifest.webmanifest", handleStatic)
+	http.HandleFunc("/css", handleStatic)
 
-func (app web) run() {
-	http.HandleFunc("/", app.handler)
-	http.HandleFunc("/api/", app.handleJSON)
-	http.HandleFunc("/search", app.handleSearch)
-	http.HandleFunc("/favicon.ico", app.handleStatic)
-	http.HandleFunc("/manifest.webmanifest", app.handleStatic)
-	http.HandleFunc("/css", app.handleStatic)
-
-	port := app.config.Get("WebPort").(int)
-	app.initTemplates()
-	app.efmt.Printf("Listening on port: %v\n", port)
+	initTemplates()
+	log.Printf("Listening on port: %v\n", port)
 	http.ListenAndServe(fmt.Sprintf(":%v", port), nil)
 }
 
-func (app *web) language(r *http.Request) *lib.Language {
+func language(r *http.Request) *lib.Lang {
 	lang, err := lib.LookupLanguage(r.URL.Query().Get("lang"))
 	if err != nil {
-		return app.lang
+		return defaultLanguage
 	}
 	return lang
 }
 
-func (app *web) handleError(w io.Writer, r *http.Request) {
+func handleError(w io.Writer, r *http.Request) {
 	if rec := recover(); rec != nil {
 		var err error
 		switch rec.(type) {
@@ -81,15 +60,15 @@ func (app *web) handleError(w io.Writer, r *http.Request) {
 		default:
 			err = fmt.Errorf("%v", rec)
 		}
-		app.templates.err.Execute(w, err)
+		templates.err.Execute(w, err)
 	}
 }
 
-func (app *web) handleSearch(w http.ResponseWriter, r *http.Request) {
-	app.initTemplates()
+func handleSearch(w http.ResponseWriter, r *http.Request) {
+	initTemplates()
 
 	defer r.Body.Close()
-	lang := app.language(r)
+	lang := language(r)
 	query := r.URL.Query().Get("q")
 	refs := lib.Parse(lang, query)
 	if len(refs) == 1 && len(refs[0].Keywords) == 0 {
@@ -113,12 +92,12 @@ func (app *web) handleSearch(w http.ResponseWriter, r *http.Request) {
 
 		if len(ref.Keywords) == 0 {
 			func() {
-				defer app.handleError(buff, r)
+				defer handleError(buff, r)
 				item, err := ref.Lookup()
 				if err != nil {
 					panic(err)
 				}
-				app.print(buff, r, ref, item, true)
+				print(buff, r, ref, item, true)
 				ref.Name = item.Name()
 				layout.Breadcrumbs = append(layout.Breadcrumbs, ref)
 
@@ -134,14 +113,14 @@ func (app *web) handleSearch(w http.ResponseWriter, r *http.Request) {
 			item, err := ref.Lookup()
 			if err != nil {
 				func() {
-					defer app.handleError(buff, r)
+					defer handleError(buff, r)
 					panic(err)
 				}()
 			} else {
 				ref.Name = item.Name()
 				results := lib.SearchSort(item, ref.Keywords)
 				layout.Breadcrumbs = append(layout.Breadcrumbs, ref)
-				app.templates.searchResults.Execute(buff, struct {
+				templates.searchResults.Execute(buff, struct {
 					Item          lib.Item
 					Keywords      []string
 					SearchString  string
@@ -159,19 +138,19 @@ func (app *web) handleSearch(w http.ResponseWriter, r *http.Request) {
 	}
 	layout.Content = template.HTML(buff.String())
 
-	app.templates.layout.Execute(w, layout)
+	templates.layout.Execute(w, layout)
 }
 
-func (app *web) handleStatic(w http.ResponseWriter, r *http.Request) {
-	defer app.handleError(w, r)
+func handleStatic(w http.ResponseWriter, r *http.Request) {
+	defer handleError(w, r)
 	defer r.Body.Close()
-	if err := app.static(w, r); err != nil {
+	if err := static(w, r); err != nil {
 		panic(err)
 	}
 }
 
-func (app *web) static(w http.ResponseWriter, r *http.Request) error {
-	data, err := Asset("data/web/static" + r.URL.Path)
+func static(w http.ResponseWriter, r *http.Request) error {
+	data, err := assets.Asset("data/web/static" + r.URL.Path)
 	if err != nil {
 		return err
 	}
@@ -193,7 +172,7 @@ func (app *web) static(w http.ResponseWriter, r *http.Request) error {
 	return nil
 }
 
-func (app *web) itemsRelativesPath(item lib.Item) interface{} {
+func itemsRelativesPath(item lib.Item) interface{} {
 	if item != nil {
 		data := struct {
 			Name string `json:"name"`
@@ -213,16 +192,15 @@ func (app *web) itemsRelativesPath(item lib.Item) interface{} {
 		}
 
 		return data
-	} else {
-		return nil
 	}
+	return nil
 }
 
-func (app *web) handleJSON(w http.ResponseWriter, r *http.Request) {
-	//defer app.handleError(w, r)
+func handleJSON(w http.ResponseWriter, r *http.Request) {
+	//defer handleError(w, r)
 	defer r.Body.Close()
 
-	lang := app.language(r)
+	lang := language(r)
 	path := r.URL.Path[len("/api"):]
 	ref := lib.ParsePath(lang, path)
 	item, err := ref.Lookup()
@@ -235,9 +213,9 @@ func (app *web) handleJSON(w http.ResponseWriter, r *http.Request) {
 	data["name"] = item.Name()
 	data["path"] = item.Path()
 	data["language"] = item.Language().GlCode
-	data["parent"] = app.itemsRelativesPath(item.Parent())
-	data["next"] = app.itemsRelativesPath(item.Next())
-	data["previous"] = app.itemsRelativesPath(item.Previous())
+	data["parent"] = itemsRelativesPath(item.Parent())
+	data["next"] = itemsRelativesPath(item.Next())
+	data["previous"] = itemsRelativesPath(item.Previous())
 
 	switch item := item.(type) {
 	case *lib.Catalog:
@@ -255,7 +233,7 @@ func (app *web) handleJSON(w http.ResponseWriter, r *http.Request) {
 	if childItems, err := item.Children(); err == nil {
 		children := make([]interface{}, len(childItems))
 		for i, child := range childItems {
-			children[i] = app.itemsRelativesPath(child)
+			children[i] = itemsRelativesPath(child)
 		}
 		data["children"] = children
 	}
@@ -263,7 +241,7 @@ func (app *web) handleJSON(w http.ResponseWriter, r *http.Request) {
 	breadcrumbs := make([]interface{}, 0)
 	for p := item; p != nil; {
 		parent := p.Parent()
-		breadcrumbs = append([]interface{}{app.itemsRelativesPath(p)}, breadcrumbs...)
+		breadcrumbs = append([]interface{}{itemsRelativesPath(p)}, breadcrumbs...)
 		p = parent
 	}
 	data["breadcrumbs"] = breadcrumbs
@@ -278,19 +256,19 @@ func (app *web) handleJSON(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func (app *web) handler(w http.ResponseWriter, r *http.Request) {
-	defer app.handleError(w, r)
+func handler(w http.ResponseWriter, r *http.Request) {
+	//defer handleError(w, r)
 	defer r.Body.Close()
 
-	if app.static(w, r) == nil {
+	if static(w, r) == nil {
 		return
 	}
 
-	lang := app.language(r)
+	lang := language(r)
 	buff := new(bytes.Buffer)
 
 	//TODO Remove for production
-	app.initTemplates()
+	initTemplates()
 
 	ref := lib.ParsePath(lang, r.URL.Path)
 	item, err := ref.Lookup()
@@ -303,7 +281,7 @@ func (app *web) handler(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 	}
-	app.print(buff, r, ref, item, false)
+	print(buff, r, ref, item, false)
 
 	layout := webLayout{
 		Title:       "LDS Scriptures",
@@ -330,10 +308,10 @@ func (app *web) handler(w http.ResponseWriter, r *http.Request) {
 		}}, layout.Breadcrumbs...)
 	}
 
-	app.templates.layout.Execute(w, layout)
+	templates.layout.Execute(w, layout)
 }
 
-func (app *web) print(w io.Writer, r *http.Request, ref lib.Reference, item lib.Item, filter bool) {
+func print(w io.Writer, r *http.Request, ref lib.Reference, item lib.Item, filter bool) {
 	var err error
 	data := struct {
 		Item      lib.Item
@@ -367,41 +345,15 @@ func (app *web) print(w io.Writer, r *http.Request, ref lib.Reference, item lib.
 				data.Content = template.HTML(content)
 				data.HasTitle = strings.Contains(string(content), "</h1>")
 			}
-			err = app.templates.nodeContent.Execute(w, data)
+			err = templates.nodeContent.Execute(w, data)
 		} else {
-			err = app.templates.nodeChildren.Execute(w, data)
+			err = templates.nodeChildren.Execute(w, data)
 		}
 	default:
-		err = app.templates.nodeChildren.Execute(w, data)
+		err = templates.nodeChildren.Execute(w, data)
 	}
 
 	if err != nil {
 		panic(err)
 	}
-}
-
-type webtemplates struct {
-	nodeChildren, nodeContent, searchResults, layout, err *template.Template
-}
-
-func (app *web) initTemplates() {
-	app.templates = &webtemplates{}
-	app.templates.layout = app.loadTemplate("layout.tpl")
-	app.templates.nodeContent = app.loadTemplate("node-content.tpl")
-	app.templates.nodeChildren = app.loadTemplate("node-children.tpl")
-	app.templates.searchResults = app.loadTemplate("search-results.tpl")
-	app.templates.err = app.loadTemplate("403.tpl")
-}
-
-func (app *web) loadTemplate(path string) *template.Template {
-	data, err := Asset("data/web/templates/" + path)
-	if err != nil {
-		panic(err)
-	}
-	temp := template.New(path)
-	temp, err = temp.Parse(string(data))
-	if err != nil {
-		panic(err)
-	}
-	return temp
 }
