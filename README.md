@@ -18,11 +18,11 @@ There are currently no binary releases for the application, but you can compile 
 
 1. [Install Go](https://golang.org/doc/install)
 2. Run `go get github.com/duckbrain/ldss`. This should download and compile ldss and all its dependencies.
-3. Run `ldss web` to start the web server. It will default to port 1830. If you would like to use a different port, [that's currently broken](https://github.com/duckbrain/ldss/issues/1).
+3. Run `ldss web` to start the web server. It will default to port 1830. If you would like to use a different port, specify it with the `--port` parameter.
 
 ## For Developers
 
-LDS Scriptures can compile for debug or release. The major difference between the two is that the resources in the data/ directory will be statically linked  in release mode. There may also be more error and logging output in debug mode as well.
+LDS Scriptures can compile for debug or release. The major difference between the two is that the resources in the data/ directory will be statically linked  in release mode.
 
 ### Makefile build
 
