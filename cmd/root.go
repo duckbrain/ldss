@@ -17,6 +17,8 @@ package cmd
 import (
 	"fmt"
 	"os"
+	"os/user"
+	"path"
 
 	"github.com/duckbrain/ldss/lib"
 	"github.com/spf13/cobra"
@@ -47,7 +49,6 @@ func Execute() {
 func init() {
 	cobra.OnInitialize(initConfig)
 
-	RootCmd.PersistentFlags().StringVar(&cfgFile, "config", "", "config file (default is $HOME/.ldss.yaml)")
 	RootCmd.PersistentFlags().StringVar(&langName, "lang", "eng", "language for scripture content")
 }
 
@@ -57,9 +58,20 @@ func initConfig() {
 		viper.SetConfigFile(cfgFile)
 	}
 
-	viper.SetConfigName(".ldss") // name of config file (without extension)
-	viper.AddConfigPath("$HOME") // adding home directory as first search path
-	viper.AutomaticEnv()         // read in environment variables that match
+	currentUser, err := user.Current()
+	if err == nil {
+		viper.SetDefault("DataDirectory", path.Join(currentUser.HomeDir, ".ldss"))
+	} else {
+		viper.SetDefault("DataDirectory", ".ldss")
+	}
+	viper.SetDefault("Language", "eng")
+	viper.SetDefault("ServerURL", "https://tech.lds.org/glweb")
+
+	viper.SetConfigName("config")
+	viper.AddConfigPath("/etc/ldss/")
+	viper.AddConfigPath("$HOME/.ldss")
+	viper.AddConfigPath(".")
+	viper.AutomaticEnv()
 
 	// If a config file is found, read it in.
 	if err := viper.ReadInConfig(); err == nil {
