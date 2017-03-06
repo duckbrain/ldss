@@ -27,8 +27,8 @@ type webLayout struct {
 	Query       string
 }
 
-// Run starts listening on the given port
-func Run(port int, lang *lib.Lang) {
+// Handle attaches events to the net/http package, but does not start the web server
+func Handle(lang *lib.Lang) {
 	defaultLanguage = lang
 
 	http.HandleFunc("/", handler)
@@ -39,6 +39,12 @@ func Run(port int, lang *lib.Lang) {
 	http.HandleFunc("/css", handleStatic)
 
 	initTemplates()
+
+}
+
+// Run starts listening on the given port
+func Run(port int, lang *lib.Lang) {
+	Handle(lang)
 	log.Printf("Listening on port: %v\n", port)
 	http.ListenAndServe(fmt.Sprintf(":%v", port), nil)
 }
