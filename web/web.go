@@ -203,7 +203,7 @@ func itemsRelativesPath(item lib.Item) interface{} {
 }
 
 func handleJSON(w http.ResponseWriter, r *http.Request) {
-	//defer handleError(w, r)
+	defer handleError(w, r)
 	defer r.Body.Close()
 
 	lang := language(r)
@@ -263,7 +263,7 @@ func handleJSON(w http.ResponseWriter, r *http.Request) {
 }
 
 func handler(w http.ResponseWriter, r *http.Request) {
-	//defer handleError(w, r)
+	defer handleError(w, r)
 	defer r.Body.Close()
 
 	if static(w, r) == nil {
