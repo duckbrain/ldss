@@ -43,3 +43,12 @@ clean-tree: clean
 	rm -rf ${GOPATH}/pkg/*
 	rm -rf ${GOPATH}/src/github.com
 	rm -rf ${GOPATH}/src/golang.org
+
+
+# Android Builds
+
+android:
+	cd ldssa/build; ./gradlew build
+
+android-install: android
+	adb install -r ldssa/build/build/outputs/apk/build-debug.apk

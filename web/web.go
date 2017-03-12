@@ -70,6 +70,20 @@ func handleError(w io.Writer, r *http.Request) {
 	}
 }
 
+// HandleError writes error information from a panic to the web stream
+func HandleError(w io.Writer, r *http.Request) {
+	if rec := recover(); rec != nil {
+		var err error
+		switch rec.(type) {
+		case error:
+			err = rec.(error)
+		default:
+			err = fmt.Errorf("%v", rec)
+		}
+		w.Write([]byte(err.Error()))
+	}
+}
+
 func handleSearch(w http.ResponseWriter, r *http.Request) {
 	initTemplates()
 
@@ -277,15 +291,27 @@ func handler(w http.ResponseWriter, r *http.Request) {
 	initTemplates()
 
 	ref := lib.ParsePath(lang, r.URL.Path)
-	item, err := ref.Lookup()
+	var children []lib.Item
+
+	item, err := lib.AutoDownload(func() (item lib.Item, err error) {
+		item, err = ref.Lookup()
+		if err != nil {
+			return
+		}
+		children, err = item.Children()
+		if err != nil {
+			return
+		}
+
+		return
+	})
 	if err != nil {
 		panic(err)
 	}
-	if children, err := item.Children(); err == nil {
-		if len(children) == 1 {
-			http.Redirect(w, r, children[0].Path(), 301)
-			return
-		}
+
+	if len(children) == 1 {
+		http.Redirect(w, r, children[0].Path(), 301)
+		return
 	}
 	print(buff, r, ref, item, false)
 
