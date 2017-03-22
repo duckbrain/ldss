@@ -1,0 +1,44 @@
+buildscript {
+    repositories {
+        jcenter()
+    }
+    dependencies {
+        classpath 'com.android.tools.build:gradle:2.3.0'
+    }
+}
+apply plugin: 'android'
+
+android {
+    compileSdkVersion 'android-13'
+    buildToolsVersion '25.0.2'
+
+    buildTypes {
+        release {
+            minifyEnabled true
+            proguardFile getDefaultProguardFile('proguard-android.txt')
+        }
+    }
+}
+
+android {
+    defaultConfig {
+        minSdkVersion 15
+    }
+}
+
+repositories {
+    flatDir {
+        dirs 'libs'
+    }
+}
+
+dependencies {
+    compile(name:'gowebview', ext:'aar')
+}
+
+task genGoMobileAAR(type:Exec) {
+  workingDir '.'
+  commandLine 'gomobile', 'bind', '-o', 'libs/gowebview.aar', '.'
+}
+
+preBuild.dependsOn(genGoMobileAAR)

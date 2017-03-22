@@ -27,8 +27,8 @@ type webLayout struct {
 	Query       string
 }
 
-// Run starts listening on the given port
-func Run(port int, lang *lib.Lang) {
+// Handle attaches events to the net/http package, but does not start the web server
+func Handle(lang *lib.Lang) {
 	defaultLanguage = lang
 
 	http.HandleFunc("/", handler)
@@ -39,6 +39,12 @@ func Run(port int, lang *lib.Lang) {
 	http.HandleFunc("/css", handleStatic)
 
 	initTemplates()
+
+}
+
+// Run starts listening on the given port
+func Run(port int, lang *lib.Lang) {
+	Handle(lang)
 	log.Printf("Listening on port: %v\n", port)
 	http.ListenAndServe(fmt.Sprintf(":%v", port), nil)
 }
@@ -61,6 +67,20 @@ func handleError(w io.Writer, r *http.Request) {
 			err = fmt.Errorf("%v", rec)
 		}
 		templates.err.Execute(w, err)
+	}
+}
+
+// HandleError writes error information from a panic to the web stream
+func HandleError(w io.Writer, r *http.Request) {
+	if rec := recover(); rec != nil {
+		var err error
+		switch rec.(type) {
+		case error:
+			err = rec.(error)
+		default:
+			err = fmt.Errorf("%v", rec)
+		}
+		w.Write([]byte(err.Error()))
 	}
 }
 
@@ -197,7 +217,7 @@ func itemsRelativesPath(item lib.Item) interface{} {
 }
 
 func handleJSON(w http.ResponseWriter, r *http.Request) {
-	//defer handleError(w, r)
+	defer handleError(w, r)
 	defer r.Body.Close()
 
 	lang := language(r)
@@ -257,7 +277,7 @@ func handleJSON(w http.ResponseWriter, r *http.Request) {
 }
 
 func handler(w http.ResponseWriter, r *http.Request) {
-	//defer handleError(w, r)
+	defer handleError(w, r)
 	defer r.Body.Close()
 
 	if static(w, r) == nil {
@@ -271,15 +291,27 @@ func handler(w http.ResponseWriter, r *http.Request) {
 	initTemplates()
 
 	ref := lib.ParsePath(lang, r.URL.Path)
-	item, err := ref.Lookup()
+	var children []lib.Item
+
+	item, err := lib.AutoDownload(func() (item lib.Item, err error) {
+		item, err = ref.Lookup()
+		if err != nil {
+			return
+		}
+		children, err = item.Children()
+		if err != nil {
+			return
+		}
+
+		return
+	})
 	if err != nil {
 		panic(err)
 	}
-	if children, err := item.Children(); err == nil {
-		if len(children) == 1 {
-			http.Redirect(w, r, children[0].Path(), 301)
-			return
-		}
+
+	if len(children) == 1 {
+		http.Redirect(w, r, children[0].Path(), 301)
+		return
 	}
 	print(buff, r, ref, item, false)
 
