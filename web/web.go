@@ -316,11 +316,12 @@ func handler(w http.ResponseWriter, r *http.Request) {
 	print(buff, r, ref, item, false)
 
 	layout := webLayout{
-		Title:       "LDS Scriptures",
+		Title:       item.Name(),
 		Content:     template.HTML(buff.String()),
 		Lang:        lang,
 		Item:        item,
 		Breadcrumbs: make([]lib.Reference, 0),
+		Query:       ref.String(),
 	}
 
 	// Get the footnote content
