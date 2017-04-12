@@ -56,6 +56,7 @@ func Search(item Item, keywords []string, c chan<- SearchResult) {
 	}()
 }
 
+// TODO Change where the search result stores the content with highlights on words
 func searchItem(item Item, keywords []string, c chan<- SearchResult, waitGroup *sync.WaitGroup, resultSet map[string]bool) {
 	if node, ok := item.(*Node); ok {
 		if resultSet[node.Path()] {

@@ -399,24 +399,31 @@ func (content Content) Highlight(verses []int, class string) Content {
 // Search the content for the given keywords and return a search result containing
 // the verses in which the results were found and the a weighted score based on
 // the number of occurances.
+//
+// TODO Give extra points to sequences of words in the correct order (ignoring punctuation)
 func (content Content) Search(keywords []string) SearchResult {
 	z := html.NewTokenizerFragment(strings.NewReader(string(content)), "div")
 	r := SearchResult{}
 	verse := 0
 
-	for {
+	foundKeywords := make(map[string]bool)
+	eof := false
+
+	for !eof {
 		switch z.Next() {
 		case html.ErrorToken:
-			r.Clean()
-			return r
+			eof = true
 		case html.TextToken:
 			text := strings.ToLower(string(z.Text()))
 			for _, k := range keywords {
 				weight := strings.Count(text, k)
-				if weight > 0 && verse > 0 {
-					r.VersesHighlighted = append(r.VersesHighlighted, verse)
+				if weight > 0 {
+					foundKeywords[k] = true
+					if verse > 0 {
+						r.VersesHighlighted = append(r.VersesHighlighted, verse)
+					}
+					r.Weight += weight
 				}
-				r.Weight += weight
 			}
 		case html.StartTagToken:
 			_, hasAttr := z.TagName()
@@ -429,4 +436,14 @@ func (content Content) Search(keywords []string) SearchResult {
 			}
 		}
 	}
+
+	// If not all the keywords were found, this is not a result.
+	for _, k := range keywords {
+		if !foundKeywords[k] {
+			r.Weight = 0
+		}
+	}
+
+	r.Clean()
+	return r
 }
