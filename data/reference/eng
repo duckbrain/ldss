@@ -91,8 +91,8 @@ pearl of great price:pgp:/scriptures/pgp
 pearl of great price title:pgp title:/scriptures/pgp/introduction
 moses:mose:/scriptures/pgp/moses#
 abraham:abr:/scriptures/pgp/abr#
-/(joseph smith|js)( |-)?m(atthew|att)/:/scriptures/pgp/js-m#1
-/(joseph smith|js)( |-)?h(istory)?/:/scriptures/pgp/js-h#1
+/(joseph smith|js)( |\-|\-\-|—)?m(atthew|att)/:/scriptures/pgp/js-m/1
+/(joseph smith|js)( |\-|\-\-|—)?h(istory)?/:/scriptures/pgp/js-h/1
 
 # Institute Manuels
 

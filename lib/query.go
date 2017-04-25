@@ -115,7 +115,7 @@ func newQueryParser(lang *Lang, file []byte) *queryParser {
 			p.matchFolder[id] = path
 			tokens = tokens[1:]
 		} else if len(tokens) == 1 && isRegex.MatchString(tokens[0]) {
-			exp := "^" + tokens[0][1:len(tokens[0])-1] + " "
+			exp := "(?i)^" + tokens[0][1:len(tokens[0])-1]
 			r, err := regexp.Compile(exp)
 			if err == nil {
 				r.Longest()
@@ -232,6 +232,14 @@ func (p *queryParser) lookup(q string) []Reference {
 			}
 		case tokenRef:
 			if i := strings.LastIndex(ref.Path, "#"); i != -1 {
+				pathType := ref.Path[i:]
+				switch pathType {
+				case "#":
+					parseMode = parseModeChapter
+				case "#1":
+					parseMode = parseModeChapter
+					chapter = 1
+				}
 				ref.Path = string(ref.Path[:i])
 				parseMode = parseModeChapter
 			} else {

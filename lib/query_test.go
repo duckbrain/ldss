@@ -15,6 +15,10 @@ const file = `
 
 # Folder mapping
 42762:/music
+
+# Joseph Smith History was having issues
+/(joseph smith|js)( |\-|\-\-|—)?h(istory)?/:/scriptures/pgp/js-h/1
+
 `
 
 func testReferences(t *testing.T, a []Reference, b ...Reference) {
@@ -98,4 +102,6 @@ func TestReferenceLookup(t *testing.T) {
 		Path:              "/scriptures/bofm/1-ne/4",
 		VersesHighlighted: []int{5},
 	})
+
+	test("Joseph Smith—History", "/scriptures/pgp/js-h/1")
 }
