@@ -8,6 +8,7 @@
 	left: 0;
 	right: 0;
 	height: 32px;
+	z-index: 10;
 }
 
 .toolbar a {
@@ -96,6 +97,7 @@
 	font-family: Palatino,"Palatino Linotype",Pahoran,Georgia,"Times New Roman",serif;
 	margin: 45px auto calc(25% + 1.5em);
 	max-width: 470px;
+	position: relative;
 }
 
 .main-content h1 {
@@ -160,6 +162,29 @@
 
 .highlight {
 	background-color: #fefbbf;
+}
+
+.strong {
+	font-weight: bold;
+}
+
+.emphasis {
+	font-style: italic;
+}
+
+.verse::first-word {
+	font-weight: bold;	
+}
+
+.pageBreak::before {
+	content: attr(page-number);
+	position: absolute;
+    right: -1.5em;
+    padding: 2px 5px 10px;
+    background-color: #eee;
+    transform: rotateZ(-.25turn);
+    transform-origin: top;
+    line-height: 1em;
 }
 
 .footnotes-container {
