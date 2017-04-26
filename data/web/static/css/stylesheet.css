@@ -212,6 +212,22 @@
 	color: #fff;
 }
 
+.footnotes-close {
+	cursor: pointer;
+	display: block;
+	width: 20px;
+	height: 20px;
+	text-align: center;
+	float: right;
+	background-color: #444;
+	border: 2px #111 solid;
+	border-radius: 4px;
+}
+
+.footnotes-close:hover {
+	background-color: #555;
+}
+
 .footnotes {
 	padding: 15px 30px;
 	overflow-y: auto;

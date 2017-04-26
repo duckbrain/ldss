@@ -9,6 +9,10 @@ var nextBtn = document.getElementById('next');
 var breadcrumbs = document.querySelector('.breadcrumbs');
 var footnotes = document.querySelector('.footnotes');
 var footnotesHeader = document.querySelector('.footnotes-header');
+document.querySelector('.footnotes-close').addEventListener('click', function(e) {
+	e.preventDefault();
+	setFootnotesOpen(false);
+});
 var state = { item: null };
 
 var scrolledVerse = null;

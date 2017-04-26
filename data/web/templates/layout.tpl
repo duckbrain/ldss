@@ -51,6 +51,9 @@
 <aside class="footnotes-container">
 <div class="footnotes-header">
 Footnotes
+<div class="footnotes-close">
+x
+</div>
 </div>
 <div class="footnotes">
 {{- range $key, $ref := .Footnotes }}
