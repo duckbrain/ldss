@@ -1,4 +1,5 @@
 DEBUG ?= 1
+GOPATH ?= ${HOME}/go
 BINARY = ${GOPATH}/bin/ldss
 BINDATA = ${GOPATH}/bin/go-bindata
 DEPENDS = .depends *.go lib/*.go

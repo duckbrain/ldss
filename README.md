@@ -1,20 +1,32 @@
 # LDS Scriptures
 
-LDS Scriptures port to native command line in Go.
+![](data/web/static/favicon.ico)
 
-LDS Scriptures is a set of tools for downloading, parsing, and reading the Gospel Library content from [The Church of Jesus Christ of Latter-day Saints](http://lds.org). 
+ldss is a set of tools for downloading, parsing, and reading the Gospel Library content from [The Church of Jesus Christ of Latter-day Saints](http://lds.org). 
 
-The following interfaces are planned to be implemented as part of this project or as a separate project. Currently, only the web-based interface is intended for use.
+My goal would be to eventually have many ways to access the richest scripture content in as many places as possible, but for now, it mainly provides a web server.
 
-- [x] Web server
-- [ ] Android App
-- [ ] Command line interface
-- [ ] Native OS graphical interface using [github.com/andlabs/ui](https://github.com/andlabs/ui)
-- [ ] Curses interface
+The content available through this software is owned by the church, and is distributed by the church. This is simply an alternate client to view the content in.
+
+### Web Interface (your best bet)
+
+The web interface is what I use for my daily usage. It works great in institute classes and for preparing lessons. Most features will probably work best and show up here first.
+
+### Android App (not well maintained)
+
+I did manage to generate an Android app with [gowebview](https://github.com/microo8/gowebview), but it really needs some work before I would call it good enough for daily usage. If you are willing and able to help, pull requests would be much appreciated. I'm also perfectly happy with you forking the project, but let me know so I can link back.
+
+### Command Line Interface (a little broken)
+
+There was a half decent command line interface, but since I moved to Viper, I haven't fully redone it yet. I'll get around to it, but the web interface is so much easier to use (and work on for me).
+
+### Native Graphical User Interface (not many features)
+
+I tried to do th is in Go with [github.com/andlabs/ui](https://github.com/andlabs/ui), but I was basically re-implementing the web browser. If the project gets some sort of WebView I might try again, because I know that would make this project much more accessible, but for now, if someone else wants to try on some other technology, make an issue to talk about it.
 
 ## Installation instructions
 
-There are currently no binary releases for the application, but you can compile it with go.
+There are currently no binary releases for the application. If you know how to cross-compile [go-sqlite3](https://github.com/mattn/go-sqlite3) on Linux, let me know. I'm a little lacking on the build machines. You can install the package by doing the following.
 
 1. [Install Go](https://golang.org/doc/install)
 2. Run `go get github.com/duckbrain/ldss`. This should download and compile ldss and all its dependencies.
@@ -22,19 +34,19 @@ There are currently no binary releases for the application, but you can compile 
 
 ## For Developers
 
-LDS Scriptures can compile for debug or release. The major difference between the two is that the resources in the data/ directory will be statically linked  in release mode.
+To quickly download and build the project, install Go, and **set your `GOPATH`**. 
 
-### Makefile build
+```bash
+go get github.com/duckbrain/ldss
+```
 
-1. Check out the repository into $GOPATH/src/ldss and cd into the directory
-2. Run `make DEBUG=1`
+This will check the project out to `$GOPATH/src/github.com/duckbrain/ldss` and compile it to `$GOPATH/bin/ldss`.
 
-The `DEBUG=1` can be ommitted because that is the default value. If you set `DEBUG=0`, then it will compile in release mode.
+This project uses [go-bindata](http://github.com/jteeuwen/go-bindata) to generate `assets/bindata_release.go`. If anything is changed in the `data\` directory, you must regenerate the file. The easiest way to do this is with `make` (if you have it installed). Otherwise, you need to do the following.
 
-### Manual Build
+- `go get -u github.com/jteeuwen/go-bindata/...` to download and compile go-bindata.
+- `$GOPATH/bin/go-bindata -pkg assets -nomemcopy -tags "!debug" -o assets/bindata_release.go data/...` to generate the new release build. Make sure all pull-requests use these parameters, but you can modify the generation for your own builds.
 
-1. Check out the repository into `$GOPATH/src/ldss` and cd into the directory
-2. Run `go get -u github.com/jteeuwen/go-bindata/...` to download go-bindata
-3. Run `$GOPATH/bin/go-bindata data/... -o ldss/bindata.go` to generate bindata.go. You can pass `--debug` to generate a debug version as well.
-4. Run `go get -d ./...` to download all dependencies
-5. Run `go install ./ldss` to compile and you will find the binary in `$GOPATH/bin/ldss`.
+There is also a debug mode that will generate a binary that reads the files from the project instead of building them into the executable. You can read the `Makefile` for details on that.
+
+If you are new to Go, I would recommend reading [How to Write Go Code](https://golang.org/doc/code.html) in the Go documentation for various other commands you can use in development.
