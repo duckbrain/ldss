@@ -14,7 +14,7 @@ helaman:hel:/scriptures/bofm/hel#
 mormon:morm:/scriptures/bofm/morm#
 ether:eth:/scriptures/bofm/ether#
 moroni:moro:mor:/scriptures/bofm/moro#
-/(bofm|bom|book of mormon) (pron|pronounciation( guide)?)/:/scriptures/bofm/pronunciation
+/(bofm|bom|book of mormon) (pron|pronunciation( guide)?)/:/scriptures/bofm/pronunciation
 
 # New Testament
 new testament:nt:/scriptures/nt

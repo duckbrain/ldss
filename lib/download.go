@@ -8,7 +8,7 @@ import (
 	"os"
 )
 
-// The number of simultanious downloads when using DownloadChildren or DownloadAll
+// The number of simultaneous downloads when using DownloadChildren or DownloadAll
 var DownloadLimit int = 6
 
 // Downloads the content at the get path to the save path, optionally zlib decompressing it.

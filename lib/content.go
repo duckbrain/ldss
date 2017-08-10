@@ -197,7 +197,7 @@ func (c *ContentParser) Text() string {
 
 /*
 // Parse the content for a page. The page contains an structured representation
-// of the content that can be displayed programattically in a variety of ways.
+// of the content that can be displayed programmatically in a variety of ways.
 func (c Content) Page() *Page {
 	page := new(Page)
 	reader := strings.NewReader(string(c))
@@ -398,7 +398,7 @@ func (content Content) Highlight(verses []int, class string) Content {
 
 // Search the content for the given keywords and return a search result containing
 // the verses in which the results were found and the a weighted score based on
-// the number of occurances.
+// the number of occurrences.
 //
 // TODO Give extra points to sequences of words in the correct order (ignoring punctuation)
 func (content Content) Search(keywords []string) SearchResult {

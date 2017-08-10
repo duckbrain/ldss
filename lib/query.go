@@ -24,7 +24,7 @@ func (tt queryTokenType) String() string {
 	case tokenChar:
 		return "char"
 	}
-	return "Unkown token type"
+	return "Unknown token type"
 }
 
 func (m queryParseMode) String() string {
@@ -38,7 +38,7 @@ func (m queryParseMode) String() string {
 	case parseModeVerseRange:
 		return "verseRange"
 	}
-	return "Unkown parse type"
+	return "Unknown parse type"
 }
 
 const (
