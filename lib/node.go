@@ -6,13 +6,16 @@ import (
 
 // Represents a node in a Book
 type Node struct {
-	id         int
-	name       string
-	path       string
-	Book       *Book
-	hasContent bool
-	childCount int
-	parentId   int
+	id          int
+	name        string
+	path        string
+	Book        *Book
+	hasContent  bool
+	childCount  int
+	parentId    int
+	Subtitle    string
+	SectionName string
+	ShortTitle  string
 }
 
 // Name of the node

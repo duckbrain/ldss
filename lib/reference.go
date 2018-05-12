@@ -223,14 +223,9 @@ func (r Reference) Lookup() (Item, error) {
 			if r.Path == book.Path() {
 				return book, nil
 			}
-			node := &Node{Book: book}
-			db, err := book.db()
+			node, err := book.lookupPath(r.Path)
 			if err != nil {
-				return nil, err
-			}
-			err = db.stmtUri.QueryRow(r.Path).Scan(&node.id, &node.name, &node.path, &node.parentId, &node.hasContent, &node.childCount)
-			if err != nil {
-				return nil, fmt.Errorf("Path %v not found", r.Path)
+				return nil, fmt.Errorf("Path %v not found - %v", r.Path, err.Error())
 			}
 			return node, err
 		}

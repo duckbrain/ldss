@@ -75,6 +75,9 @@ const sqlQueryNode = `
 		node.title,
 		node.uri,
 		node.parent_id,
+		node.subtitle,
+		node.section_name,
+		node.short_title,
 		CASE WHEN node.content IS NULL THEN 0 ELSE 1 END,
 		(SELECT COUNT(*) FROM node subnode WHERE subnode.id = node.id) node_count
 	FROM node
@@ -89,6 +92,16 @@ const sqlQueryRef = `
 	WHERE
 		ref.node_id = ?
 `
+
+type sqlScanner interface {
+	Scan(dest ...interface{}) error
+}
+
+func (n *Node) scan(s sqlScanner) error {
+	return s.Scan(&n.id, &n.name, &n.path, &n.parentId,
+		&n.Subtitle, &n.SectionName, &n.ShortTitle,
+		&n.hasContent, &n.childCount)
+}
 
 func newBook(base *jsonBook, catalog *Catalog, parent Item) *Book {
 	b := &Book{}
@@ -237,7 +250,7 @@ func (b *Book) nodeChildren(parent *Node) ([]*Node, error) {
 	nodes := make([]*Node, 0)
 	for rows.Next() {
 		node := &Node{Book: b}
-		err := rows.Scan(&node.id, &node.name, &node.path, &node.parentId, &node.hasContent, &node.childCount)
+		err := node.scan(rows)
 		if err != nil {
 			return nil, err
 		}
@@ -252,7 +265,7 @@ func (b *Book) lookupId(id int) (*Node, error) {
 	if err != nil {
 		return node, err
 	}
-	err = l.stmtId.QueryRow(id).Scan(&node.id, &node.name, &node.path, &node.parentId, &node.hasContent, &node.childCount)
+	err = node.scan(l.stmtId.QueryRow(id))
 	return node, err
 
 }
@@ -263,7 +276,7 @@ func (b *Book) lookupPath(uri string) (*Node, error) {
 	if err != nil {
 		return node, err
 	}
-	err = l.stmtUri.QueryRow(uri).Scan(&node.id, &node.name, &node.path, &node.parentId, &node.hasContent, &node.childCount)
+	err = node.scan(l.stmtUri.QueryRow(uri))
 	if err != nil {
 		return nil, fmt.Errorf("Path %v not found", uri)
 	}
