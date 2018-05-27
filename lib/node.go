@@ -14,8 +14,8 @@ type Node struct {
 	childCount  int
 	parentId    int
 	Subtitle    string
-	SectionName string
-	ShortTitle  string
+	SectionName *string
+	ShortTitle  *string
 }
 
 // Name of the node

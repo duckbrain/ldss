@@ -4,6 +4,7 @@ import (
 	"html/template"
 
 	"github.com/duckbrain/ldss/assets"
+	"github.com/duckbrain/ldss/lib"
 )
 
 var templates *webtemplates
@@ -27,6 +28,16 @@ func loadTemplate(path string) *template.Template {
 		panic(err)
 	}
 	temp := template.New(path)
+	temp.Funcs(template.FuncMap{
+		"subtitle": func(item lib.Item) string {
+			node, ok := item.(*lib.Node)
+			if ok {
+				return node.Subtitle
+			} else {
+				return ""
+			}
+		},
+	})
 	temp, err = temp.Parse(string(data))
 	if err != nil {
 		panic(err)
