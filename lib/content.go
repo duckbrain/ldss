@@ -121,6 +121,8 @@ func (c *ContentParser) NextParagraph() bool {
 						}
 					}
 				}
+			case "a":
+				c.textStyle = TextStyleLink
 			case "video":
 				//TODO
 			}
@@ -195,74 +197,20 @@ func (c *ContentParser) Text() string {
 	return text
 }
 
-/*
-// Parse the content for a page. The page contains an structured representation
-// of the content that can be displayed programmatically in a variety of ways.
-func (c Content) Page() *Page {
-	page := new(Page)
-	reader := strings.NewReader(string(c))
-
-	doc, err := html.Parse(reader)
-	if err != nil {
-		return page
-	}
-
-	mode := parseTitleMode
-	var verse struct {
-		Number int
-		Text   string
-	}
-	var f func(*html.Node)
-
-	f = func(n *html.Node) {
-		if n.Type == html.ElementNode {
-			for _, attr := range n.Attr {
-				if attr.Key == "type" && attr.Val == "chapter" {
-					mode = parseTitleMode
-				}
-				if attr.Key == "class" && attr.Val == "studySummary" {
-					mode = parseSummaryMode
-				}
-				if attr.Key == "class" && attr.Val == "bodyBlock" {
-					mode = parseVerseMode
-				}
-				if mode == parseVerseMode && attr.Key == "id" {
-					if verse.Number > 0 {
-						page.Verses = append(page.Verses, verse)
-					}
-					verse.Number, err = strconv.Atoi(attr.Val)
-					if err != nil {
-						verse.Number = 0
-					}
-					verse.Text = ""
-				}
+func (content Content) Links(l *Lang) []Reference {
+	references := make([]Reference, 0)
+	c := content.Parse()
+	for c.NextParagraph() {
+		for c.NextText() {
+			if c.TextStyle() == TextStyleLink {
+				ref := ParsePath(l, c.href)
+				ref.Name = c.Text()
+				references = append(references, ref)
 			}
 		}
-		if n.Type == html.TextNode {
-			text := strings.TrimSpace(n.Data)
-			switch mode {
-			case parseTitleMode:
-				page.Title += text
-			case parseSubtitleMode:
-				page.Subtitle += text
-			case parseSummaryMode:
-				page.Summary += text
-			case parseVerseMode:
-				text = strings.TrimLeft(text, " 1234567890")
-				verse.Text += text + " "
-			}
-		}
-		for child := n.FirstChild; child != nil; child = child.NextSibling {
-			f(child)
-		}
 	}
-	f(doc)
-	if verse.Number > 0 {
-		page.Verses = append(page.Verses, verse)
-	}
-	return page
+	return references
 }
-*/
 
 func (content Content) Filter(verses []int) Content {
 	if len(verses) == 0 {

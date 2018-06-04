@@ -36,6 +36,7 @@ func Handle(lang *lib.Lang) {
 	http.HandleFunc("/search", handleSearch)
 	http.HandleFunc("/favicon.ico", handleStatic)
 	http.HandleFunc("/manifest.webmanifest", handleStatic)
+	http.HandleFunc("/special/jesus-christ", handleChristStudy)
 	http.HandleFunc("/css", handleStatic)
 
 	initTemplates()
