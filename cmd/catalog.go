@@ -13,6 +13,15 @@ var catalogCmd = &cobra.Command{
 	Long:  ``,
 	Run: func(cmd *cobra.Command, args []string) {
 		if len(args) == 0 {
+			cItem, err := lib.AutoDownload(func() (lib.Item, error) {
+				return lang().Catalog()
+			})
+			if err != nil {
+				panic(err)
+			}
+			catalog := cItem.(*lib.Catalog)
+			fmt.Println(catalog.String())
+		} else {
 			langs, err := lib.Languages()
 			if err != nil {
 				panic(err)
@@ -20,12 +29,6 @@ var catalogCmd = &cobra.Command{
 			for _, l := range langs {
 				fmt.Println(l.String())
 			}
-		} else {
-			catalog, err := lang().Catalog()
-			if err != nil {
-				panic(err)
-			}
-			fmt.Println(catalog.String())
 		}
 	},
 }

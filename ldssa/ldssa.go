@@ -1,8 +1,8 @@
 package ldssa
 
 import (
+	"github.com/duckbrain/ldss/internal/web"
 	"github.com/duckbrain/ldss/lib"
-	"github.com/duckbrain/ldss/web"
 )
 
 func init() {

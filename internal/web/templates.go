@@ -3,7 +3,7 @@ package web
 import (
 	"html/template"
 
-	"github.com/duckbrain/ldss/assets"
+	"github.com/duckbrain/ldss/internal/assets"
 	"github.com/duckbrain/ldss/lib"
 )
 
