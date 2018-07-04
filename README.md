@@ -12,17 +12,17 @@ The content available through this software is owned by the church, and is distr
 
 The web interface is what I use for my daily usage. It works great in institute classes and for preparing lessons. Most features will probably work best and show up here first.
 
+### Native Graphical User Interface (easiest)
+
+I tried to do th is in Go with [github.com/andlabs/ui](https://github.com/andlabs/ui), but I was basically re-implementing the web browser. I still think it's a really good project though. [github.com/zserge/webview](https://github.com/zserge/webview) make it easy to port the web interface to a desktop application, so it's almost as good as the web interface. It'll need some extra functionality to make up for not having browser navigation (back, forward, tabs), but it's the way the project will go for now.
+
 ### Android App (not well maintained)
 
 I did manage to generate an Android app with [gowebview](https://github.com/microo8/gowebview), but it really needs some work before I would call it good enough for daily usage. If you are willing and able to help, pull requests would be much appreciated. I'm also perfectly happy with you forking the project, but let me know so I can link back.
 
 ### Command Line Interface (a little broken)
 
-There was a half decent command line interface, but since I moved to Viper, I haven't fully redone it yet. I'll get around to it, but the web interface is so much easier to use (and work on for me).
-
-### Native Graphical User Interface (not many features)
-
-I tried to do th is in Go with [github.com/andlabs/ui](https://github.com/andlabs/ui), but I was basically re-implementing the web browser. If the project gets some sort of WebView I might try again, because I know that would make this project much more accessible, but for now, if someone else wants to try on some other technology, make an issue to talk about it.
+There was a half decent command line interface, but since I moved to Viper, I haven't fully redone it yet. I'll get around to it, but the web interface is so much easier to use (and to work on for me).
 
 ## Installation instructions
 
