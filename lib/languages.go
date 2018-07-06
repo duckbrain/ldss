@@ -7,31 +7,32 @@ import (
 	"os"
 )
 
-var languages cache
+var langsBySrc map[string][]*Lang
+var langs map[string]langWithSrcs
 
-type glLangDesc struct {
-	Languages []*Lang `json:"languages"`
-	Success   bool    `json:"success"`
+func init() {
+	langsBySrc = make(map[string][]*Lang)
+	langs = make(map[string]langWithSrcs)
+}
+
+type langWithSrcs struct {
+	Lang
+	srcs map[string]*Lang
 }
 
 // Lang defines a language as from the server. The fields should not be modified.
 type Lang struct {
-	// The Gospel Library ID for the language. Used for downloads.
-	ID int `json:"id"`
+	// Source internal ID for the language. May be different between sources
+	ID int
+	// Source internal name for the language. May be different between sources.
+	InternalCode string
 
-	// Native representation of the language in the language observed
-	Name string `json:"name"`
-
-	// English representation of the language
-	EnglishName string `json:"eng_name"`
-
-	// The internationalization (i18n) code used in most programs
-	Code string `json:"code"`
-
-	// Gospel Library language code, seen in the urls of https://lds.org
-	GlCode string `json:"code_three"`
-
-	catalogCache cache
+	// Native representation of the language in the language observed (optional)
+	Name string
+	// English representation of the language (optional)
+	EnglishName string
+	// The internationalization (i18n) code used in most programs. Used as key to join languages from other sources
+	Code string
 }
 
 // Returns a human readable version of the language that is appropriate to
@@ -42,7 +43,6 @@ type Lang struct {
 func (l *Lang) String() string {
 	var id, name, code string
 
-	id = fmt.Sprintf("%v: ", l.ID)
 	if l.Name == l.EnglishName {
 		name = l.Name
 	} else {
@@ -51,56 +51,40 @@ func (l *Lang) String() string {
 	if l.Code == l.GlCode {
 		code = fmt.Sprintf(" [%v]", l.Code)
 	} else {
-		code = fmt.Sprintf(" [%v/%v]", l.Code, l.GlCode)
+		code = fmt.Sprintf(" [%v/%v]", l.Code, l.InternalCode)
 	}
 
-	return id + name + code
+	return name + code
 }
 
-// Gets the catalog for this language. If cached, it will return the cached version.
-func (l *Lang) Catalog() (*Catalog, error) {
-	l.catalogCache.construct = func() (interface{}, error) {
-		return newCatalog(l)
+func Languages() []Lang {
+	res = := []Lang{}
+	for _, l := range langs {
+		res = append(res, l.Lang)
 	}
-	c, err := l.catalogCache.get()
-	if err != nil {
-		return nil, err
-	}
-	return c.(*Catalog), err
+	return res
 }
 
-func init() {
-	languages.construct = func() (interface{}, error) {
-		var description glLangDesc
-		file, err := os.Open(languagesPath())
-		if err != nil {
-			return nil, &notDownloadedLanguageErr{err}
-		}
-		err = json.NewDecoder(file).Decode(&description)
-		return description.Languages, err
-	}
+func LanguageFromSource(lang Lang, srcName string) *Lang {
+	return langs[lang.Code].srcs[srcName]
 }
 
-// Returns a list of all languages available. Downloads the languages if not already downloaded first.
-func Languages() ([]*Lang, error) {
-	if !fileExist(languagesPath()) {
-		if err := DownloadLanguages(); err != nil {
-			return nil, err
+func registerLanguage(srcName string, langs []*Lang) {
+	langsBySrc[srcName] = langs
+	for _, srcLang := range langs {
+		if lang, ok := langs[srcLang.Code] {
+			lang.src[srcName] = srcLang
+			// TODO Merge other fields to fill in the blanks
+		} else {
+			lang := *srcLang
+			langs[lang.Code] = lang
 		}
 	}
-	langs, err := languages.get()
-	if err != nil {
-		return nil, err
-	}
-	return langs.([]*Lang), err
 }
 
 // Finds a language by any of the accepted methods, compares ID, Code, and GlCode
-func LookupLanguage(id string) (*Lang, error) {
-	langs, err := Languages()
-	if err != nil {
-		return nil, err
-	}
+func LookupLanguage(id string) (Lang, error) {
+	langs := Languages()
 	for _, lang := range langs {
 		if lang.Name == id || fmt.Sprintf("%v", lang.ID) == id || lang.Code == id || lang.GlCode == id {
 			return lang, nil
