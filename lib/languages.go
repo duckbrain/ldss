@@ -1,10 +1,8 @@
 package lib
 
 import (
-	"encoding/json"
 	"errors"
 	"fmt"
-	"os"
 )
 
 var langsBySrc map[string][]*Lang
@@ -41,14 +39,14 @@ type Lang struct {
 // the standard internationalization code as well as the Gospel Library
 // language code.
 func (l *Lang) String() string {
-	var id, name, code string
+	var name, code string
 
 	if l.Name == l.EnglishName {
 		name = l.Name
 	} else {
 		name = fmt.Sprintf("%v (%v)", l.Name, l.EnglishName)
 	}
-	if l.Code == l.GlCode {
+	if l.Code == l.InternalCode {
 		code = fmt.Sprintf(" [%v]", l.Code)
 	} else {
 		code = fmt.Sprintf(" [%v/%v]", l.Code, l.InternalCode)
@@ -58,7 +56,7 @@ func (l *Lang) String() string {
 }
 
 func Languages() []Lang {
-	res = := []Lang{}
+	res := []Lang{}
 	for _, l := range langs {
 		res = append(res, l.Lang)
 	}
@@ -69,26 +67,31 @@ func LanguageFromSource(lang Lang, srcName string) *Lang {
 	return langs[lang.Code].srcs[srcName]
 }
 
-func registerLanguage(srcName string, langs []*Lang) {
-	langsBySrc[srcName] = langs
-	for _, srcLang := range langs {
-		if lang, ok := langs[srcLang.Code] {
-			lang.src[srcName] = srcLang
+func registerLanguage(srcName string, srcLangs []*Lang) {
+	langsBySrc[srcName] = srcLangs
+	for _, srcLang := range srcLangs {
+		if lang, ok := langs[srcLang.Code]; ok {
+			lang.srcs[srcName] = srcLang
 			// TODO Merge other fields to fill in the blanks
 		} else {
-			lang := *srcLang
+			lang := langWithSrcs{
+				Lang: *srcLang,
+				srcs: map[string]*Lang{
+					srcName: srcLang,
+				},
+			}
 			langs[lang.Code] = lang
 		}
 	}
 }
 
-// Finds a language by any of the accepted methods, compares ID, Code, and GlCode
+// LookupLanguage finds a language by any of the accepted methods, compares ID, Code, and InternalCode
 func LookupLanguage(id string) (Lang, error) {
 	langs := Languages()
 	for _, lang := range langs {
-		if lang.Name == id || fmt.Sprintf("%v", lang.ID) == id || lang.Code == id || lang.GlCode == id {
+		if lang.Name == id || fmt.Sprintf("%v", lang.ID) == id || lang.Code == id || lang.InternalCode == id {
 			return lang, nil
 		}
 	}
-	return nil, errors.New("Language not found")
+	return Lang{}, errors.New("Language not found")
 }

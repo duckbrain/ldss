@@ -1,9 +1,14 @@
 package lib
 
+import "fmt"
+
+const RootPath = "/"
+
 type Source interface {
 	Downloader
 	Langs() ([]*Lang, error)
-	Root(lang *Lang) (Item, error)
+
+	Lookup(lang Lang, path string) (Item, error)
 }
 
 var srcs map[string]Source

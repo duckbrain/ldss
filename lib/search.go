@@ -58,24 +58,24 @@ func Search(item Item, keywords []string, c chan<- SearchResult) {
 
 // TODO Change where the search result stores the content with highlights on words
 func searchItem(item Item, keywords []string, c chan<- SearchResult, waitGroup *sync.WaitGroup, resultSet map[string]bool) {
-	if node, ok := item.(*Node); ok {
-		if resultSet[node.Path()] {
+	if node, ok := item.(Contenter); ok {
+		if resultSet[item.Path()] {
 			return
 		}
-		resultSet[node.Path()] = true
+		resultSet[item.Path()] = true
 		waitGroup.Add(1)
-		go func(node *Node) {
+		go func(node Contenter, item Item) {
 			if content, err := node.Content(); err == nil {
 				result := content.Search(keywords)
 				if result.Weight > 0 {
-					result.Language = node.Language()
-					result.Path = node.Path()
+					result.Language = item.Language()
+					result.Path = item.Path()
 					result.Clean()
 					c <- result
 				}
 			}
 			waitGroup.Done()
-		}(node)
+		}(node, item)
 	}
 
 	if children, err := item.Children(); err == nil {

@@ -3,7 +3,11 @@ package lib
 import (
 	"fmt"
 	"strings"
+
+	"github.com/duckbrain/ldss/lib"
 )
+
+type Item = lib.Item
 
 type folderBase struct {
 	base    *jsonFolder

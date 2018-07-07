@@ -1,5 +1,9 @@
 package lib
 
+import (
+	"fmt"
+)
+
 type Item interface {
 	Name() string
 	Children() ([]Item, error)
@@ -12,7 +16,6 @@ type Item interface {
 }
 
 type Contenter interface {
-	Item
 	Content() (Content, error)
 	Subtitle() string
 	SectionName() string
@@ -20,4 +23,14 @@ type Contenter interface {
 
 type Footnoter interface {
 	Footnotes(verses []int) ([]Footnote, error)
+}
+
+type Reference struct {
+	Path              string
+	Language          *Lang
+	VerseSelected     int
+	VersesHighlighted []int
+	VersesExtra       []int
+	Small, Name       string
+	Keywords          []string
 }
