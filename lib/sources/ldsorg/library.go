@@ -1,4 +1,4 @@
-package lib
+package ldsorg
 
 var catalogsByLanguageId map[int]*Catalog
 var booksByLangBookId map[langBookID]*Book

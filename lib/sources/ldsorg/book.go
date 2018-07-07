@@ -1,4 +1,4 @@
-package lib
+package ldsorg
 
 import (
 	"database/sql"
@@ -10,8 +10,11 @@ import (
 	"unicode"
 	"unicode/utf8"
 
+	"github.com/duckbrain/ldss/lib"
 	_ "github.com/mattn/go-sqlite3"
 )
+
+type Footnote = lib.Footnote
 
 // Represents a book in the catalog or one of it's folders and
 // provides a way to access the nodes in it's database if
@@ -113,9 +116,7 @@ func newBook(base *jsonBook, catalog *Catalog, parent Item) *Book {
 		var l bookDBConnection
 		path := bookPath(b)
 		if _, err := os.Stat(path); os.IsNotExist(err) {
-			dlErr := notDownloadedBookErr{book: b}
-			dlErr.err = err
-			return nil, dlErr
+			return nil, err
 		}
 		db, err := sql.Open("sqlite3", path)
 		if err != nil {
@@ -124,9 +125,7 @@ func newBook(base *jsonBook, catalog *Catalog, parent Item) *Book {
 		var count int
 		err = db.QueryRow("SELECT COUNT(*) FROM node;").Scan(&count)
 		if err != nil {
-			dlErr := notDownloadedBookErr{book: b}
-			dlErr.err = err
-			return nil, dlErr
+			return nil, err
 		}
 		l.db = db
 		l.stmtChildren, err = db.Prepare(sqlQueryNode + " WHERE parent_id = ?")

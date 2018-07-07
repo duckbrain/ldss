@@ -1,7 +1,9 @@
-package lib
+package ldsorg
 
 import (
 	"fmt"
+
+	"github.com/duckbrain/ldss/lib"
 )
 
 // Represents a node in a Book
@@ -60,9 +62,9 @@ func (n *Node) Footnotes(verses []int) ([]Footnote, error) {
 }
 
 // Returns the content of the Node, to use as HTML or Parse
-func (n *Node) Content() (Content, error) {
+func (n *Node) Content() (lib.Content, error) {
 	rawContent, err := n.Book.nodeContent(n)
-	return Content(rawContent), err
+	return lib.Content(rawContent), err
 }
 
 // Parent node or book

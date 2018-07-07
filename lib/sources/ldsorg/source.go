@@ -1,3 +1,11 @@
+package ldsorg
+
+import (
+	"fmt"
+	"strings"
+
+	"github.com/duckbrain/ldss/lib"
+)
 
 type source struct{}
 

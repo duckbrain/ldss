@@ -1,12 +1,9 @@
-package lib
+package ldsorg
 
 import (
 	"os"
 	"path"
 )
-
-// The directory to read and store the gospel library cache and configurations
-var DataDirectory = ".ldss"
 
 // The server to access the Gospel Library catalog and language lists from
 var GospelLibraryServer = "https://tech.lds.org/glweb"
