@@ -8,7 +8,7 @@ import (
 	"strings"
 )
 
-func Parse(lang *Lang, q string) []Reference {
+func Parse(lang Lang, q string) []Reference {
 	ref := ParsePath(lang, q)
 	if ref.Check() == nil {
 		return []Reference{ref}
@@ -19,7 +19,7 @@ func Parse(lang *Lang, q string) []Reference {
 	return []Reference{}
 }
 
-func ParsePath(lang *Lang, p string) Reference {
+func ParsePath(lang Lang, p string) Reference {
 	r := Reference{
 		Language: lang,
 		Path:     p,
@@ -45,7 +45,7 @@ func ParsePath(lang *Lang, p string) Reference {
 func (r Reference) MarshalJSON() ([]byte, error) {
 	return json.Marshal(struct {
 		Path              string
-		Language          *Lang
+		Language          Lang
 		VerseSelected     int
 		VersesHighlighted []int
 		VersesExtra       []int
@@ -87,7 +87,7 @@ func (r Reference) URL() string {
 		p = fmt.Sprintf("%v.%v", p, stringifyVerses(r.VersesExtra))
 	}
 	if r.Language != nil {
-		p = fmt.Sprintf("%v?lang=%v", p, r.Language.InternalCode)
+		p = fmt.Sprintf("%v?lang=%v", p, r.Language.Code())
 	}
 	if r.VerseSelected > 0 {
 		p = fmt.Sprintf("%v#%v", p, r.VerseSelected)

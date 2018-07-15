@@ -14,7 +14,7 @@ var _ strings.Reader
 // Represents a catalog, exports ways to lookup children by path and ID
 type Catalog struct {
 	folderBase
-	language      *Lang
+	language      Lang
 	foldersById   map[int]*Folder
 	foldersByPath map[string]*Folder
 	booksById     map[int]*Book
@@ -47,12 +47,12 @@ func (c *Catalog) Previous() Item {
 }
 
 // The language this catalog represents
-func (c *Catalog) Language() *Lang {
+func (c *Catalog) Language() Lang {
 	return c.language
 }
 
 // Creates a catalog object and populates it with it's Folders and Books
-func newCatalog(lang *Lang) (*Catalog, error) {
+func newCatalog(lang Lang) (*Catalog, error) {
 	var desc struct {
 		Catalog         *jsonFolder `json:"catalog"`
 		CoverArtBaseUrl string      `json:"cover_art_base_url"`

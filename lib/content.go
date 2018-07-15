@@ -197,7 +197,7 @@ func (c *ContentParser) Text() string {
 	return text
 }
 
-func (content Content) Links(l *Lang) []Reference {
+func (content Content) Links(l Lang) []Reference {
 	references := make([]Reference, 0)
 	c := content.Parse()
 	for c.NextParagraph() {

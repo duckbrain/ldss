@@ -8,7 +8,7 @@ type Item interface {
 	Name() string
 	Children() ([]Item, error)
 	Path() string
-	Language() *Lang
+	Language() Lang
 	Parent() Item
 	Next() Item
 	Previous() Item
@@ -27,7 +27,7 @@ type Footnoter interface {
 
 type Reference struct {
 	Path              string
-	Language          *Lang
+	Language          Lang
 	VerseSelected     int
 	VersesHighlighted []int
 	VersesExtra       []int

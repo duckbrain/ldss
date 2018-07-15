@@ -22,7 +22,7 @@ func mkdirAndGetFile(paths ...string) string {
 func languagesPath() string {
 	return mkdirAndGetFile(DataDirectory, "languages.json")
 }
-func catalogPath(language *Lang) string {
+func catalogPath(language Lang) string {
 	return mkdirAndGetFile(DataDirectory, language.GlCode, "catalog.json")
 }
 func bookPath(book *Book) string {

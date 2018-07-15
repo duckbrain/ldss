@@ -11,7 +11,7 @@ import (
 	"unicode/utf8"
 )
 
-type QueryFileFunc func(lang *Lang) ([]byte, error)
+type QueryFileFunc func(lang Lang) ([]byte, error)
 type queryTokenType int
 type queryParseMode int
 
@@ -55,11 +55,11 @@ const (
 )
 
 var queryFileLoader QueryFileFunc
-var queryParsers map[*Lang]*queryParser
+var queryParsers map[Lang]*queryParser
 
-func languageQueryParser(l *Lang) (*queryParser, error) {
+func languageQueryParser(l Lang) (*queryParser, error) {
 	if queryParsers == nil {
-		queryParsers = make(map[*Lang]*queryParser)
+		queryParsers = make(map[Lang]*queryParser)
 	}
 	if parser, ok := queryParsers[l]; ok {
 		return parser, nil
@@ -87,10 +87,10 @@ type queryParser struct {
 	matchRegexp map[*regexp.Regexp]string
 	matchFolder map[int]string
 	parseClean  *regexp.Regexp
-	lang        *Lang
+	lang        Lang
 }
 
-func newQueryParser(lang *Lang, file []byte) *queryParser {
+func newQueryParser(lang Lang, file []byte) *queryParser {
 	p := &queryParser{
 		matchFolder: make(map[int]string),
 		matchString: make(map[string]string),

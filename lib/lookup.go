@@ -15,8 +15,8 @@ func init() {
 // loading the item or it is not downloaded.
 func (r Reference) Lookup() (Item, error) {
 	for srcName, src := range srcs {
-		lang := LanguageFromSource(*r.Language, srcName)
-		item, err := src.Lookup(*lang, r.Path)
+		lang := languageFromSource(*r.Language, srcName)
+		item, err := src.Lookup(lang, r.Path)
 		if err != ErrPathNotFound {
 			return nil, err
 		}

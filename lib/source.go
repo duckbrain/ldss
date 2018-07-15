@@ -6,7 +6,7 @@ const RootPath = "/"
 
 type Source interface {
 	Downloader
-	Langs() ([]*Lang, error)
+	Langs() ([]Lang, error)
 
 	Lookup(lang Lang, path string) (Item, error)
 }

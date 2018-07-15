@@ -7,9 +7,26 @@ import (
 	"github.com/duckbrain/ldss/lib"
 )
 
-type source struct{}
+type Lang = lib.Lang
 
-// Finds an Item by it's path. Expects a fully qualified path. "/" will
+type source struct {
+	langs []*lib.Lang
+}
+
+func init() {
+	lib.Register("lds.org", &source{})
+}
+
+func (s *source) Langs() ([]*lib.Lang, error) {
+	if s.langs != nil {
+		return s.langs, nil
+	}
+
+	langs := make([]*lib.Lang)
+	Download
+}
+
+// Lookup finds an Item by it's path. Expects a fully qualified path. "/" will
 // return the catalog. Will return an error if there is an error
 // loading the item or it is not downloaded.
 func (s source) Lookup(lang lib.Lang, path string) (Item, error) {
