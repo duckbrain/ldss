@@ -21,6 +21,21 @@ type jsonLang struct {
 
 	// Gospel Library language code, seen in the urls of https://lds.org
 	GlCode string `json:"code_three"`
+}
 
-	catalogCache cache
+func (l jsonLang) Name() string {
+	return l.Name
+}
+
+func (l jsonLang) EnglishName() string {
+	return l.EnglishName
+}
+
+func (l jsonLang) Code() string {
+	return l.Code
+}
+
+func (l jsonLang) Matches(s string) bool {
+	s = strings.ToLower(s)
+	return s == strings.ToLower(l.Name)
 }
