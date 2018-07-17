@@ -10,19 +10,19 @@ import (
 type Lang = lib.Lang
 
 type source struct {
-	langs []*lib.Lang
+	langs []lib.Lang
 }
 
 func init() {
 	lib.Register("lds.org", &source{})
 }
 
-func (s *source) Langs() ([]*lib.Lang, error) {
+func (s *source) Langs() ([]lib.Lang, error) {
 	if s.langs != nil {
 		return s.langs, nil
 	}
 
-	langs := make([]*lib.Lang)
+	langs := make([]lib.Lang)
 	Download
 }
 

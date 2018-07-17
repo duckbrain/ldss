@@ -1,6 +1,6 @@
-package lib
+package download
 
-type DownloadInfo struct {
+type Info struct {
 	err      error
 	Item     Item
 	Language Lang
@@ -8,14 +8,19 @@ type DownloadInfo struct {
 	Progress float64
 }
 
-type DownloadReceiver func([]DownloadInfo)
+type Status struct {
+	Err      error
+	Progress float64
+}
 
-var downloadUpdate chan DownloadInfo
-var downloadSubscribers []DownloadReceiver
+type Receiver func([]Info)
+
+var downloadUpdate chan Info
+var downloadSubscribers []Receiver
 
 func init() {
 	go func() {
-		dl := make([]DownloadInfo, 0)
+		dl := make([]Info, 0)
 		for uInfo := range downloadUpdate {
 			var found bool
 			for index, oInfo := range dl {
@@ -37,4 +42,13 @@ func init() {
 		}
 
 	}()
+}
+
+// Returns a slice of Downloaders that are currently queued and a map of Downloaders
+func Queue() ([]Downloader, map[Download]<-chan Status) {
+}
+
+// Enqueue queues a download and waits for a result
+func Enqueue(d Downloader) (ret <-chan Status) {
+	return nil
 }

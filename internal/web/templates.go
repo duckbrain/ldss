@@ -40,31 +40,31 @@ func loadTemplate(path string) *template.Template {
 }
 
 func subtitle(item lib.Item) string {
-	node, ok := item.(*lib.Node)
+	i, ok := item.(lib.Contenter)
 	if ok {
-		return node.Subtitle
+		return i.Subtitle()
 	}
 	return ""
 }
 
-type groupedSections map[string][]*lib.Node
+type gropedSections map[string][]lib.Contenter
 
 func groupSections(items []lib.Item) groupedSections {
 	nodeMap := make(groupedSections)
 	for _, item := range items {
-		node, ok := item.(*lib.Node)
+		node, ok := item.(lib.Contenter)
 		if !ok {
 			return nil
 		}
 		key := ""
-		if node.SectionName != nil {
-			key = *node.SectionName
+		if name := node.SectionName(); name != nil {
+			key = name
 		}
 		list, ok := nodeMap[key]
 		if ok {
 			list = append(list, node)
 		} else {
-			list = []*lib.Node{node}
+			list = []lib.Contenter{node}
 		}
 		nodeMap[key] = list
 	}

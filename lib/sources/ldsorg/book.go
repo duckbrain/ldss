@@ -310,7 +310,7 @@ func (b *Book) nodeFootnotes(node *Node, verses []int) ([]Footnote, error) {
 		var content string
 		err = rows.Scan(&ref.Name, &ref.LinkName, &content)
 		ref.Content = template.HTML(content)
-		ref.item = node
+		ref.Item = node
 		if err != nil {
 			return nil, err
 		}

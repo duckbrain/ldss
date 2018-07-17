@@ -47,7 +47,8 @@ func DownloadLanguages() error {
 
 // Downloads the catalog for the passed language
 func DownloadCatalog(language Lang) error {
-	path := getServerAction(fmt.Sprintf("catalog.query&languageid=%v&platformid=%v", language.ID, platformID))
+	lang := language.(*jsonLang)
+	path := getServerAction(fmt.Sprintf("catalog.query&languageid=%v&platformid=%v", lang.ID, platformID))
 	return downloadFile(path, catalogPath(language), false)
 }
 

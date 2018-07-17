@@ -25,7 +25,7 @@ func init() {
 }
 
 type generateReference struct {
-	lang *lib.Lang
+	lang lib.Lang
 }
 
 func (app *generateReference) lookup(path string) lib.Item {

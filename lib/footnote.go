@@ -10,7 +10,7 @@ import (
 )
 
 type Footnote struct {
-	item     Item
+	Item     Item
 	Name     string        `json:"name"`
 	LinkName string        `json:"linkName"`
 	Content  template.HTML `json:"content"`
@@ -19,7 +19,7 @@ type Footnote struct {
 func (f *Footnote) References() []Reference {
 	z := html.NewTokenizerFragment(strings.NewReader(string(f.Content)), "div")
 	refs := make([]Reference, 0)
-	lang := f.item.Language()
+	lang := f.Item.Language()
 
 loop:
 	for {

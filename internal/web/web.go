@@ -15,20 +15,20 @@ import (
 	"github.com/duckbrain/ldss/lib"
 )
 
-var defaultLanguage *lib.Lang
+var defaultLanguage lib.Lang
 
 type webLayout struct {
 	Title       string
 	Content     template.HTML
 	Footnotes   []lib.Footnote
-	Lang        *lib.Lang
+	Lang        lib.Lang
 	Item        lib.Item
 	Breadcrumbs []lib.Reference
 	Query       string
 }
 
 // Handle attaches events to the net/http package, but does not start the web server
-func Handle(lang *lib.Lang) {
+func Handle(lang lib.Lang) {
 	defaultLanguage = lang
 
 	http.HandleFunc("/", handler)
@@ -44,13 +44,13 @@ func Handle(lang *lib.Lang) {
 }
 
 // Run starts listening on the given port
-func Run(port int, lang *lib.Lang) {
+func Run(port int, lang lib.Lang) {
 	Handle(lang)
 	log.Printf("Listening on port: %v\n", port)
 	http.ListenAndServe(fmt.Sprintf(":%v", port), nil)
 }
 
-func language(r *http.Request) *lib.Lang {
+func language(r *http.Request) lib.Lang {
 	lang, err := lib.LookupLanguage(r.URL.Query().Get("lang"))
 	if err != nil {
 		return defaultLanguage

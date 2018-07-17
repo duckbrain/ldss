@@ -1,9 +1,9 @@
-package lib
+package download
 
 // The directory to read and store the gospel library cache and configurations
 var DataDirectory = ".ldss"
 
 type Downloader interface {
 	Downloaded() bool
-	Download() error
+	Download(chan<- DownloadStatus) error
 }
