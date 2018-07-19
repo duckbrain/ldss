@@ -1,11 +1,15 @@
 package lib
 
-import "fmt"
+import (
+	"fmt"
+
+	"github.com/duckbrain/ldss/lib/download"
+)
 
 const RootPath = "/"
 
 type Source interface {
-	Downloader
+	download.Downloader
 	Langs() ([]Lang, error)
 
 	Lookup(lang Lang, path string) (Item, error)

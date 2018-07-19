@@ -5,5 +5,5 @@ var DataDirectory = ".ldss"
 
 type Downloader interface {
 	Downloaded() bool
-	Download(chan<- DownloadStatus) error
+	Download(chan<- Status) error
 }
