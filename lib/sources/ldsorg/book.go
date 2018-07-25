@@ -19,11 +19,14 @@ type Footnote = lib.Footnote
 // Represents a book in the catalog or one of it's folders and
 // provides a way to access the nodes in it's database if
 // downloaded.
-type Book struct {
-	base    *jsonBook
-	catalog *Catalog
+// Used for parsing books in the catalog's JSON file
+type book struct {
+	ID      int    `json:"id"`
+	Name    string `json:"name"`
+	URL     string `json:"url"`
+	GlURI   string `json:"gl_uri"`
+	catalog *catalog
 	parent  Item
-	dbCache cache
 }
 
 type bookDBConnection struct {
@@ -36,13 +39,13 @@ func (c bookDBConnection) Close() error {
 }
 
 func init() {
-	var a []*Book
-	bookOpened = make(chan *Book)
+	var a []*book
+	bookOpened = make(chan *book)
 	go func() {
 	WAIT:
 		for book := range bookOpened {
 			if a == nil {
-				a = make([]*Book, 0, BookConnectionLimit)
+				a = make([]*book, 0, BookConnectionLimit)
 			}
 
 			for i, x := range a {
@@ -70,7 +73,7 @@ func init() {
 }
 
 var BookConnectionLimit = 20
-var bookOpened chan *Book
+var bookOpened chan *book
 
 const sqlQueryNode = `
 	SELECT
@@ -106,7 +109,7 @@ func (n *Node) scan(s sqlScanner) error {
 		&n.hasContent, &n.childCount)
 }
 
-func newBook(base *jsonBook, catalog *Catalog, parent Item) *Book {
+func newBook(base *jsonBook, catalog *catalog, parent Item) *Book {
 	b := &Book{}
 	b.base = base
 	b.catalog = catalog
@@ -154,38 +157,38 @@ func newBook(base *jsonBook, catalog *Catalog, parent Item) *Book {
 }
 
 // A short human-readable representation of the book, mostly useful for debugging.
-func (b *Book) String() string {
+func (b *book) String() string {
 	return fmt.Sprintf("%v {%v}", b.base.Name, b.base.GlURI)
 }
 
 // An ID for the book. This is unique to this book within it's language.
-func (b *Book) ID() int {
+func (b *book) ID() int {
 	return b.base.ID
 }
 
 // The name of this book.
-func (b *Book) Name() string {
+func (b *book) Name() string {
 	return b.base.Name
 }
 
 // The URL the database of this book is located at online.
-func (b *Book) URL() string {
+func (b *book) URL() string {
 	return b.base.URL
 }
 
 // The Gospel Library Path of this book, unique within it's language
-func (b *Book) Path() string {
+func (b *book) Path() string {
 	return b.base.GlURI
 }
 
 // The language this book is in
-func (b *Book) Language() Lang {
+func (b *book) Lang() Lang {
 	return b.catalog.language
 }
 
 // Children in this book. This is identical to the Index function, but returns
 // the index as a []Item
-func (b *Book) Children() ([]Item, error) {
+func (b *book) Children() ([]Item, error) {
 	nodes, err := b.Index()
 	if err != nil {
 		return nil, err
@@ -202,22 +205,22 @@ func (b *Book) Children() ([]Item, error) {
 }
 
 // Parent Folder or Catalog of this book
-func (b *Book) Parent() Item {
+func (b *book) Parent() Item {
 	return b.parent
 }
 
-// Next Book in the Folder
-func (b *Book) Next() Item {
+// Next book in the Folder
+func (b *book) Next() Item {
 	return genericNextPrevious(b, 1)
 }
 
-// Previous Book in the Folder
-func (b *Book) Previous() Item {
+// Previous book in the Folder
+func (b *book) Previous() Item {
 	return genericNextPrevious(b, -1)
 }
 
 // The SQLite database connector with some prepared statements. Cached for subsequent uses.
-func (b *Book) db() (*bookDBConnection, error) {
+func (b *book) db() (*bookDBConnection, error) {
 	db, err := b.dbCache.get()
 	if err != nil {
 		return nil, err
@@ -227,13 +230,13 @@ func (b *Book) db() (*bookDBConnection, error) {
 }
 
 // Returns the Nodes at the root of this book.
-func (l *Book) Index() ([]*Node, error) {
+func (l *book) Index() ([]*Node, error) {
 	return l.nodeChildren(nil)
 }
 
 // Returns the Nodes that are children of the passed node. If the passed Node
 // is nil, it will return the Index
-func (b *Book) nodeChildren(parent *Node) ([]*Node, error) {
+func (b *book) nodeChildren(parent *Node) ([]*Node, error) {
 	l, err := b.db()
 	parentId := 0
 	if err != nil {
@@ -258,8 +261,8 @@ func (b *Book) nodeChildren(parent *Node) ([]*Node, error) {
 	return nodes, nil
 }
 
-func (b *Book) lookupId(id int) (*Node, error) {
-	node := &Node{Book: b}
+func (b *book) lookupId(id int) (*Node, error) {
+	node := &Node{book: b}
 	l, err := b.db()
 	if err != nil {
 		return node, err
@@ -269,8 +272,8 @@ func (b *Book) lookupId(id int) (*Node, error) {
 
 }
 
-func (b *Book) lookupPath(uri string) (*Node, error) {
-	node := &Node{Book: b}
+func (b *book) lookupPath(uri string) (*Node, error) {
+	node := &Node{book: b}
 	l, err := b.db()
 	if err != nil {
 		return node, err
@@ -282,7 +285,7 @@ func (b *Book) lookupPath(uri string) (*Node, error) {
 	return node, err
 }
 
-func (b *Book) nodeContent(node *Node) (string, error) {
+func (b *book) nodeContent(node *Node) (string, error) {
 	l, err := b.db()
 	if err != nil {
 		return "", err
@@ -292,7 +295,7 @@ func (b *Book) nodeContent(node *Node) (string, error) {
 	return content, err
 }
 
-func (b *Book) nodeFootnotes(node *Node, verses []int) ([]Footnote, error) {
+func (b *book) nodeFootnotes(node *Node, verses []int) ([]Footnote, error) {
 	l, err := b.db()
 	if err != nil {
 		return nil, err

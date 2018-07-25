@@ -4,10 +4,10 @@ import (
 	"errors"
 )
 
-var ErrPathNotFound error
+var ErrNotFound error
 
 func init() {
-	ErrPathNotFound = errors.New("Path not found")
+	ErrNotFound = errors.New("Path not found")
 }
 
 // Lookup finds an Item by it's path. Expects a fully qualified path. "/" will
@@ -15,14 +15,14 @@ func init() {
 // loading the item or it is not downloaded.
 func (r Reference) Lookup() (Item, error) {
 	for srcName, src := range srcs {
-		lang := languageFromSource(r.Language, srcName)
+		lang := languageFromSource(r.Lang, srcName)
 		item, err := src.Lookup(lang, r.Path)
-		if err != ErrPathNotFound {
+		if err != ErrNotFound {
 			return nil, err
 		}
 		if err == nil {
 			return item, nil
 		}
 	}
-	return nil, ErrPathNotFound
+	return nil, ErrNotFound
 }

@@ -6,73 +6,61 @@ import (
 	"os"
 	"strconv"
 	"strings"
+
+	"github.com/duckbrain/ldss/lib/dl"
 )
 
 var _ strconv.NumError
 var _ strings.Reader
+var _ lib.Item = catalog{}
 
 // Represents a catalog, exports ways to lookup children by path and ID
-type Catalog struct {
-	folderBase
-	language      Lang
+type catalog struct {
+	jsonFolder
+	dl.Template
+	lang          Lang
+	itemsByPath   map[string]lib.Item
 	foldersById   map[int]*Folder
 	foldersByPath map[string]*Folder
 	booksById     map[int]*Book
 	booksByPath   map[string]*Book
 }
 
-// A short human-readable representation of the catalog, mostly useful for debugging.
-func (c *Catalog) String() string {
-	return fmt.Sprintf("%v {folders[%v] books[%v]}", c.base.Name, len(c.base.Folders), len(c.base.Books))
-}
-
-// The Gospel Library Path of this catalog. Every catalog's path is "/"
-func (c *Catalog) Path() string {
-	return "/"
-}
-
-// Parent of this catalog. Always nil
-func (c *Catalog) Parent() Item {
-	return nil
-}
-
-// Next sibling of this catalog. Always nil
-func (c *Catalog) Next() Item {
-	return nil
-}
-
-// Previous sibling of this catalog. Always nil
-func (c *Catalog) Previous() Item {
-	return nil
-}
-
-// The language this catalog represents
-func (c *Catalog) Language() Lang {
-	return c.language
-}
-
 // Creates a catalog object and populates it with it's Folders and Books
-func newCatalog(lang Lang) (*Catalog, error) {
-	var desc struct {
-		Catalog         *jsonFolder `json:"catalog"`
-		CoverArtBaseUrl string      `json:"cover_art_base_url"`
+func newCatalog(lang Lang) *catalog {
+	c := &catalog{}
+	c.lang = lang
+	c.JsonName = fmt.Sprintf("All %v Content", lang.EnglishName())
+	c.Template.Src = getServerAction(fmt.Sprintf("catalog.query&languageid=%v&platformid=%v", lang.ID, platformID))
+	c.Template.Dest = catalogPath(language)
+
+	return c
+}
+
+func (c *catalog) Open() error {
+	if c.itemsByPath != nil {
+		return nil
 	}
-	file, err := os.Open(catalogPath(lang))
+	var desc = struct {
+		Catalog         *catalog `json:"catalog"`
+		CoverArtBaseUrl string   `json:"cover_art_base_url"`
+	}{
+		Catalog: c,
+	}
+	file, err := os.Open(c.Template.Dest)
 	if err != nil {
-		dlErr := notDownloadedCatalogErr{lang: lang}
-		dlErr.err = err
-		return nil, dlErr
+		return nil, dl.ErrNotDownloaded(c)
 	}
 	if err = json.NewDecoder(file).Decode(&desc); err != nil {
 		return nil, err
 	}
 
-	c := &Catalog{}
 	c.base = desc.Catalog
-	c.foldersById = make(map[int]*Folder)
-	c.foldersByPath = make(map[string]*Folder)
-	c.booksById = make(map[int]*Book)
-	c.booksByPath = make(map[string]*Book)
+	c.itemsByPath = make(map[int]lib.Item)
+	c.foldersById = make(map[int]*folder)
+	c.foldersByPath = make(map[string]*folder)
+	c.booksById = make(map[int]*book)
+	c.booksByPath = make(map[string]*book)
 	c.language = lang
 
 	c.folders = c.addFolders(c.base.Folders, c)
@@ -81,24 +69,61 @@ func newCatalog(lang Lang) (*Catalog, error) {
 	return c, nil
 }
 
-// Used for parsing folders in the catalog's JSON file
-type jsonFolder struct {
-	Name    string        `json:"name"`
-	Folders []*jsonFolder `json:"folders"`
-	Books   []*jsonBook   `json:"books"`
-	ID      int           `json:"id"`
+// The Gospel Library Path of this catalog. Every catalog's path is "/"
+func (c *catalog) Path() string {
+	return "/"
 }
 
-// Used for parsing books in the catalog's JSON file
-type jsonBook struct {
-	ID    int    `json:"id"`
-	Name  string `json:"name"`
-	URL   string `json:"url"`
-	GlURI string `json:"gl_uri"`
+// Parent of this catalog. Always nil
+func (c *catalog) Parent() lib.Item {
+	return nil
+}
+
+// Next sibling of this catalog. Always nil
+func (c *catalog) Next() lib.Item {
+	return nil
+}
+
+// Previous sibling of this catalog. Always nil
+func (c *catalog) Prev() lib.Item {
+	return nil
+}
+
+// The language this catalog represents
+func (c *catalog) Lang() lib.Lang {
+	return c.language
+}
+
+func (c *catalog) Children() []lib.Item {
+}
+
+// Used for parsing folders in the catalog's JSON file
+type jsonFolder struct {
+	JsonName string    `json:"name"`
+	Folders  []*folder `json:"folders"`
+	Books    []*book   `json:"books"`
+	ID       int       `json:"id"`
+}
+
+func (f *jsonFolder) Name() string {
+	return f.JsonName
+}
+
+// Combined Folders and Books
+func (f *jsonFolder) Children() []lib.Item {
+	folderLen := len(f.Folders)
+	items := make([]lib.Item, folderLen+len(f.Books))
+	for i, f := range f.Folders() {
+		items[i] = f
+	}
+	for i, f := range f.Books() {
+		items[folderLen+i] = f
+	}
+	return items
 }
 
 // Recursively converts jsonFolders into Folders
-func (catalog *Catalog) addFolders(jFolders []*jsonFolder, parent Item) []*Folder {
+func (catalog *catalog) addFolders(jFolders []*jsonFolder, parent Item) []*Folder {
 	folders := make([]*Folder, len(jFolders))
 	for i, base := range jFolders {
 		f := &Folder{
@@ -117,7 +142,7 @@ func (catalog *Catalog) addFolders(jFolders []*jsonFolder, parent Item) []*Folde
 }
 
 // Converts jsonBooks into Books and sets their parent item
-func (catalog *Catalog) addBooks(jBooks []*jsonBook, parent Item) []*Book {
+func (catalog *catalog) addBooks(jBooks []*jsonBook, parent Item) []*Book {
 	books := make([]*Book, len(jBooks))
 	for i, base := range jBooks {
 		b := newBook(base, catalog, parent)

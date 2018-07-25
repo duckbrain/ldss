@@ -1,18 +1,17 @@
 package lib
 
-import (
-	"fmt"
-)
+type Opener interface {
+	Open() error
+}
 
 type Item interface {
 	Name() string
-	Children() ([]Item, error)
+	Children() []Item
 	Path() string
-	Language() Lang
+	Lang() Lang
 	Parent() Item
 	Next() Item
-	Previous() Item
-	fmt.Stringer
+	Prev() Item
 }
 
 type Contenter interface {
@@ -27,7 +26,7 @@ type Footnoter interface {
 
 type Reference struct {
 	Path              string
-	Language          Lang
+	Lang              Lang
 	VerseSelected     int
 	VersesHighlighted []int
 	VersesExtra       []int

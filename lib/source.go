@@ -3,13 +3,13 @@ package lib
 import (
 	"fmt"
 
-	"github.com/duckbrain/ldss/lib/download"
+	"github.com/duckbrain/ldss/lib/dl"
 )
 
 const RootPath = "/"
 
 type Source interface {
-	download.Downloader
+	dl.Downloader
 	Langs() ([]Lang, error)
 
 	Lookup(lang Lang, path string) (Item, error)

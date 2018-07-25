@@ -1,17 +1,8 @@
-package ldsorg
+package lib
 
-var catalogsByLanguageId map[int]*Catalog
-var booksByLangBookId map[langBookID]*Book
-
-type langBookID struct {
-	langID int
-	bookID int
-}
-
-func init() {
-	catalogsByLanguageId = make(map[int]*Catalog)
-	booksByLangBookId = make(map[langBookID]*Book)
-}
+import (
+	"github.com/duckbrain/ldss/lib/dl"
+)
 
 // Calls the open function and downloads any missing content if has not
 // been downloaded yet. If it does download something, it will retry the
@@ -20,19 +11,19 @@ func init() {
 // result through a series of messages from the returned channel.
 func AutoDownload(open func() (Item, error)) (Item, error) {
 	item, err := open()
-	var dlErr, preDlErr notDownloadedErr
-	dlErr, ok := err.(notDownloadedErr)
+	var dlr, preDlr dl.Downloader
+	dlr, ok := dl.IsNotDownloaded(err)
 	for ok {
-		if dlErr == preDlErr {
-			return nil, dlErr
+		if dlr == preDlr {
+			return nil, err
 		}
-		err = dlErr.Download()
+		err = dl.EnqueueAndWait(dlr)
 		if err != nil {
 			return nil, err
 		}
 		item, err = open()
-		preDlErr = dlErr
-		dlErr, ok = err.(notDownloadedErr)
+		preDlr = dlr
+		dlr, ok = dl.IsNotDownloaded(err)
 	}
 	return item, nil
 }
@@ -40,22 +31,20 @@ func AutoDownload(open func() (Item, error)) (Item, error) {
 // Gets the next or previous sibling of an item using it's
 // interface functions. Used to implement Next and Previous
 // on the Item interface. Only pass -1 or 1 to direction.
-func genericNextPrevious(item Item, direction int) Item {
+func GenericNextPrevious(item Item, direction int) Item {
 	parent := item.Parent()
 	if parent == nil {
 		return nil
 	}
-	siblings, err := parent.Children()
-	if err != nil {
-		panic(err)
-	}
+	siblings := parent.Children()
 
 	getSideSibs := func() []Item {
-		parentSibling := genericNextPrevious(parent, direction)
+		parentSibling := GenericNextPrevious(parent, direction)
 		if parentSibling == nil {
 			return nil
 		}
-		if sideSibs, err := parentSibling.Children(); err == nil && len(sideSibs) > 0 {
+		sideSibs := parentSibling.Children()
+		if len(sideSibs) > 0 {
 			return sideSibs
 		}
 		return nil

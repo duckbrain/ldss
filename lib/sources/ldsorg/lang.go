@@ -1,12 +1,34 @@
 package ldsorg
 
-type jsonLangRoot struct {
-	Languages []*jsonLang `json:"languages"`
-	Success   bool        `json:"success"`
+import (
+	"github.com/duckbrain/ldss/lib/dl"
+)
+
+var languages []*lang
+
+func (s source) Langs() ([]lib.Lang, error) {
+	if languages != nil {
+		return languages, nil
+	}
+
+	var root struct {
+		Languages []*lang `json:"languages"`
+	}
+
+	file, err := os.Open(languagesPath())
+	if err != nil {
+		return nil, dl.ErrNotDownloaded(s)
+	}
+	if err = json.NewDecoder(file).Decode(&root); err != nil {
+		return nil, err
+	}
+
+	languages = root.Languages
+	return nil, languages
 }
 
 // Lang defines a language as from the server. The fields should not be modified.
-type jsonLang struct {
+type lang struct {
 	// The Gospel Library ID for the language. Used for downloads.
 	ID int `json:"id"`
 
@@ -23,19 +45,19 @@ type jsonLang struct {
 	GlCode string `json:"code_three"`
 }
 
-func (l jsonLang) Name() string {
+func (l lang) Name() string {
 	return l.Name
 }
 
-func (l jsonLang) EnglishName() string {
+func (l lang) EnglishName() string {
 	return l.EnglishName
 }
 
-func (l jsonLang) Code() string {
+func (l lang) Code() string {
 	return l.Code
 }
 
-func (l jsonLang) Matches(s string) bool {
+func (l lang) Matches(s string) bool {
 	s = strings.ToLower(s)
 	return s == strings.ToLower(l.Name)
 }

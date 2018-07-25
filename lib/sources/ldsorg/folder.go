@@ -9,55 +9,11 @@ import (
 
 type Item = lib.Item
 
-type folderBase struct {
-	base    *jsonFolder
-	folders []*Folder
-	books   []*Book
-}
-
 // Represents a folder in the catalog. Could contain subfolders and books.
-type Folder struct {
-	folderBase
+type folder struct {
+	jsonFolder
 	parent  Item
 	catalog *Catalog
-}
-
-// Combined Folders and Books
-func (f *folderBase) Children() ([]Item, error) {
-	folderLen := len(f.base.Folders)
-	items := make([]Item, folderLen+len(f.base.Books))
-	for i, f := range f.Folders() {
-		items[i] = f
-	}
-	for i, f := range f.Books() {
-		items[folderLen+i] = f
-	}
-	return items, nil
-}
-
-// Folders as direct children of this item
-func (f *folderBase) Folders() []*Folder {
-	return f.folders
-}
-
-// Books as direct children of this item
-func (f *folderBase) Books() []*Book {
-	return f.books
-}
-
-// Name of this item
-func (f *folderBase) Name() string {
-	return f.base.Name
-}
-
-// An ID that is unique to this Folder within it's language
-func (f *Folder) ID() int {
-	return f.base.ID
-}
-
-// A short human-readable representation of the folder, mostly useful for debugging.
-func (f *Folder) String() string {
-	return fmt.Sprintf("%v {%v folders[%v] books[%v]}", f.Name(), f.Path(), len(f.Folders()), len(f.Books()))
 }
 
 // Full path of this folder. It will attempt to get a path from the references
@@ -107,7 +63,7 @@ func (f *Folder) Path() string {
 }
 
 // Language of this folder
-func (f *Folder) Language() Lang {
+func (f *Folder) Lang() Lang {
 	return f.catalog.language
 }
 
@@ -122,6 +78,6 @@ func (f *Folder) Next() Item {
 }
 
 // Previous sibling of this folder
-func (f *Folder) Previous() Item {
+func (f *Folder) Prev() Item {
 	return genericNextPrevious(f, -1)
 }

@@ -68,7 +68,7 @@ func searchItem(item Item, keywords []string, c chan<- SearchResult, waitGroup *
 			if content, err := node.Content(); err == nil {
 				result := content.Search(keywords)
 				if result.Weight > 0 {
-					result.Language = item.Language()
+					result.Lang = item.Lang()
 					result.Path = item.Path()
 					result.Clean()
 					c <- result
@@ -78,10 +78,8 @@ func searchItem(item Item, keywords []string, c chan<- SearchResult, waitGroup *
 		}(node, item)
 	}
 
-	if children, err := item.Children(); err == nil {
-		for _, child := range children {
-			searchItem(child, keywords, c, waitGroup, resultSet)
-		}
+	for _, child := range item.Children() {
+		searchItem(child, keywords, c, waitGroup, resultSet)
 	}
 	return
 }

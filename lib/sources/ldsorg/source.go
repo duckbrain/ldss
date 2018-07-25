@@ -5,25 +5,24 @@ import (
 	"strings"
 
 	"github.com/duckbrain/ldss/lib"
+	"github.com/duckbrain/ldss/lib/dl"
 )
 
 type Lang = lib.Lang
 
 type source struct {
-	langs []lib.Lang
+	dl.Template
 }
 
 func init() {
-	lib.Register("lds.org", &source{})
+	s := source{}
+	s.Template.Src = getServerAction("languages.query")
+	s.Template.Dest = languagesPath()
+	lib.Register("lds.org", s)
 }
 
-func (s *source) Langs() ([]lib.Lang, error) {
-	if s.langs != nil {
-		return s.langs, nil
-	}
-
-	langs := make([]lib.Lang)
-	Download
+func (s source) Name() string {
+	return "LDS.org"
 }
 
 // Lookup finds an Item by it's path. Expects a fully qualified path. "/" will
@@ -61,5 +60,5 @@ func (s source) Lookup(lang lib.Lang, path string) (Item, error) {
 			return node, err
 		}
 	}
-	return nil, fmt.Errorf("Path \"%v\" not found", r.Path)
+	return nil, lib.ErrNotFound
 }

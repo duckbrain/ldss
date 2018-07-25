@@ -21,8 +21,8 @@ func Parse(lang Lang, q string) []Reference {
 
 func ParsePath(lang Lang, p string) Reference {
 	r := Reference{
-		Language: lang,
-		Path:     p,
+		Lang: lang,
+		Path: p,
 	}
 
 	if index := strings.IndexRune(r.Path, '.'); index != -1 {
@@ -45,7 +45,7 @@ func ParsePath(lang Lang, p string) Reference {
 func (r Reference) MarshalJSON() ([]byte, error) {
 	return json.Marshal(struct {
 		Path              string
-		Language          Lang
+		Lang              Lang
 		VerseSelected     int
 		VersesHighlighted []int
 		VersesExtra       []int
@@ -53,7 +53,7 @@ func (r Reference) MarshalJSON() ([]byte, error) {
 		URL               string
 	}{
 		Path:              r.Path,
-		Language:          r.Language,
+		Lang:              r.Lang,
 		VerseSelected:     r.VerseSelected,
 		VersesHighlighted: r.VersesHighlighted,
 		VersesExtra:       r.VersesExtra,
@@ -86,8 +86,8 @@ func (r Reference) URL() string {
 	if r.VersesExtra != nil {
 		p = fmt.Sprintf("%v.%v", p, stringifyVerses(r.VersesExtra))
 	}
-	if r.Language != nil {
-		p = fmt.Sprintf("%v?lang=%v", p, r.Language.Code())
+	if r.Lang != nil {
+		p = fmt.Sprintf("%v?lang=%v", p, r.Lang.Code())
 	}
 	if r.VerseSelected > 0 {
 		p = fmt.Sprintf("%v#%v", p, r.VerseSelected)
@@ -175,8 +175,8 @@ func cleanVerses(a []int) []int {
 }
 
 func (r Reference) Check() error {
-	if r.Language == nil {
-		return fmt.Errorf("Language not set on reference")
+	if r.Lang == nil {
+		return fmt.Errorf("Lang not set on reference")
 	}
 	if len(r.Path) == 0 || r.Path[0] != '/' {
 		return fmt.Errorf("Path \"%v\" must start with '/'", r.Path)

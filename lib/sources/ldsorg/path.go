@@ -25,14 +25,10 @@ func languagesPath() string {
 func catalogPath(language Lang) string {
 	return mkdirAndGetFile(DataDirectory, language.GlCode, "catalog.json")
 }
-func bookPath(book *Book) string {
+func bookPath(book *book) string {
 	return mkdirAndGetFile(DataDirectory,
-		book.catalog.Language().GlCode,
+		book.catalog.Lang().GlCode,
 		book.Path(), "contents.sqlite")
-}
-func fileExist(path string) bool {
-	_, err := os.Stat(path)
-	return !os.IsNotExist(err)
 }
 
 // Server Paths

@@ -19,13 +19,13 @@ type Footnote struct {
 func (f *Footnote) References() []Reference {
 	z := html.NewTokenizerFragment(strings.NewReader(string(f.Content)), "div")
 	refs := make([]Reference, 0)
-	lang := f.Item.Language()
+	lang := f.Item.Lang()
 
 loop:
 	for {
 		ref := Reference{
-			Language: lang,
-			Name:     "",
+			Lang: lang,
+			Name: "",
 		}
 
 		switch z.Next() {

@@ -137,7 +137,7 @@ func newQueryParser(lang Lang, file []byte) *queryParser {
 func (p *queryParser) lookup(q string) []Reference {
 	q = strings.ToLower(q)
 	refs := make([]Reference, 0)
-	ref := Reference{Language: p.lang}
+	ref := Reference{Lang: p.lang}
 	var tt queryTokenType
 
 	scanner := bufio.NewScanner(strings.NewReader(q))
@@ -203,8 +203,8 @@ func (p *queryParser) lookup(q string) []Reference {
 		refs = append(refs, ref)
 
 		ref = Reference{
-			Language: p.lang,
-			Path:     path,
+			Lang: p.lang,
+			Path: path,
 		}
 		verseRangeStart = 0
 		chapter = 0
