@@ -11,7 +11,7 @@ type Node struct {
 	id          int
 	name        string
 	path        string
-	Book        *Book
+	Book        *book
 	hasContent  bool
 	childCount  int
 	parentId    int

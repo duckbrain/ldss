@@ -1,11 +1,7 @@
 package ldsorg
 
 import (
-	"compress/zlib"
 	"fmt"
-	"io"
-	"net/http"
-	"os"
 )
 
 // The number of simultaneous downloads when using DownloadChildren or DownloadAll

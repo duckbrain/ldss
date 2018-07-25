@@ -13,7 +13,7 @@ type Item = lib.Item
 type folder struct {
 	jsonFolder
 	parent  Item
-	catalog *Catalog
+	catalog *catalog
 }
 
 // Full path of this folder. It will attempt to get a path from the references

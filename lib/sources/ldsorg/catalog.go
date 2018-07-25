@@ -7,6 +7,7 @@ import (
 	"strconv"
 	"strings"
 
+	"github.com/duckbrain/ldss/lib"
 	"github.com/duckbrain/ldss/lib/dl"
 )
 
@@ -20,10 +21,10 @@ type catalog struct {
 	dl.Template
 	lang          Lang
 	itemsByPath   map[string]lib.Item
-	foldersById   map[int]*Folder
-	foldersByPath map[string]*Folder
-	booksById     map[int]*Book
-	booksByPath   map[string]*Book
+	foldersById   map[int]*folder
+	foldersByPath map[string]*folder
+	booksById     map[int]*book
+	booksByPath   map[string]*book
 }
 
 // Creates a catalog object and populates it with it's Folders and Books

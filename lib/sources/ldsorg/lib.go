@@ -1,6 +1,6 @@
 package ldsorg
 
-var catalogsByLanguageId map[int]*Catalog
+var catalogsByLanguageId map[int]*catalog
 var booksByLangBookId map[langBookID]*Book
 
 type langBookID struct {
@@ -9,10 +9,6 @@ type langBookID struct {
 }
 
 func init() {
-	catalogsByLanguageId = make(map[int]*Catalog)
+	catalogsByLanguageId = make(map[int]*catalog)
 	booksByLangBookId = make(map[langBookID]*Book)
-}
-
-func catalog(langId int) (*Catalog, error) {
-
 }
