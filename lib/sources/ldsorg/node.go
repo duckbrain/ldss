@@ -7,7 +7,7 @@ import (
 )
 
 // Represents a node in a Book
-type Node struct {
+type node struct {
 	id          int64
 	conn        *sqlconn
 	name        string
@@ -22,57 +22,57 @@ type Node struct {
 	shortTitle  *string
 }
 
-func (n *Node) Open() error {
+func (n *node) Open() error {
 	// TODO: Make sure children, content, parent, etc. is populated
 	return nil
 }
 
 // Name of the node
-func (n *Node) Name() string {
+func (n *node) Name() string {
 	return n.name
 }
 
 // A short human-readable representation of the node, mostly useful for debugging.
-func (n *Node) String() string {
+func (n *node) String() string {
 	return fmt.Sprintf("%v {%v}", n.name, n.path)
 }
 
 // The full Gospel Library path of the node
-func (n *Node) Path() string {
+func (n *node) Path() string {
 	return n.path
 }
 
 // The language the node is in.
-func (n *Node) Lang() Lang {
+func (n *node) Lang() lib.Lang {
 	return n.parent.Lang()
 }
 
 // The children of the node, will all be Nodes
-func (n *Node) Children() []lib.Item {
+func (n *node) Children() []lib.Item {
 	return n.children
 }
 
-func (n *Node) Footnotes(verses []int) ([]lib.Footnote, error) {
+func (n *node) Footnotes(verses []int) ([]lib.Footnote, error) {
 	return n.conn.footnotesByNode(n, verses)
 }
 
 // Returns the content of the Node, to use as HTML or Parse
-func (n *Node) Content() (lib.Content, error) {
+func (n *node) Content() (lib.Content, error) {
 	rawContent, err := n.conn.contentByNodeID(n.id)
 	return lib.Content(rawContent), err
 }
 
 // Parent node or book
-func (n *Node) Parent() lib.Item {
+func (n *node) Parent() lib.Item {
 	return n.parent
 }
 
 // Next sibling node
-func (n *Node) Next() lib.Item {
+func (n *node) Next() lib.Item {
 	return lib.GenericNextPrevious(n, 1)
 }
 
 // Preivous sibling node
-func (n *Node) Prev() lib.Item {
+func (n *node) Prev() lib.Item {
 	return lib.GenericNextPrevious(n, -1)
 }

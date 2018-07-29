@@ -53,7 +53,7 @@ func (b *book) Path() string {
 }
 
 // The language this book is in
-func (b *book) Lang() Lang {
+func (b *book) Lang() lib.Lang {
 	return b.catalog.lang
 }
 

@@ -28,7 +28,7 @@ func (s source) Langs() ([]lib.Lang, error) {
 		return nil, err
 	}
 
-	languages = make([]Lang, len(root.Languages))
+	languages = make([]lib.Lang, len(root.Languages))
 	for i, l := range root.Languages {
 		languages[i] = l
 	}

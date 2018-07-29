@@ -93,7 +93,7 @@ func (l *sqlconn) childrenByParentID(id int64, parent lib.Item) ([]lib.Item, err
 	}
 	nodes := make([]lib.Item, 0)
 	for rows.Next() {
-		n := &Node{
+		n := &node{
 			conn:   l,
 			parent: parent,
 		}
@@ -107,24 +107,24 @@ func (l *sqlconn) childrenByParentID(id int64, parent lib.Item) ([]lib.Item, err
 
 }
 
-func (l *sqlconn) nodeByID(id int64, parent lib.Item) (*Node, error) {
+func (l *sqlconn) nodeByID(id int64, parent lib.Item) (*node, error) {
 	row := l.stmtId.QueryRow(id)
-	node := &Node{
+	n := &node{
 		conn:   l,
 		parent: parent,
 	}
-	err := node.scan(row)
-	return node, err
+	err := n.scan(row)
+	return n, err
 }
 
-func (l *sqlconn) nodeByGlURI(uri string, parent lib.Item) (*Node, error) {
+func (l *sqlconn) nodeByGlURI(uri string, parent lib.Item) (*node, error) {
 	row := l.stmtUri.QueryRow(uri)
-	node := &Node{
+	n := &node{
 		conn:   l,
 		parent: parent,
 	}
-	err := node.scan(row)
-	return node, err
+	err := n.scan(row)
+	return n, err
 }
 
 func (l *sqlconn) contentByNodeID(id int64) (string, error) {
@@ -133,8 +133,8 @@ func (l *sqlconn) contentByNodeID(id int64) (string, error) {
 	return content, err
 }
 
-func (l *sqlconn) footnotesByNode(node *Node, verses []int) ([]lib.Footnote, error) {
-	rows, err := l.stmtFootnotes.Query(node.id)
+func (l *sqlconn) footnotesByNode(n *node, verses []int) ([]lib.Footnote, error) {
+	rows, err := l.stmtFootnotes.Query(n.id)
 	if err != nil {
 		return nil, err
 	}
@@ -144,7 +144,7 @@ func (l *sqlconn) footnotesByNode(node *Node, verses []int) ([]lib.Footnote, err
 		var content string
 		err = rows.Scan(&ref.Name, &ref.LinkName, &content)
 		ref.Content = template.HTML(content)
-		ref.Item = node
+		ref.Item = n
 		if err != nil {
 			return nil, err
 		}
@@ -169,7 +169,7 @@ type sqlScanner interface {
 	Scan(dest ...interface{}) error
 }
 
-func (n *Node) scan(s sqlScanner) error {
+func (n *node) scan(s sqlScanner) error {
 	return s.Scan(&n.id, &n.name, &n.path, &n.parentId,
 		&n.subtitle, &n.sectionName, &n.shortTitle,
 		&n.hasContent, &n.childCount)

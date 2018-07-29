@@ -19,7 +19,7 @@ var _ lib.Item = &catalog{}
 type catalog struct {
 	jsonFolder
 	dl.Template
-	lang          Lang
+	lang          lib.Lang
 	itemsByPath   map[string]lib.Item
 	foldersById   map[int]*folder
 	foldersByPath map[string]*folder

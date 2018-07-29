@@ -24,7 +24,7 @@ func mkdirAndGetFile(paths ...string) string {
 func languagesPath() string {
 	return mkdirAndGetFile(lib.DataDirectory, "languages.json")
 }
-func catalogPath(lang Lang) string {
+func catalogPath(lang lib.Lang) string {
 	return mkdirAndGetFile(lib.DataDirectory, lang.Code(), "catalog.json")
 }
 func bookPath(book *book) string {

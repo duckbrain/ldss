@@ -5,8 +5,6 @@ import (
 	"github.com/duckbrain/ldss/lib/dl"
 )
 
-type Lang = lib.Lang
-
 type source struct {
 	dl.Template
 }
