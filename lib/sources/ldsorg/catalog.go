@@ -119,7 +119,7 @@ func (f *jsonFolder) Children() []lib.Item {
 }
 
 // Recursively converts jsonFolders into Folders
-func (catalog *catalog) traverseFolders(folders []*folder, parent Item) {
+func (catalog *catalog) traverseFolders(folders []*folder, parent lib.Item) {
 	for _, f := range folders {
 		catalog.traverseFolders(f.Folders, f)
 		catalog.traverseBooks(f.Books, f)
@@ -130,7 +130,7 @@ func (catalog *catalog) traverseFolders(folders []*folder, parent Item) {
 }
 
 // Converts books into Books and sets their parent item
-func (catalog *catalog) traverseBooks(books []*book, parent Item) {
+func (catalog *catalog) traverseBooks(books []*book, parent lib.Item) {
 	for _, b := range books {
 		catalog.booksById[b.ID] = b
 		if _, ok := catalog.booksByPath[b.GlURI]; !ok {

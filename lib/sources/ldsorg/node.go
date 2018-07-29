@@ -48,7 +48,7 @@ func (n *Node) Lang() Lang {
 }
 
 // The children of the node, will all be Nodes
-func (n *Node) Children() []Item {
+func (n *Node) Children() []lib.Item {
 	return n.children
 }
 
@@ -68,11 +68,11 @@ func (n *Node) Parent() lib.Item {
 }
 
 // Next sibling node
-func (n *Node) Next() Item {
+func (n *Node) Next() lib.Item {
 	return lib.GenericNextPrevious(n, 1)
 }
 
 // Preivous sibling node
-func (n *Node) Prev() Item {
+func (n *Node) Prev() lib.Item {
 	return lib.GenericNextPrevious(n, -1)
 }

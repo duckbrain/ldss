@@ -7,12 +7,10 @@ import (
 	"github.com/duckbrain/ldss/lib"
 )
 
-type Item = lib.Item
-
 // Represents a folder in the catalog. Could contain subfolders and books.
 type folder struct {
 	jsonFolder
-	parent  Item
+	parent  lib.Item
 	catalog *catalog
 }
 
@@ -70,16 +68,16 @@ func (f *folder) Lang() Lang {
 }
 
 // Parent of this folder. Either a catalog or another folder
-func (f *folder) Parent() Item {
+func (f *folder) Parent() lib.Item {
 	return f.parent
 }
 
 // Next sibling of this folder
-func (f *folder) Next() Item {
+func (f *folder) Next() lib.Item {
 	return lib.GenericNextPrevious(f, 1)
 }
 
 // Previous sibling of this folder
-func (f *folder) Prev() Item {
+func (f *folder) Prev() lib.Item {
 	return lib.GenericNextPrevious(f, -1)
 }

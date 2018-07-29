@@ -15,7 +15,7 @@ type book struct {
 	DownloadURL string `json:"url"`
 	GlURI       string `json:"gl_uri"`
 	catalog     *catalog
-	parent      Item
+	parent      lib.Item
 	dl.Template
 	children []lib.Item
 }
@@ -58,21 +58,21 @@ func (b *book) Lang() Lang {
 }
 
 // Children in this book.
-func (b *book) Children() []Item {
+func (b *book) Children() []lib.Item {
 	return b.children
 }
 
 // Parent Folder or Catalog of this book
-func (b *book) Parent() Item {
+func (b *book) Parent() lib.Item {
 	return b.parent
 }
 
 // Next book in the Folder
-func (b *book) Next() Item {
+func (b *book) Next() lib.Item {
 	return lib.GenericNextPrevious(b, 1)
 }
 
 // Previous book in the Folder
-func (b *book) Prev() Item {
+func (b *book) Prev() lib.Item {
 	return lib.GenericNextPrevious(b, -1)
 }

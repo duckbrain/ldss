@@ -25,7 +25,7 @@ func (s source) Name() string {
 // Lookup finds an Item by it's path. Expects a fully qualified path. "/" will
 // return the catalog. Will return an error if there is an error
 // loading the item or it is not downloaded.
-func (s source) Lookup(lang lib.Lang, path string) (Item, error) {
+func (s source) Lookup(lang lib.Lang, path string) (lib.Item, error) {
 	return nil, nil
 
 	//	c, err := r.Language.Catalog()

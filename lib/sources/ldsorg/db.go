@@ -86,7 +86,7 @@ func (l *sqlconn) Close() error {
 	return nil
 }
 
-func (l *sqlconn) childrenByParentID(id int64, parent Item) ([]lib.Item, error) {
+func (l *sqlconn) childrenByParentID(id int64, parent lib.Item) ([]lib.Item, error) {
 	rows, err := l.stmtChildren.Query(id)
 	if err != nil {
 		return nil, err
