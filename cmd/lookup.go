@@ -43,7 +43,7 @@ var lookupCmd = &cobra.Command{
 			panic(err)
 		}
 
-		if node, ok := item.(*lib.Node); ok {
+		if node, ok := item.(lib.Contenter); ok {
 			if content, err := node.Content(); err == nil {
 				z := content.Parse()
 				for z.NextParagraph() {
@@ -71,12 +71,8 @@ var lookupCmd = &cobra.Command{
 			}
 		}
 
-		children, err := item.Children()
-		if err != nil {
-			panic(err)
-		}
 		fmt.Println(item)
-		for _, child := range children {
+		for _, child := range item.Children() {
 			fmt.Printf("- %v\n", child)
 		}
 	},

@@ -31,11 +31,11 @@ func handleChristStudy(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		panic(err)
 	}
-	node, ok := item.(*lib.Node)
+	contenter, ok := item.(lib.Contenter)
 	if !ok {
-		panic(fmt.Errorf("Item %v is not a node", item.Name()))
+		panic(fmt.Errorf("Item %v has no content", item.Name()))
 	}
-	content, err := node.Content()
+	content, err := contenter.Content()
 	if err != nil {
 		panic(err)
 	}
@@ -58,17 +58,17 @@ func handleChristStudy(w http.ResponseWriter, r *http.Request) {
 		if item == nil {
 			continue
 		}
-		node, ok := item.(*lib.Node)
+		contenter, ok := item.(lib.Contenter)
 		if !ok {
 			continue
 		}
-		content, err := node.Content()
+		content, err := contenter.Content()
 		if err != nil {
 			panic(err)
 		}
-		content.Links(node.Language())
+		content.Links(item.Lang())
 
-		writeTitle(buff, "h2", node.Name(), ref.URL())
+		writeTitle(buff, "h2", item.Name(), ref.URL())
 
 		traversedPaths := make(map[string]bool)
 
@@ -87,11 +87,11 @@ func handleChristStudy(w http.ResponseWriter, r *http.Request) {
 			if item == nil {
 				continue
 			}
-			node, ok := item.(*lib.Node)
+			contenter, ok := item.(lib.Contenter)
 			if !ok {
 				continue
 			}
-			content, err := node.Content()
+			content, err := contenter.Content()
 			if err != nil {
 				panic(err)
 			}
@@ -109,8 +109,8 @@ func handleChristStudy(w http.ResponseWriter, r *http.Request) {
 		Content: template.HTML(buff.String()),
 		Breadcrumbs: []lib.Reference{
 			{
-				Language: lang,
-				Path:     "/",
+				Lang: lang,
+				Path: "/",
 			},
 		},
 	}

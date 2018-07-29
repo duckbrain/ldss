@@ -47,24 +47,21 @@ func subtitle(item lib.Item) string {
 	return ""
 }
 
-type gropedSections map[string][]lib.Contenter
+type groupedSections map[string][]lib.Contenter
 
 func groupSections(items []lib.Item) groupedSections {
 	nodeMap := make(groupedSections)
 	for _, item := range items {
-		node, ok := item.(lib.Contenter)
+		contenter, ok := item.(lib.Contenter)
 		if !ok {
 			return nil
 		}
-		key := ""
-		if name := node.SectionName(); name != nil {
-			key = name
-		}
+		key := contenter.SectionName()
 		list, ok := nodeMap[key]
 		if ok {
-			list = append(list, node)
+			list = append(list, contenter)
 		} else {
-			list = []lib.Contenter{node}
+			list = []lib.Contenter{contenter}
 		}
 		nodeMap[key] = list
 	}

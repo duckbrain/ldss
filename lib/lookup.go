@@ -14,6 +14,8 @@ func init() {
 // return the catalog. Will return an error if there is an error
 // loading the item or it is not downloaded.
 func (r Reference) Lookup() (Item, error) {
+	// TODO: Special case for / where it returns a combined catalog
+
 	for srcName, src := range srcs {
 		lang := languageFromSource(r.Lang, srcName)
 		item, err := src.Lookup(lang, r.Path)

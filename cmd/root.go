@@ -66,9 +66,5 @@ func initConfig() {
 }
 
 func lang() lib.Lang {
-	lang, err := lib.LookupLanguage(langName)
-	if err != nil {
-		panic(err)
-	}
-	return lang
+	return lib.LookupLanguage(langName)
 }

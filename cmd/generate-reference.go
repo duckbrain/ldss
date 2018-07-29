@@ -38,16 +38,11 @@ func (app *generateReference) lookup(path string) lib.Item {
 }
 
 func (app *generateReference) run() {
-	err := lib.DownloadAll(app.lang, false)
-	if err != nil {
-		panic(err)
-	}
-
 	app.runScriptureVolume("/scriptures/ot")
 	app.runScriptureVolume("/scriptures/nt")
 	app.runScriptureVolume("/scriptures/bofm")
 	app.runScriptureVolume("/scriptures/pgp")
-	app.runDandC(app.lookup("/scriptures/dc-testament").(*lib.Book))
+	app.runDandC(app.lookup("/scriptures/dc-testament"))
 }
 
 // Generates lookup names from user readable strings
@@ -113,7 +108,7 @@ func (app *generateReference) runScriptureVolume(path string) {
 	app.comment(b.Name())
 
 	app.genSimple(b, "")
-	nodes, err := b.Children()
+	nodes := b.Children()
 	if err != nil {
 		fmt.Println(err)
 		return
@@ -146,11 +141,7 @@ func (app *generateReference) runDandC(n lib.Item) {
 	app.comment(n.Name())
 	app.genSimple(n, "#")
 	//TODO Generate the number regex
-	children, err := n.Children()
-	if err != nil {
-		panic(err)
-	}
-	for _, c := range children {
+	for _, c := range n.Children() {
 		path := c.Path()
 		path = path[strings.LastIndex(path, "/")+1:]
 		if _, err := strconv.Atoi(path); err != nil {

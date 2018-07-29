@@ -15,7 +15,7 @@ import (
 	"github.com/duckbrain/ldss/lib"
 )
 
-var defaultLanguage lib.Lang
+var defaultLang lib.Lang
 
 type webLayout struct {
 	Title       string
@@ -29,7 +29,7 @@ type webLayout struct {
 
 // Handle attaches events to the net/http package, but does not start the web server
 func Handle(lang lib.Lang) {
-	defaultLanguage = lang
+	defaultLang = lang
 
 	http.HandleFunc("/", handler)
 	http.HandleFunc("/api/", handleJSON)
@@ -51,9 +51,9 @@ func Run(port int, lang lib.Lang) {
 }
 
 func language(r *http.Request) lib.Lang {
-	lang, err := lib.LookupLanguage(r.URL.Query().Get("lang"))
-	if err != nil {
-		return defaultLanguage
+	lang := lib.LookupLanguage(r.URL.Query().Get("lang"))
+	if lang == nil {
+		return defaultLang
 	}
 	return lang
 }
@@ -103,8 +103,8 @@ func handleSearch(w http.ResponseWriter, r *http.Request) {
 		Query: query,
 		Breadcrumbs: []lib.Reference{
 			{
-				Language: lang,
-				Path:     "/",
+				Lang: lang,
+				Path: "/",
 			},
 		},
 	}
@@ -122,8 +122,8 @@ func handleSearch(w http.ResponseWriter, r *http.Request) {
 				ref.Name = item.Name()
 				layout.Breadcrumbs = append(layout.Breadcrumbs, ref)
 
-				if node, ok := item.(*lib.Node); ok {
-					footnotes, err := node.Footnotes(ref.VersesHighlighted)
+				if footnoter, ok := item.(lib.Footnoter); ok {
+					footnotes, err := footnoter.Footnotes(ref.VersesHighlighted)
 					if err == nil {
 						layout.Footnotes = append(layout.Footnotes, footnotes...)
 					}
@@ -197,20 +197,8 @@ func itemsRelativesPath(item lib.Item) interface{} {
 	if item != nil {
 		data := struct {
 			Name string `json:"name"`
-			Type string `json:"type"`
 			Path string `json:"path"`
-		}{item.Name(), "", item.Path()}
-
-		switch item.(type) {
-		case *lib.Catalog:
-			data.Type = "catalog"
-		case *lib.Folder:
-			data.Type = "folder"
-		case *lib.Book:
-			data.Type = "book"
-		case *lib.Node:
-			data.Type = "node"
-		}
+		}{item.Name(), item.Path()}
 
 		return data
 	}
@@ -233,31 +221,24 @@ func handleJSON(w http.ResponseWriter, r *http.Request) {
 
 	data["name"] = item.Name()
 	data["path"] = item.Path()
-	data["language"] = item.Language().GlCode
+	data["language"] = item.Lang().Code()
 	data["parent"] = itemsRelativesPath(item.Parent())
 	data["next"] = itemsRelativesPath(item.Next())
-	data["previous"] = itemsRelativesPath(item.Previous())
+	data["previous"] = itemsRelativesPath(item.Prev())
 
-	switch item := item.(type) {
-	case *lib.Catalog:
-		data["type"] = "catalog"
-	case *lib.Folder:
-		data["type"] = "folder"
-	case *lib.Book:
-		data["type"] = "book"
-	case *lib.Node:
-		data["type"] = "node"
-		data["content"], _ = item.Content()
-		data["footnotes"], _ = item.Footnotes(ref.VersesHighlighted)
+	if x, ok := item.(lib.Contenter); ok {
+		data["content"], _ = x.Content()
+	}
+	if x, ok := item.(lib.Footnoter); ok {
+		data["footnotes"], _ = x.Footnotes(ref.VersesHighlighted)
 	}
 
-	if childItems, err := item.Children(); err == nil {
-		children := make([]interface{}, len(childItems))
-		for i, child := range childItems {
-			children[i] = itemsRelativesPath(child)
-		}
-		data["children"] = children
+	childItems := item.Children()
+	children := make([]interface{}, len(childItems))
+	for i, child := range childItems {
+		children[i] = itemsRelativesPath(child)
 	}
+	data["children"] = children
 
 	breadcrumbs := make([]interface{}, 0)
 	for p := item; p != nil; {
@@ -299,10 +280,7 @@ func handler(w http.ResponseWriter, r *http.Request) {
 		if err != nil {
 			return
 		}
-		children, err = item.Children()
-		if err != nil {
-			return
-		}
+		children = item.Children()
 
 		return
 	})
@@ -326,8 +304,8 @@ func handler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// Get the footnote content
-	if n, ok := item.(*lib.Node); ok {
-		layout.Footnotes, err = n.Footnotes(ref.VersesHighlighted)
+	if x, ok := item.(lib.Footnoter); ok {
+		layout.Footnotes, err = x.Footnotes(ref.VersesHighlighted)
 		if err != nil {
 			panic(err)
 		}
@@ -336,9 +314,9 @@ func handler(w http.ResponseWriter, r *http.Request) {
 	// Generate breadcrumbs
 	for p := item; p != nil; p = p.Parent() {
 		layout.Breadcrumbs = append([]lib.Reference{{
-			Path:     p.Path(),
-			Name:     p.Name(),
-			Language: p.Language(),
+			Path: p.Path(),
+			Name: p.Name(),
+			Lang: p.Lang(),
 		}}, layout.Breadcrumbs...)
 	}
 
@@ -358,16 +336,15 @@ func print(w io.Writer, r *http.Request, ref lib.Reference, item lib.Item, filte
 	}{
 		Item:      item,
 		Reference: ref,
-		LangCode:  item.Language().GlCode,
+		LangCode:  item.Lang().Code(),
 	}
-	data.Children, err = item.Children()
+	data.Children = item.Children()
 	if err != nil {
 		panic(err)
 	}
 
-	switch item.(type) {
-	case *lib.Node:
-		if content, err := item.(*lib.Node).Content(); err == nil {
+	if x, ok := item.(lib.Contenter); ok {
+		if content, err := x.Content(); err == nil {
 			if filter {
 				content = content.Filter(ref.VersesHighlighted)
 				data.Content = template.HTML(content)
@@ -383,7 +360,7 @@ func print(w io.Writer, r *http.Request, ref lib.Reference, item lib.Item, filte
 		} else {
 			err = templates.nodeChildren.Execute(w, data)
 		}
-	default:
+	} else {
 		err = templates.nodeChildren.Execute(w, data)
 	}
 
