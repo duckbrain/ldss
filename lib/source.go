@@ -8,6 +8,8 @@ import (
 
 const RootPath = "/"
 
+var DataDirectory = ".ldss"
+
 type Source interface {
 	dl.Downloader
 	Langs() ([]Lang, error)

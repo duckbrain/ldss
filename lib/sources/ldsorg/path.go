@@ -3,6 +3,8 @@ package ldsorg
 import (
 	"os"
 	"path"
+
+	"github.com/duckbrain/ldss/lib"
 )
 
 // The server to access the Gospel Library catalog and language lists from
@@ -20,14 +22,14 @@ func mkdirAndGetFile(paths ...string) string {
 }
 
 func languagesPath() string {
-	return mkdirAndGetFile(DataDirectory, "languages.json")
+	return mkdirAndGetFile(lib.DataDirectory, "languages.json")
 }
-func catalogPath(language Lang) string {
-	return mkdirAndGetFile(DataDirectory, language.GlCode, "catalog.json")
+func catalogPath(lang Lang) string {
+	return mkdirAndGetFile(lib.DataDirectory, lang.Code(), "catalog.json")
 }
 func bookPath(book *book) string {
-	return mkdirAndGetFile(DataDirectory,
-		book.catalog.Lang().GlCode,
+	return mkdirAndGetFile(lib.DataDirectory,
+		book.catalog.Lang().Code(),
 		book.Path(), "contents.sqlite")
 }
 

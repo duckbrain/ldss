@@ -19,20 +19,22 @@ type folder struct {
 // Full path of this folder. It will attempt to get a path from the references
 // file or create a path based on the names of it's children. As a last resort,
 // it will prepend it's ID with a forward slash.
-func (f *Folder) Path() string {
+// TODO: Make this cache it's value on creation
+func (f *folder) Path() string {
 	//Calculate path based on commonality with children
 	var childFound = false
 	var path []string
-	var search func(folder *Folder)
+	var search func(folder *folder)
 
-	if p, err := languageQueryParser(f.Language()); err == nil {
-		if path, ok := p.matchFolder[f.ID()]; ok {
-			return path
-		}
-	}
+	// TODO: Reimplement with interface-based query parser? Maybe just a concrete one, that can be referenced
+	// if p, err := languageQueryParser(f.Language()); err == nil {
+	// 	if path, ok := p.matchFolder[f.ID()]; ok {
+	// 		return path
+	// 	}
+	// }
 
-	search = func(folder *Folder) {
-		for _, book := range folder.books {
+	search = func(folder *folder) {
+		for _, book := range folder.Books {
 			p := strings.Split(book.Path(), "/")
 			if !childFound {
 				path = p
@@ -45,7 +47,7 @@ func (f *Folder) Path() string {
 				}
 			}
 		}
-		for _, subFolder := range folder.folders {
+		for _, subFolder := range folder.Folders {
 			search(subFolder)
 		}
 	}
@@ -59,25 +61,25 @@ func (f *Folder) Path() string {
 		}
 	}
 
-	return fmt.Sprintf("/%v", f.ID())
+	return fmt.Sprintf("/%v", f.ID)
 }
 
 // Language of this folder
-func (f *Folder) Lang() Lang {
-	return f.catalog.language
+func (f *folder) Lang() Lang {
+	return f.catalog.lang
 }
 
 // Parent of this folder. Either a catalog or another folder
-func (f *Folder) Parent() Item {
+func (f *folder) Parent() Item {
 	return f.parent
 }
 
 // Next sibling of this folder
-func (f *Folder) Next() Item {
-	return genericNextPrevious(f, 1)
+func (f *folder) Next() Item {
+	return lib.GenericNextPrevious(f, 1)
 }
 
 // Previous sibling of this folder
-func (f *Folder) Prev() Item {
-	return genericNextPrevious(f, -1)
+func (f *folder) Prev() Item {
+	return lib.GenericNextPrevious(f, -1)
 }

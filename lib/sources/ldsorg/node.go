@@ -8,16 +8,23 @@ import (
 
 // Represents a node in a Book
 type Node struct {
-	id          int
+	id          int64
+	conn        *sqlconn
 	name        string
 	path        string
-	Book        *book
 	hasContent  bool
 	childCount  int
 	parentId    int
-	Subtitle    string
-	SectionName *string
-	ShortTitle  *string
+	parent      lib.Item
+	children    []lib.Item
+	subtitle    string
+	sectionName *string
+	shortTitle  *string
+}
+
+func (n *Node) Open() error {
+	// TODO: Make sure children, content, parent, etc. is populated
+	return nil
 }
 
 // Name of the node
@@ -36,57 +43,36 @@ func (n *Node) Path() string {
 }
 
 // The language the node is in.
-func (n *Node) Language() Lang {
-	return n.Book.Language()
+func (n *Node) Lang() Lang {
+	return n.parent.Lang()
 }
 
 // The children of the node, will all be Nodes
-func (n *Node) Children() ([]Item, error) {
-	nodes, err := n.Book.nodeChildren(n)
-	if err != nil {
-		return nil, err
-	}
-	items := make([]Item, len(nodes))
-	for i, n := range nodes {
-		if subnodes, err := n.Children(); err == nil && len(subnodes) == 1 {
-			items[i] = subnodes[0]
-		} else {
-			items[i] = n
-		}
-	}
-	return items, nil
+func (n *Node) Children() []Item {
+	return n.children
 }
 
-func (n *Node) Footnotes(verses []int) ([]Footnote, error) {
-	return n.Book.nodeFootnotes(n, verses)
+func (n *Node) Footnotes(verses []int) ([]lib.Footnote, error) {
+	return n.conn.footnotesByNode(n, verses)
 }
 
 // Returns the content of the Node, to use as HTML or Parse
 func (n *Node) Content() (lib.Content, error) {
-	rawContent, err := n.Book.nodeContent(n)
+	rawContent, err := n.conn.contentByNodeID(n.id)
 	return lib.Content(rawContent), err
 }
 
 // Parent node or book
-func (n *Node) Parent() (parent Item) {
-	if n.parentId == 0 {
-		parent = n.Book
-	} else {
-		node, _ := n.Book.lookupId(n.parentId)
-		parent = node
-	}
-	if siblings, err := parent.Children(); err == nil && len(siblings) == 1 {
-		parent = parent.Parent()
-	}
-	return
+func (n *Node) Parent() lib.Item {
+	return n.parent
 }
 
 // Next sibling node
 func (n *Node) Next() Item {
-	return genericNextPrevious(n, 1)
+	return lib.GenericNextPrevious(n, 1)
 }
 
 // Preivous sibling node
-func (n *Node) Previous() Item {
-	return genericNextPrevious(n, -1)
+func (n *Node) Prev() Item {
+	return lib.GenericNextPrevious(n, -1)
 }
