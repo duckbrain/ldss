@@ -1,5 +1,9 @@
 package lib
 
+import (
+	"fmt"
+)
+
 var langs map[string]langMap
 
 func init() {
@@ -52,9 +56,14 @@ func (m langMap) Matches(s string) bool {
 }
 
 func Languages() []Lang {
-	res := []Lang{}
+	if !opened {
+		panic(fmt.Errorf("You must call lib.Open() before getting languages"))
+	}
+	res := make([]Lang, len(langs))
+	i := 0
 	for _, l := range langs {
-		res = append(res, l)
+		res[i] = l
+		i++
 	}
 	return res
 }
@@ -67,15 +76,17 @@ func registerLanguage(srcName string, srcLangs []Lang) {
 	for _, srcLang := range srcLangs {
 		if lang, ok := langs[srcLang.Code()]; ok {
 			lang[srcName] = srcLang
-			// TODO Merge other fields to fill in the blanks
 		} else {
-			langs[lang.Code()] = langMap{srcName: srcLang}
+			langs[srcLang.Code()] = langMap{srcName: srcLang}
 		}
 	}
 }
 
 // LookupLanguage finds a language by any of the accepted methods, compares ID, Code, and InternalCode
 func LookupLanguage(id string) Lang {
+	if !opened {
+		panic(fmt.Errorf("You must call lib.Open() before looking up a language"))
+	}
 	for _, lang := range langs {
 		if lang.Matches(id) {
 			return lang

@@ -11,21 +11,17 @@ import (
 
 var languages []lib.Lang
 
-func (s source) Langs() ([]lib.Lang, error) {
-	if languages != nil {
-		return languages, nil
-	}
-
+func (s source) Open() error {
 	var root struct {
 		Languages []*lang `json:"languages"`
 	}
 
 	file, err := os.Open(languagesPath())
 	if err != nil {
-		return nil, dl.ErrNotDownloaded(s)
+		return dl.ErrNotDownloaded(s)
 	}
 	if err = json.NewDecoder(file).Decode(&root); err != nil {
-		return nil, err
+		return err
 	}
 
 	languages = make([]lib.Lang, len(root.Languages))
@@ -33,7 +29,11 @@ func (s source) Langs() ([]lib.Lang, error) {
 		languages[i] = l
 	}
 
-	return languages, nil
+	return nil
+}
+
+func (s source) Langs() []lib.Lang {
+	return languages
 }
 
 // Lang defines a language as from the server. The fields should not be modified.
@@ -67,5 +67,8 @@ func (l lang) Code() string {
 
 func (l lang) Matches(s string) bool {
 	s = strings.ToLower(s)
-	return s == strings.ToLower(l.JsonName)
+	return s == strings.ToLower(l.JsonName) ||
+		s == strings.ToLower(l.JsonEnglishName) ||
+		s == strings.ToLower(l.JsonCode) ||
+		s == strings.ToLower(l.GlCode)
 }

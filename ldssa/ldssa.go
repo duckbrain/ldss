@@ -27,9 +27,9 @@ func init() {
 		})
 	*/
 
-	lang, err := lib.LookupLanguage("eng")
-	if err != nil {
-		panic(err)
+	lang := lib.LookupLanguage("en")
+	if lang == nil {
+		panic("Language not found")
 	}
 	web.Handle(lang)
 }

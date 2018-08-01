@@ -7,6 +7,7 @@ import (
 	"path"
 
 	"github.com/duckbrain/ldss/lib"
+	_ "github.com/duckbrain/ldss/lib/sources/ldsorg"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 )
@@ -35,7 +36,7 @@ func Execute() {
 func init() {
 	cobra.OnInitialize(initConfig)
 
-	RootCmd.PersistentFlags().StringVar(&langName, "lang", "eng", "language for scripture content")
+	RootCmd.PersistentFlags().StringVar(&langName, "lang", "en", "language for scripture content")
 }
 
 // initConfig reads in config file and ENV variables if set.
@@ -67,4 +68,12 @@ func initConfig() {
 
 func lang() lib.Lang {
 	return lib.LookupLanguage(langName)
+}
+
+// Init lib for usage
+func init() {
+	err := lib.Open()
+	if err != nil {
+		panic(err)
+	}
 }
