@@ -1,6 +1,8 @@
 package ldsorg
 
 import (
+	"strings"
+
 	"github.com/duckbrain/ldss/lib"
 	"github.com/duckbrain/ldss/lib/dl"
 )
@@ -34,8 +36,32 @@ func (s source) Lookup(lang lib.Lang, path string) (lib.Item, error) {
 
 	var item lib.Item
 
-	if i, ok := itemsByLangAndPath[ref{lcode, path}]; ok {
-		item = i
+	var previousAttemptPath string
+	for item == nil || item.Path() != path {
+		// Traverse the path backwards to find an ancestor available
+		ppath := path
+		item = nil
+		for {
+			if i, ok := itemsByLangAndPath[ref{lcode, ppath}]; ok {
+				item = i
+				break
+			}
+			ppath = ppath[:strings.LastIndex(ppath, "/")]
+			if ppath == "" {
+				ppath = "/"
+			}
+		}
+
+		if ppath == previousAttemptPath {
+			return nil, lib.ErrNotFound
+		}
+
+		// Work back down the ancestory to the path
+		err := lib.DlAndOpen(item)
+		if err != nil {
+			return nil, err
+		}
+		previousAttemptPath = ppath
 	}
 
 	// c, err := lang.Catalog()

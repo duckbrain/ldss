@@ -34,17 +34,21 @@ func (r Reference) Lookup() (Item, error) {
 		return nil, ErrNotFound
 	}
 
+	return item, nil
+}
+
+func DlAndOpen(item Item) error {
 	if x, ok := item.(dl.Downloader); ok && !x.Downloaded() {
 		if err := dl.EnqueueAndWait(x); err != nil {
-			return item, err
+			return err
 		}
 	}
 
 	if x, ok := item.(Opener); ok {
 		if err := x.Open(); err != nil {
-			return item, err
+			return err
 		}
 	}
 
-	return item, nil
+	return nil
 }
