@@ -1,6 +1,7 @@
 package ldsorg
 
 import (
+	"compress/zlib"
 	"encoding/json"
 	"fmt"
 	"os"
@@ -135,10 +136,16 @@ func (catalog *catalog) traverseFolders(folders []*folder, parent lib.Item) {
 
 // Converts books into Books and sets their parent item
 func (catalog *catalog) traverseBooks(books []*book, parent lib.Item) {
+	langCode := catalog.Lang().Code()
 	for _, b := range books {
 		catalog.booksById[b.ID] = b
 		if _, ok := catalog.booksByPath[b.GlURI]; !ok {
 			catalog.booksByPath[b.GlURI] = b
+			itemsByLangAndPath[ref{langCode, b.Path()}] = b
 		}
+		b.catalog = catalog
+		b.Template.Src = b.DownloadURL
+		b.Template.Dest = bookPath(b)
+		b.Template.Transform = zlib.NewReader
 	}
 }
