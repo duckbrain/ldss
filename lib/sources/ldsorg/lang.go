@@ -27,6 +27,7 @@ func (s source) Open() error {
 	languages = make([]lib.Lang, len(root.Languages))
 	for i, l := range root.Languages {
 		languages[i] = l
+		itemsByLangAndPath[ref{l.Code(), "/"}] = newCatalog(l)
 	}
 
 	return nil

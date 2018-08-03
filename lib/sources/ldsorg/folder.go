@@ -12,13 +12,17 @@ type folder struct {
 	jsonFolder
 	parent  lib.Item
 	catalog *catalog
+	path    string
 }
 
 // Full path of this folder. It will attempt to get a path from the references
 // file or create a path based on the names of it's children. As a last resort,
 // it will prepend it's ID with a forward slash.
-// TODO: Make this cache it's value on creation
 func (f *folder) Path() string {
+	return f.path
+}
+
+func (f *folder) computePath() string {
 	//Calculate path based on commonality with children
 	var childFound = false
 	var path []string

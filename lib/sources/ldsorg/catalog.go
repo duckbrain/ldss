@@ -28,7 +28,7 @@ type catalog struct {
 }
 
 // Creates a catalog object and populates it with it's Folders and Books
-func newCatalog(lang lang) *catalog {
+func newCatalog(lang *lang) *catalog {
 	c := &catalog{}
 	c.lang = lang
 	c.JsonName = fmt.Sprintf("All %v Content", lang.EnglishName())
@@ -120,12 +120,16 @@ func (f *jsonFolder) Children() []lib.Item {
 
 // Recursively converts jsonFolders into Folders
 func (catalog *catalog) traverseFolders(folders []*folder, parent lib.Item) {
+	langCode := catalog.Lang().Code()
 	for _, f := range folders {
 		catalog.traverseFolders(f.Folders, f)
 		catalog.traverseBooks(f.Books, f)
 		catalog.foldersById[f.ID] = f
 		catalog.foldersByPath[f.Path()] = f
 		catalog.foldersByPath[fmt.Sprintf("/%v", f.ID)] = f
+		f.catalog = catalog
+		f.path = f.computePath()
+		itemsByLangAndPath[ref{langCode, f.path}] = f
 	}
 }
 
