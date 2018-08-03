@@ -71,9 +71,9 @@ var lookupCmd = &cobra.Command{
 			}
 		}
 
-		fmt.Println(item)
+		fmt.Println(item.Name())
 		for _, child := range item.Children() {
-			fmt.Printf("- %v\n", child)
+			fmt.Printf("- %v {%v}\n", child.Name(), child.Path())
 		}
 	},
 }
