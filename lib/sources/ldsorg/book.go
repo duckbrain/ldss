@@ -31,13 +31,19 @@ func (b *book) Open() error {
 	if err != nil {
 		return err
 	}
+	defer l.Close()
 
 	// Populate Children
-	nodes, err := l.childrenByParentID(0, b)
+	nodes, err := l.childrenByParentID(0, b, b)
 	if err != nil {
 		return err
 	}
 	b.children = nodes
+
+	langCode := b.Lang().Code()
+	for _, node := range nodes {
+		itemsByLangAndPath[ref{langCode, node.Path()}] = node
+	}
 
 	return nil
 }

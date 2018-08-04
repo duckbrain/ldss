@@ -86,7 +86,7 @@ func (l *sqlconn) Close() error {
 	return nil
 }
 
-func (l *sqlconn) childrenByParentID(id int64, parent lib.Item) ([]lib.Item, error) {
+func (l *sqlconn) childrenByParentID(id int64, parent lib.Item, book *book) ([]lib.Item, error) {
 	rows, err := l.stmtChildren.Query(id)
 	if err != nil {
 		return nil, err
@@ -94,8 +94,8 @@ func (l *sqlconn) childrenByParentID(id int64, parent lib.Item) ([]lib.Item, err
 	nodes := make([]lib.Item, 0)
 	for rows.Next() {
 		n := &node{
-			conn:   l,
 			parent: parent,
+			book:   book,
 		}
 		err := n.scan(rows)
 		if err != nil {
@@ -107,30 +107,30 @@ func (l *sqlconn) childrenByParentID(id int64, parent lib.Item) ([]lib.Item, err
 
 }
 
-func (l *sqlconn) nodeByID(id int64, parent lib.Item) (*node, error) {
+func (l *sqlconn) nodeByID(id int64, parent lib.Item, book *book) (*node, error) {
 	row := l.stmtId.QueryRow(id)
 	n := &node{
-		conn:   l,
 		parent: parent,
+		book:   book,
 	}
 	err := n.scan(row)
 	return n, err
 }
 
-func (l *sqlconn) nodeByGlURI(uri string, parent lib.Item) (*node, error) {
+func (l *sqlconn) nodeByGlURI(uri string, parent lib.Item, book *book) (*node, error) {
 	row := l.stmtUri.QueryRow(uri)
 	n := &node{
-		conn:   l,
 		parent: parent,
+		book:   book,
 	}
 	err := n.scan(row)
 	return n, err
 }
 
 func (l *sqlconn) contentByNodeID(id int64) (string, error) {
-	var content string
+	var content sql.NullString
 	err := l.stmtContent.QueryRow(id).Scan(&content)
-	return content, err
+	return content.String, err
 }
 
 func (l *sqlconn) footnotesByNode(n *node, verses []int) ([]lib.Footnote, error) {
@@ -170,9 +170,14 @@ type sqlScanner interface {
 }
 
 func (n *node) scan(s sqlScanner) error {
-	return s.Scan(&n.id, &n.name, &n.path, &n.parentId,
-		&n.subtitle, &n.sectionName, &n.shortTitle,
+	var subtitle, sectionName, shortTitle sql.NullString
+	err := s.Scan(&n.id, &n.name, &n.path, &n.parentId,
+		&subtitle, &sectionName, &shortTitle,
 		&n.hasContent, &n.childCount)
+	n.subtitle = subtitle.String
+	n.sectionName = sectionName.String
+	n.shortTitle = shortTitle.String
+	return err
 }
 
 var BookConnectionLimit = 20

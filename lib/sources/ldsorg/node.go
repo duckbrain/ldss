@@ -9,21 +9,55 @@ import (
 // Represents a node in a Book
 type node struct {
 	id          int64
-	conn        *sqlconn
 	name        string
 	path        string
 	hasContent  bool
 	childCount  int
 	parentId    int
 	parent      lib.Item
+	book        *book
 	children    []lib.Item
 	subtitle    string
-	sectionName *string
-	shortTitle  *string
+	sectionName string
+	shortTitle  string
+	content     lib.Content
+	footnotes   []lib.Footnote
 }
 
 func (n *node) Open() error {
 	// TODO: Make sure children, content, parent, etc. is populated
+	path := bookPath(n.book)
+	l, err := opendb(path)
+	if err != nil {
+		return err
+	}
+	defer l.Close()
+
+	// Populate Children
+	nodes, err := l.childrenByParentID(n.id, n, n.book)
+	if err != nil {
+		return err
+	}
+	n.children = nodes
+
+	langCode := n.Lang().Code()
+	for _, node := range nodes {
+		itemsByLangAndPath[ref{langCode, node.Path()}] = node
+	}
+
+	// Populate content
+	content, err := l.contentByNodeID(n.id)
+	if err != nil {
+		return err
+	}
+	n.content = lib.Content(content)
+
+	// Populate Footnotes
+	n.footnotes, err = l.footnotesByNode(n, nil)
+	if err != nil {
+		return err
+	}
+
 	return nil
 }
 
@@ -53,13 +87,23 @@ func (n *node) Children() []lib.Item {
 }
 
 func (n *node) Footnotes(verses []int) ([]lib.Footnote, error) {
-	return n.conn.footnotesByNode(n, verses)
+	if len(verses) == 0 {
+		return n.footnotes, nil
+	}
+
+	path := bookPath(n.book)
+	l, err := opendb(path)
+	if err != nil {
+		return nil, err
+	}
+	defer l.Close()
+
+	return l.footnotesByNode(n, verses)
 }
 
 // Returns the content of the Node, to use as HTML or Parse
 func (n *node) Content() (lib.Content, error) {
-	rawContent, err := n.conn.contentByNodeID(n.id)
-	return lib.Content(rawContent), err
+	return n.content, nil
 }
 
 // Parent node or book
