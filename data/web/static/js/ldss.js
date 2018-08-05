@@ -83,7 +83,6 @@ function setFootnote(ref) {
 	if (element == null) {
 		return;
 	}
-	//footnotes.scrollTop = element.offsetTop - footnotesHeader.clientHeight;
 	scrollTo(footnotes, element.offsetTop - footnotesHeader.clientHeight, 200);
 }
 
@@ -97,6 +96,14 @@ function scrollTo(element, to, duration) {
         if (element.scrollTop === to) return;
         scrollTo(element, to, duration - 10);
     }, 10);
+}
+
+function scrollToHighlight() {
+	var el = document.querySelector('.highlight');
+	if (!el || location.hash) {
+		return;
+	}
+	scroll(0, el.offsetTop - footnotesHeader.clientHeight);
 }
 
 function onScroll() {
@@ -214,6 +221,7 @@ function setItem(item) {
 }
 
 document.addEventListener('click', interceptClickEvent);
+scrollToHighlight();
 window.addEventListener('popstate', onStateChange);
 window.addEventListener('scroll', function() {
 	clearTimeout(scrollTimeout);
