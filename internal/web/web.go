@@ -343,9 +343,12 @@ func print(w io.Writer, r *http.Request, ref lib.Reference, item lib.Item, filte
 		LangCode:  item.Lang().Code(),
 	}
 
+	// TODO: Support having content and children
 	var err error
+	var hasContent bool
 	if x, ok := item.(lib.Contenter); ok {
-		if content, err := x.Content(); err == nil {
+		if content, err := x.Content(); err == nil && len(content) > 0 {
+			hasContent = true
 			if filter {
 				content = content.Filter(ref.VersesHighlighted)
 				data.Content = template.HTML(content)
@@ -358,10 +361,9 @@ func print(w io.Writer, r *http.Request, ref lib.Reference, item lib.Item, filte
 				data.HasTitle = strings.Contains(string(content), "</h1>")
 			}
 			err = templates.nodeContent.Execute(w, data)
-		} else {
-			err = templates.nodeChildren.Execute(w, data)
 		}
-	} else {
+	}
+	if !hasContent {
 		err = templates.nodeChildren.Execute(w, data)
 	}
 
