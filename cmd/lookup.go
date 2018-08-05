@@ -67,11 +67,13 @@ var lookupCmd = &cobra.Command{
 					}
 					color.Println("")
 				}
-				return
+			} else {
+				fmt.Println(err)
 			}
+		} else {
+			fmt.Println(item.Name())
 		}
 
-		fmt.Println(item.Name())
 		for _, child := range item.Children() {
 			fmt.Printf("- %v {%v}\n", child.Name(), child.Path())
 		}
