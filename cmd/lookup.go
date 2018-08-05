@@ -44,31 +44,28 @@ var lookupCmd = &cobra.Command{
 		}
 
 		if node, ok := item.(lib.Contenter); ok {
-			if content, err := node.Content(); err == nil {
-				z := content.Parse()
-				for z.NextParagraph() {
-					color := colors.content
-					switch z.ParagraphStyle() {
-					case lib.ParagraphStyleTitle:
-						color = colors.title
-					case lib.ParagraphStyleSummary:
-						color = colors.summary
-					case lib.ParagraphStyleChapter:
-						color = colors.subtitle
-					}
-					if z.ParagraphVerse() > 0 {
-						colors.verse.Print(z.ParagraphVerse())
-					}
-					for z.NextText() {
-						if z.TextStyle() == lib.TextStyleFootnote {
-							continue
-						}
-						color.Print(z.Text())
-					}
-					color.Println("")
+			content := node.Content()
+			z := content.Parse()
+			for z.NextParagraph() {
+				color := colors.content
+				switch z.ParagraphStyle() {
+				case lib.ParagraphStyleTitle:
+					color = colors.title
+				case lib.ParagraphStyleSummary:
+					color = colors.summary
+				case lib.ParagraphStyleChapter:
+					color = colors.subtitle
 				}
-			} else {
-				fmt.Println(err)
+				if z.ParagraphVerse() > 0 {
+					colors.verse.Print(z.ParagraphVerse())
+				}
+				for z.NextText() {
+					if z.TextStyle() == lib.TextStyleFootnote {
+						continue
+					}
+					color.Print(z.Text())
+				}
+				color.Println("")
 			}
 		} else {
 			fmt.Println(item.Name())

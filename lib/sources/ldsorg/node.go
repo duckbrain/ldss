@@ -105,8 +105,8 @@ func (n *node) Prev() lib.Item {
 //
 
 // Returns the content of the Node, to use as HTML or Parse
-func (n *node) Content() (lib.Content, error) {
-	return n.content, nil
+func (n *node) Content() lib.Content {
+	return n.content
 }
 func (n *node) SectionName() string {
 	return n.sectionName
@@ -118,17 +118,22 @@ func (n *node) Subtitle() string {
 	return n.subtitle
 }
 
-func (n *node) Footnotes(verses []int) ([]lib.Footnote, error) {
+func (n *node) Footnotes(verses []int) []lib.Footnote {
 	if len(verses) == 0 {
-		return n.footnotes, nil
+		return n.footnotes
 	}
 
+	// TODO Change this to filter the cached footnotes
 	path := bookPath(n.book)
 	l, err := opendb(path)
 	if err != nil {
-		return nil, err
+		panic(err)
 	}
 	defer l.Close()
 
-	return l.footnotesByNode(n, verses)
+	footnotes, err := l.footnotesByNode(n, verses)
+	if err != nil {
+		panic(err)
+	}
+	return footnotes
 }

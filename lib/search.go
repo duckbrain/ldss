@@ -65,14 +65,13 @@ func searchItem(item Item, keywords []string, c chan<- SearchResult, waitGroup *
 		resultSet[item.Path()] = true
 		waitGroup.Add(1)
 		go func(node Contenter, item Item) {
-			if content, err := node.Content(); err == nil {
-				result := content.Search(keywords)
-				if result.Weight > 0 {
-					result.Lang = item.Lang()
-					result.Path = item.Path()
-					result.Clean()
-					c <- result
-				}
+			content := node.Content()
+			result := content.Search(keywords)
+			if result.Weight > 0 {
+				result.Lang = item.Lang()
+				result.Path = item.Path()
+				result.Clean()
+				c <- result
 			}
 			waitGroup.Done()
 		}(node, item)

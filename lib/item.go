@@ -3,6 +3,9 @@ package lib
 type Opener interface {
 	Open() error
 }
+type Closer interface {
+	Close() error
+}
 
 type Item interface {
 	Name() string
@@ -15,17 +18,10 @@ type Item interface {
 }
 
 type Contenter interface {
-	// Changing this to content not have the error return may be desierable.
-	// I'd want to make sure that caching content in memory forever is not
-	// too big. Chances are, we don't want to do that, but expirement first.
-	Content() (Content, error)
+	Content() Content
 	Subtitle() string
 	SectionName() string
-}
-
-type Footnoter interface {
-	// Same as Contenter
-	Footnotes(verses []int) ([]Footnote, error)
+	Footnotes(verses []int) []Footnote
 }
 
 type Reference struct {

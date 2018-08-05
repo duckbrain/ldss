@@ -35,10 +35,7 @@ func handleChristStudy(w http.ResponseWriter, r *http.Request) {
 	if !ok {
 		panic(fmt.Errorf("Item %v has no content", item.Name()))
 	}
-	content, err := contenter.Content()
-	if err != nil {
-		panic(err)
-	}
+	content := contenter.Content()
 	traversedPaths := make(map[string]bool)
 
 	writeTitle(buff, "h1", "Topical Study of Jesus Christ", ref.URL())
@@ -62,10 +59,7 @@ func handleChristStudy(w http.ResponseWriter, r *http.Request) {
 		if !ok {
 			continue
 		}
-		content, err := contenter.Content()
-		if err != nil {
-			panic(err)
-		}
+		content := contenter.Content()
 		content.Links(item.Lang())
 
 		writeTitle(buff, "h2", item.Name(), ref.URL())
@@ -91,10 +85,7 @@ func handleChristStudy(w http.ResponseWriter, r *http.Request) {
 			if !ok {
 				continue
 			}
-			content, err := contenter.Content()
-			if err != nil {
-				panic(err)
-			}
+			content := contenter.Content()
 			filteredContent := content.Filter(ref.VersesHighlighted)
 			writeTitle(buff, "h3", ref.Name, ref.URL())
 			buff.Write([]byte(filteredContent))

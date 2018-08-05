@@ -125,11 +125,9 @@ func handleSearch(w http.ResponseWriter, r *http.Request) {
 				ref.Name = item.Name()
 				layout.Breadcrumbs = append(layout.Breadcrumbs, ref)
 
-				if footnoter, ok := item.(lib.Footnoter); ok {
-					footnotes, err := footnoter.Footnotes(ref.VersesHighlighted)
-					if err == nil {
-						layout.Footnotes = append(layout.Footnotes, footnotes...)
-					}
+				if x, ok := item.(lib.Contenter); ok {
+					f := x.Footnotes(ref.VersesHighlighted)
+					layout.Footnotes = append(layout.Footnotes, f...)
 				}
 
 			}()
@@ -236,10 +234,8 @@ func handleJSON(w http.ResponseWriter, r *http.Request) {
 	data["previous"] = itemsRelativesPath(item.Prev())
 
 	if x, ok := item.(lib.Contenter); ok {
-		data["content"], _ = x.Content()
-	}
-	if x, ok := item.(lib.Footnoter); ok {
-		data["footnotes"], _ = x.Footnotes(ref.VersesHighlighted)
+		data["content"] = x.Content()
+		data["footnotes"] = x.Footnotes(ref.VersesHighlighted)
 	}
 
 	childItems := item.Children()
@@ -307,8 +303,8 @@ func handler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// Get the footnote content
-	if x, ok := item.(lib.Footnoter); ok {
-		layout.Footnotes, err = x.Footnotes(ref.VersesHighlighted)
+	if x, ok := item.(lib.Contenter); ok {
+		layout.Footnotes = x.Footnotes(ref.VersesHighlighted)
 		if err != nil {
 			panic(err)
 		}
@@ -347,7 +343,7 @@ func print(w io.Writer, r *http.Request, ref lib.Reference, item lib.Item, filte
 	var err error
 	var hasContent bool
 	if x, ok := item.(lib.Contenter); ok {
-		if content, err := x.Content(); err == nil && len(content) > 0 {
+		if content := x.Content(); len(content) > 0 {
 			hasContent = true
 			if filter {
 				content = content.Filter(ref.VersesHighlighted)
