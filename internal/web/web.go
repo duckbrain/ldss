@@ -67,7 +67,10 @@ func handleError(w io.Writer, r *http.Request) {
 		default:
 			err = fmt.Errorf("%v", rec)
 		}
-		templates.err.Execute(w, err)
+		err = templates.err.Execute(w, err)
+		if err != nil {
+			fmt.Println(err)
+		}
 	}
 }
 
@@ -141,7 +144,7 @@ func handleSearch(w http.ResponseWriter, r *http.Request) {
 				ref.Name = item.Name()
 				results := lib.SearchSort(item, ref.Keywords)
 				layout.Breadcrumbs = append(layout.Breadcrumbs, ref)
-				templates.searchResults.Execute(buff, struct {
+				err := templates.searchResults.Execute(buff, struct {
 					Item          lib.Item
 					Keywords      []string
 					SearchString  string
@@ -152,6 +155,9 @@ func handleSearch(w http.ResponseWriter, r *http.Request) {
 					SearchString:  strings.Join(ref.Keywords, " "),
 					SearchResults: results,
 				})
+				if err != nil {
+					panic(err)
+				}
 			}
 		}
 
@@ -159,7 +165,10 @@ func handleSearch(w http.ResponseWriter, r *http.Request) {
 	}
 	layout.Content = template.HTML(buff.String())
 
-	templates.layout.Execute(w, layout)
+	err := templates.layout.Execute(w, layout)
+	if err != nil {
+		panic(err)
+	}
 }
 
 func handleStatic(w http.ResponseWriter, r *http.Request) {
@@ -275,18 +284,12 @@ func handler(w http.ResponseWriter, r *http.Request) {
 	ref := lib.ParsePath(lang, r.URL.Path)
 	var children []lib.Item
 
-	item, err := lib.AutoDownload(func() (item lib.Item, err error) {
-		item, err = ref.Lookup()
-		if err != nil {
-			return
-		}
-		children = item.Children()
-
-		return
-	})
+	item, err := ref.Lookup()
 	if err != nil {
 		panic(err)
 	}
+
+	children = item.Children()
 
 	if len(children) == 1 {
 		http.Redirect(w, r, children[0].Path(), 301)
@@ -320,16 +323,17 @@ func handler(w http.ResponseWriter, r *http.Request) {
 		}}, layout.Breadcrumbs...)
 	}
 
-	templates.layout.Execute(w, layout)
+	err = templates.layout.Execute(w, layout)
+	if err != nil {
+		panic(err)
+	}
 }
 
 func print(w io.Writer, r *http.Request, ref lib.Reference, item lib.Item, filter bool) {
-	var err error
 	data := struct {
 		Item      lib.Item
 		Reference lib.Reference
 		Content   template.HTML
-		Children  []lib.Item
 		LangCode  string
 		HasTitle  bool
 		Filtered  bool
@@ -338,11 +342,8 @@ func print(w io.Writer, r *http.Request, ref lib.Reference, item lib.Item, filte
 		Reference: ref,
 		LangCode:  item.Lang().Code(),
 	}
-	data.Children = item.Children()
-	if err != nil {
-		panic(err)
-	}
 
+	var err error
 	if x, ok := item.(lib.Contenter); ok {
 		if content, err := x.Content(); err == nil {
 			if filter {

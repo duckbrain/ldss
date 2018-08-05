@@ -13,7 +13,7 @@
 <body>
 
 {{define "ItemHref"}}
-	{{- if .}}href="{{.Path}}?lang={{.Language.GlCode}}"
+	{{- if .}}href="{{.Path}}?lang={{.Lang.Code}}"
 	{{- else}}disabled{{end -}}
 {{end}}
 
@@ -34,7 +34,7 @@
 		<input type="text" name="q" value="{{ .Query }}">
 	</form>
 	<div class="navButtons">
-		<a class="button" id="previous" {{if .Item}}{{template "ItemHref" .Item.Previous}}{{else}}disabled{{end}}>
+		<a class="button" id="previous" {{if .Item}}{{template "ItemHref" .Item.Prev}}{{else}}disabled{{end}}>
 			<img src="/svg/chevron-left.svg" alt="Previous">
 		</a>
 		<a class="button" id="next" {{if .Item}}{{template "ItemHref" .Item.Next}}{{else}}disabled{{end}}>

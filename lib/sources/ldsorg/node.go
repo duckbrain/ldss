@@ -4,7 +4,7 @@ import (
 	"github.com/duckbrain/ldss/lib"
 )
 
-var _ lib.Contenter = &node{}
+var _ lib.Contenter = (*node)(nil)
 
 // Represents a node in a Book
 type node struct {

@@ -1,6 +1,6 @@
 <h1 class="item-name">{{ .Item.Name }}</h1>
 <ul class="item-children">
-{{ $sections := groupSections .Children }}
+{{ $sections := groupSections .Item.Children }}
 {{ if $sections }}
 {{- range $section, $children := $sections }}
   <h3>{{ $section }}</h3>
@@ -14,7 +14,7 @@
 {{ end }}
 {{- end }}
 {{ else }}
-{{- range $key, $child := .Children }}
+{{- range $key, $child := .Item.Children }}
   <li>
     <a href="{{ $child.Path }}?lang={{ $.LangCode }}">{{ $child.Name }}</a>
 	{{ if subtitle $child }}
