@@ -10,7 +10,7 @@ func TestFootnoteParse(t *testing.T) {
 	test := func(s string, b ...Reference) {
 		f := Footnote{
 			Content: template.HTML(s),
-			item:    dummyItem{},
+			Item:    dummyItem{},
 		}
 		testReferences(t, f.References(), b...)
 	}

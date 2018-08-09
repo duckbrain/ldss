@@ -1,18 +1,24 @@
 package lib
 
-var dummyLang Lang
+var myDummyLang Lang
 
 type dummyItem struct{}
+type dummyLang struct{}
 
 func init() {
-	dummyLang = new(Lang)
+	myDummyLang = new(dummyLang)
 }
 
-func (i dummyItem) Name() string              { return "Dummy" }
-func (i dummyItem) Children() ([]Item, error) { return nil, nil }
-func (i dummyItem) Path() string              { return "/dummy" }
-func (i dummyItem) Language() Lang            { return dummyLang }
-func (i dummyItem) Parent() Item              { return nil }
-func (i dummyItem) Next() Item                { return nil }
-func (i dummyItem) Previous() Item            { return nil }
-func (i dummyItem) String() string            { return "{dummy}" }
+func (i dummyItem) Name() string     { return "Dummy" }
+func (i dummyItem) Children() []Item { return []Item{} }
+func (i dummyItem) Path() string     { return "/dummy" }
+func (i dummyItem) Lang() Lang       { return myDummyLang }
+func (i dummyItem) Parent() Item     { return nil }
+func (i dummyItem) Next() Item       { return nil }
+func (i dummyItem) Prev() Item       { return nil }
+func (i dummyItem) String() string   { return "{dummy}" }
+
+func (l dummyLang) Name() string          { return "Demmy" }
+func (l dummyLang) EnglishName() string   { return "Dummy" }
+func (l dummyLang) Code() string          { return "dmy" }
+func (l dummyLang) Matches(s string) bool { return s == "dmy" }
