@@ -91,14 +91,13 @@ func (c *ContentParser) NextParagraph() bool {
 		case html.TextToken:
 			log.Printf("Paragraph found %v %v\n", c.paragraphStyle, c.verse)
 			c.depth = 1
-			c.textStyle = TextStyleNormal
+			//c.textStyle = TextStyleNormal
 			c.justFoundParagraph = true
 			return true
 		case html.StartTagToken:
 			var key, val []byte
 			tag, hasAttr := c.z.TagName()
 			c.verse = 0
-			log.Printf("Paragraph tag found %v\n", string(tag))
 			switch string(tag) {
 			case "h1":
 				c.paragraphStyle = ParagraphStyleTitle
@@ -128,6 +127,12 @@ func (c *ContentParser) NextParagraph() bool {
 			}
 			c.paragraphTag = string(tag)
 		case html.EndTagToken:
+			tag, _ := c.z.TagName()
+			switch string(tag) {
+			case "h1":
+				c.paragraphStyle = ParagraphStyleNormal
+			}
+
 		case html.SelfClosingTagToken:
 		case html.CommentToken:
 		case html.DoctypeToken:
@@ -181,7 +186,7 @@ func (c *ContentParser) NextText() bool {
 			case "sup":
 				c.textStyle = TextStyleNormal
 			case "a":
-				c.textStyle = TextStyleLink
+				c.textStyle = TextStyleNormal
 			}
 		case html.SelfClosingTagToken:
 		case html.CommentToken:
