@@ -57,7 +57,7 @@ var lookupCmd = &cobra.Command{
 					color = colors.subtitle
 				}
 				if z.ParagraphVerse() > 0 {
-					colors.verse.Print(z.ParagraphVerse())
+					colors.verse.Printf("%v ", z.ParagraphVerse())
 				}
 				for z.NextText() {
 					if z.TextStyle() == lib.TextStyleFootnote {

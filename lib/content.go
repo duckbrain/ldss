@@ -27,7 +27,7 @@ type ContentParser struct {
 	depth        int
 
 	// Text info
-	text string
+	text        string
 	textContent string
 	textStyle   TextStyle
 	href        string
@@ -87,7 +87,7 @@ func (c *ContentParser) NextParagraph() bool {
 		case html.ErrorToken:
 			return false
 		case html.TextToken:
-	text := string(c.z.Text())
+			text := string(c.z.Text())
 			if len(strings.TrimSpace(text)) == 0 {
 				continue
 			}
@@ -157,11 +157,11 @@ func (c *ContentParser) NextText() bool {
 		case html.ErrorToken:
 			return false
 		case html.TextToken:
-	text := string(c.z.Text())
-	if len(strings.TrimSpace(text)) == 0 {
-		continue
-	}
-	c.text = text
+			text := string(c.z.Text())
+			if len(strings.TrimSpace(text)) == 0 {
+				continue
+			}
+			c.text = text
 			return true
 		case html.StartTagToken:
 			var key, val []byte
@@ -204,7 +204,12 @@ func (c *ContentParser) TextStyle() TextStyle {
 	return c.textStyle
 }
 func (c *ContentParser) Text() string {
-	return c.text
+	text := c.text
+	sverse := fmt.Sprint(c.verse)
+	if strings.HasPrefix(text, sverse) {
+		text = strings.TrimLeft(text[len(sverse):], " ")
+	}
+	return text
 }
 
 func (content Content) Links(l Lang) []Reference {

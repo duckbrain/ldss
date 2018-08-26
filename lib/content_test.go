@@ -78,7 +78,7 @@ func TestContentParse1(t *testing.T) {
 	z := c.Parse()
 
 	testParagraph(t, z, ParagraphStyleNormal, 1)
-	testText(t, z, TextStyleNormal, "1 The beginning of the ")
+	testText(t, z, TextStyleNormal, "The beginning of the ")
 	testText(t, z, TextStyleFootnote, "a")
 	testText(t, z, TextStyleLink, "gospel")
 	testText(t, z, TextStyleNormal, " of Jesus Christ, the Son of God;")
@@ -104,7 +104,7 @@ func TestContentParse(t *testing.T) {
 	testText(t, z, TextStyleNormal, "Jesus is baptized by John—He preaches the gospel, calls disciples, casts out devils, heals the sick, and cleanses a leper.")
 	testTextEnd(t, z)
 	testParagraph(t, z, ParagraphStyleNormal, 1)
-	testText(t, z, TextStyleNormal, "1 The beginning of the ")
+	testText(t, z, TextStyleNormal, "The beginning of the ")
 	testText(t, z, TextStyleFootnote, "a")
 	testText(t, z, TextStyleLink, "gospel")
 	testText(t, z, TextStyleNormal, " of Jesus Christ, the Son of God;")
