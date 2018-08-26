@@ -3,7 +3,6 @@ package lib
 import (
 	"bytes"
 	"fmt"
-	"log"
 	"math"
 	"strconv"
 	"strings"
@@ -28,6 +27,7 @@ type ContentParser struct {
 	depth        int
 
 	// Text info
+	text string
 	textContent string
 	textStyle   TextStyle
 	href        string
@@ -82,14 +82,16 @@ func (c *ContentParser) NextParagraph() bool {
 	if c.z == nil {
 		c.z = html.NewTokenizerFragment(strings.NewReader(string(c.content)), "div")
 	}
-	log.Println("Reading next paragraph")
 	for {
 		switch c.z.Next() {
 		case html.ErrorToken:
-			log.Println(c.z.Err())
 			return false
 		case html.TextToken:
-			log.Printf("Paragraph found %v %v\n", c.paragraphStyle, c.verse)
+	text := string(c.z.Text())
+			if len(strings.TrimSpace(text)) == 0 {
+				continue
+			}
+			c.text = text
 			c.depth = 1
 			//c.textStyle = TextStyleNormal
 			c.justFoundParagraph = true
@@ -115,7 +117,6 @@ func (c *ContentParser) NextParagraph() bool {
 						}
 					case "id":
 						if verse, err := strconv.Atoi(string(val)); err == nil {
-							log.Println("Setting verse ", verse)
 							c.verse = verse
 						}
 					}
@@ -156,6 +157,11 @@ func (c *ContentParser) NextText() bool {
 		case html.ErrorToken:
 			return false
 		case html.TextToken:
+	text := string(c.z.Text())
+	if len(strings.TrimSpace(text)) == 0 {
+		continue
+	}
+	c.text = text
 			return true
 		case html.StartTagToken:
 			var key, val []byte
@@ -198,8 +204,7 @@ func (c *ContentParser) TextStyle() TextStyle {
 	return c.textStyle
 }
 func (c *ContentParser) Text() string {
-	text := string(c.z.Text())
-	return text
+	return c.text
 }
 
 func (content Content) Links(l Lang) []Reference {

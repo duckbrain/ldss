@@ -34,13 +34,14 @@ func testReferences(t *testing.T, a []Reference, b ...Reference) {
 func TestReferenceParseBasic(t *testing.T) {
 	p := newQueryParser(myDummyLang, []byte(file))
 	if p.matchFolder[42762] != "/music" {
-		t.Fail()
+		t.Error("Unable to reverse lookup /music folder")
 	}
 	if p.matchString["1 ne "] != "/scriptures/bofm/1-ne#" {
-		t.Fail()
+		t.Error("Unable to match \"1 ne\" with /scriptures/bofm/1-ne#")
 	}
-	if len(p.matchRegexp) != 1 {
-		t.Fail()
+	if len(p.matchRegexp) != 2 {
+		// There are two regular expressions in file
+		t.Errorf("Wrong number of regular expressions, found %v", len(p.matchRegexp))
 	}
 }
 

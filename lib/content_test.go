@@ -32,31 +32,31 @@ func testSearchResult(t *testing.T, p, r SearchResult) {
 
 func testParagraph(t *testing.T, z *ContentParser, style ParagraphStyle, verse int) {
 	if !z.NextParagraph() {
-		t.Errorf("     Parse ended too quickly for style %v, verse %v", style, verse)
+		t.Errorf("     Unexpected end of paragraph for style %v, verse %v", style, verse)
 	}
 	if z.ParagraphStyle() != style {
-		t.Errorf("    Wrong paragraph style %v vs. %v", z.ParagraphStyle(), style)
+		t.Errorf("    Paragraph style expected %v received %v", style, z.ParagraphStyle())
 	}
 	if z.ParagraphVerse() != verse {
-		t.Errorf("    Incorrectly assigned verse %v vs. %v", z.ParagraphVerse(), verse)
+		t.Errorf("    Verse expected %v received %v", verse, z.ParagraphVerse())
 	}
 }
 func testText(t *testing.T, z *ContentParser, style TextStyle, text string) {
 	if !z.NextText() {
-		t.Errorf("    Paragraph ended too quickly for %v \"%v\"", style, text)
+		t.Errorf("    Unexpected end of text for style %v, verse \"%v\"", style, text)
 	}
 	zstyle := z.TextStyle()
 	if zstyle != style {
-		t.Errorf("    Wrong text style %v vs. %v", zstyle, style)
+		t.Errorf("    Text style expected %v recieved %v", style, zstyle)
 	}
 	ztext := z.Text()
 	if ztext != text {
-		t.Errorf("    Wrong text content \"%v\" vs. \"%v\"", ztext, text)
+		t.Errorf("    Text content expected \"%v\" received \"%v\"", text, ztext)
 	}
 }
 func testTextEnd(t *testing.T, z *ContentParser) {
 	if z.NextText() {
-		t.Error("    Paragraph extended too far")
+		t.Error("    Expected text end")
 	}
 }
 
@@ -73,7 +73,6 @@ func TestContentFilter(t *testing.T) {
 }
 
 func TestContentParse1(t *testing.T) {
-	t.Log("Parsing content")
 	c := Content(testContent)
 	c = c.Filter([]int{1})
 	z := c.Parse()
@@ -90,7 +89,6 @@ func TestContentParse1(t *testing.T) {
 }
 
 func TestContentParse(t *testing.T) {
-	t.Log("Parsing content")
 	c := Content(testContent)
 	c = c.Filter([]int{0, 1})
 	z := c.Parse()
@@ -106,7 +104,7 @@ func TestContentParse(t *testing.T) {
 	testText(t, z, TextStyleNormal, "Jesus is baptized by John—He preaches the gospel, calls disciples, casts out devils, heals the sick, and cleanses a leper.")
 	testTextEnd(t, z)
 	testParagraph(t, z, ParagraphStyleNormal, 1)
-	testText(t, z, TextStyleNormal, "The beginning of the ")
+	testText(t, z, TextStyleNormal, "1 The beginning of the ")
 	testText(t, z, TextStyleFootnote, "a")
 	testText(t, z, TextStyleLink, "gospel")
 	testText(t, z, TextStyleNormal, " of Jesus Christ, the Son of God;")
@@ -123,7 +121,6 @@ func TestContentSearch(t *testing.T) {
 		r := SearchResult{}
 		r.Weight = weight
 		r.VersesHighlighted = verses
-		t.Logf("Testing strings \"%v\" for match %v", keywords, r)
 		p := c.Search(keywords)
 		testSearchResult(t, r, p)
 	}
