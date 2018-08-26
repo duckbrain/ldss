@@ -20,6 +20,9 @@ var scrolledVerseNumber = 0;
 var lastScrollPosition = 0;
 var scrollTimeout = null;
 
+var verseSearch = '';
+
+
 function interceptClickEvent(e) {
     var href;
     var target = e.target || e.srcElement;
@@ -86,14 +89,33 @@ function setFootnote(ref) {
 	scrollTo(footnotes, element.offsetTop - footnotesHeader.clientHeight, 200);
 }
 
+function scrollToTop(element, val) {
+	if (element === window) {
+		if (val) {
+			scroll(0, val);
+		} else {
+			return element.scrollY;
+		}
+	} else {
+		if (val) {
+			element.scrollTop = val
+		} else {
+			return element.scrollTop;
+		}
+	}
+}
+
+
+let scrollToTimer = null
 function scrollTo(element, to, duration) {
     if (duration <= 0) return;
-    var difference = to - element.scrollTop;
+    var difference = to - scrollToTop(element);
     var perTick = difference / duration * 10;
 
-    setTimeout(function() {
-        element.scrollTop = element.scrollTop + perTick;
-        if (element.scrollTop === to) return;
+    clearTimeout(scrollToTimer);
+    scrollToTimer = setTimeout(function() {
+        scrollToTop(element, scrollToTop(element) + perTick);
+        if (scrollToTop(element) === to) return;
         scrollTo(element, to, duration - 10);
     }, 10);
 }
@@ -220,6 +242,115 @@ function setItem(item) {
 	return item;
 }
 
+function scrollVerse(n) {
+	const elsVerses = document.querySelectorAll('.verse')
+	const scrollY = window.pageYOffset;
+	const buffer = 10;
+	let verse = null;
+	let verse1 = document.getElementById(1);
+	if (verse1 && scrollY < verse1.offsetTop) {
+		verse = 0;
+	} else {
+		for (let el of elsVerses) {
+			if (el && scrollY >= el.offsetTop) {
+				//&& scrollY <= (el.offsetTop + el.clientHeight + buffer)) {
+				verse = parseInt(el.id);
+			} else {
+				break;
+			}
+		}
+	}
+
+	if (verse === null) {
+		return;
+	}
+
+	if (verse + n === 0) {
+		scrollTo(window, 0, 200);
+	}
+	const elVerse = document.getElementById(verse + n)
+	if (elVerse) {
+		scrollTo(window, elVerse.offsetTop , 200);
+	} else if (n > 0) {
+		scrollTo(window, document.clientHeight, 200);
+	}
+}
+
+function onKeyPress(e) {
+	let el;
+	let handled = true
+	if (!e.altKey && !e.ctlKey && !e.shiftKey) {
+		switch (e.keyCode) {
+			case 8: //backspace
+				el = document.querySelector(".breadcrumbs .button:nth-last-child(2)")
+				if (el) el.click()
+				break;
+			case 39: // right-arrow
+			case 76: // 'l' key
+				scrollVerse(1);
+				break;
+			case 37: // left-arrow
+			case 72: // 'h' key
+				scrollVerse(-1);
+				break;
+			case 74: // 'j' key
+				scrollTo(window, window.pageYOffset + 100, 70);
+				break;
+			case 75: // 'k' key
+				scrollTo(window, window.pageYOffset - 100, 70);
+				break;
+			case 78: // 'n' key
+				document.getElementById('next').click();
+				break;
+			case 66: // 'b' key
+				document.getElementById('previous').click();
+				break;
+
+			case 48:
+			case 49:
+			case 50:
+			case 51:
+			case 52:
+			case 53:
+			case 54:
+			case 55:
+			case 56:
+			case 57:
+				verseSearch += (e.keyCode - 48);
+				while (!(el = document.getElementById(verseSearch)) && verseSearch != '') {
+					verseSearch = verseSearch.substring(1)
+				}
+				console.log(verseSearch);
+				const verse = parseInt(verseSearch)
+				if (Number.isNaN(verse) || !verse) {
+					scrollTo(window, 0, 200);
+				}
+				if (el) {
+					scrollTo(window, el.offsetTop, 200)
+				}
+				break;
+				
+
+
+			case 191: // '/' key
+				el = document.querySelector('.lookup input');
+				el.focus()
+				el.select()
+				e.preventDefault()
+				break;
+			default: handled = false; break;
+		}
+	} else {
+		handled = false;
+	}
+
+	if (handled) {
+		e.preventDefault();
+	} else {
+		console.log(e.keyCode, e)
+	}
+}
+
 document.addEventListener('click', interceptClickEvent);
 scrollToHighlight();
 window.addEventListener('popstate', onStateChange);
@@ -227,3 +358,4 @@ window.addEventListener('scroll', function() {
 	clearTimeout(scrollTimeout);
 	scrollTimeout = setTimeout(onScroll, 100);
 });
+window.addEventListener('keydown', onKeyPress);
