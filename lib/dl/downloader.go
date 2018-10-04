@@ -7,4 +7,5 @@ type Downloader interface {
 	Downloaded() bool
 	Download(chan<- Status) error
 	Name() string
+	Hash() string
 }

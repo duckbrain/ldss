@@ -5,6 +5,7 @@ import (
 )
 
 var _ lib.Contenter = (*node)(nil)
+var _ lib.Item = (*node)(nil)
 
 // Represents a node in a Book
 type node struct {

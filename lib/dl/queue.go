@@ -36,19 +36,19 @@ type DownloadStatus struct {
 }
 
 var lock sync.Mutex
-var allDownloads map[Downloader]DownloadStatus
+var allDownloads map[string]DownloadStatus
 
 var newDownloads chan Downloader
 var statusUpdates chan DownloadStatus
 
-var subscribers map[Downloader]chan<- Status
+var subscribers map[string]chan<- Status
 var queueSubscribers []chan<- DownloadStatus
 
 func init() {
-	allDownloads = make(map[Downloader]DownloadStatus)
+	allDownloads = make(map[string]DownloadStatus)
 	newDownloads = make(chan Downloader, 50)
 	statusUpdates = make(chan DownloadStatus, 100)
-	subscribers = make(map[Downloader]chan<- Status)
+	subscribers = make(map[string]chan<- Status)
 	queueSubscribers = make([]chan<- DownloadStatus, 0)
 	go messageWorker()
 	go worker()
@@ -76,14 +76,15 @@ func Listen(updates chan<- DownloadStatus) {
 // Downloader, but for now, DO NOT PASS THE SAME DOWNLOADER MORE THAN ONCE.
 func Enqueue(d Downloader, ret chan<- Status) {
 	lock.Lock()
+	hash := d.Hash()
 
-	allDownloads[d] = DownloadStatus{
+	allDownloads[hash] = DownloadStatus{
 		Downloader: d,
 		Stage:      Waiting,
 	}
 
 	if ret != nil {
-		subscribers[d] = ret
+		subscribers[hash] = ret
 	}
 
 	lock.Unlock()
@@ -110,14 +111,15 @@ func messageWorker() {
 		for _, sub := range queueSubscribers {
 			sub <- s
 		}
-		if sub, ok := subscribers[s.Downloader]; ok {
+		hash := s.Downloader.Hash()
+		if sub, ok := subscribers[hash]; ok {
 			sub <- s.Status
 		}
-		allDownloads[s.Downloader] = s
+		allDownloads[hash] = s
 		if s.Stage == Complete {
-			delete(allDownloads, s.Downloader)
-			close(subscribers[s.Downloader])
-			delete(subscribers, s.Downloader)
+			delete(allDownloads, hash)
+			close(subscribers[hash])
+			delete(subscribers, hash)
 		}
 		lock.Unlock()
 	}

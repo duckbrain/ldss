@@ -9,6 +9,9 @@ import (
 
 var itemsByLangAndPath = make(map[ref]lib.Item)
 
+var _ lib.Source = (*source)(nil)
+var _ dl.Downloader = (*source)(nil)
+
 type source struct {
 	dl.Template
 }
@@ -26,6 +29,10 @@ func init() {
 
 func (s source) Name() string {
 	return "LDS.org"
+}
+
+func (s source) Hash() string {
+	return "ldsorg"
 }
 
 // Lookup finds an Item by it's path. Expects a fully qualified path. "/" will

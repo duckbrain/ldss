@@ -5,16 +5,13 @@ import (
 	"encoding/json"
 	"fmt"
 	"os"
-	"strconv"
-	"strings"
 
 	"github.com/duckbrain/ldss/lib"
 	"github.com/duckbrain/ldss/lib/dl"
 )
 
-var _ strconv.NumError
-var _ strings.Reader
 var _ lib.Item = &catalog{}
+var _ dl.Downloader = &catalog{}
 
 // Represents a catalog, exports ways to lookup children by path and ID
 type catalog struct {
@@ -67,6 +64,10 @@ func (c *catalog) Open() error {
 	c.traverseBooks(c.Books, c)
 
 	return nil
+}
+
+func (c *catalog) Hash() string {
+	return fmt.Sprintf("ldsorg:/?lang=%v", c.lang.Code())
 }
 
 // The Gospel Library Path of this catalog. Every catalog's path is "/"
@@ -128,6 +129,7 @@ func (catalog *catalog) traverseFolders(folders []*folder, parent lib.Item) {
 		catalog.foldersById[f.ID] = f
 		catalog.foldersByPath[f.Path()] = f
 		catalog.foldersByPath[fmt.Sprintf("/%v", f.ID)] = f
+		f.parent = parent
 		f.catalog = catalog
 		f.path = f.computePath()
 		itemsByLangAndPath[ref{langCode, f.path}] = f
@@ -143,6 +145,7 @@ func (catalog *catalog) traverseBooks(books []*book, parent lib.Item) {
 			catalog.booksByPath[b.GlURI] = b
 			itemsByLangAndPath[ref{langCode, b.Path()}] = b
 		}
+		b.parent = parent
 		b.catalog = catalog
 		b.Template.Src = b.DownloadURL
 		b.Template.Dest = bookPath(b)

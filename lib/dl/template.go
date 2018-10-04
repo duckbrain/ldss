@@ -33,10 +33,12 @@ func (t Template) Download(chan<- Status) error {
 	defer response.Body.Close()
 
 	if t.Transform != nil {
-		input, err = t.Transform(body)
+		in, err := t.Transform(body)
 		if err != nil {
 			return err
 		}
+		defer in.Close()
+		input = in
 	} else {
 		input = body
 	}

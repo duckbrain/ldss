@@ -37,6 +37,8 @@ func (s source) Langs() []lib.Lang {
 	return languages
 }
 
+var _ lib.Lang = (*lang)(nil)
+
 // Lang defines a language as from the server. The fields should not be modified.
 type lang struct {
 	// The Gospel Library ID for the language. Used for downloads.

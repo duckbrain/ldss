@@ -1,6 +1,8 @@
 package ldsorg
 
 import (
+	"fmt"
+
 	"github.com/duckbrain/ldss/lib"
 	"github.com/duckbrain/ldss/lib/dl"
 )
@@ -19,6 +21,9 @@ type book struct {
 	dl.Template
 	children []lib.Item
 }
+
+var _ lib.Item = (*book)(nil)
+var _ dl.Downloader = (*book)(nil)
 
 func (b *book) init(catalog *catalog, parent lib.Item) {
 	b.catalog = catalog
@@ -46,6 +51,10 @@ func (b *book) Open() error {
 	}
 
 	return nil
+}
+
+func (b *book) Hash() string {
+	return fmt.Sprintf("ldsorg:%v?lang=%v", b.Path(), b.Lang().Code())
 }
 
 // The name of this book.

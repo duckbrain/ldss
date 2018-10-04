@@ -1,6 +1,7 @@
 package cmd
 
 import (
+	"fmt"
 	"strings"
 
 	"github.com/duckbrain/ldss/lib"
@@ -46,4 +47,23 @@ var downloadCmd = &cobra.Command{
 
 func init() {
 	RootCmd.AddCommand(downloadCmd)
+
+	dlUpdates := make(chan dl.DownloadStatus)
+	go func() {
+		var lastStarted dl.DownloadStatus
+		for s := range dlUpdates {
+			switch s.Stage {
+			case dl.Started:
+				fmt.Printf("Starting download for %v.\n", s.Name())
+				lastStarted = s
+			case dl.Complete:
+				if lastStarted.Downloader != nil && lastStarted.Hash() == s.Hash() {
+					fmt.Println("Done")
+				} else {
+					fmt.Printf("Download %v finished!\n", s.Name())
+				}
+			}
+		}
+	}()
+	dl.Listen(dlUpdates)
 }

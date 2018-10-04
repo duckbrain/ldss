@@ -7,6 +7,8 @@ import (
 	"github.com/duckbrain/ldss/lib"
 )
 
+var _ lib.Item = (*folder)(nil)
+
 // Represents a folder in the catalog. Could contain subfolders and books.
 type folder struct {
 	jsonFolder
