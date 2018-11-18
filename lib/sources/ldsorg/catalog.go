@@ -23,6 +23,7 @@ type catalog struct {
 	foldersByPath map[string]*folder
 	booksById     map[int]*book
 	booksByPath   map[string]*book
+	coverArtBase  string
 }
 
 // Creates a catalog object and populates it with it's Folders and Books
@@ -53,6 +54,8 @@ func (c *catalog) Open() error {
 	if err = json.NewDecoder(file).Decode(&desc); err != nil {
 		return err
 	}
+
+	c.coverArtBase = desc.CoverArtBaseUrl
 
 	c.itemsByPath = make(map[string]lib.Item)
 	c.foldersById = make(map[int]*folder)

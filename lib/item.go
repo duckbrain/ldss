@@ -33,3 +33,7 @@ type Reference struct {
 	Small, Name       string
 	Keywords          []string
 }
+
+type Media struct {
+	Path string
+}
