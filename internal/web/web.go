@@ -41,6 +41,7 @@ func Handle(lang lib.Lang) {
 	http.Handle("/manifest.webmanifest", handleStatic)
 	http.Handle("/css/", handleStatic)
 	http.Handle("/js/", handleStatic)
+	http.Handle("/svg/", handleStatic)
 	http.HandleFunc("/", handler)
 
 	initTemplates()
