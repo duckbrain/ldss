@@ -6,6 +6,7 @@ package main
 
 import (
 	"github.com/duckbrain/ldss/cmd"
+	_ "github.com/duckbrain/ldss/lib/sources/ldsorg"
 )
 
 func main() {

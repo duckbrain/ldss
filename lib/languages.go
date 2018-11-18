@@ -69,7 +69,14 @@ func Languages() []Lang {
 }
 
 func languageFromSource(lang Lang, srcName string) Lang {
-	return langs[lang.Code()][srcName]
+	if lang == nil {
+		panic("lang must not be nil")
+	}
+	l, ok := langs[lang.Code()]
+	if !ok {
+		return nil
+	}
+	return l[srcName]
 }
 
 func registerLanguage(srcName string, srcLangs []Lang) {
