@@ -2,7 +2,10 @@ package ldsorg
 
 import (
 	"database/sql"
+	"sync"
+
 	_ "github.com/mattn/go-sqlite3"
+	"github.com/pkg/errors"
 
 	"html/template"
 	"os"
@@ -14,17 +17,34 @@ import (
 	"github.com/duckbrain/ldss/lib"
 )
 
+var MaxDatabaseQueueLength = 50
+
+var conns = make(map[string]*sqlconn)
+var connsLock = sync.Mutex{}
+var connsQueue = []*sqlconn{}
+
 type sqlconn struct {
-	db                                                        *sql.DB
-	stmtChildren, stmtUri, stmtId, stmtContent, stmtFootnotes *sql.Stmt
+	path          string
+	db            *sql.DB
+	stmtChildren  *sql.Stmt
+	stmtUri       *sql.Stmt
+	stmtId        *sql.Stmt
+	stmtContent   *sql.Stmt
+	stmtFootnotes *sql.Stmt
 }
 
 func opendb(path string) (*sqlconn, error) {
-	// TODO, cache the connections into a connection pool
+	connsLock.Lock()
+	defer connsLock.Unlock()
+	l, ok := conns[path]
+	if ok {
+		return l, nil
+	}
 
-	l := sqlconn{}
+	l = &sqlconn{}
+	l.path = path
 	if _, err := os.Stat(path); os.IsNotExist(err) {
-		return nil, err
+		return nil, errors.Wrap(err, "Failed to find the database file")
 	}
 	db, err := sql.Open("sqlite3", path)
 	if err != nil {
@@ -77,7 +97,17 @@ func opendb(path string) (*sqlconn, error) {
 	if err != nil {
 		return nil, err
 	}
-	return &l, err
+
+	conns[path] = l
+	connsQueue = append(connsQueue, l)
+	if len(connsQueue) > MaxDatabaseQueueLength {
+		x := connsQueue[0]
+		connsQueue = connsQueue[1:]
+		delete(conns, x.path)
+		err = x.Close()
+	}
+
+	return l, err
 }
 
 func (l *sqlconn) Close() error {

@@ -32,7 +32,6 @@ func (n *node) Open() error {
 	if err != nil {
 		return err
 	}
-	defer l.Close()
 
 	// Populate Children
 	nodes, err := l.childrenByParentID(n.id, n, n.book)
