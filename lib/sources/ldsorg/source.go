@@ -3,11 +3,14 @@ package ldsorg
 import (
 	"strings"
 
+	"github.com/gobuffalo/packr/v2"
+
 	"github.com/duckbrain/ldss/lib"
 	"github.com/duckbrain/ldss/lib/dl"
 )
 
 var itemsByLangAndPath = make(map[ref]lib.Item)
+var referenceBox = packr.New("lds_org_references", "./reference")
 
 var _ lib.Source = (*source)(nil)
 var _ dl.Downloader = (*source)(nil)
@@ -25,6 +28,13 @@ func init() {
 	s.Template.Src = getServerAction("languages.query")
 	s.Template.Dest = languagesPath()
 	lib.Register("lds.org", s)
+
+	//TODO: Refactor away this function and replace it with a way for sources to
+	// each provide resource files. Possibly using the packr interface with something
+	// like AddBox(b packr.Box)
+	lib.SetReferenceParseReader(func(lang lib.Lang) ([]byte, error) {
+		return referenceBox.Find(lang.Code())
+	})
 }
 
 func (s source) Name() string {

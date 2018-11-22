@@ -3,11 +3,12 @@ package web
 import (
 	"html/template"
 
-	"github.com/duckbrain/ldss/internal/assets"
 	"github.com/duckbrain/ldss/lib"
+	packr "github.com/gobuffalo/packr/v2"
 )
 
 var templates *webtemplates
+var templateBox = packr.New("ldss_web_templates", "./templates")
 
 type webtemplates struct {
 	nodeChildren, nodeContent, searchResults, layout, err *template.Template
@@ -23,20 +24,16 @@ func initTemplates() {
 }
 
 func loadTemplate(path string) *template.Template {
-	data, err := assets.Asset("data/web/templates/" + path)
+	data, err := templateBox.FindString(path)
 	if err != nil {
-		panic(err)
+		panic(data)
 	}
-	temp := template.New(path)
-	temp.Funcs(template.FuncMap{
-		"subtitle":      subtitle,
-		"groupSections": groupSections,
-	})
-	temp, err = temp.Parse(string(data))
-	if err != nil {
-		panic(err)
-	}
-	return temp
+	return template.Must(template.New(path).
+		Funcs(template.FuncMap{
+			"subtitle":      subtitle,
+			"groupSections": groupSections,
+		}).
+		Parse(data))
 }
 
 func subtitle(item lib.Item) string {

@@ -8,14 +8,15 @@ import (
 	"io"
 	"log"
 	"net/http"
-	"path"
 	"strings"
 
-	"github.com/duckbrain/ldss/internal/assets"
 	"github.com/duckbrain/ldss/lib"
+	packr "github.com/gobuffalo/packr/v2"
 )
 
 var defaultLang lib.Lang
+
+var staticBox = packr.New("ldss_web_static", "./static")
 
 type webLayout struct {
 	Title       string
@@ -31,13 +32,17 @@ type webLayout struct {
 func Handle(lang lib.Lang) {
 	defaultLang = lang
 
-	http.HandleFunc("/", handler)
+	handleStatic := http.FileServer(staticBox)
+
 	http.HandleFunc("/api/", handleJSON)
 	http.HandleFunc("/search", handleSearch)
-	http.HandleFunc("/favicon.ico", handleStatic)
-	http.HandleFunc("/manifest.webmanifest", handleStatic)
 	http.HandleFunc("/special/jesus-christ", handleChristStudy)
-	http.HandleFunc("/css", handleStatic)
+	http.Handle("/favicon.ico", handleStatic)
+	http.Handle("/manifest.webmanifest", handleStatic)
+	http.Handle("/css/", handleStatic)
+	http.Handle("/js/", handleStatic)
+	http.Handle("/svg/", handleStatic)
+	http.HandleFunc("/", handler)
 
 	initTemplates()
 
@@ -169,37 +174,6 @@ func handleSearch(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func handleStatic(w http.ResponseWriter, r *http.Request) {
-	defer handleError(w, r)
-	defer r.Body.Close()
-	if err := static(w, r); err != nil {
-		panic(err)
-	}
-}
-
-func static(w http.ResponseWriter, r *http.Request) error {
-	data, err := assets.Asset("data/web/static" + r.URL.Path)
-	if err != nil {
-		return err
-	}
-
-	switch path.Ext(r.URL.Path) {
-	case ".ico":
-		w.Header().Set("Content-type", "image/x-icon")
-	case ".css":
-		w.Header().Set("Content-type", "text/css")
-	case ".js":
-		w.Header().Set("Content-type", "application/x-javascript")
-	case ".svg":
-		w.Header().Set("Content-type", "image/svg+xml")
-	default:
-		panic(fmt.Errorf("Unknown extension"))
-	}
-
-	w.Write(data)
-	return nil
-}
-
 func itemsRelativesPath(item lib.Item) interface{} {
 	if item != nil {
 		data := struct {
@@ -266,10 +240,6 @@ func handleJSON(w http.ResponseWriter, r *http.Request) {
 func handler(w http.ResponseWriter, r *http.Request) {
 	defer handleError(w, r)
 	defer r.Body.Close()
-
-	if static(w, r) == nil {
-		return
-	}
 
 	lang := language(r)
 	buff := new(bytes.Buffer)

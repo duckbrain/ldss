@@ -9,6 +9,8 @@ var nextBtn = document.getElementById('next');
 var breadcrumbs = document.querySelector('.breadcrumbs');
 var footnotes = document.querySelector('.footnotes');
 var footnotesHeader = document.querySelector('.footnotes-header');
+var searchBox = document.querySelector("[name=q]")
+
 document.querySelector('.footnotes-close').addEventListener('click', function(e) {
 	e.preventDefault();
 	setFootnotesOpen(false);
@@ -277,6 +279,10 @@ function scrollVerse(n) {
 }
 
 function onKeyPress(e) {
+	if (e.target === searchBox) {
+		return;
+	}
+
 	let el;
 	let handled = true
 	if (!e.altKey && !e.ctlKey && !e.shiftKey) {

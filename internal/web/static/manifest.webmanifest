@@ -6,6 +6,6 @@
   "background_color": "#fff",
   "description": "A Gospel Library replacement for quick reading",
   "icons": [{
-    "src": "favicon.ico",
+    "src": "favicon.ico"
   }]
 }

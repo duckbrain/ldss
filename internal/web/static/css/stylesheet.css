@@ -233,6 +233,16 @@
 	overflow-y: auto;
 }
 
+ul.bullet, ol.number {
+    list-style: none;
+    padding: 0;
+}
+
+.label {
+	float: left;
+	margin-left: -2.5em;
+}
+
 .footnotes-footnote {
 	display: block;
 	list-style: none;

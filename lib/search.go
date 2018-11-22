@@ -3,6 +3,8 @@ package lib
 import (
 	"sort"
 	"sync"
+
+	"github.com/duckbrain/ldss/lib/dl"
 )
 
 type SearchResult struct {
@@ -13,27 +15,22 @@ type SearchResult struct {
 type SearchResults []SearchResult
 
 func (r SearchResults) Len() int {
-	return len([]SearchResult(r))
+	return len(r)
 }
 
 func (r SearchResults) Less(i, j int) bool {
-	rs := []SearchResult(r)
-	if rs[i].Weight == rs[j].Weight {
-		return rs[i].Path < rs[j].Path
+	if r[i].Weight == r[j].Weight {
+		return r[i].Path < r[j].Path
 	} else {
-		return rs[i].Weight > rs[j].Weight
+		return r[i].Weight > r[j].Weight
 	}
-
 }
 
 func (r SearchResults) Swap(i, j int) {
-	rs := []SearchResult(r)
-	t := rs[i]
-	rs[i] = rs[j]
-	rs[j] = t
+	r[i], r[j] = r[j], r[i]
 }
 
-func SearchSort(item Item, keywords []string) []SearchResult {
+func SearchSort(item Item, keywords []string) SearchResults {
 	c := make(chan SearchResult)
 	Search(item, keywords, c)
 	results := []SearchResult{}
@@ -58,6 +55,17 @@ func Search(item Item, keywords []string, c chan<- SearchResult) {
 
 // TODO Change where the search result stores the content with highlights on words
 func searchItem(item Item, keywords []string, c chan<- SearchResult, waitGroup *sync.WaitGroup, resultSet map[string]bool) {
+	if downloader, ok := item.(dl.Downloader); ok {
+		if !downloader.Downloaded() {
+			return
+		}
+	}
+	if opener, ok := item.(Opener); ok {
+		if err := opener.Open(); err != nil {
+			panic(err)
+		}
+	}
+
 	if node, ok := item.(Contenter); ok {
 		if resultSet[item.Path()] {
 			return

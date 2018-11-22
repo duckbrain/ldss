@@ -168,7 +168,7 @@ func (p *queryParser) lookup(q string) []Reference {
 				return i + width, data[start:i], nil
 			}
 			switch r {
-			case ':', ',', ';', '-', '(', ')':
+			case ':', ',', ';', '-', '–', '(', ')':
 				if i == start {
 					// This is the first character, return it as a token
 					tt = tokenChar
@@ -223,7 +223,7 @@ func (p *queryParser) lookup(q string) []Reference {
 				parseMode = parseModeVerse
 			case ";":
 				finishReference()
-			case "-":
+			case "-", "–":
 				parseMode = parseModeVerseRange
 			case "(":
 				inParenths = true
@@ -240,7 +240,7 @@ func (p *queryParser) lookup(q string) []Reference {
 					parseMode = parseModeChapter
 					chapter = 1
 				}
-				ref.Path = string(ref.Path[:i])
+				ref.Path = ref.Path[:i]
 				parseMode = parseModeChapter
 			} else {
 				parseMode = parseModeVerse

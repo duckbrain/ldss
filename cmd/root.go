@@ -7,7 +7,6 @@ import (
 	"path"
 
 	"github.com/duckbrain/ldss/lib"
-	_ "github.com/duckbrain/ldss/lib/sources/ldsorg"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 )
@@ -22,6 +21,9 @@ var RootCmd = &cobra.Command{
 	Long:  `LDS Scriptures is a set of tools for downloading, parsing, and reading the Gospel Library content from The Church of Jesus Christ of Latter-day Saints.`,
 	// TODO: Figure out a way, so scripture references can be looked up
 	// without specifying the lookup command.
+	PersistentPreRunE: func(cmd *cobra.Command, args []string) error {
+		return lib.Open()
+	},
 }
 
 // Execute adds all child commands to the root command sets flags appropriately.
@@ -68,12 +70,4 @@ func initConfig() {
 
 func lang() lib.Lang {
 	return lib.LookupLanguage(langName)
-}
-
-// Init lib for usage
-func init() {
-	err := lib.Open()
-	if err != nil {
-		panic(err)
-	}
 }
