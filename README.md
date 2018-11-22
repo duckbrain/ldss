@@ -44,11 +44,6 @@ go get github.com/duckbrain/ldss
 
 This will check the project out to `$GOPATH/src/github.com/duckbrain/ldss` and compile it to `$GOPATH/bin/ldss`.
 
-This project uses [go-bindata](http://github.com/jteeuwen/go-bindata) to generate `assets/bindata_release.go`. If anything is changed in the `data\` directory, you must regenerate the file. The easiest way to do this is with `make` (if you have it installed). Otherwise, you need to do the following.
-
-- `go get -u github.com/jteeuwen/go-bindata/...` to download and compile go-bindata.
-- `$GOPATH/bin/go-bindata -pkg assets -nomemcopy -tags "!debug" -o assets/bindata_release.go data/...` to generate the new release build. Make sure all pull-requests use these parameters, but you can modify the generation for your own builds.
-
-There is also a debug mode that will generate a binary that reads the files from the project instead of building them into the executable. You can read the `Makefile` for details on that.
+This project uses [packr](https://github.com/gobuffalo/packr) to generate load binary asssets. You can see that project for instructions on compiling a binary with the assets included.
 
 If you are new to Go, I would recommend reading [How to Write Go Code](https://golang.org/doc/code.html) in the Go documentation for various other commands you can use in development.
