@@ -1,10 +1,10 @@
-# LDS Scriptures
+# Lucky Duck Scripture Software
 
 ![](data/web/static/favicon.ico)
 
 [![GoDoc](https://godoc.org/github.com/duckbrain/ldss?status.svg)](https://godoc.org/github.com/duckbrain/ldss)
 
-ldss is a set of tools for downloading, parsing, and reading the Gospel Library content from [The Church of Jesus Christ of Latter-day Saints](http://lds.org). 
+ldss is a set of tools for downloading, parsing, and reading the Gospel Library content from [The Church of Jesus Christ of Latter-day Saints](https://churchofjesuschrist.org/). 
 
 My goal would be to eventually have many ways to access the richest scripture content in as many places as possible, but for now, it mainly provides a web server.
 
