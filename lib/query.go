@@ -55,23 +55,22 @@ const (
 )
 
 var queryFileLoader QueryFileFunc
-var queryParsers map[Lang]*queryParser
+var queryParsers = make(map[string]*queryParser)
 
 func languageQueryParser(l Lang) (*queryParser, error) {
-	if queryParsers == nil {
-		queryParsers = make(map[Lang]*queryParser)
-	}
-	if parser, ok := queryParsers[l]; ok {
-		return parser, nil
-	}
 	if queryFileLoader == nil {
 		panic("You must call SetReferenceParseReader prior to loading the query parser")
+	}
+	if parser, ok := queryParsers[l.Code()]; ok {
+		return parser, nil
 	}
 	file, err := queryFileLoader(l)
 	if err != nil {
 		return nil, err
 	}
-	return newQueryParser(l, file), nil
+	parser := newQueryParser(l, file)
+	queryParsers[l.Code()] = parser
+	return parser, nil
 }
 
 // Sets a function that will be called to get the ldss reference language file
