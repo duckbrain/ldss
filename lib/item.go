@@ -7,8 +7,7 @@ package lib
 import (
 	"context"
 	"errors"
-
-	"github.com/duckbrain/ldss/lib"
+	"html/template"
 )
 
 type Index struct {
@@ -16,33 +15,45 @@ type Index struct {
 	Lang Lang
 }
 
+func (i Index) Valid() bool {
+	return i.Lang != "" && i.Path != ""
+}
+
 type Header struct {
 	Name        string
 	Subtitle    string
 	SectionName string
+	ShortTitle  string
 	Index
 }
 
 type Item struct {
 	Header
 
-	Children []Header
-	Parent   *Header
-	Next     *Header
-	Prev     *Header
+	Children []Index
+	Parent   Index
+	Next     Index
+	Prev     Index
 
-	Content   string
+	Content   Content
 	Footnotes []Footnote
+}
+
+type Footnote struct {
+	Name     string        `json:"name"`
+	LinkName string        `json:"linkName"`
+	Content  template.HTML `json:"content"`
 }
 
 type Result struct {
 	Item
-	Rank
+	Rank int64
 }
 
 type Store interface {
 	Item(ctx context.Context, index Index) (Item, error)
 	Store(ctx context.Context, item Item) error
+	Header(ctx context.Context, index Index) (Header, error)
 	Metadata(ctx context.Context, index Index, data interface{}) error
 	SetMetadata(ctx context.Context, data interface{}) error
 	Search(ctx context.Context, query string, results chan<- Result) error
@@ -50,7 +61,7 @@ type Store interface {
 }
 
 type Source interface {
-	Load(ctx context.Context, store lib.Store, index lib.Index) error
+	Load(ctx context.Context, store Store, index Index) error
 }
 
 var ErrNotFound = errors.New("not found")

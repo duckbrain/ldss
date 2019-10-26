@@ -212,21 +212,6 @@ func (c *ContentParser) Text() string {
 	return text
 }
 
-func (content Content) Links(l Lang) []Reference {
-	references := make([]Reference, 0)
-	c := content.Parse()
-	for c.NextParagraph() {
-		for c.NextText() {
-			if c.TextStyle() == TextStyleLink {
-				ref := ParsePath(l, c.href)
-				ref.Name = c.Text()
-				references = append(references, ref)
-			}
-		}
-	}
-	return references
-}
-
 func (content Content) Filter(verses []int) Content {
 	if len(verses) == 0 {
 		return content
@@ -236,7 +221,6 @@ func (content Content) Filter(verses []int) Content {
 	verse := 0
 	buffer := new(bytes.Buffer)
 	hasZero := verses[0] == 0
-	verses = cleanVerses(verses)
 	nextAllowedIndex := 0
 	nextAllowed := verses[0]
 	var verseTag string
@@ -303,7 +287,6 @@ func (content Content) Highlight(verses []int, class string) Content {
 	z := html.NewTokenizerFragment(strings.NewReader(string(content)), "div")
 	verse := 0
 	buffer := new(bytes.Buffer)
-	verses = cleanVerses(verses)
 	nextAllowedIndex := 0
 	nextAllowed := verses[0]
 
@@ -357,56 +340,4 @@ func (content Content) Highlight(verses []int, class string) Content {
 			_, _ = buffer.Write(z.Raw())
 		}
 	}
-}
-
-// Search the content for the given keywords and return a search result containing
-// the verses in which the results were found and the a weighted score based on
-// the number of occurrences.
-//
-// TODO Give extra points to sequences of words in the correct order (ignoring punctuation)
-func (content Content) Search(keywords []string) SearchResult {
-	z := html.NewTokenizerFragment(strings.NewReader(string(content)), "div")
-	r := SearchResult{}
-	verse := 0
-
-	foundKeywords := make(map[string]bool)
-	eof := false
-
-	for !eof {
-		switch z.Next() {
-		case html.ErrorToken:
-			eof = true
-		case html.TextToken:
-			text := strings.ToLower(string(z.Text()))
-			for _, k := range keywords {
-				weight := strings.Count(text, k)
-				if weight > 0 {
-					foundKeywords[k] = true
-					if verse > 0 {
-						r.VersesHighlighted = append(r.VersesHighlighted, verse)
-					}
-					r.Weight += weight
-				}
-			}
-		case html.StartTagToken:
-			_, hasAttr := z.TagName()
-			var key, val []byte
-			for hasAttr {
-				key, val, hasAttr = z.TagAttr()
-				if string(key) == "id" {
-					verse, _ = strconv.Atoi(string(val))
-				}
-			}
-		}
-	}
-
-	// If not all the keywords were found, this is not a result.
-	for _, k := range keywords {
-		if !foundKeywords[k] {
-			r.Weight = 0
-		}
-	}
-
-	r.Clean()
-	return r
 }

@@ -1,6 +1,29 @@
 package ldsorg
 
-import "github.com/duckbrain/ldss/lib"
+import (
+	"fmt"
+
+	"github.com/duckbrain/ldss/lib"
+)
+
+type ItemType string
+
+const (
+	TypeCatalog ItemType = "Catalog"
+	TypeFolder  ItemType = "Folder"
+	TypeBook    ItemType = "Book"
+	TypeNode    ItemType = "Node"
+)
+
+type Metadata struct {
+	Type ItemType
+
+	// Book only
+	DownloadURL string
+
+	// Catalog only
+	Languages map[string]Lang
+}
 
 type Catalog struct {
 	Folder
@@ -11,6 +34,19 @@ type Folder struct {
 	Folders []Folder `json:"folders"`
 	Books   []Book   `json:"books"`
 	ID      int      `json:"id"`
+}
+
+func (f Folder) Header(lang lib.Lang) lib.Header {
+	return lib.Header{
+		Index: lib.Index{
+			Lang: lang,
+			Path: f.Path(),
+		},
+		Name: f.Name,
+	}
+}
+func (f Folder) Path() string {
+	return fmt.Sprintf("folder-%v", f.ID)
 }
 
 type Book struct {
@@ -30,6 +66,19 @@ type Node struct {
 	ShortTitle  string
 
 	Content lib.Content
+}
+
+func (n Node) Header(lang lib.Lang) lib.Header {
+	return lib.Header{
+		Index: lib.Index{
+			Lang: lang,
+			Path: n.Path,
+		},
+		Name:        n.Name,
+		Subtitle:    n.Subtitle,
+		SectionName: n.SectionName,
+		ShortTitle:  n.ShortTitle,
+	}
 }
 
 // Lang defines a language as from the server. The fields should not be modified.

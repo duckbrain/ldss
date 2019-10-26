@@ -22,36 +22,44 @@ type Client struct {
 	Client     *http.Client
 }
 
-func (c Client) get(action string) (http.Response, error) {
-	return c.Client.Get(c.BaseURL + "?action=" + action)
+func (c Client) get(ctx context.Context, action string) (*http.Response, error) {
+	req, err := http.NewRequestWithContext(ctx, "GET", c.BaseURL+"?action="+action, nil)
+	if err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
 }
 
-func (c Client) Languages(lang lib.Lang) ([]Lang, error) {
-	res, err := c.get("languages.query")
+func (c Client) Languages(ctx context.Context) ([]Lang, error) {
+	res, err := c.get(ctx, "languages.query")
 	if err != nil {
 		return nil, err
 	}
 	defer res.Body.Close()
 	langs := []Lang{}
 	decoder := json.NewDecoder(res.Body)
-	err := decoder.Decode(&catalog)
-	return catalog, err
+	err = decoder.Decode(&langs)
+	return langs, err
 }
 
-func (c Client) Catalog(lang lib.Lang) (Catalog, error) {
+func (c Client) Catalog(ctx context.Context, lang Lang) (Catalog, error) {
 	catalog := Catalog{}
-	res, err := c.get("catalog.query")
+	res, err := c.get(ctx, "catalog.query")
 	if err != nil {
 		return catalog, err
 	}
 	defer res.Body.Close()
 	decoder := json.NewDecoder(res.Body)
-	err := decoder.Decode(&catalog)
+	err = decoder.Decode(&catalog)
 	return catalog, err
 }
 
-func (c Client) ZBook(path string) (*ZBook, error) {
-	res, err := c.Client.Get(path)
+func (c Client) ZBook(ctx context.Context, url string) (*ZBook, error) {
+	req, err := http.NewRequestWithContext(ctx, "GET", url, nil)
+	if err != nil {
+		return nil, err
+	}
+	res, err := c.Client.Do(req)
 	if err != nil {
 		return nil, err
 	}
@@ -64,21 +72,140 @@ func (c Client) ZBook(path string) (*ZBook, error) {
 }
 
 func (c Client) Load(ctx context.Context, store lib.Store, index lib.Index) error {
-	var item lib.Item
-	var err error
-	i := index
-	for {
-		item, err = store.Item(ctx, i)
-		if err == nil {
-			break
+	m := Metadata{}
+	err := store.Metadata(ctx, index, &m)
+	if err == lib.ErrNotFound {
+		if index.Path == "/" {
+			m.Type = TypeCatalog
+		} else {
+			i := index
+			i.Path = path.Dir(i.Path)
+			err := c.Load(ctx, store, i)
+			if err != nil {
+				return err
+			}
 		}
-		if err != lib.ErrNotFound {
-			return err
-		}
-		if path == "/" || path == "." {
-			break
-		}
-		i.Path = path.Dir(i.Path)
+	} else if err != nil {
+		return err
 	}
 
+	switch m.Type {
+	case TypeBook:
+		z, err := c.ZBook(ctx, m.DownloadURL)
+		if err != nil {
+			return err
+		}
+		item, err := store.Item(ctx, index)
+		if err != nil {
+			return err
+		}
+		err = storeBook(ctx, store, z, &item, Node{})
+		if err != nil {
+			return err
+		}
+	case TypeCatalog:
+		lang, err := c.Lang(ctx, store, index.Lang)
+		if err != nil {
+			return err
+		}
+		catalog, err := c.Catalog(ctx, lang)
+		if err != nil {
+			return err
+		}
+
+		err = storeFolder(ctx, store, &lib.Item{}, catalog.Folder)
+		if err != nil {
+			return err
+		}
+	}
+
+	return nil
+}
+
+func storeFolder(ctx context.Context, store lib.Store, item *lib.Item, folder Folder) error {
+	lang := item.Lang
+
+	item.Header = folder.Header(lang)
+
+	item.Children = make([]lib.Index, len(folder.Folders)+len(folder.Books))
+	for i, childFolder := range folder.Folders {
+		childItem := lib.Item{}
+		childItem.Parent = item.Index
+		if i > 0 {
+			childItem.Prev = item.Children[i-1]
+		}
+		if i < len(item.Children)-1 {
+			childItem.Next = folder.Folders[i+1].Header(lang).Index
+		}
+
+		err := storeFolder(ctx, store, &childItem, childFolder)
+		if err != nil {
+			return err
+		}
+	}
+
+	return store.Store(ctx, *item)
+}
+
+func storeBook(ctx context.Context, store lib.Store, z *ZBook, item *lib.Item, node Node) error {
+	lang := item.Lang
+
+	children, err := z.Children(ctx, node.ID)
+	if err != nil {
+		return err
+	}
+	item.Children = make([]lib.Index, len(children))
+	for i, childNode := range children {
+		footnotes, err := z.Footnotes(ctx, childNode.ID)
+		if err != nil {
+			return err
+		}
+
+		childItem := lib.Item{
+			Header:    childNode.Header(lang),
+			Content:   node.Content,
+			Parent:    item.Index,
+			Footnotes: footnotes,
+		}
+		if i > 0 {
+			childItem.Prev = item.Children[i-1]
+		}
+		if i < len(children)-1 {
+			childItem.Next = children[i+1].Header(lang).Index
+		}
+
+		// This populates the children of the child item and stores it
+		err = storeBook(ctx, store, z, &childItem, childNode)
+		if err != nil {
+			return err
+		}
+	}
+
+	return store.Store(ctx, *item)
+}
+
+func (c Client) Lang(ctx context.Context, store lib.Store, libLang lib.Lang) (Lang, error) {
+	m := Metadata{}
+	err := store.Metadata(ctx, lib.Index{Lang: libLang, Path: "/"}, &m)
+	if err != nil {
+		return Lang{}, err
+	}
+	if len(m.Languages) == 0 {
+		langs, err := c.Languages(ctx)
+		if err != nil {
+			return Lang{}, err
+		}
+		m.Languages = make(map[string]Lang)
+		for _, lang := range langs {
+			m.Languages[lang.Code] = lang
+		}
+		if err := store.SetMetadata(ctx, m); err != nil {
+			return Lang{}, err
+		}
+	}
+	lang, ok := m.Languages[string(libLang)]
+	if !ok {
+		return Lang{}, lib.ErrNotFound
+	}
+	return lang, nil
 }

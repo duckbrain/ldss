@@ -9,11 +9,6 @@ import (
 	"golang.org/x/net/html"
 )
 
-type Footnote struct {
-	Name     string        `json:"name"`
-	LinkName string        `json:"linkName"`
-	Content  template.HTML `json:"content"`
-}
 
 func (f *Footnote) References() []Reference {
 	z := html.NewTokenizerFragment(strings.NewReader(string(f.Content)), "div")

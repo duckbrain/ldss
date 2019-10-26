@@ -1,6 +1,7 @@
 package ldsorg
 
 import (
+	"context"
 	"database/sql"
 
 	"io"
@@ -12,6 +13,7 @@ import (
 )
 
 type ZBook struct {
+	filename      string
 	db            *sql.DB
 	stmtChildren  *sql.Stmt
 	stmtFootnotes *sql.Stmt
@@ -23,8 +25,7 @@ func NewZBook(r io.Reader) (*ZBook, error) {
 	if err != nil {
 		return nil, err
 	}
-	defer os.Remove(file.Name())
-	if err := io.Copy(file, r); err != nil {
+	if _, err := io.Copy(file, r); err != nil {
 		return nil, err
 	}
 	if err := file.Close(); err != nil {
@@ -36,7 +37,7 @@ func NewZBook(r io.Reader) (*ZBook, error) {
 		return nil, err
 	}
 
-	z = &ZBook{db: db}
+	z := &ZBook{db: db, filename: file.Name()}
 
 	const sqlQueryNode = `
 		SELECT
@@ -72,15 +73,19 @@ func NewZBook(r io.Reader) (*ZBook, error) {
 }
 
 func (z *ZBook) Close() error {
-	return z.db.Close()
-}
-
-func (z *ZBook) Children(id int64, c chan<- Node) error {
-	defer close(c)
-	rows, err := z.stmtChildren.Query(id)
+	err := z.db.Close()
 	if err != nil {
 		return err
 	}
+	return os.Remove(z.filename)
+}
+
+func (z *ZBook) Children(ctx context.Context, id int64) ([]Node, error) {
+	rows, err := z.stmtChildren.QueryContext(ctx, id)
+	if err != nil {
+		return nil, err
+	}
+	nodes := make([]Node, 0)
 	for rows.Next() {
 		n := Node{}
 		err = rows.Scan(
@@ -93,19 +98,19 @@ func (z *ZBook) Children(id int64, c chan<- Node) error {
 			&n.ShortTitle,
 		)
 		if err != nil {
-			return err
+			return nil, err
 		}
-		c <- n
+		nodes = append(nodes, n)
 	}
-	return nil
+	return nodes, nil
 }
 
-func (z *ZBook) Footnotes(id int64, c chan<- lib.Footnote) error {
-	defer close(c)
-	rows, err := z.stmtFootnotes.Query(id)
+func (z *ZBook) Footnotes(ctx context.Context, id int64) ([]lib.Footnote, error) {
+	rows, err := z.stmtFootnotes.QueryContext(ctx, id)
 	if err != nil {
-		return err
+		return nil, err
 	}
+	footnotes := make([]lib.Footnote, 0)
 	for rows.Next() {
 		f := lib.Footnote{}
 		err = rows.Scan(
@@ -114,9 +119,9 @@ func (z *ZBook) Footnotes(id int64, c chan<- lib.Footnote) error {
 			&f.Content,
 		)
 		if err != nil {
-			return err
+			return nil, err
 		}
-		c <- f
+		footnotes = append(footnotes, f)
 	}
-	return nil
+	return footnotes, nil
 }

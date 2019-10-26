@@ -9,9 +9,11 @@ import (
 	"strings"
 	"unicode"
 	"unicode/utf8"
+
+	"github.com/duckbrain/ldss/lib"
 )
 
-type QueryFileFunc func(lang Lang) ([]byte, error)
+type QueryFileFunc func(lang lib.Lang) ([]byte, error)
 type queryTokenType int
 type queryParseMode int
 
