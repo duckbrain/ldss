@@ -1,4 +1,4 @@
-package lib
+package ref
 
 import (
 	"encoding/json"
@@ -7,6 +7,16 @@ import (
 	"strconv"
 	"strings"
 )
+
+type Reference struct {
+	Path              string
+	Lang              Lang
+	VerseSelected     int
+	VersesHighlighted []int
+	VersesExtra       []int
+	Small, Name       string
+	Keywords          []string
+}
 
 func Parse(lang Lang, q string) []Reference {
 	ref := ParsePath(lang, q)
