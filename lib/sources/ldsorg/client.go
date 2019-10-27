@@ -122,6 +122,32 @@ func (c Client) Load(ctx context.Context, store lib.Store, index lib.Index) erro
 	return nil
 }
 
+func (c Client) Lang(ctx context.Context, store lib.Store, libLang lib.Lang) (Lang, error) {
+	m := Metadata{}
+	err := store.Metadata(ctx, lib.Index{Lang: libLang, Path: "/"}, &m)
+	if err != nil {
+		return Lang{}, err
+	}
+	if len(m.Languages) == 0 {
+		langs, err := c.Languages(ctx)
+		if err != nil {
+			return Lang{}, err
+		}
+		m.Languages = make(map[string]Lang)
+		for _, lang := range langs {
+			m.Languages[lang.Code] = lang
+		}
+		if err := store.SetMetadata(ctx, m); err != nil {
+			return Lang{}, err
+		}
+	}
+	lang, ok := m.Languages[string(libLang)]
+	if !ok {
+		return Lang{}, lib.ErrNotFound
+	}
+	return lang, nil
+}
+
 func storeFolder(ctx context.Context, store lib.Store, item *lib.Item, folder Folder) error {
 	lang := item.Lang
 
@@ -182,30 +208,4 @@ func storeBook(ctx context.Context, store lib.Store, z *ZBook, item *lib.Item, n
 	}
 
 	return store.Store(ctx, *item)
-}
-
-func (c Client) Lang(ctx context.Context, store lib.Store, libLang lib.Lang) (Lang, error) {
-	m := Metadata{}
-	err := store.Metadata(ctx, lib.Index{Lang: libLang, Path: "/"}, &m)
-	if err != nil {
-		return Lang{}, err
-	}
-	if len(m.Languages) == 0 {
-		langs, err := c.Languages(ctx)
-		if err != nil {
-			return Lang{}, err
-		}
-		m.Languages = make(map[string]Lang)
-		for _, lang := range langs {
-			m.Languages[lang.Code] = lang
-		}
-		if err := store.SetMetadata(ctx, m); err != nil {
-			return Lang{}, err
-		}
-	}
-	lang, ok := m.Languages[string(libLang)]
-	if !ok {
-		return Lang{}, lib.ErrNotFound
-	}
-	return lang, nil
 }

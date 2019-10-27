@@ -7,8 +7,11 @@ package lib
 import (
 	"context"
 	"errors"
+	"fmt"
 	"html/template"
 )
+
+type Lang string
 
 type Index struct {
 	Path string
@@ -17,6 +20,9 @@ type Index struct {
 
 func (i Index) Valid() bool {
 	return i.Lang != "" && i.Path != ""
+}
+func (i Index) Hash() []byte {
+	return []byte(fmt.Sprintf("%v?lang=%v", i.Path, i.Lang))
 }
 
 type Header struct {
@@ -55,7 +61,7 @@ type Store interface {
 	Store(ctx context.Context, item Item) error
 	Header(ctx context.Context, index Index) (Header, error)
 	Metadata(ctx context.Context, index Index, data interface{}) error
-	SetMetadata(ctx context.Context, data interface{}) error
+	SetMetadata(ctx context.Context, index Index, data interface{}) error
 	Search(ctx context.Context, query string, results chan<- Result) error
 	// Remove(ctx context.Context, item Item) error
 }
