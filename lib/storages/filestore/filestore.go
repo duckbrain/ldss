@@ -64,66 +64,30 @@ func New(dir string) (*Store, error) {
 }
 
 func (s *Store) Item(ctx context.Context, index lib.Index) (lib.Item, error) {
-	item := lib.Item{}
-
-	err := s.db.View(func(tx *bolt.Tx) error {
-		data := tx.Bucket(bucketItems).Get(index.Hash())
-		if data == nil {
-			return lib.ErrNotFound
-		}
-
-		return s.unmarshaler(data, &item)
+	return s.BulkRead(func(s lib.Store) {
+		return s.Item(ctx, index)
 	})
-
-	return item, err
 }
 func (s *Store) Store(ctx context.Context, item lib.Item) error {
-	return s.db.Update(func(tx *bolt.Tx) error {
-		data, err := s.marshaller(item)
-		if err != nil {
-			return err
-		}
-
-		err = tx.Bucket(bucketItems).Put(item.Hash(), data)
-		if err != nil {
-			return nil
-		}
-
-		return s.index.Index(string(item.Hash()), item)
+	return s.BulkEdit(func(s lib.Store) {
+		return s.Store(ctx, item)
 	})
 }
-func (s *Store) Header(ctx context.Context, index lib.Index) (lib.Header, error) {
-	item := lib.Item{}
-
-	err := s.db.View(func(tx *bolt.Tx) error {
-		data := tx.Bucket(bucketItems).Get(index.Hash())
-		if data == nil {
-			return lib.ErrNotFound
-		}
-
-		return s.unmarshaler(data, &item)
+func (s *Store) Header(ctx context.Context, index lib.Index) (header lib.Header, err error) {
+	s.BulkRead(func(s lib.Store) {
+		header, err = s.Header(ctx, index)
+		return err
 	})
-
-	return item.Header, err
+	return
 }
 func (s *Store) Metadata(ctx context.Context, index lib.Index, metadata interface{}) error {
-	return s.db.View(func(tx *bolt.Tx) error {
-		data := tx.Bucket(bucketMetadata).Get(index.Hash())
-		if data == nil {
-			return lib.ErrNotFound
-		}
-
-		return s.unmarshaler(data, metadata)
+	return s.BulkRead(func(s lib.Store) {
+		return s.Metadata(ctx, index, metadata)
 	})
 }
 func (s *Store) SetMetadata(ctx context.Context, index lib.Index, metadata interface{}) error {
-	return s.db.Update(func(tx *bolt.Tx) error {
-		data, err := s.marshaller(metadata)
-		if err != nil {
-			return err
-		}
-
-		return tx.Bucket(bucketMetadata).Put(index.Hash(), data)
+	return s.BulkEdit(func(s lib.Store) {
+		return s.SetMetadata(ctx, index, metadata)
 	})
 }
 func (s *Store) Search(ctx context.Context, query string, results chan<- lib.Result) error {

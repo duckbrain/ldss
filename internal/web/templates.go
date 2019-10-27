@@ -30,8 +30,8 @@ func loadTemplate(path string) *template.Template {
 	}
 	return template.Must(template.New(path).
 		Funcs(template.FuncMap{
-			"subtitle":      subtitle,
-			"groupSections": groupSections,
+			"subtitle": subtitle,
+			// "groupSections": groupSections,
 		}).
 		Parse(data))
 }
@@ -44,23 +44,23 @@ func subtitle(item lib.Item) string {
 	return ""
 }
 
-type groupedSections map[string][]lib.Contenter
+// type groupedSections map[string][]lib.Contenter
 
-func groupSections(items []lib.Item) groupedSections {
-	nodeMap := make(groupedSections)
-	for _, item := range items {
-		contenter, ok := item.(lib.Contenter)
-		if !ok {
-			return nil
-		}
-		key := contenter.SectionName()
-		list, ok := nodeMap[key]
-		if ok {
-			list = append(list, contenter)
-		} else {
-			list = []lib.Contenter{contenter}
-		}
-		nodeMap[key] = list
-	}
-	return nodeMap
-}
+// func groupSections(items []lib.Item) groupedSections {
+// 	nodeMap := make(groupedSections)
+// 	for _, item := range items {
+// 		contenter, ok := item.(lib.Contenter)
+// 		if !ok {
+// 			return nil
+// 		}
+// 		key := contenter.SectionName()
+// 		list, ok := nodeMap[key]
+// 		if ok {
+// 			list = append(list, contenter)
+// 		} else {
+// 			list = []lib.Contenter{contenter}
+// 		}
+// 		nodeMap[key] = list
+// 	}
+// 	return nodeMap
+// }

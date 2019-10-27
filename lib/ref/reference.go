@@ -6,11 +6,13 @@ import (
 	"sort"
 	"strconv"
 	"strings"
+
+	"github.com/duckbrain/ldss/lib"
 )
 
 type Reference struct {
 	Path              string
-	Lang              Lang
+	Lang              lib.Lang
 	VerseSelected     int
 	VersesHighlighted []int
 	VersesExtra       []int
@@ -55,7 +57,7 @@ func ParsePath(lang Lang, p string) Reference {
 func (r Reference) MarshalJSON() ([]byte, error) {
 	return json.Marshal(struct {
 		Path              string
-		Lang              Lang
+		Lang              lib.Lang
 		VerseSelected     int
 		VersesHighlighted []int
 		VersesExtra       []int
@@ -97,7 +99,7 @@ func (r Reference) URL() string {
 		p = fmt.Sprintf("%v.%v", p, stringifyVerses(r.VersesExtra))
 	}
 	if r.Lang != nil {
-		p = fmt.Sprintf("%v?lang=%v", p, r.Lang.Code())
+		p = fmt.Sprintf("%v?lang=%v", p, r.Lang)
 	}
 	if r.VerseSelected > 0 {
 		p = fmt.Sprintf("%v#%v", p, r.VerseSelected)

@@ -21,8 +21,11 @@ type Index struct {
 func (i Index) Valid() bool {
 	return i.Lang != "" && i.Path != ""
 }
+func (i Index) String() string {
+	return fmt.Sprintf("%v?lang=%v", i.Path, i.Lang)
+}
 func (i Index) Hash() []byte {
-	return []byte(fmt.Sprintf("%v?lang=%v", i.Path, i.Lang))
+	return []byte(i.String())
 }
 
 type Header struct {
@@ -64,6 +67,10 @@ type Store interface {
 	SetMetadata(ctx context.Context, index Index, data interface{}) error
 	Search(ctx context.Context, query string, results chan<- Result) error
 	// Remove(ctx context.Context, item Item) error
+}
+type BulkStore interface {
+	BulkRead(func(Store) error) error
+	BulkEdit(func(Store) error) error
 }
 
 type Source interface {

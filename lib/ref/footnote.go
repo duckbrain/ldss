@@ -1,16 +1,15 @@
-package lib
+package ref
 
 import (
 	"bytes"
 	"fmt"
-	"html/template"
 	"strings"
 
+	"github.com/duckbrain/ldss/lib"
 	"golang.org/x/net/html"
 )
 
-
-func (f *Footnote) References() []Reference {
+func ParseFootnoteReferences(f *Reference) []Reference {
 	z := html.NewTokenizerFragment(strings.NewReader(string(f.Content)), "div")
 	refs := make([]Reference, 0)
 	lang := f.Item.Lang()
@@ -101,7 +100,7 @@ loop:
 }
 
 // Parses the rest of the small tag, assuming the head has already been parsed
-func (f *Footnote) parseSmall(z *html.Tokenizer, tag []byte) (small string) {
+func continueToSmall(f *lib.Footnote, z *html.Tokenizer, tag []byte) (small string) {
 	depth := 1
 	for depth > 0 {
 		switch z.Next() {
