@@ -10,6 +10,7 @@ type Library struct {
 	Index   Indexer
 	Sources []Loader
 	Logger  Logger
+	Parser  *ReferenceParser
 }
 
 type indexStore struct {
@@ -58,9 +59,10 @@ type Logger interface {
 type ContextKey string
 
 const (
-	CtxLogger ContextKey = "logger"
-	CtxStore  ContextKey = "store"
-	CtxIndex  ContextKey = "index"
+	CtxLogger    ContextKey = "logger"
+	CtxStore     ContextKey = "store"
+	CtxIndex     ContextKey = "index"
+	CtxRefParser ContextKey = "reference-parser"
 )
 
 func (l Library) ctx(ctx context.Context) context.Context {
@@ -76,6 +78,7 @@ func (l Library) ctx(ctx context.Context) context.Context {
 	ctx = context.WithValue(ctx, CtxLogger, logger)
 	ctx = context.WithValue(ctx, CtxStore, store)
 	ctx = context.WithValue(ctx, CtxIndex, l.Index)
+	ctx = context.WithValue(ctx, CtxRefParser, l.Parser)
 
 	return ctx
 }

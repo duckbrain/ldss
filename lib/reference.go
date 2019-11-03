@@ -3,6 +3,7 @@ package lib
 import (
 	"fmt"
 	"sort"
+	"strings"
 )
 
 type Reference struct {
@@ -17,6 +18,21 @@ type Reference struct {
 
 	// Small and Name are used for references to display, meaningless for lookup.
 	Small, Name string
+}
+
+func (r *Reference) Clean() {
+	r.Path = strings.TrimSpace(r.Path)
+	r.Path = strings.TrimRight(r.Path, "/ ")
+	if r.Path == "" {
+		r.Path = "/"
+	}
+
+	r.VersesHighlighted = r.VersesHighlighted.Clean()
+	r.VersesExtra = r.VersesExtra.Clean()
+
+	if r.VerseSelected == 0 && len(r.VersesHighlighted) > 0 {
+		r.VerseSelected = r.VersesHighlighted[0] - 1
+	}
 }
 
 func (r Reference) String() string {
