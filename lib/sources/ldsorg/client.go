@@ -152,7 +152,7 @@ func (c Client) Lang(ctx context.Context, store lib.Storer, libLang lib.Lang) (L
 func storeFolder(ctx context.Context, store lib.Storer, item *lib.Item, folder Folder) error {
 	lang := item.Lang
 
-	item.Header = folder.Header(lang)
+	item.Header = folder.Header(ctx, lang)
 
 	item.Children = make([]lib.Index, len(folder.Folders)+len(folder.Books))
 	for i, childFolder := range folder.Folders {
@@ -162,7 +162,7 @@ func storeFolder(ctx context.Context, store lib.Storer, item *lib.Item, folder F
 			childItem.Prev = item.Children[i-1]
 		}
 		if i < len(item.Children)-1 {
-			childItem.Next = folder.Folders[i+1].Header(lang).Index
+			childItem.Next = folder.Folders[i+1].Header(ctx, lang).Index
 		}
 
 		err := storeFolder(ctx, store, &childItem, childFolder)

@@ -1,6 +1,7 @@
 package ldsorg
 
 import (
+	"context"
 	"fmt"
 
 	"github.com/duckbrain/ldss/lib"
@@ -36,17 +37,24 @@ type Folder struct {
 	ID      int      `json:"id"`
 }
 
-func (f Folder) Header(lang lib.Lang) lib.Header {
+func (f Folder) Header(ctx context.Context, lang lib.Lang) lib.Header {
 	return lib.Header{
 		Index: lib.Index{
 			Lang: lang,
-			Path: f.Path(),
+			Path: f.Path(ctx),
 		},
 		Name: f.Name,
 	}
 }
-func (f Folder) Path() string {
-	return fmt.Sprintf("folder-%v", f.ID)
+func (f Folder) Path(ctx context.Context) string {
+	parser := ctx.Value(lib.CtxRefParser).(*lib.ReferenceParser)
+	if parser != nil {
+		path := parser.PathFromID(f.ID)
+		if path != "" {
+			return path
+		}
+	}
+	return fmt.Sprintf("/folder-%v", f.ID)
 }
 
 type Book struct {

@@ -1,4 +1,4 @@
-package ref
+package lib
 
 import "testing"
 

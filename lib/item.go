@@ -8,8 +8,9 @@ import (
 	"context"
 	"errors"
 	"fmt"
-	"html/template"
 )
+
+const DefaultLang Lang = "en"
 
 type Lang string
 
@@ -46,12 +47,6 @@ type Item struct {
 
 	Content   Content
 	Footnotes []Footnote
-}
-
-type Footnote struct {
-	Name     string        `json:"name"`
-	LinkName string        `json:"linkName"`
-	Content  template.HTML `json:"content"`
 }
 
 type Result struct {

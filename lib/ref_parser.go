@@ -2,6 +2,7 @@ package lib
 
 import (
 	"bufio"
+	"bytes"
 	"fmt"
 	"io"
 	"regexp"
@@ -9,6 +10,8 @@ import (
 	"strings"
 	"unicode"
 	"unicode/utf8"
+
+	"golang.org/x/net/html"
 )
 
 type ReferenceParser struct {
@@ -60,6 +63,9 @@ func (p ReferenceParser) AppendFile(lang Lang, file io.Reader) {
 			}
 			d.matchString[t] = path
 		}
+	}
+	if _, ok := p.descMap[lang]; ok {
+		panic("merge not implemented")
 	}
 	p.descMap[lang] = d
 }
@@ -230,6 +236,144 @@ func (p ReferenceParser) Parse(lang Lang, query string) []Reference {
 	finishReference()
 
 	return refs
+}
+
+func (p *ReferenceParser) PathFromID(id int) string {
+	desc, ok := p.descMap[DefaultLang]
+	if !ok {
+		return ""
+	}
+	return desc.matchFolder[id]
+}
+
+func (p *ReferenceParser) ParsePath(lang Lang, path string) Reference {
+	r := Reference{}
+	r.Lang = lang
+	r.Path = path
+
+	if index := strings.IndexRune(r.Path, '.'); index != -1 {
+		verseString := r.Path[index+1:]
+		r.Path = r.Path[:index]
+
+		if extraIndex := strings.IndexRune(verseString, '.'); extraIndex != -1 {
+			r.VersesHighlighted = parseVerses(verseString[:extraIndex])
+			r.VersesExtra = parseVerses(verseString[extraIndex+1:])
+		} else {
+			r.VersesHighlighted = parseVerses(verseString)
+		}
+	}
+
+	r.Clean()
+
+	return r
+}
+
+func parseVerses(s string) []int {
+	verses := make([]int, 0)
+	for _, span := range strings.Split(s, ",") {
+		if verse, err := strconv.Atoi(span); err == nil {
+			verses = append(verses, verse)
+		} else {
+			p := strings.Split(span, "-")
+			if len(p) == 2 {
+				vstart, estart := strconv.Atoi(p[0])
+				vend, eend := strconv.Atoi(p[1])
+				if estart == nil && eend == nil {
+					for v := vstart; v <= vend; v++ {
+						verses = append(verses, v)
+					}
+				}
+			}
+		}
+	}
+	return verses
+}
+
+func (p *ReferenceParser) ParseFootnote(lang Lang, f Footnote) []Reference {
+	z := html.NewTokenizerFragment(strings.NewReader(string(f.Content)), "div")
+	refs := make([]Reference, 0)
+
+loop:
+	for {
+		ref := Reference{}
+		ref.Lang = lang
+
+		switch z.Next() {
+		case html.ErrorToken, html.EndTagToken:
+			break loop
+		case html.TextToken:
+			ref.Name = string(z.Text())
+		case html.SelfClosingTagToken:
+
+		case html.StartTagToken:
+			tag, hasAttr := z.TagName()
+			depth := 1
+
+			switch string(tag) {
+			case "a":
+				for hasAttr {
+					var key, val []byte
+					key, val, hasAttr = z.TagAttr()
+					switch string(key) {
+					case "href":
+						r := p.ParsePath(lang, string(val))
+						ref.Path = r.Path
+						ref.VerseSelected = r.VerseSelected
+						ref.VersesHighlighted = r.VersesHighlighted
+						ref.VersesExtra = r.VersesExtra
+					}
+				}
+			case "span":
+				for hasAttr {
+					var key, val []byte
+					key, val, hasAttr = z.TagAttr()
+					switch string(key) {
+					case "class":
+						if string(val) == "small" {
+							ref.Small = f.parseSmall(z, tag)
+							depth--
+						}
+					}
+				}
+			}
+
+			for depth > 0 {
+				switch z.Next() {
+				case html.ErrorToken:
+					break loop
+				case html.TextToken:
+					ref.Name = fmt.Sprintf("%v%v", ref.Name, string(z.Text()))
+				case html.StartTagToken:
+					if startTag, _ := z.TagName(); bytes.Equal(startTag, tag) {
+						depth++
+					} else if "small" == string(startTag) {
+						ref.Small = f.parseSmall(z, startTag)
+					}
+				case html.EndTagToken:
+					endTag, _ := z.TagName()
+					if bytes.Equal(endTag, tag) {
+						depth--
+					}
+				}
+			}
+		}
+
+		refs = append(refs, ref)
+	}
+
+	cleanRefs := []Reference{}
+	oldRef := refs[0]
+	oldRef.Name = ""
+	for _, ref := range refs {
+		if oldRef.Path == ref.Path && oldRef.VerseSelected == ref.VerseSelected && oldRef.Small == ref.Small {
+			oldRef.Name += ref.Name
+		} else {
+			cleanRefs = append(cleanRefs, oldRef)
+			oldRef = ref
+		}
+	}
+	cleanRefs = append(cleanRefs, oldRef)
+	return cleanRefs
 }
 
 func (d *langRefDesc) lookup(q string) (advance int, path string) {
