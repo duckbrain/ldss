@@ -1,11 +1,28 @@
 package lib
 
-import "context"
+import (
+	"context"
+	"sort"
+)
 
 type Library struct {
-	Store   Store
-	Sources []Source
+	Store   Storer
+	Index   Indexer
+	Sources []Loader
 	Logger  Logger
+}
+
+type indexStore struct {
+	Storer
+	Indexer
+}
+
+func (s indexStore) Store(ctx context.Context, item Item) error {
+	err := s.Storer.Store(ctx, item)
+	if err != nil {
+		return err
+	}
+	return s.Index(ctx, item)
 }
 
 type dummyLogger struct{}
@@ -43,6 +60,7 @@ type ContextKey string
 const (
 	CtxLogger ContextKey = "logger"
 	CtxStore  ContextKey = "store"
+	CtxIndex  ContextKey = "index"
 )
 
 func (l Library) ctx(ctx context.Context) context.Context {
@@ -50,8 +68,14 @@ func (l Library) ctx(ctx context.Context) context.Context {
 	if logger == nil {
 		logger = dummyLogger{}
 	}
+	// indexStore ensures that any newly stored items will be indexed as well
+	store := indexStore{
+		Storer:  l.Store,
+		Indexer: l.Index,
+	}
 	ctx = context.WithValue(ctx, CtxLogger, logger)
-	ctx = context.WithValue(ctx, CtxStore, l.Store)
+	ctx = context.WithValue(ctx, CtxStore, store)
+	ctx = context.WithValue(ctx, CtxIndex, l.Index)
 
 	return ctx
 }
@@ -59,17 +83,18 @@ func (l Library) ctx(ctx context.Context) context.Context {
 func (l Library) Lookup(ctx context.Context, index Index) (Item, error) {
 	ctx = l.ctx(ctx)
 	logger := ctx.Value(CtxLogger).(Logger)
+	store := ctx.Value(CtxStore).(Storer)
 
-	item, err := l.Store.Item(ctx, index)
+	item, err := store.Item(ctx, index)
 	if err != ErrNotFound {
 		return item, err
 	}
 
 	logger.Debugf("index %v not found, trying to download", index)
 	for _, source := range l.Sources {
-		err := source.Load(ctx, l.Store, index)
+		err := source.Load(ctx, store, index)
 		if err == nil {
-			return l.Store.Item(ctx, index)
+			return store.Item(ctx, index)
 		}
 		if err == ErrNotFound {
 			continue
@@ -78,4 +103,24 @@ func (l Library) Lookup(ctx context.Context, index Index) (Item, error) {
 	}
 
 	return item, ErrNotFound
+}
+
+func (l Library) Search(ctx context.Context, ref Reference, results chan<- Result) error {
+	ctx = l.ctx(ctx)
+	return l.Index.Search(ctx, ref, results)
+}
+
+func (l Library) SearchSlice(ctx context.Context, ref Reference) (Results, error) {
+	out := make(chan Result)
+	results := make(Results, 0)
+	go func() {
+		for result := range out {
+			// TODO not thread safe
+			results = append(results, result)
+		}
+	}()
+	err := l.Search(ctx, ref, out)
+	close(out)
+	sort.Sort(results)
+	return results, err
 }

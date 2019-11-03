@@ -3,7 +3,6 @@ package web
 import (
 	"html/template"
 
-	"github.com/duckbrain/ldss/lib"
 	packr "github.com/gobuffalo/packr/v2"
 )
 
@@ -30,19 +29,19 @@ func loadTemplate(path string) *template.Template {
 	}
 	return template.Must(template.New(path).
 		Funcs(template.FuncMap{
-			"subtitle": subtitle,
+			// "subtitle": subtitle,
 			// "groupSections": groupSections,
 		}).
 		Parse(data))
 }
 
-func subtitle(item lib.Item) string {
-	i, ok := item.(lib.Contenter)
-	if ok {
-		return i.Subtitle()
-	}
-	return ""
-}
+// func subtitle(item lib.Item) string {
+// 	i, ok := item.(lib.Contenter)
+// 	if ok {
+// 		return i.Subtitle()
+// 	}
+// 	return ""
+// }
 
 // type groupedSections map[string][]lib.Contenter
 

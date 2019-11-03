@@ -12,6 +12,10 @@ var webCmd = &cobra.Command{
 	Long:  `Launch the web server`,
 	Run: func(cmd *cobra.Command, args []string) {
 		port := viper.GetInt("port")
+
+		server := web.Server{Lang: lang}
+		log.Printf("Listening on port: %v\n", port)
+		http.ListenAndServe(fmt.Sprintf(":%v", port), nil)
 		web.Run(port, lang())
 	},
 }

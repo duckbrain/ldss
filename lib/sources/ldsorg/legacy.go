@@ -45,7 +45,7 @@ func (l Legacy) ZBook(ctx context.Context, i lib.Index) (*ZBook, error) {
 	return NewZBook(file)
 }
 
-func (l Legacy) Load(ctx context.Context, store lib.Store, index lib.Index) error {
+func (l Legacy) Load(ctx context.Context, store lib.Storer, index lib.Index) error {
 	m := Metadata{}
 	err := store.Metadata(ctx, index, &m)
 	if err == lib.ErrNotFound {

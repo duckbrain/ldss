@@ -3,35 +3,24 @@ package ref
 import (
 	"encoding/json"
 	"fmt"
-	"sort"
 	"strconv"
 	"strings"
 
 	"github.com/duckbrain/ldss/lib"
 )
 
-type Reference struct {
-	Path              string
-	Lang              lib.Lang
-	VerseSelected     int
-	VersesHighlighted []int
-	VersesExtra       []int
-	Small, Name       string
-	Keywords          []string
-}
-
-func Parse(lang Lang, q string) []Reference {
+func Parse(lang lib.Lang, q string) []lib.Reference {
 	ref := ParsePath(lang, q)
 	if ref.Check() == nil {
-		return []Reference{ref}
+		return []lib.Reference{ref}
 	}
 	if rp, err := languageQueryParser(lang); err == nil {
 		return rp.lookup(q)
 	}
-	return []Reference{}
+	return []lib.Reference{}
 }
 
-func ParsePath(lang Lang, p string) Reference {
+func ParsePath(lang lib.Lang, p string) Reference {
 	r := Reference{
 		Lang: lang,
 		Path: p,
@@ -82,46 +71,12 @@ func (r *Reference) Clean() {
 		r.Path = "/"
 	}
 
-	r.VersesHighlighted = cleanVerses(r.VersesHighlighted)
-	r.VersesExtra = cleanVerses(r.VersesExtra)
+	r.VersesHighlighted = r.VersesHighlighted.Clean()
+	r.VersesExtra = r.VersesExtra.Clean()
 
 	if r.VerseSelected == 0 && len(r.VersesHighlighted) > 0 {
 		r.VerseSelected = r.VersesHighlighted[0] - 1
 	}
-}
-
-func (r Reference) URL() string {
-	p := r.Path
-	if r.VersesHighlighted != nil {
-		p = fmt.Sprintf("%v.%v", p, stringifyVerses(r.VersesHighlighted))
-	}
-	if r.VersesExtra != nil {
-		p = fmt.Sprintf("%v.%v", p, stringifyVerses(r.VersesExtra))
-	}
-	if r.Lang != nil {
-		p = fmt.Sprintf("%v?lang=%v", p, r.Lang)
-	}
-	if r.VerseSelected > 0 {
-		p = fmt.Sprintf("%v#%v", p, r.VerseSelected)
-	}
-	return p
-}
-
-func (r Reference) String() string {
-	s := r.Path
-	if item, err := r.Lookup(); err == nil {
-		s = item.Name()
-	}
-	if r.VersesHighlighted != nil {
-		s = fmt.Sprintf("%v:%v", s, stringifyVerses(r.VersesHighlighted))
-	}
-	if r.VersesExtra != nil {
-		s = fmt.Sprintf("%v (%v)", s, stringifyVerses(r.VersesHighlighted))
-	}
-	if len(s) == 0 {
-		s = fmt.Sprintf("\"%v\"", r.Name)
-	}
-	return s
 }
 
 func parseVerses(s string) []int {
@@ -145,49 +100,8 @@ func parseVerses(s string) []int {
 	return verses
 }
 
-func stringifyVerses(verses []int) string {
-	if verses == nil {
-		return ""
-	}
-	p := ""
-	var previousVerse, spanStart, verse int
-	for _, verse = range verses {
-		if previousVerse == 0 {
-			p = fmt.Sprintf("%v", verse)
-			spanStart = verse
-		} else if previousVerse == verse-1 {
-		} else if previousVerse != spanStart {
-			p = fmt.Sprintf("%v-%v,%v", p, previousVerse, verse)
-			spanStart = verse
-		} else {
-			p = fmt.Sprintf("%v,%v", p, verse)
-			spanStart = verse
-		}
-		previousVerse = verse
-	}
-	if verse != spanStart {
-		p = fmt.Sprintf("%v-%v", p, verse)
-	}
-	return p
-}
-
-func cleanVerses(a []int) []int {
-	sort.Sort(sort.IntSlice(a))
-
-	l := 0
-	for i := 0; i < len(a); i++ {
-		v := a[i]
-		if v <= l {
-			a = append(a[:i], a[i+1:]...)
-			i--
-		}
-		l = v
-	}
-	return a
-}
-
 func (r Reference) Check() error {
-	if r.Lang == nil {
+	if r.Lang == "" {
 		return fmt.Errorf("Lang not set on reference")
 	}
 	if len(r.Path) == 0 || r.Path[0] != '/' {

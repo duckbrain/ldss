@@ -11,21 +11,21 @@ import (
 	bolt "github.com/etcd-io/bbolt"
 )
 
-var _ lib.Store = &Store{}
+var _ lib.Storer = &FileStore{}
 
 var (
 	bucketItems    = []byte("Items")
 	bucketMetadata = []byte("Metadata")
 )
 
-type Store struct {
+type FileStore struct {
 	index       bleve.Index
 	db          *bolt.DB
 	marshaller  func(in interface{}) (out []byte, err error)
 	unmarshaler func(in []byte, out interface{}) (err error)
 }
 
-func New(dir string) (*Store, error) {
+func New(dir string) (*FileStore, error) {
 	mapping := bleve.NewIndexMapping()
 
 	mapping.AddDocumentMapping("item", bleve.NewDocumentMapping())
@@ -54,7 +54,7 @@ func New(dir string) (*Store, error) {
 		return nil
 	})
 
-	store := &Store{
+	store := &FileStore{
 		index:       index,
 		db:          db,
 		marshaller:  json.Marshal,
@@ -63,33 +63,35 @@ func New(dir string) (*Store, error) {
 	return store, err
 }
 
-func (s *Store) Item(ctx context.Context, index lib.Index) (lib.Item, error) {
-	return s.BulkRead(func(s lib.Store) {
-		return s.Item(ctx, index)
+func (s *FileStore) Item(ctx context.Context, index lib.Index) (item lib.Item, err error) {
+	err = s.BulkRead(func(s lib.Storer) error {
+		item, err = s.Item(ctx, index)
+		return err
 	})
+	return item, err
 }
-func (s *Store) Store(ctx context.Context, item lib.Item) error {
-	return s.BulkEdit(func(s lib.Store) {
+func (s *FileStore) Store(ctx context.Context, item lib.Item) error {
+	return s.BulkEdit(func(s lib.Storer) error {
 		return s.Store(ctx, item)
 	})
 }
-func (s *Store) Header(ctx context.Context, index lib.Index) (header lib.Header, err error) {
-	s.BulkRead(func(s lib.Store) {
+func (s *FileStore) Header(ctx context.Context, index lib.Index) (header lib.Header, err error) {
+	s.BulkRead(func(s lib.Storer) error {
 		header, err = s.Header(ctx, index)
 		return err
 	})
 	return
 }
-func (s *Store) Metadata(ctx context.Context, index lib.Index, metadata interface{}) error {
-	return s.BulkRead(func(s lib.Store) {
+func (s *FileStore) Metadata(ctx context.Context, index lib.Index, metadata interface{}) error {
+	return s.BulkRead(func(s lib.Storer) error {
 		return s.Metadata(ctx, index, metadata)
 	})
 }
-func (s *Store) SetMetadata(ctx context.Context, index lib.Index, metadata interface{}) error {
-	return s.BulkEdit(func(s lib.Store) {
+func (s *FileStore) SetMetadata(ctx context.Context, index lib.Index, metadata interface{}) error {
+	return s.BulkEdit(func(s lib.Storer) error {
 		return s.SetMetadata(ctx, index, metadata)
 	})
 }
-func (s *Store) Search(ctx context.Context, query string, results chan<- lib.Result) error {
+func (s *FileStore) Search(ctx context.Context, query string, results chan<- lib.Result) error {
 	panic("not implemented")
 }

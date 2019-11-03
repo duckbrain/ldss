@@ -58,23 +58,37 @@ type Result struct {
 	Item
 	Rank int64
 }
+type Results []Result
 
-type Store interface {
+func (r Results) Len() int {
+	return len(r)
+}
+func (r Results) Less(a, b int) bool {
+	return r[a].Rank < r[b].Rank
+}
+func (r Results) Swap(a, b int) {
+	r[a], r[b] = r[b], r[a]
+}
+
+type Storer interface {
 	Item(ctx context.Context, index Index) (Item, error)
 	Store(ctx context.Context, item Item) error
 	Header(ctx context.Context, index Index) (Header, error)
 	Metadata(ctx context.Context, index Index, data interface{}) error
 	SetMetadata(ctx context.Context, index Index, data interface{}) error
-	Search(ctx context.Context, query string, results chan<- Result) error
 	// Remove(ctx context.Context, item Item) error
 }
-type BulkStore interface {
-	BulkRead(func(Store) error) error
-	BulkEdit(func(Store) error) error
+type BulkStorer interface {
+	BulkRead(func(Storer) error) error
+	BulkEdit(func(Storer) error) error
+}
+type Indexer interface {
+	Index(ctx context.Context, item Item) error
+	Search(ctx context.Context, ref Reference, results chan<- Result) error
 }
 
-type Source interface {
-	Load(ctx context.Context, store Store, index Index) error
+type Loader interface {
+	Load(ctx context.Context, store Storer, index Index) error
 }
 
 var ErrNotFound = errors.New("not found")

@@ -71,7 +71,7 @@ func (c Client) ZBook(ctx context.Context, url string) (*ZBook, error) {
 	return NewZBook(r)
 }
 
-func (c Client) Load(ctx context.Context, store lib.Store, index lib.Index) error {
+func (c Client) Load(ctx context.Context, store lib.Storer, index lib.Index) error {
 	m := Metadata{}
 	err := store.Metadata(ctx, index, &m)
 	if err == lib.ErrNotFound {
@@ -122,9 +122,10 @@ func (c Client) Load(ctx context.Context, store lib.Store, index lib.Index) erro
 	return nil
 }
 
-func (c Client) Lang(ctx context.Context, store lib.Store, libLang lib.Lang) (Lang, error) {
+func (c Client) Lang(ctx context.Context, store lib.Storer, libLang lib.Lang) (Lang, error) {
 	m := Metadata{}
-	err := store.Metadata(ctx, lib.Index{Lang: libLang, Path: "/"}, &m)
+	index := lib.Index{Lang: libLang, Path: "/"}
+	err := store.Metadata(ctx, index, &m)
 	if err != nil {
 		return Lang{}, err
 	}
@@ -137,7 +138,7 @@ func (c Client) Lang(ctx context.Context, store lib.Store, libLang lib.Lang) (La
 		for _, lang := range langs {
 			m.Languages[lang.Code] = lang
 		}
-		if err := store.SetMetadata(ctx, m); err != nil {
+		if err := store.SetMetadata(ctx, index, m); err != nil {
 			return Lang{}, err
 		}
 	}
@@ -148,7 +149,7 @@ func (c Client) Lang(ctx context.Context, store lib.Store, libLang lib.Lang) (La
 	return lang, nil
 }
 
-func storeFolder(ctx context.Context, store lib.Store, item *lib.Item, folder Folder) error {
+func storeFolder(ctx context.Context, store lib.Storer, item *lib.Item, folder Folder) error {
 	lang := item.Lang
 
 	item.Header = folder.Header(lang)
@@ -173,7 +174,7 @@ func storeFolder(ctx context.Context, store lib.Store, item *lib.Item, folder Fo
 	return store.Store(ctx, *item)
 }
 
-func storeBook(ctx context.Context, store lib.Store, z *ZBook, item *lib.Item, node Node) error {
+func storeBook(ctx context.Context, store lib.Storer, z *ZBook, item *lib.Item, node Node) error {
 	lang := item.Lang
 
 	children, err := z.Children(ctx, node.ID)

@@ -9,10 +9,10 @@ import (
 	"golang.org/x/net/html"
 )
 
-func ParseFootnoteReferences(f *Reference) []Reference {
+func ParseFootnoteReferences(f *lib.Footnote) []Reference {
 	z := html.NewTokenizerFragment(strings.NewReader(string(f.Content)), "div")
 	refs := make([]Reference, 0)
-	lang := f.Item.Lang()
+	lang := f.Item.Lang
 
 loop:
 	for {

@@ -6,15 +6,12 @@ import (
 	"fmt"
 	"html/template"
 	"io"
-	"log"
 	"net/http"
 	"strings"
 
 	"github.com/duckbrain/ldss/lib"
 	packr "github.com/gobuffalo/packr/v2"
 )
-
-var defaultLang lib.Lang
 
 var staticBox = packr.New("ldss_web_static", "./static")
 
@@ -24,41 +21,39 @@ type webLayout struct {
 	Footnotes   []lib.Footnote
 	Lang        lib.Lang
 	Item        lib.Item
-	Breadcrumbs []lib.Reference
+	Breadcrumbs []lib.Header
 	Query       string
 }
 
-// Handle attaches events to the net/http package, but does not start the web server
-func Handle(lang lib.Lang) {
-	defaultLang = lang
+type Server struct {
+	Lang lib.Lang
+}
+
+func (s *Server) Handler() http.Handler {
+	mux := http.NewServeMux()
 
 	handleStatic := http.FileServer(staticBox)
 
-	http.HandleFunc("/api/", handleJSON)
-	http.HandleFunc("/search", handleSearch)
-	http.HandleFunc("/special/jesus-christ", handleChristStudy)
-	http.Handle("/favicon.ico", handleStatic)
-	http.Handle("/manifest.webmanifest", handleStatic)
-	http.Handle("/css/", handleStatic)
-	http.Handle("/js/", handleStatic)
-	http.Handle("/svg/", handleStatic)
-	http.HandleFunc("/", handler)
+	mux.HandleFunc("/api/", s.handleJSON)
+	mux.HandleFunc("/search", s.handleSearch)
+	mux.Handle("/favicon.ico", handleStatic)
+	mux.Handle("/manifest.webmanifest", handleStatic)
+	mux.Handle("/css/", handleStatic)
+	mux.Handle("/js/", handleStatic)
+	mux.Handle("/svg/", handleStatic)
+	mux.HandleFunc("/", s.handler)
 
-	initTemplates()
-
+	return mux
 }
 
 // Run starts listening on the given port
 func Run(port int, lang lib.Lang) {
-	Handle(lang)
-	log.Printf("Listening on port: %v\n", port)
-	http.ListenAndServe(fmt.Sprintf(":%v", port), nil)
 }
 
-func language(r *http.Request) lib.Lang {
-	lang := lib.LookupLanguage(r.URL.Query().Get("lang"))
-	if lang == nil {
-		return defaultLang
+func (s Server) language(r *http.Request) lib.Lang {
+	lang := lib.Lang(r.URL.Query().Get("lang"))
+	if lang == "" {
+		return s.Lang
 	}
 	return lang
 }
@@ -93,11 +88,11 @@ func HandleError(w io.Writer, r *http.Request) {
 	}
 }
 
-func handleSearch(w http.ResponseWriter, r *http.Request) {
+func (s Server) handleSearch(w http.ResponseWriter, r *http.Request) {
 	initTemplates()
 
 	defer r.Body.Close()
-	lang := language(r)
+	lang := s.language(r)
 	query := r.URL.Query().Get("q")
 	refs := lib.Parse(lang, query)
 	if len(refs) == 1 && len(refs[0].Keywords) == 0 {
@@ -109,7 +104,7 @@ func handleSearch(w http.ResponseWriter, r *http.Request) {
 		Title: "LDS Scriptures",
 		Lang:  lang,
 		Query: query,
-		Breadcrumbs: []lib.Reference{
+		Breadcrumbs: []lib.Header{
 			{
 				Lang: lang,
 				Path: "/",
@@ -186,11 +181,11 @@ func itemsRelativesPath(item lib.Item) interface{} {
 	return nil
 }
 
-func handleJSON(w http.ResponseWriter, r *http.Request) {
+func (s Server) handleJSON(w http.ResponseWriter, r *http.Request) {
 	defer handleError(w, r)
 	defer r.Body.Close()
 
-	lang := language(r)
+	lang := s.language(r)
 	path := r.URL.Path[len("/api"):]
 	ref := lib.ParsePath(lang, path)
 	item, err := ref.Lookup()
@@ -237,11 +232,11 @@ func handleJSON(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func handler(w http.ResponseWriter, r *http.Request) {
+func (s Server) handler(w http.ResponseWriter, r *http.Request) {
 	defer handleError(w, r)
 	defer r.Body.Close()
 
-	lang := language(r)
+	lang := s.language(r)
 	buff := new(bytes.Buffer)
 
 	//TODO Remove for production
