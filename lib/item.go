@@ -48,6 +48,17 @@ type Item struct {
 	Content   Content
 	Footnotes []Footnote
 }
+type ItemDetails struct {
+	Header
+
+	Children []Header
+	Parent   Header
+	Next     Header
+	Prev     Header
+
+	Content   Content
+	Footnotes []Footnote
+}
 
 type Result struct {
 	Item
@@ -87,3 +98,15 @@ type Loader interface {
 }
 
 var ErrNotFound = errors.New("not found")
+
+func RegisterLoader(l Loader) {
+	Default.Sources = append(Default.Sources, l)
+	if x, ok := l.(interface{ LoadParser(*ReferenceParser) }); ok {
+		x.LoadParser(Default.Parser)
+	}
+}
+
+var Default = &Library{
+	Parser:  NewReferenceParser(),
+	Sources: []Loader{},
+}

@@ -7,10 +7,12 @@ import (
 	"net/http"
 	"path"
 
+	"github.com/pkg/errors"
+
 	"github.com/duckbrain/ldss/lib"
 )
 
-var Default = Client{
+var Default = &Client{
 	BaseURL:    "https://tech.lds.org/glweb",
 	PlatformID: 17,
 	Client:     http.DefaultClient,
@@ -72,8 +74,10 @@ func (c Client) ZBook(ctx context.Context, url string) (*ZBook, error) {
 }
 
 func (c Client) Load(ctx context.Context, store lib.Storer, index lib.Index) error {
+	logger := ctx.Value(lib.CtxLogger).(lib.Logger)
 	m := Metadata{}
 	err := store.Metadata(ctx, index, &m)
+	logger.Debugf("load %v metadata %v: %v", index, m, err)
 	if err == lib.ErrNotFound {
 		if index.Path == "/" {
 			m.Type = TypeCatalog
@@ -91,6 +95,7 @@ func (c Client) Load(ctx context.Context, store lib.Storer, index lib.Index) err
 
 	switch m.Type {
 	case TypeBook:
+		logger.Debugf("download book %v", m.DownloadURL)
 		z, err := c.ZBook(ctx, m.DownloadURL)
 		if err != nil {
 			return err
@@ -104,18 +109,19 @@ func (c Client) Load(ctx context.Context, store lib.Storer, index lib.Index) err
 			return err
 		}
 	case TypeCatalog:
+		logger.Debugf("download catalog %v", index.Lang)
 		lang, err := c.Lang(ctx, store, index.Lang)
 		if err != nil {
-			return err
+			return errors.Wrap(err, "catalog: find language")
 		}
 		catalog, err := c.Catalog(ctx, lang)
 		if err != nil {
-			return err
+			return errors.Wrap(err, "catalog: download")
 		}
 
 		err = storeFolder(ctx, store, &lib.Item{}, catalog.Folder)
 		if err != nil {
-			return err
+			return errors.Wrap(err, "catalog: store")
 		}
 	}
 
@@ -126,7 +132,7 @@ func (c Client) Lang(ctx context.Context, store lib.Storer, libLang lib.Lang) (L
 	m := Metadata{}
 	index := lib.Index{Lang: libLang, Path: "/"}
 	err := store.Metadata(ctx, index, &m)
-	if err != nil {
+	if err != lib.ErrNotFound && err != nil {
 		return Lang{}, err
 	}
 	if len(m.Languages) == 0 {

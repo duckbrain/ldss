@@ -1,6 +1,12 @@
+// +build nobuild
+
 package cmd
 
 import (
+	"fmt"
+	"log"
+	"net/http"
+
 	"github.com/duckbrain/ldss/internal/web"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"

@@ -3,6 +3,8 @@ package lib
 import (
 	"context"
 	"sort"
+
+	"github.com/pkg/errors"
 )
 
 type Library struct {
@@ -83,29 +85,55 @@ func (l Library) ctx(ctx context.Context) context.Context {
 	return ctx
 }
 
-func (l Library) Lookup(ctx context.Context, index Index) (Item, error) {
+func (l Library) LookupAndDownload(ctx context.Context, index Index) (Item, error) {
 	ctx = l.ctx(ctx)
 	logger := ctx.Value(CtxLogger).(Logger)
 	store := ctx.Value(CtxStore).(Storer)
 
 	item, err := store.Item(ctx, index)
 	if err != ErrNotFound {
-		return item, err
+		return item, errors.Wrap(err, "initial lookup")
 	}
 
 	logger.Debugf("index %v not found, trying to download", index)
 	for _, source := range l.Sources {
 		err := source.Load(ctx, store, index)
 		if err == nil {
-			return store.Item(ctx, index)
+			item, err := store.Item(ctx, index)
+			return item, errors.Wrapf(err, "second lookup %v", source)
+		}
+		if err == ErrNotFound {
+			logger.Debugf("skipping %v, not found", source)
+			continue
+		}
+		return item, errors.Wrapf(err, "load %v", source)
+	}
+
+	return item, ErrNotFound
+}
+
+func (l Library) Lookup(ctx context.Context, index Index) (Item, error) {
+	ctx = l.ctx(ctx)
+	store := ctx.Value(CtxStore).(Storer)
+
+	return store.Item(ctx, index)
+}
+
+func (l Library) Download(ctx context.Context, index Index) error {
+	ctx = l.ctx(ctx)
+	store := ctx.Value(CtxStore).(Storer)
+
+	for _, source := range l.Sources {
+		err := source.Load(ctx, store, index)
+		if err == nil {
+			return nil
 		}
 		if err == ErrNotFound {
 			continue
 		}
-		return item, err
+		return err
 	}
-
-	return item, ErrNotFound
+	return ErrNotFound
 }
 
 func (l Library) Search(ctx context.Context, ref Reference, results chan<- Result) error {

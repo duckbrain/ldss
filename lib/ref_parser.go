@@ -25,6 +25,12 @@ type langRefDesc struct {
 
 var parseClean = regexp.MustCompile("( |:)+")
 
+func NewReferenceParser() *ReferenceParser {
+	return &ReferenceParser{
+		descMap: make(map[Lang]*langRefDesc),
+	}
+}
+
 func (p ReferenceParser) AppendFile(lang Lang, file io.Reader) {
 	d := &langRefDesc{
 		matchFolder: make(map[int]string),
@@ -86,6 +92,9 @@ func (p ReferenceParser) Parse(lang Lang, query string) []Reference {
 	)
 
 	desc := p.descMap[lang]
+	if desc == nil {
+		return nil
+	}
 
 	q := strings.ToLower(query)
 	refs := make([]Reference, 0)

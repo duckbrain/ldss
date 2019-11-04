@@ -2,10 +2,10 @@ package cmd
 
 import (
 	"fmt"
-	"strings"
 
 	"github.com/duckbrain/ldss/lib"
 	"github.com/fatih/color"
+	"github.com/pkg/errors"
 	"github.com/spf13/cobra"
 )
 
@@ -29,23 +29,18 @@ var lookupCmd = &cobra.Command{
 	Use:   "lookup",
 	Short: "Prints a scripture reference to the stdout",
 	Long:  ``,
-	Run: func(cmd *cobra.Command, args []string) {
+	RunE: func(cmd *cobra.Command, args []string) error {
 		colors := colors(true)
-		lang := lang()
-		lookupString := strings.Join(args, " ")
-		refs := lib.Parse(lang, lookupString)
 		if len(refs) != 1 {
-			panic(fmt.Errorf("Multiple references not implemented"))
+			panic("multiple references not implemented")
 		}
 
-		item, err := refs[0].Lookup()
+		item, err := library.LookupAndDownload(ctx, refs[0].Index)
 		if err != nil {
-			panic(err)
+			return errors.Wrap(err, "LookupAndDownload")
 		}
 
-		if node, ok := item.(lib.Contenter); ok {
-			content := node.Content()
-			z := content.Parse()
+		if z := item.Content.Parse(); z != nil {
 			for z.NextParagraph() {
 				color := colors.content
 				switch z.ParagraphStyle() {
@@ -68,12 +63,18 @@ var lookupCmd = &cobra.Command{
 				color.Println("")
 			}
 		} else {
-			fmt.Println(item.Name())
+			fmt.Println(item.Name)
 		}
 
-		for _, child := range item.Children() {
-			fmt.Printf("- %v {%v}\n", child.Name(), child.Path())
+		for _, child := range item.Children {
+			childItem, err := library.Lookup(ctx, child)
+			if err != nil {
+				return err
+			}
+			fmt.Printf("- %v {%v}\n", childItem.Name, childItem.Path)
 		}
+
+		return nil
 	},
 }
 

@@ -75,6 +75,9 @@ func (t TextStyle) String() string {
 }
 
 func (c Content) Parse() *ContentParser {
+	if len(c) == 0 {
+		return nil
+	}
 	return &ContentParser{content: c}
 }
 

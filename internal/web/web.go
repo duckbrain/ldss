@@ -27,6 +27,7 @@ type webLayout struct {
 
 type Server struct {
 	Lang lib.Lang
+	Lib  *lib.Library
 }
 
 func (s *Server) Handler() http.Handler {
@@ -58,33 +59,21 @@ func (s Server) language(r *http.Request) lib.Lang {
 	return lang
 }
 
-func handleError(w io.Writer, r *http.Request) {
-	if rec := recover(); rec != nil {
-		var err error
-		switch rec.(type) {
-		case error:
-			err = rec.(error)
-		default:
-			err = fmt.Errorf("%v", rec)
-		}
-		err = templates.err.Execute(w, err)
-		if err != nil {
-			fmt.Println(err)
+func handleError(w io.Writer, r *http.Request, err error) {
+	if err == nil {
+		if rec := recover(); rec != nil {
+			switch rec.(type) {
+			case error:
+				err = rec.(error)
+			default:
+				err = fmt.Errorf("%v", rec)
+			}
 		}
 	}
-}
 
-// HandleError writes error information from a panic to the web stream
-func HandleError(w io.Writer, r *http.Request) {
-	if rec := recover(); rec != nil {
-		var err error
-		switch rec.(type) {
-		case error:
-			err = rec.(error)
-		default:
-			err = fmt.Errorf("%v", rec)
-		}
-		w.Write([]byte(err.Error()))
+	err = templates.err.Execute(w, err)
+	if err != nil {
+		fmt.Println(err)
 	}
 }
 
@@ -94,8 +83,8 @@ func (s Server) handleSearch(w http.ResponseWriter, r *http.Request) {
 	defer r.Body.Close()
 	lang := s.language(r)
 	query := r.URL.Query().Get("q")
-	refs := lib.Parse(lang, query)
-	if len(refs) == 1 && len(refs[0].Keywords) == 0 {
+	refs := s.Lib.Parser.Parse(lang, query)
+	if len(refs) == 1 && refs[0].Query == "" {
 		http.Redirect(w, r, refs[0].URL(), http.StatusFound)
 		return
 	}
@@ -106,51 +95,49 @@ func (s Server) handleSearch(w http.ResponseWriter, r *http.Request) {
 		Query: query,
 		Breadcrumbs: []lib.Header{
 			{
-				Lang: lang,
-				Path: "/",
+				Index: lib.Index{
+					Lang: lang,
+					Path: "/",
+				},
 			},
 		},
 	}
 	buff := new(bytes.Buffer)
 	for _, ref := range refs {
 
-		if len(ref.Keywords) == 0 {
-			func() {
-				defer handleError(buff, r)
-				item, err := ref.Lookup()
-				if err != nil {
-					panic(err)
-				}
-				print(buff, r, ref, item, true)
-				ref.Name = item.Name()
-				layout.Breadcrumbs = append(layout.Breadcrumbs, ref)
+		if ref.Query == "" {
+			item, err := ref.Lookup()
+			if err != nil {
+				panic(err)
+			}
+			print(buff, r, ref, item, true)
+			ref.Name = item.Name()
+			layout.Breadcrumbs = append(layout.Breadcrumbs, ref)
 
-				if x, ok := item.(lib.Contenter); ok {
-					f := x.Footnotes(ref.VersesHighlighted)
-					layout.Footnotes = append(layout.Footnotes, f...)
-				}
-
-			}()
+			if x, ok := item.(lib.Contenter); ok {
+				f := x.Footnotes(ref.VersesHighlighted)
+				layout.Footnotes = append(layout.Footnotes, f...)
+			}
 		} else {
 			item, err := ref.Lookup()
 			if err != nil {
-				func() {
-					defer handleError(buff, r)
-					panic(err)
-				}()
+				handleError(buff, r, err)
+				return
 			} else {
 				ref.Name = item.Name()
-				results := lib.SearchSort(item, ref.Keywords)
+				results, err := s.Lib.SearchSlice(r.Context(), ref)
+				if err != nil {
+					handleError(buff, r, err)
+					return
+				}
 				layout.Breadcrumbs = append(layout.Breadcrumbs, ref)
-				err := templates.searchResults.Execute(buff, struct {
+				err = templates.searchResults.Execute(buff, struct {
 					Item          lib.Item
-					Keywords      []string
 					SearchString  string
-					SearchResults []lib.SearchResult
+					SearchResults lib.Results
 				}{
 					Item:          item,
-					Keywords:      ref.Keywords,
-					SearchString:  strings.Join(ref.Keywords, " "),
+					SearchString:  ref.Query,
 					SearchResults: results,
 				})
 				if err != nil {
@@ -182,7 +169,7 @@ func itemsRelativesPath(item lib.Item) interface{} {
 }
 
 func (s Server) handleJSON(w http.ResponseWriter, r *http.Request) {
-	defer handleError(w, r)
+	defer handleError(w, r, nil)
 	defer r.Body.Close()
 
 	lang := s.language(r)

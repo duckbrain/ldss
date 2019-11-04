@@ -1,18 +1,31 @@
 package cmd
 
 import (
+	"context"
 	"fmt"
 	"os"
 	"os/user"
 	"path"
+	"strings"
+
+	"github.com/pkg/errors"
 
 	"github.com/duckbrain/ldss/lib"
+	"github.com/duckbrain/ldss/lib/storages/filestore"
+
+	"github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 )
 
-var cfgFile string
+var library *lib.Library
+var refs []lib.Reference
+var lang lib.Lang
+var ctx context.Context = context.TODO()
+
 var langName string
+
+var cfgFile string
 
 // RootCmd represents the base command when called without any subcommands
 var RootCmd = &cobra.Command{
@@ -22,7 +35,23 @@ var RootCmd = &cobra.Command{
 	// TODO: Figure out a way, so scripture references can be looked up
 	// without specifying the lookup command.
 	PersistentPreRunE: func(cmd *cobra.Command, args []string) error {
-		return lib.Open()
+		logger := logrus.New()
+		logger.SetLevel(logrus.TraceLevel)
+		logger.Info("Hello world")
+		store, err := filestore.New(".ldss")
+		if err != nil {
+			logger.Error(errors.Wrap(err, "store init"))
+			return err
+		}
+		lang = lib.Lang(langName)
+		library = lib.Default
+		library.Store = store
+		library.Index = store
+		library.Logger = logger
+
+		refs = library.Parser.Parse(lang, strings.Join(args, " "))
+		library.Logger.Debugf("parsing refs for lang: %v, args: %v, refs: %v", lang, args, refs)
+		return nil
 	},
 }
 
@@ -66,8 +95,4 @@ func initConfig() {
 	if err := viper.ReadInConfig(); err == nil {
 		fmt.Println("Using config file:", viper.ConfigFileUsed())
 	}
-}
-
-func lang() lib.Lang {
-	return lib.LookupLanguage(langName)
 }

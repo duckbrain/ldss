@@ -9,6 +9,7 @@ import (
 	"github.com/blevesearch/bleve"
 	"github.com/duckbrain/ldss/lib"
 	bolt "github.com/etcd-io/bbolt"
+	"github.com/pkg/errors"
 )
 
 var _ lib.Storer = &FileStore{}
@@ -26,29 +27,30 @@ type FileStore struct {
 }
 
 func New(dir string) (*FileStore, error) {
-	mapping := bleve.NewIndexMapping()
-
-	mapping.AddDocumentMapping("item", bleve.NewDocumentMapping())
-
 	err := os.MkdirAll(dir, os.ModePerm)
 	if err != nil {
 		return nil, err
 	}
 
-	index, err := bleve.New(path.Join(dir, "search.bleve"), mapping)
+	index, err := bleve.Open(path.Join(dir, "search.bleve"))
 	if err != nil {
-		return nil, err
+		mapping := bleve.NewIndexMapping()
+		mapping.AddDocumentMapping("item", bleve.NewDocumentMapping())
+		index, err = bleve.New(path.Join(dir, "search.bleve"), mapping)
+		if err != nil {
+			return nil, errors.Wrap(err, "bleve")
+		}
 	}
 
 	db, err := bolt.Open(path.Join(dir, "store.bbolt"), 0600, nil)
 	if err != nil {
-		return nil, err
+		return nil, errors.Wrap(err, "bbolt open")
 	}
 
 	err = db.Update(func(tx *bolt.Tx) error {
 		for _, name := range [][]byte{bucketItems, bucketMetadata} {
 			if _, err := tx.CreateBucketIfNotExists(name); err != nil {
-				return err
+				return errors.Wrapf(err, "bbolt create %v", name)
 			}
 		}
 		return nil
@@ -91,7 +93,4 @@ func (s *FileStore) SetMetadata(ctx context.Context, index lib.Index, metadata i
 	return s.BulkEdit(func(s lib.Storer) error {
 		return s.SetMetadata(ctx, index, metadata)
 	})
-}
-func (s *FileStore) Search(ctx context.Context, query string, results chan<- lib.Result) error {
-	panic("not implemented")
 }
