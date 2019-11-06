@@ -4,6 +4,7 @@ import (
 	"compress/zlib"
 	"context"
 	"encoding/json"
+	"fmt"
 	"net/http"
 	"path"
 
@@ -24,8 +25,8 @@ type Client struct {
 	Client     *http.Client
 }
 
-func (c Client) get(ctx context.Context, action string) (*http.Response, error) {
-	req, err := http.NewRequestWithContext(ctx, "GET", c.BaseURL+"?action="+action, nil)
+func (c Client) get(ctx context.Context, action string, v ...interface{}) (*http.Response, error) {
+	req, err := http.NewRequestWithContext(ctx, "GET", c.BaseURL+"?action="+fmt.Sprintf(action, v...), nil)
 	if err != nil {
 		return nil, err
 	}
@@ -38,15 +39,17 @@ func (c Client) Languages(ctx context.Context) ([]Lang, error) {
 		return nil, err
 	}
 	defer res.Body.Close()
-	langs := []Lang{}
+	var result struct {
+		Languages []Lang
+	}
 	decoder := json.NewDecoder(res.Body)
-	err = decoder.Decode(&langs)
-	return langs, err
+	err = decoder.Decode(&result)
+	return result.Languages, err
 }
 
 func (c Client) Catalog(ctx context.Context, lang Lang) (Catalog, error) {
 	catalog := Catalog{}
-	res, err := c.get(ctx, "catalog.query")
+	res, err := c.get(ctx, "catalog.query&languageid=%v&platformid=%v", lang.ID, c.PlatformID)
 	if err != nil {
 		return catalog, err
 	}
@@ -109,11 +112,11 @@ func (c Client) Load(ctx context.Context, store lib.Storer, index lib.Index) err
 			return err
 		}
 	case TypeCatalog:
-		logger.Debugf("download catalog %v", index.Lang)
 		lang, err := c.Lang(ctx, store, index.Lang)
 		if err != nil {
 			return errors.Wrap(err, "catalog: find language")
 		}
+		logger.Debugf("download catalog %v", lang.ID)
 		catalog, err := c.Catalog(ctx, lang)
 		if err != nil {
 			return errors.Wrap(err, "catalog: download")
