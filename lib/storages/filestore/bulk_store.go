@@ -5,6 +5,7 @@ import (
 
 	"github.com/duckbrain/ldss/lib"
 	bolt "github.com/etcd-io/bbolt"
+	"github.com/pkg/errors"
 )
 
 func (s *FileStore) BulkRead(fn func(lib.Storer) error) error {
@@ -79,4 +80,21 @@ func (s bulkStore) SetMetadata(ctx context.Context, index lib.Index, metadata in
 	}
 
 	return s.tx.Bucket(bucketMetadata).Put(index.Hash(), data)
+}
+func (s bulkStore) Clear(ctx context.Context) error {
+	if s.readonly {
+		panic("cannot SetMetadata in read-only")
+	}
+
+	// Delete and re-create the buckets in the db
+	for _, name := range buckets {
+		if err := s.tx.DeleteBucket(name); err != nil {
+			return errors.Wrapf(err, "bbolt delete %v", name)
+		}
+	}
+	if err := createBuckets(s.tx); err != nil {
+		return err
+	}
+
+	panic("TODO clear search index")
 }

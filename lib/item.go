@@ -90,7 +90,7 @@ type Storer interface {
 	Header(ctx context.Context, index Index) (Header, error)
 	Metadata(ctx context.Context, index Index, data interface{}) error
 	SetMetadata(ctx context.Context, index Index, data interface{}) error
-	// Remove(ctx context.Context, item Item) error
+	Clear(ctx context.Context) error
 }
 type BulkStorer interface {
 	BulkRead(func(Storer) error) error

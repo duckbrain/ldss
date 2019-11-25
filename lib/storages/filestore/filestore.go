@@ -18,6 +18,7 @@ var (
 	bucketItems    = []byte("Items")
 	bucketMetadata = []byte("Metadata")
 )
+var buckets = [][]byte{bucketItems, bucketMetadata}
 
 type FileStore struct {
 	index       bleve.Index
@@ -47,14 +48,7 @@ func New(dir string) (*FileStore, error) {
 		return nil, errors.Wrap(err, "bbolt open")
 	}
 
-	err = db.Update(func(tx *bolt.Tx) error {
-		for _, name := range [][]byte{bucketItems, bucketMetadata} {
-			if _, err := tx.CreateBucketIfNotExists(name); err != nil {
-				return errors.Wrapf(err, "bbolt create %v", name)
-			}
-		}
-		return nil
-	})
+	err = db.Update(createBuckets)
 
 	store := &FileStore{
 		index:       index,
@@ -63,6 +57,15 @@ func New(dir string) (*FileStore, error) {
 		unmarshaler: json.Unmarshal,
 	}
 	return store, err
+}
+
+func createBuckets(tx *bolt.Tx) error {
+	for _, name := range buckets {
+		if _, err := tx.CreateBucketIfNotExists(name); err != nil {
+			return errors.Wrapf(err, "bbolt create %v", name)
+		}
+	}
+	return nil
 }
 
 func (s *FileStore) Item(ctx context.Context, index lib.Index) (item lib.Item, err error) {
@@ -92,5 +95,10 @@ func (s *FileStore) Metadata(ctx context.Context, index lib.Index, metadata inte
 func (s *FileStore) SetMetadata(ctx context.Context, index lib.Index, metadata interface{}) error {
 	return s.BulkEdit(func(s lib.Storer) error {
 		return s.SetMetadata(ctx, index, metadata)
+	})
+}
+func (s *FileStore) Clear(ctx context.Context) error {
+	return s.BulkEdit(func(s lib.Storer) error {
+		return s.Clear(ctx)
 	})
 }
