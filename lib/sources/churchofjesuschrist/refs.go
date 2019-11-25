@@ -1,6 +1,7 @@
-package ldsorg
+package churchofjesuschrist
 
 import (
+	"context"
 	"path"
 
 	"github.com/duckbrain/ldss/lib"
@@ -9,10 +10,10 @@ import (
 
 var refBox = packr.New("ldsorg_refs", "../../reference")
 
-var _ interface{ LoadParser(*lib.ReferenceParser) } = &Client{}
-
-func (c Client) LoadParser(p *lib.ReferenceParser) {
+func (c Client) LoadParser(ctx context.Context, p *lib.ReferenceParser) {
 	const ext = ".ldssref"
+
+	logger := ctx.Value(lib.CtxLogger).(lib.Logger)
 
 	for _, filename := range refBox.List() {
 		if path.Ext(filename) != ext {
@@ -24,6 +25,7 @@ func (c Client) LoadParser(p *lib.ReferenceParser) {
 		if err != nil {
 			panic(err)
 		}
+		logger.Debugf("loading %v file %v\n", lang, filename)
 		p.AppendFile(lang, file)
 		err = file.Close()
 		if err != nil {

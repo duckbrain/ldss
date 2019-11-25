@@ -15,12 +15,18 @@ type Library struct {
 	Parser  *ReferenceParser
 }
 
-type indexStore struct {
+type smartStore struct {
 	Storer
 	Indexer
 }
 
-func (s indexStore) Store(ctx context.Context, item Item) error {
+func (s smartStore) Store(ctx context.Context, item Item) error {
+	if item.Path == "" {
+		return errors.New("item has no path")
+	}
+	if item.Lang == "" {
+		return errors.New("item has no lang")
+	}
 	err := s.Storer.Store(ctx, item)
 	if err != nil {
 		return err
@@ -73,7 +79,7 @@ func (l Library) ctx(ctx context.Context) context.Context {
 		logger = dummyLogger{}
 	}
 	// indexStore ensures that any newly stored items will be indexed as well
-	store := indexStore{
+	store := smartStore{
 		Storer:  l.Store,
 		Indexer: l.Index,
 	}

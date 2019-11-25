@@ -40,10 +40,12 @@ type Header struct {
 type Item struct {
 	Header
 
-	Children []Index
-	Parent   Index
-	Next     Index
-	Prev     Index
+	Breadcrumbs []Index
+	Children    []Index
+	Parent      Index
+	Next        Index
+	Prev        Index
+	Media       []Media
 
 	Content   Content
 	Footnotes []Footnote
@@ -51,13 +53,19 @@ type Item struct {
 type ItemDetails struct {
 	Header
 
-	Children []Header
-	Parent   Header
-	Next     Header
-	Prev     Header
+	Breadcrumbs []Header
+	Children    []Header
+	Parent      Header
+	Next        Header
+	Prev        Header
 
 	Content   Content
 	Footnotes []Footnote
+}
+type Media struct {
+	Type string
+	Desc string
+	URL  string
 }
 
 type Result struct {
@@ -99,10 +107,13 @@ type Loader interface {
 
 var ErrNotFound = errors.New("not found")
 
-func RegisterLoader(l Loader) {
-	Default.Sources = append(Default.Sources, l)
-	if x, ok := l.(interface{ LoadParser(*ReferenceParser) }); ok {
-		x.LoadParser(Default.Parser)
+func (lib *Library) Register(l Loader) {
+	lib.Sources = append(lib.Sources, l)
+	ctx := lib.ctx(context.Background())
+	if x, ok := l.(interface {
+		LoadParser(context.Context, *ReferenceParser)
+	}); ok {
+		x.LoadParser(ctx, Default.Parser)
 	}
 }
 

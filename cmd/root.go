@@ -11,6 +11,7 @@ import (
 	"github.com/pkg/errors"
 
 	"github.com/duckbrain/ldss/lib"
+	"github.com/duckbrain/ldss/lib/sources/churchofjesuschrist"
 	"github.com/duckbrain/ldss/lib/storages/filestore"
 
 	"github.com/sirupsen/logrus"
@@ -37,7 +38,6 @@ var RootCmd = &cobra.Command{
 	PersistentPreRunE: func(cmd *cobra.Command, args []string) error {
 		logger := logrus.New()
 		logger.SetLevel(logrus.TraceLevel)
-		logger.Info("Hello world")
 		store, err := filestore.New(".ldss")
 		if err != nil {
 			logger.Error(errors.Wrap(err, "store init"))
@@ -48,9 +48,15 @@ var RootCmd = &cobra.Command{
 		library.Store = store
 		library.Index = store
 		library.Logger = logger
+		library.Register(churchofjesuschrist.Default)
 
-		refs = library.Parser.Parse(lang, strings.Join(args, " "))
-		library.Logger.Debugf("parsing refs for lang: %v, args: %v, refs: %v", lang, args, refs)
+		if len(args) > 0 {
+			refs, err = library.Parser.Parse(lang, strings.Join(args, " "))
+			library.Logger.Debugf("parsing refs for lang: %v, args: %v, refs: %v", lang, args, refs)
+			if err != nil {
+				library.Logger.Fatalf("parse reference: %v", err)
+			}
+		}
 		return nil
 	},
 }

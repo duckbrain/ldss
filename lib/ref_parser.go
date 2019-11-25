@@ -3,6 +3,7 @@ package lib
 import (
 	"bufio"
 	"bytes"
+	"errors"
 	"fmt"
 	"io"
 	"regexp"
@@ -76,7 +77,7 @@ func (p ReferenceParser) AppendFile(lang Lang, file io.Reader) {
 	p.descMap[lang] = d
 }
 
-func (p ReferenceParser) Parse(lang Lang, query string) []Reference {
+func (p ReferenceParser) Parse(lang Lang, query string) ([]Reference, error) {
 	type queryTokenType int
 	const (
 		tokenRef queryTokenType = iota
@@ -93,7 +94,7 @@ func (p ReferenceParser) Parse(lang Lang, query string) []Reference {
 
 	desc := p.descMap[lang]
 	if desc == nil {
-		return nil
+		return nil, errors.New("language not found")
 	}
 
 	q := strings.ToLower(query)
@@ -244,7 +245,7 @@ func (p ReferenceParser) Parse(lang Lang, query string) []Reference {
 
 	finishReference()
 
-	return refs
+	return refs, nil
 }
 
 func (p *ReferenceParser) PathFromID(id int) string {
