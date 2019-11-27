@@ -1,6 +1,7 @@
 package cmd
 
 import (
+	"encoding/json"
 	"fmt"
 
 	"github.com/duckbrain/ldss/lib"
@@ -11,6 +12,11 @@ import (
 
 type cmdcolors struct {
 	title, subtitle, summary, verse, content, message *color.Color
+}
+
+var LookupOpts struct {
+	ForceDownload bool
+	Format        string
 }
 
 func colors(enabled bool) *cmdcolors {
@@ -35,9 +41,27 @@ var lookupCmd = &cobra.Command{
 			panic("multiple references not implemented")
 		}
 
+		if LookupOpts.ForceDownload {
+			err := library.Download(ctx, refs[0].Index)
+			if err != nil {
+				return errors.Wrap(err, "Download")
+			}
+		}
 		item, err := library.LookupAndDownload(ctx, refs[0].Index)
 		if err != nil {
 			return errors.Wrap(err, "LookupAndDownload")
+		}
+
+		switch LookupOpts.Format {
+		case "default":
+		case "json":
+			data, err := json.Marshal(item)
+			if err != nil {
+				return err
+			}
+			fmt.Println(string(data))
+		default:
+			return errors.New("uknown format")
 		}
 
 		if z := item.Content.Parse(); z != nil {
@@ -80,4 +104,6 @@ var lookupCmd = &cobra.Command{
 
 func init() {
 	RootCmd.AddCommand(lookupCmd)
+	lookupCmd.Flags().BoolVarP(&LookupOpts.ForceDownload, "force-download", "d", false, "Force the download, even if it's already downloaded")
+	lookupCmd.Flags().StringVarP(&LookupOpts.Format, "format", "f", "default", "Format to output in: default, json")
 }

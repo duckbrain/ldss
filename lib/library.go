@@ -118,6 +118,14 @@ func (l Library) LookupAndDownload(ctx context.Context, index Index) (Item, erro
 	return item, ErrNotFound
 }
 
+func (l Library) Parse(ctx context.Context, lang Lang, q string) ([]Reference, error) {
+	if q != "" && q[0] == '/' {
+		ref := l.Parser.ParsePath(lang, q)
+		return []Reference{ref}, nil
+	}
+	return l.Parser.Parse(lang, q)
+}
+
 func (l Library) Lookup(ctx context.Context, index Index) (Item, error) {
 	ctx = l.ctx(ctx)
 	store := ctx.Value(CtxStore).(Storer)

@@ -75,8 +75,7 @@ func (c Client) Load(ctx context.Context, store lib.Storer, index lib.Index) err
 		return err
 	}
 
-	item := dynamic.Item()
-	item.Index = index
+	item := dynamic.Item(index)
 
 	err = store.Store(ctx, item)
 	if err != nil {

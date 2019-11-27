@@ -25,6 +25,8 @@ var lang lib.Lang
 var ctx context.Context = context.TODO()
 
 var langName string
+var logLevel string
+var logLevels map[string]logrus.Level
 
 var cfgFile string
 
@@ -37,7 +39,11 @@ var RootCmd = &cobra.Command{
 	// without specifying the lookup command.
 	PersistentPreRunE: func(cmd *cobra.Command, args []string) error {
 		logger := logrus.New()
-		logger.SetLevel(logrus.TraceLevel)
+		level, err := logrus.ParseLevel(logLevel)
+		if err != nil {
+			return err
+		}
+		logger.SetLevel(level)
 		store, err := filestore.New(".ldss")
 		if err != nil {
 			logger.Error(errors.Wrap(err, "store init"))
@@ -51,7 +57,7 @@ var RootCmd = &cobra.Command{
 		library.Register(churchofjesuschrist.Default)
 
 		if len(args) > 0 {
-			refs, err = library.Parser.Parse(lang, strings.Join(args, " "))
+			refs, err = library.Parse(ctx, lang, strings.Join(args, " "))
 			library.Logger.Debugf("parsing refs for lang: %v, args: %v, refs: %v", lang, args, refs)
 			if err != nil {
 				library.Logger.Fatalf("parse reference: %v", err)
@@ -74,6 +80,7 @@ func init() {
 	cobra.OnInitialize(initConfig)
 
 	RootCmd.PersistentFlags().StringVar(&langName, "lang", "en", "language for scripture content")
+	RootCmd.PersistentFlags().StringVarP(&logLevel, "log-level", "l", "warning", "Logging level: info, debug, warning, error")
 }
 
 // initConfig reads in config file and ENV variables if set.

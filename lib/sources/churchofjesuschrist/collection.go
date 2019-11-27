@@ -2,6 +2,7 @@ package churchofjesuschrist
 
 import (
 	"github.com/duckbrain/ldss/lib"
+	"html/template"
 )
 
 type Dynamic struct {
@@ -17,9 +18,30 @@ func (d Dynamic) Title() string {
 	return ""
 }
 
-func (d Dynamic) Item() lib.Item {
+func (d Dynamic) Item(index lib.Index) lib.Item {
 	i := lib.Item{}
+	i.Index = index
 	i.Name = d.Title()
+	if d.Content != nil {
+		i.Content = lib.Content(d.Content.Content.Body)
+		for _, f := range d.Content.Content.Footnotes {
+			i.Footnotes = append(i.Footnotes, lib.Footnote{
+				Name:     f.Marker,
+				LinkName: f.Context,
+				Content:  template.HTML(f.Text),
+			})
+		}
+	}
+	if d.Collection != nil {
+		for _, e := range d.Collection.Entries {
+			if e.Section != nil {
+
+			}
+			if e.Item != nil {
+				i.Children = append(i.Children, lib.Index{Path: e.Item.URI, Lang: index.Lang})
+			}
+		}
+	}
 	return i
 }
 
