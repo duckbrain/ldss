@@ -8,11 +8,42 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"strings"
 )
 
 const DefaultLang Lang = "en"
 
 type Lang string
+type langDesc struct {
+	Name   string
+	GLCode string
+}
+
+func ParseLang(s string) (lang Lang, err error) {
+	var ok bool
+	lang, ok = languageAliases[strings.ToLower(s)]
+	if !ok {
+		err = ErrNotFound
+	}
+	return
+}
+
+func (l Lang) Name() string {
+	if desc, ok := languageDescs[l]; ok {
+		return desc.Name
+	}
+	return fmt.Sprintf("%v (unknown language", l)
+}
+func (l Lang) GLCode() string {
+	if desc, ok := languageDescs[l]; ok {
+		return desc.GLCode
+	}
+	return ""
+}
+
+func (l Lang) String() string {
+	return string(l)
+}
 
 type Index struct {
 	Path string
@@ -44,27 +75,18 @@ type Header struct {
 type Item struct {
 	Header
 
-	Breadcrumbs []Index
-	Children    []Index
-	Parent      Index
-	Next        Index
-	Prev        Index
-	Media       []Media
-
-	Content   Content
-	Footnotes []Footnote
-}
-type ItemDetails struct {
-	Header
-
 	Breadcrumbs []Header
 	Children    []Header
 	Parent      Header
 	Next        Header
 	Prev        Header
+	Media       []Media
 
 	Content   Content
 	Footnotes []Footnote
+
+	// Metadata may be used by sources for storing information.
+	Metadata map[string]string
 }
 type Media struct {
 	Type string
@@ -92,8 +114,6 @@ type Storer interface {
 	Item(ctx context.Context, index Index) (Item, error)
 	Store(ctx context.Context, item Item) error
 	Header(ctx context.Context, index Index) (Header, error)
-	Metadata(ctx context.Context, index Index, data interface{}) error
-	SetMetadata(ctx context.Context, index Index, data interface{}) error
 	Clear(ctx context.Context) error
 }
 type BulkStorer interface {

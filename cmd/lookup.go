@@ -100,7 +100,7 @@ var lookupCmd = &cobra.Command{
 		}
 
 		for _, child := range item.Children {
-			childItem, err := library.Lookup(ctx, child)
+			childItem, err := library.Lookup(ctx, child.Index)
 			if err != nil {
 				return err
 			}

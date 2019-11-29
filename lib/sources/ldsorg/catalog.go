@@ -16,14 +16,31 @@ const (
 	TypeNode    ItemType = "Node"
 )
 
+func parseMeta(meta map[string]string) Metadata {
+	if meta == nil {
+		return Metadata{}
+	}
+	return Metadata{
+		Type:        ItemType(meta["ldsorg_type"]),
+		DownloadURL: meta["ldsorg_download_url"],
+	}
+}
+
+func (m Metadata) apply(meta *map[string]string) {
+	if *meta == nil {
+		*meta = make(map[string]string)
+	}
+	(*meta)["ldsorg_type"] = string(m.Type)
+	if m.DownloadURL != "" {
+		(*meta)["ldsorg_download_url"] = m.DownloadURL
+	}
+}
+
 type Metadata struct {
 	Type ItemType
 
 	// Book only
 	DownloadURL string
-
-	// Catalog only
-	Languages map[string]Lang
 }
 
 type Catalog struct {

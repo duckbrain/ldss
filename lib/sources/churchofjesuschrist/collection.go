@@ -41,10 +41,10 @@ func (d Dynamic) Item(index lib.Index) lib.Item {
 	if d.Collection != nil {
 		for _, e := range d.Collection.Entries {
 			if e.Section != nil {
-
+				// i.Children = append(i.Children, e.Section.LibHeader(index.Lang))
 			}
 			if e.Item != nil {
-				i.Children = append(i.Children, lib.Index{Path: e.Item.URI, Lang: index.Lang})
+				i.Children = append(i.Children, e.Item.LibHeader(index.Lang))
 			}
 		}
 	}
@@ -52,10 +52,7 @@ func (d Dynamic) Item(index lib.Index) lib.Item {
 }
 
 type Collection struct {
-	Title       string
-	URI         string
-	Src         string
-	SrcSet      string
+	Item
 	BreadCrumbs []struct {
 		Title string
 		URI   string
@@ -79,6 +76,16 @@ type Item struct {
 	Title    string
 	Src      string
 	SrcSet   string
+}
+
+func (i Item) LibHeader(lang lib.Lang) lib.Header {
+	return lib.Header{
+		Index: lib.Index{
+			Path: i.URI,
+			Lang: lang,
+		},
+		Name: i.Title,
+	}
 }
 
 type Content struct {

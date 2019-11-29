@@ -46,8 +46,8 @@ func (l Legacy) ZBook(ctx context.Context, i lib.Index) (*ZBook, error) {
 }
 
 func (l Legacy) Load(ctx context.Context, store lib.Storer, index lib.Index) error {
-	m := Metadata{}
-	err := store.Metadata(ctx, index, &m)
+	item, err := store.Item(ctx, index)
+	m := parseMeta(item.Metadata)
 	if err == lib.ErrNotFound {
 		if index.Path == "/" {
 			m.Type = TypeCatalog

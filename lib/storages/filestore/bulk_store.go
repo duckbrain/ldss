@@ -62,28 +62,9 @@ func (s bulkStore) Header(ctx context.Context, index lib.Index) (lib.Header, err
 	err := s.unmarshaler(data, &item)
 	return item.Header, err
 }
-func (s bulkStore) Metadata(ctx context.Context, index lib.Index, metadata interface{}) error {
-	data := s.tx.Bucket(bucketMetadata).Get(index.Hash())
-	if data == nil {
-		return lib.ErrNotFound
-	}
-
-	return s.unmarshaler(data, metadata)
-}
-func (s bulkStore) SetMetadata(ctx context.Context, index lib.Index, metadata interface{}) error {
-	if s.readonly {
-		panic("cannot SetMetadata in read-only")
-	}
-	data, err := s.marshaller(metadata)
-	if err != nil {
-		return err
-	}
-
-	return s.tx.Bucket(bucketMetadata).Put(index.Hash(), data)
-}
 func (s bulkStore) Clear(ctx context.Context) error {
 	if s.readonly {
-		panic("cannot SetMetadata in read-only")
+		panic("cannot Clear in read-only")
 	}
 
 	// Delete and re-create the buckets in the db

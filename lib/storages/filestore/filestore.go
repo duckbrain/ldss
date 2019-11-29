@@ -87,16 +87,6 @@ func (s *FileStore) Header(ctx context.Context, index lib.Index) (header lib.Hea
 	})
 	return
 }
-func (s *FileStore) Metadata(ctx context.Context, index lib.Index, metadata interface{}) error {
-	return s.BulkRead(func(s lib.Storer) error {
-		return s.Metadata(ctx, index, metadata)
-	})
-}
-func (s *FileStore) SetMetadata(ctx context.Context, index lib.Index, metadata interface{}) error {
-	return s.BulkEdit(func(s lib.Storer) error {
-		return s.SetMetadata(ctx, index, metadata)
-	})
-}
 func (s *FileStore) Clear(ctx context.Context) error {
 	return s.BulkEdit(func(s lib.Storer) error {
 		return s.Clear(ctx)
