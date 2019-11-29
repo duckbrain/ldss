@@ -1,35 +1,28 @@
 package ldssa
 
 import (
+	"net/http"
+
 	"github.com/duckbrain/ldss/internal/web"
 	"github.com/duckbrain/ldss/lib"
+	"github.com/duckbrain/ldss/lib/sources/churchofjesuschrist"
+	"github.com/duckbrain/ldss/lib/storages/filestore"
 )
 
 func init() {
-	lib.DataDirectory = "/storage/emulated/0/.ldss"
-	/*
-		http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
-			defer web.HandleError(w, r)
-			lib.DataDirectory = "/storage/emulated/0/.ldss"
-			dir, err := filepath.Abs(lib.DataDirectory)
-			w.Write([]byte(dir))
-			if err != nil {
-				panic(err)
-			}
-
-			w.Write([]byte("\n"))
-
-			lang, err := lib.LookupLanguage("eng")
-			if err != nil {
-				panic(err)
-			}
-			w.Write([]byte(lang.String()))
-		})
-	*/
-
-	lang := lib.LookupLanguage("en")
-	if lang == nil {
-		panic("Language not found")
+	store, err := filestore.New("/storage/emulated/0/.ldss")
+	if err != nil {
+		panic(err)
 	}
-	web.Handle(lang)
+	library := lib.Default
+	library.Store = store
+	library.Index = store
+	library.Register(churchofjesuschrist.Default)
+
+	server := web.Server{
+		Lang: lib.DefaultLang,
+		Lib:  library,
+	}
+
+	http.Handle("/", server.Handler())
 }

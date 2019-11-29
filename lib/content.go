@@ -13,6 +13,11 @@ import (
 // Content pulled from a node in the SQlite database. Is the content of the node
 // formatted as HTML
 type Content string
+
+func (c Content) IsEmpty() bool {
+	return c == ""
+}
+
 type ContentParser struct {
 	content Content
 	z       *html.Tokenizer

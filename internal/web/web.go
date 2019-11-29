@@ -7,7 +7,6 @@ import (
 	"html/template"
 	"io"
 	"net/http"
-	"strings"
 
 	"github.com/duckbrain/ldss/lib"
 	packr "github.com/gobuffalo/packr/v2"
@@ -16,13 +15,10 @@ import (
 var staticBox = packr.New("ldss_web_static", "./static")
 
 type webLayout struct {
-	Title       string
-	Content     template.HTML
-	Footnotes   []lib.Footnote
-	Lang        lib.Lang
-	Item        lib.Item
-	Breadcrumbs []lib.Header
-	Query       string
+	Title   string
+	Content template.HTML
+	Item    lib.Item
+	Query   string
 }
 
 type Server struct {
@@ -77,13 +73,17 @@ func handleError(w io.Writer, r *http.Request, err error) {
 	}
 }
 
-func (s Server) handleSearch(w http.ResponseWriter, r *http.Request) {
+func (s *Server) handleSearch(w http.ResponseWriter, r *http.Request) {
 	initTemplates()
 
 	defer r.Body.Close()
 	lang := s.language(r)
 	query := r.URL.Query().Get("q")
-	refs := s.Lib.Parser.Parse(lang, query)
+	refs, err := s.Lib.Parser.Parse(lang, query)
+	if err != nil {
+		handleError(w, r, err)
+		return
+	}
 	if len(refs) == 1 && refs[0].Query == "" {
 		http.Redirect(w, r, refs[0].URL(), http.StatusFound)
 		return
@@ -91,46 +91,27 @@ func (s Server) handleSearch(w http.ResponseWriter, r *http.Request) {
 
 	layout := webLayout{
 		Title: "LDS Scriptures",
-		Lang:  lang,
 		Query: query,
-		Breadcrumbs: []lib.Header{
-			{
-				Index: lib.Index{
-					Lang: lang,
-					Path: "/",
-				},
-			},
-		},
 	}
 	buff := new(bytes.Buffer)
 	for _, ref := range refs {
-
 		if ref.Query == "" {
-			item, err := ref.Lookup()
+			item, err := s.Lib.Lookup(r.Context(), ref.Index)
 			if err != nil {
 				panic(err)
 			}
 			print(buff, r, ref, item, true)
-			ref.Name = item.Name()
-			layout.Breadcrumbs = append(layout.Breadcrumbs, ref)
-
-			if x, ok := item.(lib.Contenter); ok {
-				f := x.Footnotes(ref.VersesHighlighted)
-				layout.Footnotes = append(layout.Footnotes, f...)
-			}
 		} else {
-			item, err := ref.Lookup()
+			item, err := s.Lib.Lookup(r.Context(), ref.Index)
 			if err != nil {
 				handleError(buff, r, err)
 				return
 			} else {
-				ref.Name = item.Name()
 				results, err := s.Lib.SearchSlice(r.Context(), ref)
 				if err != nil {
 					handleError(buff, r, err)
 					return
 				}
-				layout.Breadcrumbs = append(layout.Breadcrumbs, ref)
 				err = templates.searchResults.Execute(buff, struct {
 					Item          lib.Item
 					SearchString  string
@@ -150,66 +131,34 @@ func (s Server) handleSearch(w http.ResponseWriter, r *http.Request) {
 	}
 	layout.Content = template.HTML(buff.String())
 
-	err := templates.layout.Execute(w, layout)
+	err = templates.layout.Execute(w, layout)
 	if err != nil {
 		panic(err)
 	}
 }
 
 func itemsRelativesPath(item lib.Item) interface{} {
-	if item != nil {
-		data := struct {
-			Name string `json:"name"`
-			Path string `json:"path"`
-		}{item.Name(), item.Path()}
+	data := struct {
+		Name string `json:"name"`
+		Path string `json:"path"`
+	}{item.Name, item.Path}
 
-		return data
-	}
-	return nil
+	return data
 }
 
-func (s Server) handleJSON(w http.ResponseWriter, r *http.Request) {
+func (s *Server) handleJSON(w http.ResponseWriter, r *http.Request) {
 	defer handleError(w, r, nil)
 	defer r.Body.Close()
 
 	lang := s.language(r)
 	path := r.URL.Path[len("/api"):]
-	ref := lib.ParsePath(lang, path)
-	item, err := ref.Lookup()
+	ref := s.Lib.Parser.ParsePath(lang, path)
+	item, err := s.Lib.Lookup(r.Context(), ref.Index)
 	if err != nil {
 		panic(err)
 	}
 
-	data := map[string]interface{}{}
-
-	data["name"] = item.Name()
-	data["path"] = item.Path()
-	data["language"] = item.Lang().Code()
-	data["parent"] = itemsRelativesPath(item.Parent())
-	data["next"] = itemsRelativesPath(item.Next())
-	data["previous"] = itemsRelativesPath(item.Prev())
-
-	if x, ok := item.(lib.Contenter); ok {
-		data["content"] = x.Content()
-		data["footnotes"] = x.Footnotes(ref.VersesHighlighted)
-	}
-
-	childItems := item.Children()
-	children := make([]interface{}, len(childItems))
-	for i, child := range childItems {
-		children[i] = itemsRelativesPath(child)
-	}
-	data["children"] = children
-
-	breadcrumbs := make([]interface{}, 0)
-	for p := item; p != nil; {
-		parent := p.Parent()
-		breadcrumbs = append([]interface{}{itemsRelativesPath(p)}, breadcrumbs...)
-		p = parent
-	}
-	data["breadcrumbs"] = breadcrumbs
-
-	j, err := json.Marshal(data)
+	j, err := json.Marshal(item)
 	if err != nil {
 		panic(err)
 	}
@@ -219,8 +168,8 @@ func (s Server) handleJSON(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func (s Server) handler(w http.ResponseWriter, r *http.Request) {
-	defer handleError(w, r)
+func (s *Server) handler(w http.ResponseWriter, r *http.Request) {
+	defer handleError(w, r, nil)
 	defer r.Body.Close()
 
 	lang := s.language(r)
@@ -229,46 +178,24 @@ func (s Server) handler(w http.ResponseWriter, r *http.Request) {
 	//TODO Remove for production
 	initTemplates()
 
-	ref := lib.ParsePath(lang, r.URL.Path)
-	var children []lib.Item
+	ref := s.Lib.Parser.ParsePath(lang, r.URL.Path)
 
-	item, err := ref.Lookup()
+	item, err := s.Lib.Lookup(r.Context(), ref.Index)
 	if err != nil {
 		panic(err)
 	}
 
-	children = item.Children()
-
-	if len(children) == 1 {
-		http.Redirect(w, r, children[0].Path(), 301)
+	if len(item.Children) == 1 {
+		http.Redirect(w, r, item.Children[0].Path, 301)
 		return
 	}
 	print(buff, r, ref, item, false)
 
 	layout := webLayout{
-		Title:       item.Name(),
-		Content:     template.HTML(buff.String()),
-		Lang:        lang,
-		Item:        item,
-		Breadcrumbs: make([]lib.Reference, 0),
-		Query:       ref.String(),
-	}
-
-	// Get the footnote content
-	if x, ok := item.(lib.Contenter); ok {
-		layout.Footnotes = x.Footnotes(ref.VersesHighlighted)
-		if err != nil {
-			panic(err)
-		}
-	}
-
-	// Generate breadcrumbs
-	for p := item; p != nil; p = p.Parent() {
-		layout.Breadcrumbs = append([]lib.Reference{{
-			Path: p.Path(),
-			Name: p.Name(),
-			Lang: p.Lang(),
-		}}, layout.Breadcrumbs...)
+		Title:   item.Name,
+		Content: template.HTML(buff.String()),
+		Item:    item,
+		Query:   ref.String(),
 	}
 
 	err = templates.layout.Execute(w, layout)
@@ -282,40 +209,14 @@ func print(w io.Writer, r *http.Request, ref lib.Reference, item lib.Item, filte
 		Item      lib.Item
 		Reference lib.Reference
 		Content   template.HTML
-		LangCode  string
 		HasTitle  bool
 		Filtered  bool
 	}{
 		Item:      item,
 		Reference: ref,
-		LangCode:  item.Lang().Code(),
 	}
 
-	// TODO: Support having content and children
-	var err error
-	var hasContent bool
-	if x, ok := item.(lib.Contenter); ok {
-		if content := x.Content(); len(content) > 0 {
-			hasContent = true
-			if filter {
-				content = content.Filter(ref.VersesHighlighted)
-				data.Content = template.HTML(content)
-				data.HasTitle = false
-				data.Filtered = true
-			} else {
-				content = content.Highlight(ref.VersesHighlighted, "highlight")
-				content = content.Highlight(ref.VersesExtra, "highlight")
-				data.Content = template.HTML(content)
-				data.HasTitle = strings.Contains(string(content), "</h1>")
-			}
-			err = templates.nodeContent.Execute(w, data)
-		}
-	}
-	if !hasContent {
-		err = templates.nodeChildren.Execute(w, data)
-	}
-
-	if err != nil {
+	if err := templates.item.Execute(w, data); err != nil {
 		panic(err)
 	}
 }

@@ -1,35 +1,36 @@
-// +build nobuild
-
 package cmd
 
 import (
-	"fmt"
 	"log"
 	"net/http"
 
 	"github.com/duckbrain/ldss/internal/web"
 	"github.com/spf13/cobra"
-	"github.com/spf13/viper"
 )
 
+var webOpts struct {
+	Addr string
+}
 var webCmd = &cobra.Command{
-	Use:   "web",
-	Short: "Launch the web server",
-	Long:  `Launch the web server`,
-	Run: func(cmd *cobra.Command, args []string) {
-		port := viper.GetInt("port")
+	Use:     "http",
+	Aliases: []string{"web"},
+	Short:   "Launch the web server",
+	Long:    `Launch the web server`,
+	RunE: func(cmd *cobra.Command, args []string) error {
+		opts := webOpts
+		server := web.Server{
+			Lang: lang,
+			Lib:  library,
+		}
 
-		server := web.Server{Lang: lang}
-		log.Printf("Listening on port: %v\n", port)
-		http.ListenAndServe(fmt.Sprintf(":%v", port), nil)
-		web.Run(port, lang())
+		http.Handle("/", server.Handler())
+		log.Printf("Listening on: %v\n", opts.Addr)
+		return http.ListenAndServe(opts.Addr, nil)
 	},
 }
 
 func init() {
 	RootCmd.AddCommand(webCmd)
 
-	webCmd.Flags().Int("port", 1830, "The TCP port to run the server on")
-	viper.BindPFlag("port", webCmd.Flags().Lookup("port"))
-
+	webCmd.Flags().StringVarP(&webOpts.Addr, "addr", "a", ":1830", "The listen address to use for http")
 }

@@ -8,15 +8,23 @@ import (
 	"github.com/fatih/color"
 	"github.com/pkg/errors"
 	"github.com/spf13/cobra"
+	"github.com/spf13/pflag"
 )
 
 type cmdcolors struct {
 	title, subtitle, summary, verse, content, message *color.Color
 }
 
-var LookupOpts struct {
+var LookupOpts LookupArgs
+
+type LookupArgs struct {
 	ForceDownload bool
 	Format        string
+}
+
+func (a *LookupArgs) args(flags *pflag.FlagSet) {
+	flags.BoolVarP(&a.ForceDownload, "force-download", "d", false, "Force the download, even if it's already downloaded")
+	flags.StringVarP(&a.Format, "format", "f", "default", "Format to output in: default, json")
 }
 
 func colors(enabled bool) *cmdcolors {
@@ -60,8 +68,9 @@ var lookupCmd = &cobra.Command{
 				return err
 			}
 			fmt.Println(string(data))
+			return nil
 		default:
-			return errors.New("uknown format")
+			return errors.Errorf("uknown format \"%v\"", LookupOpts.Format)
 		}
 
 		if z := item.Content.Parse(); z != nil {
@@ -104,6 +113,5 @@ var lookupCmd = &cobra.Command{
 
 func init() {
 	RootCmd.AddCommand(lookupCmd)
-	lookupCmd.Flags().BoolVarP(&LookupOpts.ForceDownload, "force-download", "d", false, "Force the download, even if it's already downloaded")
-	lookupCmd.Flags().StringVarP(&LookupOpts.Format, "format", "f", "default", "Format to output in: default, json")
+	LookupOpts.args(lookupCmd.Flags())
 }

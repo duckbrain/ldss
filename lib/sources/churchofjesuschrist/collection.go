@@ -1,6 +1,7 @@
 package churchofjesuschrist
 
 import (
+	"encoding/json"
 	"github.com/duckbrain/ldss/lib"
 	"html/template"
 )
@@ -8,6 +9,11 @@ import (
 type Dynamic struct {
 	Collection *Collection
 	Content    *Content
+}
+
+func (d Dynamic) String() string {
+	j, _ := json.Marshal(d)
+	return string(j)
 }
 
 func (d Dynamic) Title() string {

@@ -34,6 +34,10 @@ type Header struct {
 	Subtitle    string
 	SectionName string
 	ShortTitle  string
+	// IsLoaded is set to true when the item has been fully downloaded. Loaders
+	// can store non-loaded items to reference partially loaded Items that should
+	// be loaded fully/directly before display.
+	IsLoaded bool
 	Index
 }
 

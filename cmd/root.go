@@ -4,8 +4,6 @@ import (
 	"context"
 	"fmt"
 	"os"
-	"os/user"
-	"path"
 	"strings"
 
 	"github.com/pkg/errors"
@@ -16,7 +14,6 @@ import (
 
 	"github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"
-	"github.com/spf13/viper"
 )
 
 var library *lib.Library
@@ -77,35 +74,6 @@ func Execute() {
 }
 
 func init() {
-	cobra.OnInitialize(initConfig)
-
 	RootCmd.PersistentFlags().StringVar(&langName, "lang", "en", "language for scripture content")
 	RootCmd.PersistentFlags().StringVarP(&logLevel, "log-level", "l", "warning", "Logging level: info, debug, warning, error")
-}
-
-// initConfig reads in config file and ENV variables if set.
-func initConfig() {
-	if cfgFile != "" { // enable ability to specify config file via flag
-		viper.SetConfigFile(cfgFile)
-	}
-
-	currentUser, err := user.Current()
-	if err == nil {
-		viper.SetDefault("DataDirectory", path.Join(currentUser.HomeDir, ".ldss"))
-	} else {
-		viper.SetDefault("DataDirectory", ".ldss")
-	}
-	viper.SetDefault("Language", "eng")
-	viper.SetDefault("ServerURL", "https://tech.lds.org/glweb")
-
-	viper.SetConfigName("config")
-	viper.AddConfigPath("/etc/ldss/")
-	viper.AddConfigPath("$HOME/.ldss")
-	viper.AddConfigPath(".")
-	viper.AutomaticEnv()
-
-	// If a config file is found, read it in.
-	if err := viper.ReadInConfig(); err == nil {
-		fmt.Println("Using config file:", viper.ConfigFileUsed())
-	}
 }

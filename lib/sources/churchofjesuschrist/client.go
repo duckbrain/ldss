@@ -76,6 +76,7 @@ func (c Client) Load(ctx context.Context, store lib.Storer, index lib.Index) err
 	}
 
 	item := dynamic.Item(index)
+	logger.Info("collection", dynamic)
 
 	err = store.Store(ctx, item)
 	if err != nil {
