@@ -1,4 +1,4 @@
-package web
+package http
 
 import (
 	"bytes"
@@ -43,13 +43,9 @@ func (s *Server) Handler() http.Handler {
 	return mux
 }
 
-// Run starts listening on the given port
-func Run(port int, lang lib.Lang) {
-}
-
 func (s Server) language(r *http.Request) lib.Lang {
-	lang := lib.Lang(r.URL.Query().Get("lang"))
-	if lang == "" {
+	lang, err := lib.ParseLang(r.URL.Query().Get("lang"))
+	if err == lib.ErrNotFound {
 		return s.Lang
 	}
 	return lang
@@ -87,6 +83,9 @@ func (s *Server) handleSearch(w http.ResponseWriter, r *http.Request) {
 		handleError(w, r, err)
 		return
 	}
+
+	s.Lib.Logger.Infof(`search "%v" -> %v`, query, refs)
+
 	if len(refs) == 1 && refs[0].Query == "" {
 		http.Redirect(w, r, refs[0].URL(), http.StatusFound)
 		return
@@ -99,13 +98,13 @@ func (s *Server) handleSearch(w http.ResponseWriter, r *http.Request) {
 	buff := new(bytes.Buffer)
 	for _, ref := range refs {
 		if ref.Query == "" {
-			item, err := s.Lib.LookupAndDownload(r.Context(), ref.Index)
+			item, err := s.Lib.LookupReference(r.Context(), &ref)
 			if err != nil {
 				panic(err)
 			}
 			print(buff, r, ref, item, true)
 		} else {
-			item, err := s.Lib.LookupAndDownload(r.Context(), ref.Index)
+			item, err := s.Lib.LookupReference(r.Context(), &ref)
 			if err != nil {
 				handleError(buff, r, err)
 				return
@@ -147,7 +146,7 @@ func (s *Server) handleJSON(w http.ResponseWriter, r *http.Request) {
 	lang := s.language(r)
 	path := r.URL.Path[len("/api"):]
 	ref := s.Lib.Parser.ParsePath(lang, path)
-	item, err := s.Lib.LookupAndDownload(r.Context(), ref.Index)
+	item, err := s.Lib.LookupReference(r.Context(), &ref)
 	if err != nil {
 		panic(err)
 	}
@@ -176,7 +175,7 @@ func (s *Server) handler(w http.ResponseWriter, r *http.Request) {
 
 	ref := s.Lib.Parser.ParsePath(lang, r.URL.Path)
 
-	item, err := s.Lib.LookupAndDownload(r.Context(), ref.Index)
+	item, err := s.Lib.LookupReference(r.Context(), &ref)
 	if err != nil {
 		panic(err)
 	}

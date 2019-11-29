@@ -132,6 +132,13 @@ func (l Library) Lookup(ctx context.Context, index Index) (Item, error) {
 
 	return store.Item(ctx, index)
 }
+func (l Library) LookupReference(ctx context.Context, ref *Reference) (Item, error) {
+	item, err := l.LookupAndDownload(ctx, ref.Index)
+	if err == nil {
+		ref.Name = item.Name
+	}
+	return item, err
+}
 
 func (l Library) Download(ctx context.Context, index Index) error {
 	ctx = l.ctx(ctx)
@@ -148,6 +155,16 @@ func (l Library) Download(ctx context.Context, index Index) error {
 		return err
 	}
 	return ErrNotFound
+}
+
+func (lib *Library) Register(l Loader) {
+	lib.Sources = append(lib.Sources, l)
+	ctx := lib.ctx(context.Background())
+	if x, ok := l.(interface {
+		LoadParser(context.Context, *ReferenceParser)
+	}); ok {
+		x.LoadParser(ctx, lib.Parser)
+	}
 }
 
 func (l Library) Search(ctx context.Context, ref Reference, results chan<- Result) error {

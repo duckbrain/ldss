@@ -15,8 +15,9 @@ const DefaultLang Lang = "en"
 
 type Lang string
 type langDesc struct {
-	Name   string
-	GLCode string
+	Name    string
+	EngName string
+	GLCode  string
 }
 
 func ParseLang(s string) (lang Lang, err error) {
@@ -34,13 +35,18 @@ func (l Lang) Name() string {
 	}
 	return fmt.Sprintf("%v (unknown language", l)
 }
+func (l Lang) EngName() string {
+	if desc, ok := languageDescs[l]; ok {
+		return desc.EngName
+	}
+	return fmt.Sprintf("%v (unknown language", l)
+}
 func (l Lang) GLCode() string {
 	if desc, ok := languageDescs[l]; ok {
 		return desc.GLCode
 	}
 	return ""
 }
-
 func (l Lang) String() string {
 	return string(l)
 }
@@ -130,16 +136,6 @@ type Loader interface {
 }
 
 var ErrNotFound = errors.New("not found")
-
-func (lib *Library) Register(l Loader) {
-	lib.Sources = append(lib.Sources, l)
-	ctx := lib.ctx(context.Background())
-	if x, ok := l.(interface {
-		LoadParser(context.Context, *ReferenceParser)
-	}); ok {
-		x.LoadParser(ctx, Default.Parser)
-	}
-}
 
 var Default = &Library{
 	Parser:  NewReferenceParser(),

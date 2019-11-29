@@ -37,14 +37,14 @@ func (r *Reference) Clean() {
 
 func (r Reference) String() string {
 	s := r.Name
+	if len(s) == 0 {
+		s = r.Path
+	}
 	if r.VersesHighlighted != nil {
 		s = fmt.Sprintf("%v:%v", s, r.VersesHighlighted)
 	}
 	if r.VersesExtra != nil {
 		s = fmt.Sprintf("%v (%v)", s, r.VersesHighlighted)
-	}
-	if len(s) == 0 {
-		s = fmt.Sprintf("\"%v\"", r.Name)
 	}
 	return s
 }

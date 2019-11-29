@@ -35,7 +35,7 @@ func (c Client) get(ctx context.Context, p string, params url.Values) (io.ReadCl
 		return nil, err
 	}
 
-	logger.Infof("request: %v", req.URL.String())
+	logger.Infof("downloading: %v", req.URL.String())
 	res, err := c.Client.Do(req)
 	if err != nil {
 		return nil, err
@@ -76,7 +76,7 @@ func (c Client) Load(ctx context.Context, store lib.Storer, index lib.Index) err
 	}
 
 	item := dynamic.Item(index)
-	logger.Info("collection", dynamic)
+	logger.Debug("collection ", dynamic)
 
 	err = store.Store(ctx, item)
 	if err != nil {

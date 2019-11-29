@@ -20,7 +20,7 @@ import (
 	"net"
 	"net/http"
 
-	"github.com/duckbrain/ldss/internal/web"
+	"github.com/duckbrain/ldss/lib/http"
 	"github.com/spf13/cobra"
 	"github.com/zserge/webview"
 )

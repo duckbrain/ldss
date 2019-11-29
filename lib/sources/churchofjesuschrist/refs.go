@@ -15,7 +15,13 @@ func (c Client) LoadParser(ctx context.Context, p *lib.ReferenceParser) {
 
 	logger := ctx.Value(lib.CtxLogger).(lib.Logger)
 
-	for _, filename := range refBox.List() {
+	files := refBox.List()
+
+	if len(files) == 0 {
+		panic("No files in box")
+	}
+
+	for _, filename := range files {
 		if path.Ext(filename) != ext {
 			continue
 		}

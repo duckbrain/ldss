@@ -4,7 +4,7 @@ import (
 	"log"
 	"net/http"
 
-	"github.com/duckbrain/ldss/internal/web"
+	ldsshttp "github.com/duckbrain/ldss/lib/http"
 	"github.com/spf13/cobra"
 )
 
@@ -18,7 +18,7 @@ var webCmd = &cobra.Command{
 	Long:    `Launch the web server`,
 	RunE: func(cmd *cobra.Command, args []string) error {
 		opts := webOpts
-		server := web.Server{
+		server := ldsshttp.Server{
 			Lang: lang,
 			Lib:  library,
 		}
