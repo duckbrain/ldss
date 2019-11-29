@@ -1,0 +1,39 @@
+{{/*}}
+
+<h1 class="item-name">{{ .Item.Name }}</h1>
+<ul class="item-children">
+{{ $sections := groupSections .Item.Children }}
+{{ if $sections }}
+{{- range $section, $children := $sections }}
+  <h3>{{ $section }}</h3>
+  {{- range $key, $child := $children }}
+  <li>
+    <a href="{{ $child.Path }}?lang={{ $.LangCode }}">{{ $child.Name }}</a>
+	{{ if subtitle $child }}
+        {{ subtitle $child }}
+    {{ end }}
+  </li>
+{{ end }}
+{{- end }}
+{{ else }}
+{{- range $key, $child := .Item.Children }}
+  <li>
+    <a href="{{ $child.Path }}?lang={{ $.LangCode }}">{{ $child.Name }}</a>
+	{{ if subtitle $child }}
+        {{ subtitle $child }}
+    {{ end }}
+  </li>
+{{- end }}
+{{ end }}
+</ul>
+{{ if not .HasTitle }}
+	{{ if .Filtered }}
+		<h1><a href="{{.Reference.URL}}">{{ .Item.Name }}</a></h1>
+	{{ else }}
+		<h1>{{ .Item.Name }}</h1>
+		<h2>{{ .Item.Subtitle }}</h2>
+	{{ end }}
+{{ end }}
+
+{{*/}}
+{{ .Content }}

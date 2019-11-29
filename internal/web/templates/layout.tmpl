@@ -13,14 +13,14 @@
 <body>
 
 {{define "ItemHref"}}
-	{{- if .}}href="{{.Path}}?lang={{.Lang.Code}}"
+	{{- if .Valid}}href="{{.Path}}?lang={{.Lang}}"
 	{{- else}}disabled{{end -}}
 {{end}}
 
 <header class="toolbar">
 	
 	<div class="breadcrumbs">
-	{{ range .Breadcrumbs }}
+	{{ range .Item.Breadcrumbs }}
 		<a class="button" {{template "ItemHref" .}}>
 		{{ if eq .Path "/" }}
 			<img src="/svg/home.svg" alt="Library">
@@ -56,7 +56,7 @@ x
 </div>
 </div>
 <div class="footnotes">
-{{- range $key, $ref := .Footnotes }}
+{{- range $key, $ref := .Item.Footnotes }}
    <li id="ref-{{ $ref.Name }}" class="footnotes-footnote"><span class="footnotes-footnote-name">{{ $ref.Name }}</span> <span class="footnotes-footnote-linkName">{{$ref.LinkName}}</span> - {{ $ref.Content }}
    </li>
 {{- end }}

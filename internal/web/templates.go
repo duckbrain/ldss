@@ -6,19 +6,20 @@ import (
 	packr "github.com/gobuffalo/packr/v2"
 )
 
-var templates *webtemplates
-var templateBox = packr.New("ldss_web_templates", "./templates")
-
-type webtemplates struct {
+var templates struct {
 	item, searchResults, layout, err *template.Template
 }
+var templateBox = packr.New("ldss_web_templates", "./templates")
 
 func initTemplates() {
-	templates = &webtemplates{}
 	templates.layout = loadTemplate("layout.tmpl")
 	templates.item = loadTemplate("item.tmpl")
 	templates.searchResults = loadTemplate("search-results.tmpl")
 	templates.err = loadTemplate("403.tmpl")
+}
+
+func init() {
+	initTemplates()
 }
 
 func loadTemplate(path string) *template.Template {

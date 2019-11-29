@@ -58,13 +58,16 @@ func (s Server) language(r *http.Request) lib.Lang {
 func handleError(w io.Writer, r *http.Request, err error) {
 	if err == nil {
 		if rec := recover(); rec != nil {
-			switch rec.(type) {
+			switch r := rec.(type) {
 			case error:
-				err = rec.(error)
+				err = r
 			default:
 				err = fmt.Errorf("%v", rec)
 			}
 		}
+	}
+	if err == nil {
+		return
 	}
 
 	err = templates.err.Execute(w, err)
@@ -96,13 +99,13 @@ func (s *Server) handleSearch(w http.ResponseWriter, r *http.Request) {
 	buff := new(bytes.Buffer)
 	for _, ref := range refs {
 		if ref.Query == "" {
-			item, err := s.Lib.Lookup(r.Context(), ref.Index)
+			item, err := s.Lib.LookupAndDownload(r.Context(), ref.Index)
 			if err != nil {
 				panic(err)
 			}
 			print(buff, r, ref, item, true)
 		} else {
-			item, err := s.Lib.Lookup(r.Context(), ref.Index)
+			item, err := s.Lib.LookupAndDownload(r.Context(), ref.Index)
 			if err != nil {
 				handleError(buff, r, err)
 				return
@@ -137,15 +140,6 @@ func (s *Server) handleSearch(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func itemsRelativesPath(item lib.Item) interface{} {
-	data := struct {
-		Name string `json:"name"`
-		Path string `json:"path"`
-	}{item.Name, item.Path}
-
-	return data
-}
-
 func (s *Server) handleJSON(w http.ResponseWriter, r *http.Request) {
 	defer handleError(w, r, nil)
 	defer r.Body.Close()
@@ -153,7 +147,7 @@ func (s *Server) handleJSON(w http.ResponseWriter, r *http.Request) {
 	lang := s.language(r)
 	path := r.URL.Path[len("/api"):]
 	ref := s.Lib.Parser.ParsePath(lang, path)
-	item, err := s.Lib.Lookup(r.Context(), ref.Index)
+	item, err := s.Lib.LookupAndDownload(r.Context(), ref.Index)
 	if err != nil {
 		panic(err)
 	}
@@ -175,12 +169,14 @@ func (s *Server) handler(w http.ResponseWriter, r *http.Request) {
 	lang := s.language(r)
 	buff := new(bytes.Buffer)
 
+	s.Lib.Logger.Info(r.URL.Path)
+
 	//TODO Remove for production
 	initTemplates()
 
 	ref := s.Lib.Parser.ParsePath(lang, r.URL.Path)
 
-	item, err := s.Lib.Lookup(r.Context(), ref.Index)
+	item, err := s.Lib.LookupAndDownload(r.Context(), ref.Index)
 	if err != nil {
 		panic(err)
 	}
@@ -214,6 +210,7 @@ func print(w io.Writer, r *http.Request, ref lib.Reference, item lib.Item, filte
 	}{
 		Item:      item,
 		Reference: ref,
+		Content:   template.HTML(item.Content),
 	}
 
 	if err := templates.item.Execute(w, data); err != nil {
