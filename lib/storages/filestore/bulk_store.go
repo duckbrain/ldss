@@ -2,6 +2,8 @@ package filestore
 
 import (
 	"context"
+	"os"
+	"path"
 
 	"github.com/duckbrain/ldss/lib"
 	bolt "github.com/etcd-io/bbolt"
@@ -77,5 +79,17 @@ func (s bulkStore) Clear(ctx context.Context) error {
 		return err
 	}
 
-	panic("TODO clear search index")
+	err := s.index.Close()
+	if err != nil {
+		return err
+	}
+	err = os.RemoveAll(path.Join(s.dir, "search.bleve"))
+	if err != nil {
+		return err
+	}
+	s.index, err = createBleveIndex(s.dir)
+	if err != nil {
+		return err
+	}
+	return nil
 }

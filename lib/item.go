@@ -78,14 +78,24 @@ type Header struct {
 	Index
 }
 
+type TOC struct {
+	Parent       Header
+	Breadcrumbs  []Header
+	FirstContent Index
+	TOCEntry
+}
+
+type TOCEntry struct {
+	Header
+	Entries []TOCEntry
+}
+
 type Item struct {
 	Header
 
+	TOCPath     string
 	Breadcrumbs []Header
 	Children    []Header
-	Parent      Header
-	Next        Header
-	Prev        Header
 	Media       []Media
 
 	Content   Content
@@ -94,6 +104,43 @@ type Item struct {
 	// Metadata may be used by sources for storing information.
 	Metadata map[string]string
 }
+
+func mergeString(a, b string) string {
+	if a != "" {
+		return a
+	}
+	return b
+}
+func (h *Header) Merge(a Header) {
+	h.Path = mergeString(h.Path, a.Path)
+	h.Lang = Lang(mergeString(string(h.Lang), string(a.Lang)))
+	h.Name = mergeString(h.Name, a.Name)
+	h.Subtitle = mergeString(h.Subtitle, a.Subtitle)
+	h.SectionName = mergeString(h.SectionName, a.SectionName)
+	h.ShortTitle = mergeString(h.ShortTitle, a.ShortTitle)
+	h.IsLoaded = h.IsLoaded || a.IsLoaded
+}
+func (i *Item) Merge(a Item) {
+	i.Header.Merge(a.Header)
+	i.Breadcrumbs = append(i.Breadcrumbs, a.Breadcrumbs...)
+	i.Children = append(i.Children, a.Children...)
+	i.Media = append(i.Media, a.Media...)
+	i.Content = i.Content + a.Content
+	i.Footnotes = append(i.Footnotes, a.Footnotes...)
+
+	if a.Metadata == nil {
+		return
+	}
+	if i.Metadata == nil {
+		i.Metadata = make(map[string]string)
+	}
+	for key, val := range a.Metadata {
+		if _, ok := i.Metadata[key]; !ok {
+			i.Metadata[key] = val
+		}
+	}
+}
+
 type Media struct {
 	Type string
 	Desc string

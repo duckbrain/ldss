@@ -21,10 +21,17 @@ var (
 var buckets = [][]byte{bucketItems, bucketMetadata}
 
 type FileStore struct {
+	dir         string
 	index       bleve.Index
 	db          *bolt.DB
 	marshaller  func(in interface{}) (out []byte, err error)
 	unmarshaler func(in []byte, out interface{}) (err error)
+}
+
+func createBleveIndex(dir string) (bleve.Index, error) {
+	mapping := bleve.NewIndexMapping()
+	mapping.AddDocumentMapping("item", bleve.NewDocumentMapping())
+	return bleve.New(path.Join(dir, "search.bleve"), mapping)
 }
 
 func New(dir string) (*FileStore, error) {
@@ -35,9 +42,7 @@ func New(dir string) (*FileStore, error) {
 
 	index, err := bleve.Open(path.Join(dir, "search.bleve"))
 	if err != nil {
-		mapping := bleve.NewIndexMapping()
-		mapping.AddDocumentMapping("item", bleve.NewDocumentMapping())
-		index, err = bleve.New(path.Join(dir, "search.bleve"), mapping)
+		index, err = createBleveIndex(dir)
 		if err != nil {
 			return nil, errors.Wrap(err, "bleve")
 		}
@@ -51,6 +56,7 @@ func New(dir string) (*FileStore, error) {
 	err = db.Update(createBuckets)
 
 	store := &FileStore{
+		dir:         dir,
 		index:       index,
 		db:          db,
 		marshaller:  json.Marshal,

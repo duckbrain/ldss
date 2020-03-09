@@ -24,40 +24,29 @@ func (d Dynamic) Title() string {
 	return ""
 }
 
-func (d Dynamic) Item(index lib.Index) lib.Item {
-	i := lib.Item{}
+func (d Dynamic) AsItem(index lib.Index) (i lib.Item) {
 	i.Index = index
-	i.Name = d.Title()
-	if d.Content != nil {
-		i.Content = lib.Content(d.Content.Content.Body)
-		for _, f := range d.Content.Content.Footnotes {
-			i.Footnotes = append(i.Footnotes, lib.Footnote{
-				Name:     f.Marker,
-				LinkName: f.Context,
-				Content:  template.HTML(f.Text),
-			})
-		}
-	}
-	if d.Collection != nil {
-		for _, e := range d.Collection.Entries {
-			if e.Section != nil {
-				// i.Children = append(i.Children, e.Section.LibHeader(index.Lang))
-			}
-			if e.Item != nil {
-				i.Children = append(i.Children, e.Item.LibHeader(index.Lang))
-			}
-		}
-	}
-	return i
+	i.Merge(d.Content.AsItem(index))
+	i.Merge(d.Collection.AsItem(index))
+	return
 }
 
 type Collection struct {
 	Item
+	Section
 	BreadCrumbs []struct {
 		Title string
 		URI   string
 	}
-	Entries []Entry
+}
+
+func (c *Collection) AsItem(index lib.Index) (i lib.Item) {
+	if c == nil {
+		return
+	}
+	i.Header = c.Item.AsHeader(index.Lang, "")
+	i.Merge(c.Section.AsItem(index))
+	return
 }
 
 type Entry struct {
@@ -70,6 +59,18 @@ type Section struct {
 	Entries []Entry
 }
 
+func (s *Section) AsItem(index lib.Index) (l lib.Item) {
+	if s == nil {
+		return
+	}
+	for _, e := range s.Entries {
+		if e.Item != nil {
+			l.Children = append(l.Children, e.Item.AsHeader(index.Lang, s.Title))
+		}
+	}
+	return
+}
+
 type Item struct {
 	Position int64
 	URI      string
@@ -78,7 +79,10 @@ type Item struct {
 	SrcSet   string
 }
 
-func (i Item) LibHeader(lang lib.Lang) lib.Header {
+func (i *Item) AsHeader(lang lib.Lang, sectionName string) lib.Header {
+	if i == nil {
+		return lib.Header{}
+	}
 	return lib.Header{
 		Index: lib.Index{
 			Path: i.URI,
@@ -108,6 +112,21 @@ type Content struct {
 		Body      string
 		Footnotes map[string]Footnote
 	}
+}
+
+func (c *Content) AsItem(index lib.Index) (i lib.Item) {
+	if c == nil {
+		return
+	}
+	i.Content = lib.Content(c.Content.Body)
+	for _, f := range c.Content.Footnotes {
+		i.Footnotes = append(i.Footnotes, lib.Footnote{
+			Name:     f.Marker,
+			LinkName: f.Context,
+			Content:  template.HTML(f.Text),
+		})
+	}
+	return
 }
 
 type Footnote struct {
