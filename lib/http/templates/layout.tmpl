@@ -34,10 +34,10 @@
 		<input type="text" name="q" value="{{ .Query }}">
 	</form>
 	<div class="navButtons">
-		<a class="button" id="previous" {{if .Item}}{{template "ItemHref" .Item.Prev}}{{else}}disabled{{end}}>
+		<a class="button" id="previous" {{if .Item}}{{template "ItemHref" .PrevHeader}}{{else}}disabled{{end}}>
 			<img src="/svg/chevron-left.svg" alt="Previous">
 		</a>
-		<a class="button" id="next" {{if .Item}}{{template "ItemHref" .Item.Next}}{{else}}disabled{{end}}>
+		<a class="button" id="next" {{if .Item}}{{template "ItemHref" .NextHeader}}{{else}}disabled{{end}}>
 			<img src="/svg/chevron-right.svg" alt="Next">
 		</a>
 	</div>

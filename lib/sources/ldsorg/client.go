@@ -133,15 +133,9 @@ func storeFolder(ctx context.Context, store lib.Storer, item *lib.Item, folder F
 	item.Header = folder.Header(ctx, lang)
 
 	item.Children = make([]lib.Header, len(folder.Folders)+len(folder.Books))
-	for i, childFolder := range folder.Folders {
+	for _, childFolder := range folder.Folders {
 		childItem := lib.Item{}
-		childItem.Parent = item.Header
-		if i > 0 {
-			childItem.Prev = item.Children[i-1]
-		}
-		if i < len(item.Children)-1 {
-			childItem.Next = folder.Folders[i+1].Header(ctx, lang)
-		}
+		childItem.Breadcrumbs = append(item.Breadcrumbs, item.Header)
 
 		err := storeFolder(ctx, store, &childItem, childFolder)
 		if err != nil {
@@ -160,23 +154,17 @@ func storeBook(ctx context.Context, store lib.Storer, z *ZBook, item *lib.Item, 
 		return err
 	}
 	item.Children = make([]lib.Header, len(children))
-	for i, childNode := range children {
+	for _, childNode := range children {
 		footnotes, err := z.Footnotes(ctx, childNode.ID)
 		if err != nil {
 			return err
 		}
 
 		childItem := lib.Item{
-			Header:    childNode.Header(lang),
-			Content:   node.Content,
-			Parent:    item.Header,
-			Footnotes: footnotes,
-		}
-		if i > 0 {
-			childItem.Prev = item.Children[i-1]
-		}
-		if i < len(children)-1 {
-			childItem.Next = children[i+1].Header(lang)
+			Header:      childNode.Header(lang),
+			Content:     node.Content,
+			Breadcrumbs: append(item.Breadcrumbs, item.Header),
+			Footnotes:   footnotes,
 		}
 
 		// This populates the children of the child item and stores it

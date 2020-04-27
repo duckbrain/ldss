@@ -2,8 +2,9 @@ package churchofjesuschrist
 
 import (
 	"encoding/json"
-	"github.com/duckbrain/ldss/lib"
 	"html/template"
+
+	"github.com/duckbrain/ldss/lib"
 )
 
 type Dynamic struct {
@@ -102,7 +103,7 @@ type Content struct {
 				Name string
 			}
 		}
-		PDF            string
+		// PDF            string
 		PageAttributes map[string]string // Attributes to set on the body?
 	}
 	Content struct {

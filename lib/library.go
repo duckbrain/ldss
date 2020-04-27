@@ -139,6 +139,30 @@ func (l Library) LookupReference(ctx context.Context, ref *Reference) (Item, err
 	}
 	return item, err
 }
+func (l Library) Sibling(ctx context.Context, item Item, offset int) (Header, error) {
+	if offset == 0 {
+		return item.Header, nil
+	}
+	parentHeader := item.Parent()
+	if !parentHeader.Valid() {
+		return Header{}, nil
+	}
+	parent, err := l.Lookup(ctx, item.Parent().Index)
+	if err != nil {
+		return Header{}, err
+	}
+	for i, child := range parent.Children {
+		if child.Index == item.Index {
+			j := i + offset
+			if j >= 0 && j < len(parent.Children) {
+				return parent.Children[j], nil
+			} else {
+				return Header{}, nil
+			}
+		}
+	}
+	return Header{}, errors.New("could not find self in parent's children")
+}
 
 func (l Library) Download(ctx context.Context, index Index) error {
 	ctx = l.ctx(ctx)

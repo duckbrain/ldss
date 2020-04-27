@@ -15,10 +15,12 @@ import (
 var staticBox = packr.New("ldss_web_static", "./static")
 
 type webLayout struct {
-	Title   string
-	Content template.HTML
-	Item    lib.Item
-	Query   string
+	Title      string
+	Content    template.HTML
+	Item       lib.Item
+	NextHeader lib.Header
+	PrevHeader lib.Header
+	Query      string
 }
 
 type Server struct {
@@ -162,20 +164,21 @@ func (s *Server) handleJSON(w http.ResponseWriter, r *http.Request) {
 }
 
 func (s *Server) handler(w http.ResponseWriter, r *http.Request) {
+	ctx := r.Context()
 	defer handleError(w, r, nil)
 	defer r.Body.Close()
 
 	lang := s.language(r)
 	buff := new(bytes.Buffer)
 
-	s.Lib.Logger.Info(r.URL.Path)
+	s.Lib.Logger.Infof("http %v %v", r.Method, r.URL.Path)
 
 	//TODO Remove for production
 	initTemplates()
 
 	ref := s.Lib.Parser.ParsePath(lang, r.URL.Path)
 
-	item, err := s.Lib.LookupReference(r.Context(), &ref)
+	item, err := s.Lib.LookupReference(ctx, &ref)
 	if err != nil {
 		panic(err)
 	}
@@ -186,11 +189,22 @@ func (s *Server) handler(w http.ResponseWriter, r *http.Request) {
 	}
 	print(buff, r, ref, item, false)
 
+	prev, err := s.Lib.Sibling(ctx, item, -1)
+	if err != nil {
+		panic(err)
+	}
+	next, err := s.Lib.Sibling(ctx, item, 1)
+	if err != nil {
+		panic(err)
+	}
+
 	layout := webLayout{
-		Title:   item.Name,
-		Content: template.HTML(buff.String()),
-		Item:    item,
-		Query:   ref.String(),
+		Title:      item.Name,
+		Content:    template.HTML(buff.String()),
+		Item:       item,
+		PrevHeader: prev,
+		NextHeader: next,
+		Query:      ref.String(),
 	}
 
 	err = templates.layout.Execute(w, layout)

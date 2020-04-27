@@ -105,6 +105,13 @@ type Item struct {
 	Metadata map[string]string
 }
 
+func (i Item) Parent() Header {
+	if len(i.Breadcrumbs) == 0 {
+		return Header{}
+	}
+	return i.Breadcrumbs[len(i.Breadcrumbs)-1]
+}
+
 func mergeString(a, b string) string {
 	if a != "" {
 		return a

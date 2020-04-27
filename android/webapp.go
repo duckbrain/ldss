@@ -7,8 +7,8 @@ import (
 	"time"
 
 	//importing the users package that will attach the handlers to the DefaultServeMux
-	"github.com/duckbrain/ldss/lib/http"
 	"github.com/duckbrain/ldss/lib"
+	ldsshttp "github.com/duckbrain/ldss/lib/http"
 	"github.com/duckbrain/ldss/lib/sources/churchofjesuschrist"
 	"github.com/duckbrain/ldss/lib/storages/filestore"
 )
@@ -31,7 +31,7 @@ func init() {
 	library.Index = store
 	library.Register(churchofjesuschrist.Default)
 
-	server := web.Server{
+	server := ldsshttp.Server{
 		Lang: lib.DefaultLang,
 		Lib:  library,
 	}
