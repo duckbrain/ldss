@@ -103,7 +103,10 @@ type Content struct {
 				Name string
 			}
 		}
-		// PDF            string
+		PDF struct {
+			Source string
+			Name   string
+		}
 		PageAttributes map[string]string // Attributes to set on the body?
 	}
 	Content struct {
